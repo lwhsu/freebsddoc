@@ -1,0 +1,24 @@
+<!-- $FreeBSD: doc/en_US.ISO8859-1/slides/common/what-is-freebsd.xml,v 1.2 2007/12/26 20:37:44 gabor Exp $ -->
+
+<foil><title>What is FreeBSD?</title>
+  <itemizedlist>
+
+    <listitem>FreeBSD is a production-quality operating system derived
+      from BSD UNIX.
+      <itemizedlist>
+        <listitem>Widely deployed as a component, and in its own right.
+	  <itemizedlist>
+	    <listitem>Workstation, server, and high-end embedded
+	      markets.</listitem>
+	  </itemizedlist>
+	</listitem>
+
+	<listitem>Berkeley permits broad commercial re-use in open and
+	  closed source products.</listitem>
+
+	<listitem>amd64, i386, ia64, pc98, powerpc, sparc64</listitem>
+
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+</foil>

@@ -1,0 +1,23 @@
+<!-- -*- sgml -*-
+     DocBook Language Neutral Entities for Localization.
+
+     An entity here can be overridden with the localized version
+     when the entity is defined in 
+     PUBLIC "-//FreeBSD//ENTITIES DocBook Language Specific Entities//EN"
+     in language-specific directory.  Otherwise the following entity
+     set is used by default.
+
+     $FreeBSD: doc/zh_TW.Big5/share/sgml/l10n.ent,v 1.2 2006/07/25 16:40:02 hrs Exp $
+-->
+
+<!-- docformat navi -->
+<!ENTITY docnavi.single-html "完整模式">
+<!ENTITY docnavi.split-html  "章節模式">
+
+<!-- charset for HTML output -->
+<!ENTITY doc.html.charset "Big5">
+
+<!ENTITY mdash "——">
+
+<!ENTITY % authors.tw PUBLIC "-//FreeBSD//ENTITIES DocBook Author Entities//ZH">
+%authors.tw;

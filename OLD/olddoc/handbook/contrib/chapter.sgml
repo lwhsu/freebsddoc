@@ -1,0 +1,6135 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $Id: chapter.sgml,v 1.7 2003/01/29 06:47:49 statue Exp $
+
+     Translate into Chinese by Chih-Hsuan Dennis Lee (c_hsuan@hotmail.com)
+
+     Original revision: 1.407
+-->
+
+<chapter id="contrib">
+  <title>對 FreeBSD 貢獻您的一分力</title>
+  
+  <para><emphasis>原文：&a.jkh;.</emphasis></para>
+  
+  <para>想對 FreeBSD 盡己棉薄之力嗎？很好！我們永遠都需要大家的幫助，因為
+    FreeBSD 是一個<emphasis>依賴</emphasis>大家的貢獻才能在眾多作業系統中生存
+    下來的作業系統。您的貢獻不僅讓我們心存感謝，更是 FreeBSD 繼續成長茁壯的原
+    動力。</para>
+      
+  <para>相較於一般的認知而言，並不是您是高深的程式設計師或是跟 FreeBSD 的核心
+    小組成員是好朋友，您的貢獻才會被接受。  FreeBSD 整個計畫的發展都歸功於全世
+    界廣大並不斷增加的貢獻者，他們的年齡跟技術層面都不太一樣；而且，要做的工作
+    永遠都比能幫忙的人要多。</para>
+      
+  <para>因為 FreeBSD 發展計畫必須對整個作業系統環境(以及安裝)負責，並不單單針
+    對系統核心或是一些凌亂的工具程式，所以我們的 <filename>TODO</filename> 列
+    表列出了龐大的工作項目，從文件、beta 測試、介紹到高階的核心研發都有。  因
+    此，不論您的層次為何，相信一定有需要您貢獻之處！。</para>
+      
+  <para>商業機構，如果有開發 FreeBSD 相關產品，我們也鼓勵您跟我們接觸。您的產
+    品需要特別的需求才能運作嗎？如果不是太奇怪，您將發現我們會很樂意接受您的需
+    求。您正在開發加值型軟體嗎？請讓我們知道！因為在某些層面我們或許可以跟您合作
+    。免費軟體的領域裡充滿了很多存在已久的假設，如軟體如何研發、出售以及在軟
+    體的生命週期中該如何維護。我們希望您能從另外一個角度來考慮看看。</para>
+      
+  <sect1 id="contrib-what">
+    <title>需要什麼</title>
+    
+    <para>下面的工作清單及子計畫包含了一些在核心小組 <filename>TODO</filename>
+      列表中的項目以及過去幾個月來我們所蒐集的使用者需求。這些工作僅可能以需求的
+      緊急狀況來排列。如果您對其中列出的工作項目有興趣，可以按下已經列出的研發
+      人（協調人）的名字寫信跟他們聯絡。  如果一項工作沒有指定研發人，那麼您就
+      是第一個志願者囉？</para>
+
+    <sect2>
+      <title>高優先權工作列表</title>
+      
+      <para>下列的工作被認為是緊急的，通常它們表示有些東西根本不能用或是有強烈
+        的需求：</para>
+	  
+      <orderedlist>
+	<listitem>
+	  <para>三階段啟動問題。  總協調人：&a.hackers;</para>
+		
+	  <itemizedlist>
+	    <listitem>
+	      <para>替 WinNT 相容磁碟標號，以便啟動的第三階段磁碟能精確對應 BIOS 硬體結
+	        構。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+
+	<listitem>
+	  <para>檔案系統問題。  總協調人：&a.fs;</para>
+
+	  <itemizedlist>
+	    <listitem>
+	      <para>清理 nullfs 檔案系統程式碼並為其加上註解。  協調人：&a.eivind;
+	      </para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>修正 union 檔案系統。  協調人：&a.dg;</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+
+	<listitem>
+	  <para>開發 Int13 vm86 磁碟驅動程式。  協調人：&a.hackers;</para>
+	</listitem>
+	      
+	<listitem>
+	  <para>新的匯流排架構。  協調人：&a.newbus;</para>
+
+	  <itemizedlist>
+	    <listitem>
+	      <para>將現有的 ISA 驅動程式移植到新的架構。</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>將所有跟中斷管理有關的程式碼移到適當的匯流排驅動程式中。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>將 PCI 子系統移植到新架構。  協調人：&a.dfr;</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>研發正確處理抽取式裝置的方法，並以此方法為基礎來研發對 PC-Card 及
+	  CardBus 裝置的支援。</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>永遠解決 probe/attach 優先權問題。</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>將所有現有的匯流排系統轉移至新架構。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+
+	<listitem>
+	  <para>核心問題。  總協調人：&a.hackers;</para>
+	</listitem>
+
+	<listitem>
+	  <para>增加更多完善的安全機制。  總協調人：&a.security;</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para>建構像是 Tripwire(TM) 的東西並整合至核心中，分遠端跟當地端部分。  
+	  為了正確建立此功能，必須討論一些密碼學的議題；詳情請聯絡協調人。  
+	  協調人：&a.eivind;</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>整個核心使用 <literal>suser()</literal>，而不跟 0 比較。目前的做
+	  法是一半一半。  協調人：&a.eivind;</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>將安全等及劃分為不同的部分以便管理者能直接將可以移除的權限移除。  
+	  當然，設定整體安全等級的結果必須跟現在一樣。  協調人：&a.eivind;</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>使有可能上傳一些<quote>允許的程式</quote>到 BPF，並禁止接受其它的
+	  程式。  這將使得 BPF 的使用，如 DHCP，不受攻擊者入侵本地端網路。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>更新安全性檢查 script。我們應該至少從其他的 BSD 衍生系統抓取所有
+	  的檢查，然後對安全等級較高的系統的相關部分增加相對應的標籤。 
+	  協調人：&a.eivind;</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>為核心加上授權機制，以達到不同的授權政策。  某些部分可以藉由修改
+	  <literal>suser()</literal> 完成。 協調人：&a.eivind;</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>NFS 部分加入程式碼，使得無法 <literal>chdir("..")</literal> 出
+	      一個 NFS 分割。例如：<filename>/usr</filename> 是一個 UFS 分割，裡層的
+		<filename>/usr/src</filename> 是 NFS 分割。目前可以利用 NFS 在處理
+		<filename>/usr/src</filename> 時取得 <filename>/usr</filename> 的權限。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </orderedlist>
+    </sect2>
+    
+    <sect2>
+      <title>中度優先權工作列表</title>
+      
+      <para>以下列出的工作必須完成，但是不是很急迫：</para>
+	  
+      <orderedlist>
+	<listitem>
+	  <para>支援以 KLD 為基礎的驅動程式支援及管理設定。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para>寫一個設定管理員 (在啟動的第三階段？)，以便在能正常偵測到您的硬
+	  體，並且只載入您的硬體所需要的 KLD。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+
+	<listitem>
+	  <para>PCMCIA/PCCARD。  協調人：&a.msmith; 及 &a.imp;</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para>說明文件！</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>可穩定操作的 pcic 驅動程式 (需要測試)。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><filename>sio.c</filename> 的辨識及處理 (大部分已完成)。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><filename>ed.c</filename> 的辨識及處理 (大部分已完成)。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><filename>ep.c</filename> 的辨識及處裡 (大部分已完成)。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>使用者模式的辨識及處理 (僅部份完成)。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+
+	<listitem>
+	  <para>進階電源管理。  協調人：&a.msmith; 及
+	    &a.phk;</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para>APM 子驅動程式 (大部分已完成)。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>IDE/ATA 磁碟子驅動程式 (部分完成)。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>syscons/pcvt 子驅動程式。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>跟 PCMCIA/PCCARD 驅動程式整合 (停滯／重新開始)。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </orderedlist>
+    </sect2>
+    
+    <sect2>
+      <title>低優先權工作列表</title>
+      
+      <para>下列的工作是額外的或屬於隨興的，短期內不確定有人會接：</para>
+      
+      <para>前幾個項目來自 Terry Lambert
+	<email>terry@lambert.org</email></para>
+      
+      <orderedlist>
+	<listitem>
+	  <para>NetWare 伺服器 (保護模式下 ODI 驅動程式) 啟動器及子服務，以便能使用
+	  隨網路卡所附的 ODI 卡驅動程式。</para>
+	</listitem>
+
+	<listitem>
+	  <para>增加 Linux 系統也可使用的「系統升級」選項，而非僅 FreeBSD 可用。</para>
+	</listitem>
+
+	<listitem>
+	  <para>Symmetric Multiprocessing with kernel preemption (requires
+	    kernel preemption).</para>
+	</listitem>
+
+	<listitem>
+	  <para>大家所關心，對於手提電腦的支援。這應該是藉由改變 PCMCIA 橋接規則以及
+	    對電源管理事件的處理來達成。  但是這其中還有一些問題，像是偵測是內建還是
+	    外接的顯示裝置及選擇適當的解析度、當系統在暫停的時候不會拖慢磁碟速度、讓
+	    一些有暫停功能的裝置消失而不影響正常的開機啟動 (跟 PCMCIA 相同的問題)。
+	  </para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+    
+    <sect2>
+      <title>小型工作列表</title>
+      
+      <para>大部分上面所列出的工作都需要多點花時間來處理或是需要對 FreeBSD 核心
+  有進一步深入的知識（或者兩者都要兼備）。但是，仍然有些工作適合在&quot;週末&quot;
+  或是給沒有程式設計經驗的人做。</para>
+      
+      <orderedlist>
+	<listitem>
+	  <para>如果您正在使用 FreeBSD-current 而且電腦有連上網路，那麼，有一台機器 
+	    <hostid role="fqdn">current.FreeBSD.org</hostid> 每天都會建置出一個新的釋
+	    出版本；您可以偶爾從這台機器安裝最新的版本，然後回報是否在這過程中有發生
+	    任何問題。</para>
+	</listitem>
+
+	<listitem>
+	  <para>訂閱 freebsd-bugs 郵件清單。  您可能對某些問題可以做有建設性的建議，或
+	    是有些修補程式可以請您幫忙測試。  甚至，您可以自己嘗試去修復這些問題。
+	  </para>
+	</listitem>
+
+	<listitem>
+	  <para>定期閱讀 FAQ 及 Handbook。  如果您發現有任何資訊解釋的很差、過時或是根
+	    本就是錯的，請讓我們知道。  最好是送給我們一份修正好的資料 (SGML 並不難
+	    學，但是我們也不反對您用純文字格式)。</para>
+	</listitem>
+
+	<listitem>
+	  <para>幫忙將 FreeBSD 文件翻譯成您當地的語言 (如果目前沒有的話)；請寄信給
+	     &a.doc; 看看是不是有人正在做同樣的事。  注意，您並不需要翻譯每份 FreeBSD
+	    文件；事實上，有關安裝過程的文件才是最需要翻譯的。</para>
+	</listitem>
+
+	<listitem>
+	  <para>偶爾或常常訂閱 freebsd-questions 郵件清單及 &ng.misc。您可藉此分享您
+	    的經驗以及幫助需多人解決他們的問題；有時候，您還可能因此而學到一些新的東
+	    西呢！這些討論區也是一些工作上靈感或想法的來源。</para>
+	</listitem>
+
+	<listitem>
+	  <para>如果您知道任何 bug 的修正，並且可以應用在 -current 版本，但是在一段時
+	    間內 (通常是幾個星期) 還沒有整合進 -stable 版，請寄信給相關的執行者，有禮
+	    貌地提醒他。</para>
+	</listitem>
+
+	<listitem>
+	  <para>移動大家提供的軟體到 <filename>src/contrib</filename>。</para>
+	</listitem>
+
+	<listitem>
+	  <para>確定在 <filename>src/contrib</filename> 中的程式碼是最新的。</para>
+	</listitem>
+	      
+	<listitem>
+	  <para>尋找有沒有公元 2000 年的 bug (及任何您可以找到的修正！)。</para>
+	</listitem>
+
+	<listitem>
+	  <para>建置 source tree (或其中的一部分) 且能提供額外的警告訊息以及清理過時
+	    的警告訊息。</para>
+	</listitem>
+
+	<listitem>
+	  <para>修正 ports 中還在使用廢棄不用的功能的警告訊息，例如使用 gets() 或是引入
+	   malloc.h。</para>
+	</listitem>
+
+	<listitem>
+	  <para>如果您對任何一個 ports 有所貢獻，請去函給原作者並提供您所修正的程式 (
+	    這對您以及他們發行下一個版本會有很大的幫助)。</para>
+	</listitem>
+
+	<listitem>
+	  <para>建議未來要做的工作！</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+
+    <sect2>
+      <title>參閱 PR 資料庫</title>
+
+      <para><ulink
+	  url="http://www.FreeBSD.org/cgi/query-pr-summary.cgi">FreeBSD PR
+	  列表</ulink> 列出了所有 FreeBSD 使用者目前問題的回報以及可能的改進。瀏覽一
+	  下這些問題，看看您對它們是不是有興趣。  有些可能只是很簡單的問題，您只要仔
+	  細看一下並確認 PR 資料庫中所列出的修正方式可行就可以了。  當然，有些問題也
+	  可能很複雜。</para>
+
+      <para>您可以由還沒有任何人接手的問題開始著手；如果這個問題已經分配給別人
+    了，但是您覺得自己可以處理，那麼您可以寫信給他們並詢問您是否可以接手處理；
+    他們可能已經有一些修正程式可供測試；或著，您也可以跟他們討論對此問題未來有
+    什麼樣的構想。</para>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="contrib-how">
+    <title>如何作出貢獻</title>
+    
+    <para>貢獻基本上可以分為以下六個類別：</para>
+
+    <sect2 id="contrib-general">
+      <title>問題回報及一般性評論</title>
+      
+      <para>對<emphasis>一般性</emphasis>的技術問題應該跟 &a.hackers; 聯絡。  同
+    樣的，如果您對這樣的事 (能接受<emphasis>大量</emphasis>信件！) 有興趣，您可
+    以寫信給 &a.majordomo; 加入 hacker 郵件清單。  請參閱<link
+	  linkend="eresources-mail">郵件清單列表</link> 以獲得更多有關此郵件清單及其
+	  他郵件清單的資訊。</para>
+	  
+      <para>如果您發現有問題或是要提供一些修正，請利用 &man.send-pr.1; 程式，或
+    是此程式的 <ulink url="http://www.FreeBSD.org/send-pr.html">Web 介面</ulink>。  
+    試著填寫所有問題回報中的欄位。除非檔案超過 65KB，請直接將任何相關的修正直接
+    包含在問題回報中。當引入修正的時候，請<emphasis>不要</emphasis>用剪下貼上的
+    方式，因為這會讓原本應該是 tab 字元的地方變成空白字元，有可能使得這些修正程
+    式無法使用。當修正程式超過 20KB 的時候，您可以考慮將它壓縮並且使用 
+    &man.uuencode.1;。  如果修正程式很大，您可以將它們上傳到 <ulink
+	  url="ftp://ftp.FreeBSD.org/pub/FreeBSD/incoming/">ftp.FreeBSD.org:/pub/FreeBSD/incoming/</ulink>。</para>
+	  
+      <para>當您填好並送出問題回報後，您應該會收到包含一個追蹤號碼的確認函。  
+    請記住這個號碼以便您將來寄信給 <email>bug-followup@FreeBSD.org</email> 更新
+    問題回報細節時使用。  請用這個號碼當作信件標題，例如：
+    <literal>"Re: kern/3377"</literal>。  有其他任何關於問題回報的資訊也請比照
+    此方式辦理。</para>
+	  
+      <para>如果在一段時間內 (三天到一個星期，實際速度依連線速度有所不同) 您還
+    沒有收到確認函，或是基於某些原因您沒有辦法使用 &man.send-pr.1; 指令，那麼您
+    可能要請別人幫忙您將相關的資料寄給 &a.bugs;。</para>
+    </sect2>
+    
+    <sect2>
+      <title>更動文件資料</title>
+      
+      <para>文件資料的更動由 &a.doc; 負責審理。  請將更動的部分 (即使只是小部分
+    我們都歡迎！) 利用 <command>send-pr</command> 指令送出。相關的資料可以參考 
+    <link linkend="contrib-general">問題回報及一般性評論</link>。</para>
+    </sect2>
+    
+    <sect2>
+      <title>現有原始程式碼的變更</title>
+      
+      <para>對現有原始程式碼的增修比較困難，而且跟您對於目前 FreeBSD 核心研發
+  的狀態的了解程度有關。FreeBSD 一直都會釋出所謂的 <quote>FreeBSD-current</quote>
+	版本，這是為了研發者在各方面的便利而設的。請參考 <link
+	  linkend="current">關於 FreeBSD current 版本</link> 以取得更多有關取得及
+	使用 FreeBSD-current 的資訊。</para>
+	  
+      <para>如果您正在修改舊的程式碼，很不幸地，這些程式可能因為早已過時或是跟
+  現有系統差異太多而無法重新整合到目前的系統中。  為了避免這種情形，您可以訂閱 
+  &a.announce; 及 &a.current; 郵件清單，裡面會討論目前系統的狀況。</para>
+	  
+      <para>假設您確定拿到的都是最新的程式碼，那麼您的下個步驟就是產生相對應的
+  diff 檔並送給 FreeBSD 維護者。  您可以使用 &man.diff.1; 命令，並填寫好
+	<quote>context diff</quote> 表格，例如：</para>
+      
+      <para>
+	<screen>&prompt.user; <userinput>diff -c oldfile newfile</userinput></screen>
+
+	或
+
+	<screen>&prompt.user; <userinput>diff -c -r olddir newdir</userinput></screen>
+	    
+	將會根據您給定的來源檔或是目錄結構而產生相對應的 diff 檔。  詳細的使用方式請
+	參考 &man.diff.1; man page。</para>
+	  
+      <para>一但您產生了這些 diff 檔 (您可以先用 &man.patch.1; 指令測試)，您就
+  可以將它傳給我們以便跟 FreeBSD 整合。  您可以使用 &man.send-pr.1; 程式 (說明
+  請見 <link linkend="contrib-general">問題回報及一般性評論</link>)。
+	<emphasis>請不要</emphasis> 直接將這些 diff 檔寄給 &a.hackers;，否則它們有可
+	能會遺失！我們非常感激您的付出 (此為自願性質的計畫！)；即使我們很忙，可能沒有
+	辦法馬上處理，但是在我們處理之前，它們一定都會好好保存在 PR 資料庫裡。</para>
+
+      <para>如果您覺得適當 (例如增加、刪除或是重新命名檔案)，您可以將您所做的
+  更動用 <command>tar</command> 壓縮成一個檔，然後對此檔執行 &man.uuencode.1;
+  程式。  Shar 格式的壓縮檔我們也接受。</para>
+
+      <para>如果您所做的變動較敏感，例如您不確定在未來散佈的時候會不會有版權問
+  題或是在您送出修正版之前您還要再做進一步的測試，那麼您應該將目前的修正檔直接
+  寄給 &a.core; 而不是用 &man.send-pr.1; 送出。  核心郵件清單只有一小群每天都
+  會做 FreeBSD 工作的人在使用。請注意，他們這群人也是<emphasis>非常忙碌</emphasis>
+  的，所以請確定真的有必要才寄信給他們。</para>
+	  
+      <para>請參考 <command>man 9 intro</command> 及 <command>man 9
+	  style</command> 以取得一些程式撰寫風格的資訊。如果您在撰寫程式的時候能稍微
+	注意一下這些撰寫格式，我們會很感激您的。</para>
+    </sect2>
+    
+    <sect2>
+      <title>新程式碼或主要的加值軟體</title>
+      
+      <para>當您所做的貢獻牽涉到大量的工作或是替 FreeBSD 增加重要的新功能的時
+  候，最好是將變更或新增的檔案 uuencode 後 tar 起來，或是上傳到 Web 網頁或 FTP
+  站，以便別人也可以取得。  如果您沒有辦法連到 Web 或 FTP 站台，那麼您可以到合
+  適的 FreeBSD 郵件清單詢問是否有人可以幫助您取得這些檔案。</para>
+	  
+      <para>當牽涉到大量的程式碼的時候，版權問題總是應運而生。  FreeBSD 包含的
+  程式碼，其合理的版權有下列幾項：</para>
+	  
+      <orderedlist>
+	<listitem>
+	  <para>BSD 版權。  此種版權是我們最樂見的，因為它<quote>不用多加版權聲明文
+	    字</quote>的特性以及能吸引商業機構的青睞。  FreeBSD 計畫
+	    不但不反對，反而積極鼓勵這些逐漸想轉而投資 FreeBSD 的商業機構的參與。</para>
+	</listitem>
+
+	<listitem>
+	  <para>GNU Public License (GNU 公開執照) 或簡稱 <quote>GPL</quote>。  此種方
+	    式我們比較沒那麼喜歡，因為它必須對那些想用這些程式碼在商業用途的人特別註
+	    明。但是在仍然需要大量 GPL 程式碼 (編譯器、解譯器、文件編排器等) 的前提
+	    下，我們也不會拒絕接受往後使用 GPL 的程式碼。  使用 GPL 的程式碼也被放在
+	    不同的分類下，例如 <filename>/sys/gnu</filename> 或 
+	    <filename>/usr/src/gnu</filename>，以便當大家使用 GPL 發現問題時能很容易
+	    地找到。</para>
+	</listitem>
+      </orderedlist>
+      
+      <para>使用任何其它版權模式的程式碼，在整合進 FreeBSD 前都會經過仔細的審查
+  考慮。  有特別嚴格商業版權的程式通常都是被回絕，即使我們鼓勵他們在自己的管道
+  中流傳這些修改過的程式。</para>
+	  
+      <para>要為您的程式加上 <quote>BSD 風格</quote>的版權聲明，您可以在您的每
+  個原始程式檔案最前面加上下面這段文字，並且將 <literal>%%</literal> 符號中間的
+  文字改成適當的資訊。</para>
+	    
+      <programlisting>Copyright (c) %%西元年份%%
+        %%您的姓名%%, %%您所在的州名%%  %%您所在地郵遞區號%%.  
+	All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer as
+   the first lines of this file unmodified.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY %%您的姓名%% ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL %%您的姓名%% BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	      
+        &#36;Id&#36;</programlisting>
+
+      <para>為了您的方便，在 
+      <filename>/usr/share/examples/etc/bsd-style-copyright</filename> 存了一份
+      上述的版權聲明文字供您日後使用。</para>
+    </sect2>
+    
+    <sect2>
+      <title>資助、硬體設備或網際網路服務</title>
+      
+      <para>我們非常高興大家能捐助 FreeBSD 計畫，以便讓她能繼續發展下去。像我們
+  這種採自願性質的計畫，即使是一點點的幫助，也能持續很久！捐獻硬體設備對未來對
+  這些裝置的支援是很重要的，因為我們通常都沒有錢來購買這些設備。</para>
+	  
+      <sect3>
+	<title><anchor id="donations">資助</title>
+
+	<para>因為 FreeBSD 計畫並不是 501(c)(3) (慈善) 團體，所以我們也沒辦法唆使大家
+	  多資助一些。總之，任何數目的資助我們都會很感激的。</para>
+	    
+	<para>FreeBSD 公司在 1995 初由 &a.jkh; 及 &a.dg; 為了達成 FreeBSD 計畫的目標
+	  而出資贊助。任何資助 (以及可能因為 FreeBSD 而獲得的利潤) 都將用在達成本計畫
+	  目標上。</para>
+	    
+	<para>如果您要資助，請開立可兌現的支票，支付給 FreeBSD, Inc.，並將之妥善寄到
+	  下面的地址：</para>
+	    
+	<address>
+	  <otheraddr>FreeBSD, Inc.</otheraddr>
+	  <otheraddr>c/o Jordan Hubbard</otheraddr>
+	  <street>4041 Pike Lane, Suite F</street>
+	  <city>Concord</city>
+	  <state>CA</state>, <postcode>94520</postcode>
+	</address>
+
+	<para>(在我們擁有自己的郵政信箱前，先暫時使用 BSDi 的地址)</para>
+
+	<para>電匯也可以直接寄到美國銀行：</para>
+
+	<address>
+	  <otheraddr>Bank Of America</otheraddr>
+	  <otheraddr>Concord Main Office</otheraddr>
+	  <pob>P.O. Box 37176</pob>
+	  <city>San Francisco</city>
+	  <state>CA</state>, <postcode>94137-5176</postcode>
+	  
+	  <otheraddr>Routing #: 121-000-358</otheraddr>
+	  <otheraddr>Account #: 01411-07441 (FreeBSD, Inc.)</otheraddr>
+	</address>
+
+	<para>任何跟捐助相關的事項請 e-mail 給 &a.jkh 或是郵寄給上面列的 FreeBSD 公司
+	  地址。</para>
+	    
+	<para>如果您不想將您的大名登在我們的<link linkend="donors">捐助者專欄</link>，
+	  請在捐助時特別指明，謝謝！</para>
+      </sect3>
+      
+      <sect3>
+	<title>捐獻硬體設備</title>
+
+	<para>任何在下列三類範圍內捐獻的硬體設備本計畫都樂於接受：</para>
+	    
+	<itemizedlist>
+	  <listitem>
+	    <para>一般性硬體，如磁碟機、記憶體或整套系統等，請直接寄到在 <emphasis>資助</emphasis>
+	      區所列出的 FreeBSD 公司地址。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>為了維持相容性而捐助的硬體。我們目前正嘗試建立一個測試中心，將所有
+	      FreeBSD 集中並在每次發行新版本的時候做回顧測試。  我們仍然缺乏許多重要
+	      的設備 (網路卡、主機板等等)；如果您願意捐助，請聯絡 &a.dg; 查詢我們仍
+	      欠缺的硬體。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>捐助目前 FreeBSD 不支援的硬體，但是您希望以後能被支援。  請跟
+	     &a.core; 聯絡，但是因為我們需要時間找尋願意接手開發支援您硬體的驅動程式
+	     的開發者，所以在找到之前請先不要將您的硬體寄過來。</para>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+
+      <sect3>
+	<title>提供網際網路資源</title>
+
+	<para>我們可以一直使用新的 mirror 站台，以提供 FTP、WWW 或是
+	  <command>cvsup</command> 服務。  如果您希望成為 mirror 站台，請聯絡
+	  FreeBSD 計畫管理人員 <email>hubs@FreeBSD.org</email> 以取得進一步的資訊。</para>
+      </sect3>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="donors">
+    <title>捐助者專欄</title>
+    
+    <para>FreeBSD 計畫受惠於下列的捐助者，我們希望能在此公開地謝謝他們！</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para><emphasis>中央伺服器計畫貢獻者：</emphasis></para>
+	      
+	<para>下列的個人及公司捐出的設備使得我們可以建置一台新的中央伺服器，以逐漸取
+	  代原來的 <hostid role="fqdn">freefall.FreeBSD.org</hostid>：</para>
+	      
+	<itemizedlist>
+	  <listitem>
+	    <para>&a.mbarkah 及其老闆，<ulink url="http://www.hemi.com/">
+		Hemisphere Online</ulink> 公司。捐出一個 <emphasis>Pentium Pro 
+		(P6) 200Mhz CPU</emphasis>。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.asacomputers.com/">ASA
+		Computers</ulink> 提供一片 <emphasis>Tyan 1662 主機板</emphasis>。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Joe McGuckin <email>joe@via.net</email>，<ulink
+		url="http://www.via.net/">ViaNet Communications</ulink> 公司。捐出一片 
+	       <emphasis>Kingston 乙太網路卡</emphasis>。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Jack O'Neill <email>jack@diamond.xtalwind.net</email>
+	      捐出一片 <emphasis>NCR 53C875 SCSI 控制卡 </emphasis>。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Ulf Zimmermann <email>ulf@Alameda.net</email>，<ulink
+		url="http://www.Alameda.net/">Alameda Networks</ulink> 公司。捐獻
+	      <emphasis>128MB 記憶體</emphasis>、<emphasis>4 Gb 硬碟以及機殼。</emphasis></para>
+	  </listitem>
+	</itemizedlist>
+      </listitem>
+      
+      <listitem>
+	<para><emphasis>直接的金錢資助：</emphasis></para>
+
+	<para>下列的個人或商號對 FreeBSD 計畫提供直接的金錢支援：</para>
+	      
+	<itemizedlist>
+	  <listitem>
+	    <para>Annelise Anderson
+	      <email>ANDRSN@HOOVER.STANFORD.EDU</email></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>&a.dillon</para>
+	  </listitem>
+
+	  <listitem>
+	    <para><ulink url="http://www.bluemountain.com/">Blue Mountain
+		Arts</ulink></para>
+	  </listitem>
+
+	  <listitem>
+	    <para><ulink url="http://www.epilogue.com/">Epilogue Technology
+		Corporation</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>&a.sef</para>
+	  </listitem>
+
+	  <listitem>
+	    <para><ulink url="http://www.gta.com/">Global Technology
+		Associates, Inc</ulink></para>
+	  </listitem>
+
+	  <listitem>
+	    <para>Don Scott Wilde</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Gianmarco Giovannelli
+	      <email>gmarco@masternet.it</email></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Josef C. Grosch <email>joeg@truenorth.org</email></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Robert T. Morris</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>&a.chuckr</para>
+	  </listitem>
+		  
+	  <listitem>
+	    <para>Kenneth P. Stox <email>ken@stox.sa.enteract.com</email>，
+	      <ulink url="http://www.imagescape.com/">Imaginary Landscape,
+		LLC.</ulink> 公司。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Dmitry S. Kohmanyuk <email>dk@dog.farm.org</email></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>日本的 <ulink url="http://www.cdrom.co.jp/">Laser5</ulink> 公司 (
+	      捐出一部分出售 FreeBSD 系列光碟的獲利)。</para>
+	  </listitem>
+		  
+	  <listitem>
+	    <para><ulink url="http://www.mmjp.or.jp/fuki/">Fuki Shuppan
+		Publishing Co.</ulink> 捐出 <emphasis>Hajimete no FreeBSD</emphasis> 
+		(FreeBSD 起步) 產品獲利的一部分給 FreeBSD 以及 XFree86 計畫。</para>
+	  </listitem>
+		  
+	  <listitem>
+	    <para><ulink url="http://www.ascii.co.jp/">ASCII Corp.</ulink>
+	      捐出了他們關於 FreeBSD 系列書籍所獲利的一部分給 FreeBSD 計畫。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.yokogawa.co.jp/">Yokogawa Electric
+		Corp</ulink> 慷慨地資助 FreeBSD 計畫。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.buffnet.net/">BuffNET</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.pacificsolutions.com/">Pacific
+		Solutions</ulink></para>
+	  </listitem>
+
+	  <listitem>
+	    <para><ulink url="http://www.siemens.de/">Siemens AG</ulink>
+            via <ulink url="mailto:andre.albsmeier@mchp.siemens.de">Andre
+		Albsmeier</ulink></para>
+	  </listitem>
+
+	  <listitem>
+	    <para><ulink url="mailto:ras@interaccess.com">Chris Silva</ulink>
+	    </para>
+	  </listitem>
+
+	</itemizedlist>
+      </listitem>
+      
+      <listitem>
+	<para><emphasis>硬體設備貢獻者：</emphasis></para>
+
+	<para>下面列出的個人及商號慷慨地提供硬體設備，以供測試及裝置驅動程式的開發
+	  及支援：</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>BSDi 提供 Pentium P5-90 及 486/DX2-66 EISA/VL 系統，用於系統的研
+	      發；更不用說捐獻網路設備或其它硬體資源。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>TRW Financial Systems, Inc. 提供 130 台 PC、3 台 68 GB 檔案伺服器、
+	      12 片網路卡、2 台 router 及一台 ATM switch；用於無磁碟程式碼的偵錯。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Dermot McDonnell 捐獻一台 Toshiba XM3401B 光碟機，目前用於
+	      freefall。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>a.chuck 提供他的軟式磁帶機以利一些實驗性的工作。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Larry Altneu <email>larry@ALR.COM</email> 以及 &a.wilko;
+	      提供 Wangtek 及 Archive QIC-02 磁帶機以改進 
+	      <devicename>wt</devicename> 驅動程式。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Ernst Winter <email>ewinter@lobo.muc.de</email> 提供一台
+	      2.88 MB 軟碟給 FreeBSD 計畫。這將使得重寫軟碟機驅動程式更為愉快。
+	      <!-- 微笑 -->;-)</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.tekram.com/">Tekram
+		Technologies</ulink> 送給我們他們的 DC-390、DC-390U 以及 DC-390F 
+		FAST and ULTRA SCSI 卡以便測試這些卡的 NCR 及 AMD 驅動程式。
+	      他們的 FTP 站也有放一些供自由作業系統使用的驅動程式原始碼下載：<ulink
+		url="ftp://ftp.tekram.com/scsi/FreeBSD/">ftp://ftp.tekram.com/scsi/FreeBSD/</ulink></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Larry M. Augustin 提供 Symbios Sym8751S SCSI 卡以及一些資料手冊，包
+	      括一本跟即將問世的 Sym53c895 晶片對 Ultra-2 及 LVD 支援的資料以及如何最
+	      安全地應用最新的 Symbios SCSI 晶片所提供的進階功能的相關資訊。非常感謝！</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>Christoph Kukulies <email>kuku@FreeBSD.org</email> 提供
+	      FX120 12 倍速 Mitsumi 光碟機，以便研發 IDE CDROM 驅動程式。</para>
+	  </listitem>
+	</itemizedlist>
+      </listitem>
+      
+      <listitem>
+	<para><emphasis>特殊貢獻者：</emphasis></para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para><ulink url="http://www.osd.bsdi.com/">BSDi</ulink> (之身為 Walnut Creek CDROM)
+	      貢獻了超出言語的心力 (請參考<link linkend="history">歷史</link>文件以獲
+	      得更多資訊)。
+	      特別是，我們要謝他們提供硬體給我們主要研發用的機器：<hostid
+		role="fqdn">freefall.FreeBSD.org</hostid> 以及測試及建置用機器：<hostid
+		role="fqdn">thud.FreeBSD.org</hostid>。  我們也感謝他們長久以來對一些貢獻者
+		    的資助以及讓我們無限制地使用他們的 T1 專線。</para>
+	  </listitem>
+		  
+	  <listitem>
+	    <para>The <ulink url="http://www.interface-business.de/">interface
+		business 公司的 GmbH, Dresden</ulink> 長久以來耐心地支援 &a.joerg;，他喜愛
+		FreeBSD 工作更甚於他正常支領薪水的工作，並且曾經在他的私人網路變得太慢或是
+		怪怪的時候仍然為了 FreeBSD 而跑回去使用他們的 (很貴) EUnet。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.bsdi.com/">Berkeley Software Design,
+		Inc.</ulink> 提供 DOS 模擬程式碼給 BSD 領域，目前用於 <emphasis>doscmd</emphasis> 
+		指令。</para>
+	  </listitem>
+	</itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  <sect1 id="contrib-corealumni">
+    <title>過去核心團隊成員</title>
+    
+    <para>下列的人過去曾經是 FreeBSD 核心團隊的成員，感謝他們過去對 FreeBSD 計
+      畫所付出的努力。</para>
+
+    <para><emphasis>依粗略時間順序排列：</emphasis></para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>&a.ache (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.jmb (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.bde (1992 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.gibbs (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.rich (1994 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.phk (1992 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.gpalmer (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.sos (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.wollman (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.joerg (1993 - 2000)</para>
+      </listitem>
+
+      <listitem>
+	<para>&a.jdp (1997 - 2000)</para>
+      </listitem>
+      
+      <listitem>
+	<para>&a.guido (1995 - 1999)</para>
+      </listitem>
+      
+      <listitem>
+	<para>a.dyson (1993 - 1998)</para>
+      </listitem>
+      
+      <listitem>
+	<para>&a.nate (1992 - 1996)</para>
+      </listitem>
+      
+      <listitem>
+	<para>&a.rgrimes (1992 - 1995)</para>
+      </listitem>
+      
+      <listitem>
+	<para>Andreas Schulz (1992 - 1995)</para>
+      </listitem>
+      
+      <listitem>
+	<para>&a.csgr (1993 - 1995)</para>
+      </listitem>
+      
+      <listitem>
+	<para>&a.paul (1992 - 1995)</para>
+      </listitem>
+      
+      <listitem>
+	<para>&a.smace (1993 - 1994)</para>
+      </listitem>
+      
+      <listitem>
+	<para>Andrew Moore (1993 - 1994)</para>
+      </listitem>
+      
+      <listitem>
+	<para>Christoph Robitschko (1993 - 1994)</para>
+      </listitem>
+      
+      <listitem>
+	<para>J. T. Conklin (1992 - 1993)</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+	
+  <sect1 id="contrib-develalumni">
+    <title>過去的開發團隊成員</title>
+ 
+    <para>下列的人是在標示的時間內 FreeBSD 的開發成員。謝謝他們過去對 FreeBSD 計
+      畫所做的努力。</para>
+ 
+    <para><emphasis>依粗略時間順序排列：</emphasis></para>
+ 
+    <itemizedlist>
+      <listitem>
+        <para>&a.tedm (???? - 2000)</para>
+      </listitem> 
+      <listitem>
+        <para>&a.karl (???? - 2000)</para>
+      </listitem> 
+      <listitem>
+        <para>a.gclarkii (1993 - 2000)</para>
+      </listitem> 
+      <listitem>
+        <para>a.jraynard (???? - 2000)</para>
+      </listitem> 
+      <listitem>
+        <para>&a.jgreco (???? - 1999)</para>
+      </listitem> 
+      <listitem>
+        <para>a.ats (???? - 1999)</para>
+      </listitem> 
+      <listitem>
+        <para>Jamil Weatherby (1997 - 1999)</para>
+      </listitem> 
+      <listitem>
+        <para>meganm (???? - 1998)</para>
+      </listitem> 
+      <listitem>
+        <para>a.dyson (???? - 1998)</para>
+      </listitem> 
+      <listitem>
+        <para>Amancio Hasty (1997 - 1998)</para>
+      </listitem> 
+      <listitem>
+        <para>Drew Derbyshire (1997 - 1998)</para>
+      </listitem> 
+    </itemizedlist>
+  </sect1>	
+  
+  <sect1 id="contrib-derived">
+    <title>軟體起源貢獻者</title>
+    
+    <para>此軟體是以 William F. Jolitz 的 386BSD 0.1 版為底進而開發的，到現在幾
+      乎原版的東西已經沒有剩下什麼了。此軟體基本上是由加州柏克萊大學資訊科學研
+      究小組及一些學術貢獻者所釋出的 4.4BSD-Lite 而重新發展應用。</para>
+
+    <para>FreeBSD 有些部分也是從 NetBSD 及 OpenBSD 整合而來，因此，我們也要感謝
+      所有對 NetBSD 及 OpenBSD 有貢獻的人。</para>
+  </sect1>
+  
+  <sect1 id="contrib-additional">
+    <title>其他 FreeBSD 貢獻者</title>
+    
+    <para>(依英文名字母順序排列)：</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>ABURAYA Ryushirou <email>rewsirow@ff.iij4u.or.jp</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>AMAGAI Yoshiji <email>amagai@nue.org</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Aaron Bornstein <email>aaronb@j51.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Aaron Smith <email>aaron@mutex.org</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Achim Patzner <email>ap@noses.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Ada T Lim <email>ada@bsd.org</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Adam Baran <email>badam@mw.mil.pl</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Adam Glass <email>glass@postgres.berkeley.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adam Herzog <email>adam@herzogdesigns.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Adam McDougall <email>mcdouga9@egr.msu.edu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Adam Strohl <email>troll@digitalspark.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adoal Xu <email>adoal@iname.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adrian Colley <email>aecolley@ois.ie</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adrian Hall <email>ahall@mirapoint.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adrian Mariano <email>adrian@cam.cornell.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adrian Steinmann <email>ast@marabu.ch</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Adrian T. Filipi-Martin
+	  <email>atf3r@agate.cs.virginia.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ajit Thyagarajan <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Akio Morita
+	  <email>amorita@meadow.scphys.kyoto-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Akira SAWADA <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Akira Watanabe
+	  <email>akira@myaw.ei.meisei-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Akito Fujita <email>fujita@zoo.ncl.omron.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alain Kalker
+	  <email>A.C.P.M.Kalker@student.utwente.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alan Bawden <email>alan@curry.epilogue.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alec Wolman <email>wolman@cs.washington.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Aled Morris <email>aledm@routers.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Aleksandr A Babaylov <email>.@babolo.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex G. Bulushev <email>bag@demos.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex D. Chen
+	  <email>dhchen@Canvas.dorm7.nccu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex Le Heux <email>alexlh@funk.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex Kapranoff <email>kappa@zombie.antar.bryansk.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex Perel <email>veers@disturbed.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex Varju <email>varju@webct.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alex Zepeda <email>garbanzo@hooked.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alexander B. Povolotsky <email>tarkhil@mgt.msk.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alexander Gelfenbain <email>mail@gelf.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alexander Leidinger
+	  <email>netchild@wurzelausix.CS.Uni-SB.DE</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alexandre Snarskii <email>snar@paranoia.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Alistair G. Crooks <email>agc@uts.amdahl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Allan Bowhill <email>bowhill@bowhill.vservers.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Allan Saddi <email>asaddi@philosophysw.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Allen Campbell <email>allenc@verinet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Amakawa Shuhei <email>amakawa@hoh.t.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Amancio Hasty <email>hasty@star-gate.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Amir Farah <email>amir@comtrol.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Amy Baron <email>amee@beer.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>The Anarcat <email>beaupran@iro.umontreal.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anatoly A. Orehovsky <email>tolik@mpeks.tomsk.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anatoly Vorobey <email>mellon@pobox.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anders Andersson <email>anders@codefactory.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anders Nordby <email>anders@fix.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anders Thulin <email>Anders.X.Thulin@telia.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andras Olah <email>olah@cs.utwente.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andre Albsmeier
+	  <email>Andre.Albsmeier@mchp.siemens.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andre Goeree <email>abgoeree@uwnet.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andre Oppermann <email>andre@pipeline.ch</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andreas Haakh <email>ah@alman.robin.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andreas Kohout <email>shanee@rabbit.augusta.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andreas Lohr <email>andreas@marvin.RoBIN.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andreas Schulz <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andreas Wetzel <email>mickey@deadline.snafu.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andreas Wrede <email>andreas@planix.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andres Vega Garcia <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Atrens <email>atreand@statcan.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Boothman <email>andrew@cream.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Gillham <email>gillham@andrews.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Gordon <email>andrew.gordon@net-tel.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Herbert <email>andrew@werple.apana.org.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew J. Korty <email>ajk@purdue.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew L. Moore <email>alm@mclink.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew L. Neporada <email>andrew@chg.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew McRae <email>amcrae@cisco.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Stevenson <email>andrew@ugh.net.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Timonin <email>tim@pool1.convey.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew V. Stesin <email>stesin@elvisti.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrew Webster <email>awebster@dataradio.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrey Novikov <email>andrey@novikov.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andrey Simonenko <email>simon@comsys.ntu-kpi.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Andrey Tchoritch <email>andy@venus.sympad.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andy Farkas <email>andyf@speednet.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andy Valencia <email>ajv@csd.mot.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Andy Whitcroft <email>andy@sarc.city.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Angelo Turetta <email>ATuretta@stylo.it</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anthony C. Chavez <email>magus@xmission.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anthony Yee-Hang Chan <email>yeehang@netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anton Berezin <email>tobez@plab.ku.dk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anton N. Bruesov <email>antonz@library.ntu-kpi.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Anton Voronin <email>anton@urc.ac.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Antti Kaipila <email>anttik@iki.fi</email></para>
+      </listitem>
+
+      <listitem>
+	<para>arci <email>vega@sophia.inria.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Are Bryne <email>are.bryne@communique.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ari Suutari <email>ari@suutari.iki.fi</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Arindum Mukerji <email>rmukerji@execpc.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Arjan de Vet <email>devet@IAEhv.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Arne Henrik Juul <email>arnej@Lise.Unit.NO</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Arun Sharma <email>adsharma@sharmas.dhs.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ask Bjoern Hansen <email>ask@valueclick.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Atsushi Furuta <email>furuta@sra.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Atsushi Murai <email>amurai@spec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bakul Shah <email>bvs@bitblocks.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Barry Bierbauch <email>pivrnec@vszbr.cz</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Barry Lustig <email>barry@ictv.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ben Hutchinson <email>benhutch@xfiles.org.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ben Jackson <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ben Walter <email>bwalter@itachi.swcp.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Benjamin Lewis <email>bhlewis@gte.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Berend de Boer <email>berend@pobox.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bernd Rosauer <email>br@schiele-ct.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bill Kish <email>kish@osf.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bill Trost <email>trost@cloud.rain.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Blaz Zupan <email>blaz@amis.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bob Van Valzah <email>Bob@whitebarn.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bob Wilcox <email>bob@obiwan.uucp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bob Willcox <email>bob@luke.pmr.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Boris Staeblow <email>balu@dva.in-berlin.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Boyd Faulkner <email>faulkner@mpd.tandem.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Boyd R. Faulkner <email>faulkner@asgard.bga.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brad Chapman <email>chapmanb@arches.uga.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brad Hendrickse <email>bradh@uunet.co.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brad Karp <email>karp@eecs.harvard.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bradley Dunn <email>bradley@dunn.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brad Jones <email>brad@kazrak.com</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Brandon Fosdick <email>bfoz@glue.umd.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brandon Gillespie <email>brandon@roguetrader.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>a.wlloyd</para>
+      </listitem>
+
+      <listitem>
+        <para>Brent J. Nordquist <email>bjn@visi.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brett Lymn <email>blymn@mulga.awadi.com.AU</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brett Taylor
+	  <email>brett@peloton.runet.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Campbell <email>brianc@pobox.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Clapper <email>bmc@willscreek.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Cully <email>shmit@kublai.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Handy
+	  <email>handy@lambic.space.lockheed.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Litzinger <email>brian@MediaCity.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian McGovern <email>bmcgover@cisco.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Moore <email>ziff@houdini.eecs.umich.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian R. Haug <email>haug@conterra.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brian Tao <email>taob@risc.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Brion Moss <email>brion@queeg.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bruce Albrecht <email>bruce@zuhause.mn.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bruce Gingery <email>bgingery@gtcs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bruce J. Keeler <email>loodvrij@gridpoint.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bruce Murphy <email>packrat@iinet.net.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Bruce Walter <email>walter@fortean.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Carey Jones <email>mcj@acquiesce.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Carl Fongheiser <email>cmf@netins.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Carl Mascott <email>cmascott@world.std.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Casper <email>casper@acc.am</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Castor Fu <email>castor@geocast.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chain Lee <email>chain@110.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Charles Hannum <email>mycroft@ai.mit.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Charles Henrich <email>henrich@msu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Charles Mott <email>cmott@scientech.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Charles Owens <email>owensc@enc.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chet Ramey <email>chet@odin.INS.CWRU.Edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chia-liang Kao <email>clkao@CirX.ORG</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chiharu Shibata <email>chi@bd.mbn.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chip Norkus <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Csanady <email>cc@tarsier.ca.sandia.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Dabrowski <email>chris@vader.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Dillon <email>cdillon@wolves.k12.mo.us</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Shenton
+	  <email>cshenton@angst.it.hq.nasa.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Stenton <email>jacs@gnome.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Timmons <email>skynyrd@opus.cts.cwu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chris Torek <email>torek@ee.lbl.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christian Gusenbauer
+	  <email>cg@fimp01.fim.uni-linz.ac.at</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christian Haury <email>Christian.Haury@sagem.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christian Weisgerber
+	  <email>naddy@mips.inka.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christoph P. Kukulies <email>kuku@FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christoph Robitschko
+	  <email>chmr@edvz.tu-graz.ac.at</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christoph Weber-Fahr
+	  <email>wefa@callcenter.systemhaus.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christopher G. Demetriou
+	  <email>cgd@postgres.berkeley.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christopher N. Harrell <email>cnh@ivmg.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Christopher T. Johnson
+	  <email>cjohnson@neunacht.netgsi.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chrisy Luke <email>chrisy@flix.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Chuck Hein <email>chein@cisco.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Cliff Rowley <email>dozprompt@onsea.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Colman Reilly <email>careilly@tcd.ie</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Conrad Sabatier <email>conrads@home.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Coranth Gryphon <email>gryphon@healer.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Cornelis van der Laan
+	  <email>nils@guru.ims.uni-stuttgart.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Cove Schneider <email>cove@brazil.nbn.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Craig Leres <email>leres@ee.lbl.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Craig Loomis <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Craig Metz <email>cmetz@inner.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Craig Spannring <email>cts@internetcds.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Craig Struble <email>cstruble@vt.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Cristian Ferretti <email>cfs@riemann.mat.puc.cl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Curt Mayer <email>curt@toad.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Cy Schubert <email>cschuber@uumail.gov.bc.ca</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Cyrille Lefevre <email>clefevre@citeweb.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Cyrus Rahman <email>cr@jcmax.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dai Ishijima <email>ishijima@tri.pref.osaka.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Daisuke Watanabe <email>NU7D-WTNB@asahi-net.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Damian Hamill <email>damian@cablenet.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Cross <email>tenser@spitfire.ecsel.psu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Langille <email>dan@freebsddiary.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Lukes <email>dan@obluda.cz</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Nelson <email>dnelson@emsphone.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Papasian <email>bugg@bugg.strangled.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Piponi <email>wmtop@tanelorn.demon.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Walters <email>hannibal@cyberstation.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Daniel Hagan
+	  <email>dhagan@cs.vt.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Daniel O'Connor <email>doconnor@gsoft.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Daniel Poirot <email>poirot@aio.jsc.nasa.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Daniel Rock <email>rock@cs.uni-sb.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Daniel W. McRobb <email>dwm@caimis.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Danny Egen <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Danny J. Zerkel <email>dzerkel@phofarm.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Adkins <email>adkin003@tc.umn.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Andersen <email>angio@aros.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Blizzard <email>dblizzar@sprynet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Bodenstab <email>imdave@synet.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Burgess <email>burgess@hrd769.brooks.af.mil</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Chapeskie <email>dchapes@ddm.on.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Cornejo <email>dave@dogwood.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Edmondson <email>davided@sco.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Glowacki <email>dglo@ssec.wisc.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Marquardt <email>marquard@austin.ibm.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dave Tweten <email>tweten@FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David A. Adkins <email>adkin003@tc.umn.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David A. Bader <email>dbader@eece.unm.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Borman <email>dab@bsdi.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David W. Chapman Jr. <email>dwcjr@inethouston.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Dawes <email>dawes@XFree86.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Filo <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Holland <email>dholland@eecs.harvard.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Holloway <email>daveh@gwythaint.tamis.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Horwitt <email>dhorwitt@ucsd.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Hovemeyer <email>daveho@infocom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Jones <email>dej@qpoint.torfree.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Kelly <email>dkelly@tomcat1.tbe.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Kulp <email>dkulp@neomorphic.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David L. Nugent <email>davidn@blaze.net.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Leonard <email>d@scry.dstc.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Muir Sharnoff <email>muir@idiom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David S. Miller <email>davem@jenolan.rutgers.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Sugar <email>dyfet@gnu.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>David Wolfskill <email>dhw@whistle.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dean Gaudet <email>dgaudet@arctic.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dean Huxley <email>dean@fsa.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Denis Fortin <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Denis Shaposhnikov <email>dsh@vlink.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dennis Glatting
+	  <email>dennis.glatting@software-munitions.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Denton Gentry <email>denny1@home.com</email></para>
+      </listitem>
+
+      <listitem>
+	<para>der Mouse <email>mouse@Collatz.McRCIM.McGill.EDU</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Derek Inksetter <email>derek@saidev.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>DI. Christian Gusenbauer
+	  <email>cg@scotty.edvz.uni-linz.ac.at</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dirk Keunecke <email>dk@panda.rhein-main.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dirk Nehrling <email>nerle@pdv.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dishanker Rajakulendren <email>draj@oceanfree.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dmitry Khrustalev <email>dima@xyzzy.machaon.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dmitry Kohmanyuk <email>dk@farm.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dom Mitchell <email>dom@myrddin.demon.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Domas Mituzas <email>midom@dammit.lt</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dominik Brettnacher <email>domi@saargate.de</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Dominik Rothert <email>dr@domix.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Don Croyle <email>croyle@gelemna.ft-wayne.in.us</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Donn Miller <email>dmmiller@cvzoom.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dan Pelleg <email>dpelleg+unison@cs.cmu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>&a.whiteside;</para>
+      </listitem>
+
+      <listitem>
+        <para>Don Morrison <email>dmorrisn@u.washington.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Don Yuniskis <email>dgy@rtd.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Donald Maddox <email>dmaddox@conterra.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Douglas Ambrisko <email>ambrisko@whistle.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Douglas Carmichael <email>dcarmich@mcs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Douglas Crosher <email>dtc@scrooge.ee.swin.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Drew Derbyshire <email>ahd@kew.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Dustin Sallings <email>dustin@spy.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eckart "Isegrim" Hofmann
+	  <email>Isegrim@Wunder-Nett.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ed Gold
+	  <email>vegold01@starbase.spd.louisville.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ed Hudson <email>elh@p5.spnet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Edward Chuang <email>edwardc@firebird.org.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Edward Wang <email>edward@edcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Edwin Groothus <email>edwin@nwm.wan.philips.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Edwin Mons <email>e@ik.nu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Ege Rekk <email>aagero@aage.priv.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eiji-usagi-MATSUmoto <email>usagi@clave.gr.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eike Bernhardt <email>eike.bernhardt@gmx.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>ELISA Font Project</para>
+      </listitem>
+
+      <listitem>
+        <para>Elmar Bartel
+	  <email>bartel@informatik.tu-muenchen.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eoin Lawless <email>eoin@maths.tcd.ie</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric A. Griff <email>eagriff@global2000.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric Blood <email>eblood@cs.unr.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric D. Futch <email>efutch@nyct.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric J. Haug <email>ejh@slustl.slu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric J. Schwertfeger <email>eric@cybernut.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric L. Hernes <email>erich@lodgenet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric P. Scott <email>eps@sirius.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eric Sprinkle <email>eric@ennovatenetworks.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Erich Stefan Boleyn <email>erich@uruk.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Erich Zigler <email>erich@tacni.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Erik H. Bakke <email>erikhb@bgnett.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Erik E. Rantapaa <email>rantapaa@math.umn.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Erik H. Moe <email>ehm@cris.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ernst de Haan <email>ernst@heinz.jollem.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ernst Winter <email>ewinter@lobo.muc.de</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Espen Skoglund <email>esk@ira.uka.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eugene M. Kim <email>astralblue@usa.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Eugene Radchenko <email>genie@qsar.chem.msu.su</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Eugeny Kuzakov <email>CoreDumped@coredumped.null.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Evan Champion <email>evanc@synapse.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Faried Nawaz <email>fn@Hungry.COM</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Flemming Jacobsen <email>fj@tfs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Fong-Ching Liaw <email>fong@juniper.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Francis M J Hsieh <email>mjshieh@life.nthu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Francisco Reyes <email>fjrm@yahoo.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank Bartels <email>knarf@camelot.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank Chen Hsiung Chan
+	  <email>frankch@waru.life.nthu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank Durda IV <email>uhclem@nemesis.lonestar.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank MacLachlan <email>fpm@n2.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank Nobis <email>fn@Radio-do.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank ten Wolde <email>franky@pinewood.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank van der Linden <email>frank@fwi.uva.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frank Volf <email>volf@oasis.IAEhv.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Fred Cawthorne <email>fcawth@jjarray.umn.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Fred Gilham <email>gilham@csl.sri.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Fred Templin <email>templin@erg.sri.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Frederick Earl Gray <email>fgray@rice.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>FUJIMOTO Kensaku
+	  <email>fujimoto@oscar.elec.waseda.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>FURUSAWA Kazuhisa
+	  <email>furusawa@com.cs.osakafu-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>G. Adam Stanislav<email>adam@whizkidtech.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gabor Kincses <email>gabor@acm.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gabor Zahemszky <email>zgabor@CoDe.hu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gareth McCaughan <email>gjm11@dpmms.cam.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gary A. Browning <email>gab10@griffcd.amdahl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gary Howland <email>gary@hotlava.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gary J. <email>garyj@rks32.pcs.dec.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gary Kline <email>kline@thought.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gaspar Chilingarov <email>nightmar@lemming.acc.am</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gea-Suan Lin <email>gsl@tpts4.seed.net.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gene Raytsin <email>pal@paladin7.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Geoff Rehmet <email>csgr@alpha.ru.ac.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Georg Wagner <email>georg.wagner@ubs.com</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Gianlorenzo Masini <email>masini@uniroma3.it</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gianmarco Giovannelli
+	  <email>gmarco@giovannelli.it</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gil Kloepfer Jr. <email>gil@limbic.ssdl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gilad Rom <email>rom_glsa@ein-hashofet.co.il</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Giles Lean <email>giles@nemeton.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ginga Kawaguti
+	  <email>ginga@amalthea.phys.s.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Giorgos Keramidas <email>keramida@ceid.upatras.gr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Glen Foster <email>gfoster@gfoster.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Glenn Johnson <email>gljohns@bellsouth.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Godmar Back <email>gback@facility.cs.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Goran Hammarback <email>goran@astro.uu.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gord Matzigkeit <email>gord@enci.ucalgary.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gordon Greeff <email>gvg@uunet.co.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Graham Wheeler <email>gram@cdsec.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Greg A. Woods <email>woods@zeus.leitch.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Greg Ansley <email>gja@ansley.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Greg Robinson <email>greg@rosevale.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Greg Troxel <email>gdt@ir.bbn.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Greg Ungerer <email>gerg@stallion.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gregory Bond <email>gnb@itga.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Gregory D. Moncreaff
+	  <email>moncrg@bt340707.res.ray.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Guy Harris <email>guy@netapp.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Guy Helmer <email>ghelmer@cs.iastate.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>HAMADA Naoki <email>hamada@astec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hannu Savolainen <email>hannu@voxware.pp.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hans Huebner <email>hans@artcom.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hans Petter Bieker <email>zerium@webindex.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hans Zuidam <email>hans@brandinnovators.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Harlan Stenn <email>Harlan.Stenn@pfcs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Harold Barker <email>hbarker@dsms.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Harry Newton <email>harry_newton@telinco.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Havard Eidnes
+	  <email>Havard.Eidnes@runit.sintef.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Heikki Suonsivu <email>hsu@cs.hut.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Heiko W. Rupp <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Helmut F. Wirth <email>hfwirth@ping.at</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Henrik Vestergaard Draboel
+	  <email>hvd@terry.ping.dk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Herb Peyerl <email>hpeyerl@NetBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hideaki Ohmon <email>ohmon@tom.sfc.keio.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hidekazu Kuroki <email>hidekazu@cs.titech.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hideki Yamamoto <email>hyama@acm.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hideyuki Suzuki
+	  <email>hideyuki@sat.t.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hirayama Issei <email>iss@mail.wbs.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hiroaki Sakai <email>sakai@miya.ee.kagu.sut.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hiroharu Tamaru <email>tamaru@ap.t.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hironori Ikura <email>hikura@kaisei.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hiroshi Nishikawa <email>nis@pluto.dti.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hiroya Tsubakimoto <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Holger Lamm <email>holger@eit.uni-kl.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Holger Veit <email>Holger.Veit@gmd.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Holm Tiffe <email>holm@geophysik.tu-freiberg.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>HONDA Yasuhiro
+	  <email>honda@kashio.info.mie-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Horance Chou
+	  <email>horance@freedom.ie.cycu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Horihiro Kumagai <email>kuma@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>HOSOBUCHI Noriyuki <email>hoso@buchi.tama.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>HOTARU-YA <email>hotaru@tail.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hr.Ladavac <email>lada@ws2301.gud.siemens.co.at</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hubert Feyrer <email>hubertf@NetBSD.ORG</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hugh F. Mahon <email>hugh@nsmdserv.cnd.hp.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hugh Mahon <email>h_mahon@fc.hp.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Hung-Chi Chu <email>hcchu@r350.ee.ntu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ian Holland <email>ianh@tortuga.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ian Struble <email>ian@broken.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ian Vaudrey <email>i.vaudrey@bigfoot.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Igor Khasilev <email>igor@jabber.paco.odessa.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Igor Roshchin <email>str@giganda.komkon.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Igor Sviridov <email>siac@ua.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Igor Vinokurov <email>igor@zynaps.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ikuo Nakagawa <email>ikuo@isl.intec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Ilia Chipitsine <email>ilia@jane.cgu.chel.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ilya V. Komarov <email>mur@lynx.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>IMAI Takeshi <email>take-i@ceres.dti.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>IMAMURA Tomoaki
+	  <email>tomoak-i@is.aist-nara.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Itsuro Saito <email>saito@miv.t.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>IWASHITA Yoji <email>shuna@pop16.odn.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>J. Bryant <email>jbryant@argus.flash.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>J. David Lowe <email>lowe@saturn5.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>J. Han <email>hjh@photino.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>J. Hawk <email>jhawk@MIT.EDU</email></para>
+      </listitem>
+
+      <listitem>
+        <para>J.T. Conklin <email>jtc@cygnus.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jack <email>jack@zeus.xtalwind.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jacob Bohn Lorensen <email>jacob@jblhome.ping.mk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jagane D Sundar <email>jagane@netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jake Hamby <email>jehamby@lightside.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>James Clark <email>jjc@jclark.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>James D. Stewart <email>jds@c4systm.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>James da Silva <email>jds@cs.umd.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>James Jegers <email>jimj@miller.cs.uwm.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>James Raynard
+	  <email>fhackers@jraynard.demon.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>James T. Liu <email>jtliu@phlebas.rockefeller.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jamie Heckford <email>jamie@jamiesdomain.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jan Conard
+	  <email>charly@fachschaften.tu-muenchen.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jan Koum <email>jkb@FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Janick Taillandier
+	  <email>Janick.Taillandier@ratp.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Janusz Kokot <email>janek@gaja.ipan.lublin.pl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jarle Greipsland <email>jarle@idt.unit.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jason Garman <email>init@risen.org</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Jason R. Mastaler
+	  <email>jason-freebsd@mastaler.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jason Thorpe <email>thorpej@NetBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jason Wright <email>jason@OpenBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jason Young
+	  <email>doogie@forbidden-donut.anet-stl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Javier Martin Rueda <email>jmrueda@diatel.upm.es</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jay Fenlason <email>hack@datacube.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jay Krell <email>jay.krell@cornell.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jaye Mathisen <email>mrcpu@cdsnet.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeff Bartig <email>jeffb@doit.wisc.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeff Brown <email>jabrown@caida.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeff Forys <email>jeff@forys.cranbury.nj.us</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeff Kletsky <email>Jeff@Wagsky.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeff Palmer <email>jeff@isni.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeffrey Evans <email>evans@scnc.k12.mi.us</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeffrey Wheat <email>jeff@cetlink.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeremy Allison <email>jallison@whistle.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeremy Chadwick <email>yoshi@parodius.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeremy Chatfield <email>jdc@xinside.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeremy Karlson <email>karlj000@unbc.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jeremy Prior <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Jeremy Shaffner <email>jeremy@external.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jesse McConnell <email>jesse@cylant.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jesse Rosenstock <email>jmr@ugcs.caltech.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jian-Da Li <email>jdli@csie.nctu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Babb <email>babb@FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Binkley <email>jrb@cs.pdx.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Bloom <email>bloom@acm.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Carroll <email>jim@carroll.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Flowers <email>jflowers@ezo.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Leppek <email>jleppek@harris.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Lowe <email>james@cs.uwm.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Mattson <email>jmattson@sonic.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Mercer <email>jim@komodo.reptiles.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Sloan <email>odinn@atlantabiker.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jim Wilson <email>wilson@moria.cygnus.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jimbo Bahooli
+	  <email>griffin@blackhole.iceworld.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jin Guojun <email>jin@george.lbl.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joachim Kuebart <email>kuebart@mathematik.uni-ulm.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joao Carlos Mendes Luis <email>jonny@jonny.eng.br</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jochen Pohl <email>jpo.drs@sni.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joe "Marcus" Clarke <email>marcus@miami.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joe Abley <email>jabley@automagic.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joe Jih-Shian Lu <email>jslu@dns.ntu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joe Orthoefer <email>j_orthoefer@tia.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joe Traister <email>traister@mojozone.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joel Faedi <email>Joel.Faedi@esial.u-nancy.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joel Ray Holveck <email>joelh@gnu.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joel Sutton <email>jsutton@bbcon.com.au</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Joseph Scott <email>joseph@randomnetworks.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johan Granlund <email>johan@granlund.nu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johan Karlsson <email>k@numeri.campus.luth.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johan Larsson <email>johan@moon.campus.luth.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johann Tonsing <email>jtonsing@mikom.csir.co.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johannes Helander <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johannes Stille <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Beckett <email>jbeckett@southern.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Beukema <email>jbeukema@hk.super.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Brezak <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Capo <email>jc@irbs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John F. Woods <email>jfw@jfwhome.funhouse.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Goerzen
+	  <email>jgoerzen@alexanderwohl.complete.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Heidemann <email>johnh@isi.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Hood <email>cgull@owl.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Kohl <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Lind <email>john@starfire.mn.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Mackin <email>john@physiol.su.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John P <email>johnp@lodgenet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Perry <email>perry@vishnu.alias.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Preisler <email>john@vapornet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Reynolds <email>jjreynold@home.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Rochester <email>jr@cs.mun.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Sadler <email>john_sadler@alum.mit.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Saunders <email>john@pacer.nlc.net.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Wehle <email>john@feith.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>John Woods <email>jfw@eddie.mit.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Johny Mattsson <email>lonewolf@flame.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jon Morgan <email>morgan@terminus.trailblazer.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jonathan H N Chin <email>jc254@newton.cam.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jonathan Hanna
+	  <email>jh@pc-21490.bc.rogers.wave.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jonathan Pennington <email>john@coastalgeology.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jorge Goncalves <email>j@bug.fe.up.pt</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jorge M. Goncalves <email>ee96199@tom.fe.up.pt</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jos Backus <email>jbackus@plex.nl</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Jose Marques <email>jose@nobody.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Josef Grosch
+	  <email>jgrosch@superior.mooseriver.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Joseph Stein <email>joes@wstein.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Josh Gilliam <email>josh@quick.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Josh Tiefenbach <email>josh@ican.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Juergen Lock <email>nox@jelal.hb.north.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Juha Inkari <email>inkari@cc.hut.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Jukka A. Ukkonen <email>jau@iki.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Julian Assange <email>proff@suburbia.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Julian Coleman <email>j.d.coleman@ncl.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>&a.jhs</para>
+      </listitem>
+
+      <listitem>
+        <para>Julian Jenkins <email>kaveman@magna.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Junichi Satoh <email>junichi@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Junji SAKAI <email>sakai@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Junya WATANABE <email>junya-w@remus.dti.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Justas <email>justas@mbank.lv</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Justin Stanford <email>jus@security.za.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>K.Higashino <email>a00303@cc.hc.keio.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kai Vorma <email>vode@snakemail.hut.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kaleb S. Keithley <email>kaleb@ics.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kaneda Hiloshi <email>vanitas@ma3.seikyou.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kang-ming Liu <email>gugod@gugod.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kapil Chowksey <email>kchowksey@hss.hns.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Karl Denninger <email>karl@mcs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Karl Dietz <email>Karl.Dietz@triplan.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Karl Lehenbauer <email>karl@NeoSoft.com</email></para>
+      </listitem>
+
+      <listitem>
+	<para>KATO Tsuguru <email>tkato@prontomail.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kawanobe Koh <email>kawanobe@st.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kees Jan Koster <email>kjk1@ukc.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Keith Bostic <email>bostic@bostic.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Keith E. Walker <email>kew@icehouse.net</email></para>
+      </listitem>
+
+	<listitem>
+        <para>Keith Moore <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Keith Sklower <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ken Hornstein <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ken Key <email>key@cs.utk.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ken Mayer <email>kmayer@freegate.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kenji Saito <email>marukun@mx2.nisiq.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kenji Tomita <email>tommyk@da2.so-net.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kenneth Furge <email>kenneth.furge@us.endress.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kenneth Monville <email>desmo@bandwidth.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kenneth R. Westerback <email>krw@tcn.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kenneth Stailey <email>kstailey@gnu.ai.mit.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kent Talarico <email>kent@shipwreck.tsoft.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kent Vander Velden <email>graphix@iastate.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kentaro Inagaki <email>JBD01226@niftyserve.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kevin Bracey <email>kbracey@art.acorn.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kevin Day <email>toasty@dragondata.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kevin Lahey <email>kml@nas.nasa.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kevin Meltzer <email>perlguy@perlguy.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kevin Street <email>street@iname.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kevin Van Maren <email>vanmaren@fast.cs.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kim Scarborough <email>sluggo@unknown.nu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kiril Mitev <email>kiril@ideaglobal.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kiroh HARADA <email>kiroh@kh.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Klaus Herrmann <email>klaus.herrmann@gmx.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Klaus Klein <email>kleink@layla.inka.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Klaus-J. Wolf <email>Yanestra@t-online.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Koichi Sato <email>copan@ppp.fastnet.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Konrad Heuer <email>kheuer@gwdu60.gwdg.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Konstantin Chuguev <email>Konstantin.Chuguev@dante.org.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kostya Lukin <email>lukin@okbmei.msk.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kouichi Hirabayashi <email>kh@mogami-wire.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kris Dow <email>kris@vilnya.demon.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>KUNISHIMA Takeo <email>kunishi@c.oka-pu.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kurt D. Zeilenga <email>Kurt@Boolean.NET</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Kurt Olsen <email>kurto@tiny.mcs.usu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>L. Jonas Olsson
+	  <email>ljo@ljo-slip.DIALIN.CWRU.Edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Larry Altneu <email>larry@ALR.COM</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lars Bernhardsson <email>lab@fnurt.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lars K&ouml;ller
+	  <email>Lars.Koeller@Uni-Bielefeld.DE</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Laurence Lopez <email>lopez@mv.mv.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lee Cremeans <email>lcremean@tidalwave.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Leo Kim <email>leo@florida.sarang.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Liang Tai-hwa
+	  <email>avatar@www.mmlab.cse.yzu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lon Willett <email>lon%softt.uucp@math.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Louis A. Mamakos <email>louie@TransSys.COM</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Louis Mamakos <email>loiue@TransSys.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lowell Gilbert <email>lowell@world.std.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lucas James <email>Lucas.James@ldjpc.apana.org.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Lyndon Nerenberg <email>lyndon@orthanc.ab.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>M. L. Dodson <email>bdodson@scms.utmb.EDU</email></para>
+      </listitem>
+
+      <listitem>
+        <para>M.C. Wong <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Magnus Enbom <email>dot@tinto.campus.luth.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mahesh Neelakanta <email>mahesh@gcomm.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Makoto MATSUSHITA <email>matusita@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Makoto WATANABE
+	  <email>watanabe@zlab.phys.nagoya-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Makoto YAMAKURA <email>makoto@pinpott.spnet.ne.jp</email></para>
+      </listitem> 
+
+      <listitem>
+        <para>Malte Lance <email>malte.lance@gmx.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>MANTANI Nobutaka <email>nobutaka@nobutaka.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Manu Iyengar
+	  <email>iyengar@grunthos.pscwa.psca.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Marc Frajola <email>marc@dev.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Marc Ramirez <email>mrami@mramirez.sy.yale.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Marc Slemko <email>marcs@znep.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Marc van Kempen <email>wmbfmk@urc.tue.nl</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Marc van Woerkom <email>van.woerkom@netcologne.de</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Marcin Cieslak <email>saper@system.pl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Andrews <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Cammidge <email>mark@gmtunx.ee.uct.ac.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Diekhans <email>markd@grizzly.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Huizer <email>xaa@stack.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark J. Taylor <email>mtaylor@cybernet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Knight <email>markk@knigma.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Krentel <email>krentel@rice.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Mayo <email>markm@vmunix.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Pulford <email>mark@kyne.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Thompson <email>thompson@tgsoft.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Tinguely <email>tinguely@plains.nodak.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Treacy <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mark Valentine <email>mark@linus.demon.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Markus Holmberg <email>saska@acc.umu.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martin Birgmeier <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martin Blapp <email>blapp@attic.ch</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martin Hinner <email>mhi@linux.gyarab.cz</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martin Ibert <email>mib@ppe.bb-data.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martin Kammerhofer <email>dada@sbox.tu-graz.ac.at</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Martin Minkus <email>diskiller@cnbinc.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martin Renters <email>martin@tdc.on.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Martti Kuparinen
+	  <email>martti.kuparinen@ericsson.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Masachika ISHIZUKA
+	  <email>ishizuka@isis.min.ntt.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Masahiro Sekiguchi
+	  <email>seki@sysrap.cs.fujitsu.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+         <para>Masahiro TAKEMURA
+           <email>mastake@msel.t.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Masanobu Saitoh <email>msaitoh@spa.is.uec.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Masanori Kanaoka <email>kana@saijo.mke.mei.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Masanori Kiriake <email>seiken@ARGV.AC</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Masatoshi TAMURA
+	  <email>tamrin@shinzan.kuee.kyoto-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mats Lofkvist <email>mal@algonet.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matt Bartley <email>mbartley@lear35.cytex.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matt Heckaman <email>matt@LUCIDA.QC.CA</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matt Thomas <email>matt@3am-software.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matt White <email>mwhite+@CMU.EDU</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew C. Mead <email>mmead@Glock.COM</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew Cashdollar <email>mattc@rfcnet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew Emmerton <email>root@gabby.gsicomp.on.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew Flatt <email>mflatt@cs.rice.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew Fuller <email>fullermd@futuresouth.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew Stein <email>matt@bdd.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthew West <email>mwest@uct.ac.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthias Pfaller <email>leo@dachau.marco.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Matthias Scheler <email>tron@netbsd.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mattias Gronlund
+	  <email>Mattias.Gronlund@sa.erisoft.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mattias Pantzare <email>pantzer@ludd.luth.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Maurice Castro
+	  <email>maurice@planet.serc.rmit.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Max Euston <email>meuston@jmrodgers.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Max Khon <email>fjoe@husky.iclub.nsu.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Maxim Bolotin <email>max@rsu.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Maxime Henrion <email>mhenrion@cybercable.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Micha Class
+	  <email>michael_class@hpbbse.bbn.hp.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Alyn Miller <email>malyn@strangeGizmo.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Lucas <email>mwlucas@blackhelicopters.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Lyngb鷲 <email>michael@lyngbol.dk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Butler <email>imb@scgt.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Butschky <email>butsch@computi.erols.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Clay <email>mclay@weareb.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Galassi <email>nerd@percival.rain.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Hancock <email>michaelh@cet.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Hohmuth <email>hohmuth@inf.tu-dresden.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Perlman <email>canuck@caam.rice.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Petry <email>petry@netwolf.NetMasters.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Reifenberger <email>root@totum.plaut.de</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Michael Sardo <email>jaeger16@yahoo.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Searle <email>searle@longacre.demon.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Urban <email>murban@tznet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michael Vasilenko <email>acid@stu.cn.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michal Listos <email>mcl@Amnesiac.123.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Michio Karl Jinbo
+	  <email>karl@marcer.nagaokaut.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Miguel Angel Sagreras
+	  <email>msagre@cactus.fi.uba.ar</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mihoko Tanaka <email>m_tonaka@pa.yokogawa.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mika Nystrom <email>mika@cs.caltech.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mikael Hybsch <email>micke@dynas.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mikael Karpberg
+	  <email>karpen@ocean.campus.luth.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Barcroft <email>mike@q9media.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Bristow <email>mike@urgle.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Del <email>repenting@hotmail.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Durian <email>durian@plutotech.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Durkin <email>mdurkin@tsoft.sf-bay.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike E. Matsnev <email>mike@azog.cs.msu.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Evans <email>mevans@candle.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Grupenhoff <email>kashmir@umiacs.umd.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Harding <email>mvh@ix.netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Hibler <email>mike@marker.cs.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Karels <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike McGaughey <email>mmcg@cs.monash.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Meyer <email>mwm@mired.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Mitchell <email>mitchell@ref.tfs.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Murphy <email>mrm@alpharel.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Peck <email>mike@binghamton.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Sherwood <email>mike@fate.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mike Spengler <email>mks@msc.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mikhail A. Sokolov <email>mishania@demos.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ming-I Hseh <email>PA@FreeBSD.ee.Ntu.edu.TW</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Mitsuru Yoshida <email>mitsuru@riken.go.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Monte Mitzelfelt <email>monte@gonefishing.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Morgan Davis <email>root@io.cts.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>MOROHOSHI Akihiko <email>moro@race.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Mostyn Lewis <email>mostyn@mrl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Motomichi Matsuzaki <email>mzaki@e-mail.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Motoyuki Kasahara <email>m-kasahr@sra.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>N.G.Smith <email>ngs@sesame.hensa.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nadav Eiron <email>nadav@barcode.co.il</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NAGAO Tadaaki <email>nagao@cs.titech.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NAKAJI Hiroyuki
+	  <email>nakaji@tutrp.tut.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NAKAMURA Kazushi <email>nkazushi@highway.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NAKAMURA Motonori
+	  <email>motonori@econ.kyoto-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NAKATA, Maho <email>chat95@mbox.kyoto-inet.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nanbor Wang <email>nw1@cs.wustl.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Naofumi Honda
+	  <email>honda@Kururu.math.sci.hokudai.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Naoki Hamada <email>nao@tom-yam.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Narvi <email>narvi@haldjas.folklore.ee</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nathan Dorfman <email>nathan@rtfm.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Neal Fachan <email>kneel@ishiboo.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Niall Smart <email>rotel@indigo.ie</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Nicholas Esborn <email>nick@netdot.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nick Barnes <email>Nick.Barnes@pobox.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nick Handel <email>nhandel@NeoSoft.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nick Hilliard <email>nick@foobar.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nick Johnson <email>freebsd@spatula.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nick Williams <email>njw@cs.city.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nickolay N. Dudorov <email>nnd@itfs.nsk.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NIIMI Satoshi <email>sa2c@and.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Niklas Hallqvist <email>niklas@filippa.appli.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nils M. Holm <email>nmh@t3x.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nisha Talagala <email>nisha@cs.berkeley.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>adrian@virginia.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>alex@elvisti.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>anto@netscape.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>bobson@egg.ics.nitch.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>bovynf@awe.be</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>burg@is.ge.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>chris@gnome.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>colsen@usa.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>coredump@nervosa.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>dannyman@arh0300.urh.uiuc.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>davids@SECNET.COM</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>derek@free.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>devet@adv.IAEhv.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>djv@bedford.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>dvv@sprint.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>enami@ba2.so-net.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>flash@eru.tubank.msk.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>flash@hway.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>fn@pain.csrv.uidaho.edu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>No Name <email>frf@xocolatl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>gclarkii@netport.neosoft.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>gordon@sheaky.lonestar.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>graaf@iae.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>greg@greg.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>grossman@cygnus.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>gusw@fub46.zedat.fu-berlin.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>hfir@math.rochester.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>hnokubi@yyy.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>iaint@css.tuu.utas.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>invis@visi.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>ishisone@sra.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>iverson@lionheart.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>jpt@magic.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>junker@jazz.snu.ac.kr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>k-sugyou@ccs.mt.nec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>kenji@reseau.toyonaka.osaka.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>kfurge@worldnet.att.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>lh@aus.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>lhecking@nmrc.ucc.ie</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>mrgreen@mame.mu.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>nakagawa@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>ohki@gssm.otsuka.tsukuba.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>owaki@st.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>pechter@shell.monmouth.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>pete@pelican.pelican.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>pritc003@maroon.tc.umn.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>risner@stdio.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>roman@rpd.univ.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>root@ns2.redline.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>root@uglabgw.ug.cs.sunysb.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>stephen.ma@jtec.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>sumii@is.s.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>takas-su@is.aist-nara.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>tamone@eig.unige.ch</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>tjevans@raleigh.ibm.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>tony-o@iij.ad.jp amurai@spec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>torii@tcd.hitachi.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>uenami@imasy.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>uhlar@netlab.sk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>vode@hut.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>wlloyd@mpd.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>wlr@furball.wellsfargo.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>wmbfmk@urc.tue.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>yamagata@nwgpc.kek.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>ziggy@ryan.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>No Name <email>ZW6T-KND@j.asahi-net.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nobuhiro Yasutomi <email>nobu@psrc.isac.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Nobuyuki Koganemaru
+	  <email>kogane@koganemaru.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>NOKUBI Hirotaka <email>h-nokubi@yyy.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Norio Suzuki <email>nosuzuki@e-mail.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Noritaka Ishizumi <email>graphite@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Noriyuki Soda <email>soda@sra.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oddbjorn Steffenson <email>oddbjorn@tricknology.org</email</para>
+      </listitem>
+
+      <listitem>
+	<para>Oh Junseon <email>hollywar@mail.holywar.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Olaf Wagner <email>wagner@luthien.in-berlin.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oleg Semyonov <email>os@altavista.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oleg Sharoiko <email>os@rsu.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oleg V. Volkov <email>rover@lglobus.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Olexander Kunytsa <email>kunia@wolf.istc.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Breuninger <email>ob@seicom.NET</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Friedrichs <email>oliver@secnet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Fromme
+	  <email>oliver.fromme@heim3.tu-clausthal.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Helmling
+	  <email>oliver.helmling@stud.uni-bayreuth.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Laumann
+	  <email>net@informatik.uni-bremen.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Lehmann
+	  <email>Kai_Allard_Liao@gmx.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Oliver Oberdorf <email>oly@world.std.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Olof Johansson <email>offe@ludd.luth.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Osokin Sergey aka oZZ <email>ozz@FreeBSD.org.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pace Willisson <email>pace@blitz.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paco Rosich <email>rosich@modico.eleinf.uv.es</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Palle Girgensohn <email>girgen@partitur.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Parag Patel <email>parag@cgt.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pascal Pederiva <email>pascal@zuo.dec.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pasvorn Boonmark <email>boonmark@juniper.net</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Patrick Bihan-Faou <email>patrick@mindstep.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Patrick Hausen <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Patrick Seal <email>patseal@hyperhost.net</email></para> 
+      </listitem>
+
+      <listitem>
+        <para>Paul Antonov <email>apg@demos.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul F. Werkowski <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Fox <email>pgf@foxharp.boston.ma.us</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Koch <email>koch@thehub.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Kranenburg <email>pk@NetBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul M. Lambert <email>plambert@plambert.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Mackerras <email>paulus@cs.anu.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Popelka <email>paulp@uts.amdahl.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul S. LaFollette, Jr. <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Sandys <email>myj@nyct.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul T. Root <email>proot@horton.iaces.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paul Vixie <email>paul@vix.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paulo Menezes <email>paulo@isr.uc.pt</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Paulo Menezes <email>pm@dee.uc.pt</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pedro A M Vazquez <email>vazquez@IQM.Unicamp.BR</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pedro Giffuni <email>giffunip@asme.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Per Wigren <email>wigren@home.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pete Bentley <email>pete@demon.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Childs <email>pjchilds@imforei.apana.org.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Cornelius <email>pc@inr.fzk.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Haight <email>peterh@prognet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Jeremy <email>perer.jeremy@alcatel.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter M. Chen <email>pmchen@eecs.umich.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Much <email>peter@citylink.dinoex.sub.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Olsson <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Philipp <email>pjp@bsd-daemon.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Peter Stubbs <email>PETERS@staidan.qld.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Peter van Heusden <email>pvh@egenetics.com</email></para>
+      </listitem>
+      
+      <listitem>
+        <para>Phil Maker <email>pjm@cs.ntu.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Phil Sutherland
+	  <email>philsuth@mycroft.dialix.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Phil Taylor <email>phil@zipmail.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Philip Musumeci <email>philip@rmit.edu.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Philippe Lefebvre <email>nemesis@balistik.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pierre Y. Dampure <email>pierre.dampure@k2c.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pius Fischer <email>pius@ienet.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Pomegranate <email>daver@flag.blackened.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Powerdog Industries
+	  <email>kevin.ruddy@powerdog.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Priit J&auml;rv <email>priit@cc.ttu.ee</email></para>
+      </listitem>
+
+      <listitem>
+        <para>R Joseph Wright <email>rjoseph@mammalia.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>R. Kym Horsell</para>
+      </listitem>
+
+      <listitem>
+        <para>Ralf Friedl <email>friedl@informatik.uni-kl.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Randal S. Masutani <email>randal@comtest.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Randall Hopper <email>rhh@ct.picker.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Randall W. Dean <email>rwd@osf.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Randy Bush <email>rbush@bainbridge.verio.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rasmus Kaj <email>kaj@Raditex.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Reinier Bezuidenhout
+	  <email>rbezuide@mikom.csir.co.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Remy Card <email>Remy.Card@masi.ibp.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ricardas Cepas <email>rch@richard.eu.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Riccardo Veraldi <email>veraldi@cs.unibo.it</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rich Wood <email>rich@FreeBSD.org.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Henderson <email>richard@atheist.tamu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Hwang <email>rhwang@bigpanda.com</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Richard Kiss <email>richard@homemail.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard J Kuhns <email>rjk@watson.grauel.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard M. Neswold
+	  <email>rneswold@enteract.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Seaman, Jr. <email>dick@tar.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Stallman <email>rms@gnu.ai.mit.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Straka <email>straka@user1.inficad.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Tobin <email>richard@cogsci.ed.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Wackerbarth <email>rkw@Dataplex.NET</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Winkel <email>rich@math.missouri.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Richard Wiwatowski <email>rjwiwat@adelaide.on.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rick Macklem <email>rick@snowhite.cis.uoguelph.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rick Macklin <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rob Austein <email>sra@epilogue.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rob Mallory <email>rmallory@qualcomm.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rob Snow <email>rsnow@txdirect.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Crowe <email>bob@speakez.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert D. Thrush <email>rd@phoenix.aii.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Eckardt
+	  <email>roberte@MEP.Ruhr-Uni-Bochum.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert P Ricci <email>ricci@cs.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Sanders <email>rsanders@mindspring.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Sexton <email>robert@kudra.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Shady <email>rls@id.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Swindells <email>swindellsr@genrad.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Withrow <email>witr@rwwa.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robert Yoder <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Robin Carey
+	  <email>robin@mailgate.dtc.rankxerox.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rod Taylor <email>rod@idiotswitch.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Roger Hardiman <email>roger@cs.strath.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Roland Jesse <email>jesse@cs.uni-magdeburg.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Roman Shterenzon <email>roman@xpert.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ron Bickers <email>rbickers@intercenter.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ron Lenk <email>rlenk@widget.xmission.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ronald Kuehn <email>kuehn@rz.tu-clausthal.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Rudolf Cejka <email>cejkar@dcse.fee.vutbr.cz</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ruslan Belkin <email>rus@home2.UA.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ruslan Shevchenko <email>rssh@cam.grad.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Russell L. Carter <email>rcarter@pinyon.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Russell Vincent <email>rv@groa.uct.ac.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ryan Younce <email>ryany@pobox.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ryuichiro IMURA <email>imura@af.airnet.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Sakai Hiroaki <email>sakai@miya.ee.kagu.sut.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sakari Jalovaara <email>sja@tekla.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sam Hartman <email>hartmans@mit.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Samuel Lam <email>skl@ScalableNetwork.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Samuel Tardieu <email>sam@inf.enst.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Samuele Zannoli <email>zannoli@cs.unibo.it</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Sander Janssen <email>janssen@rendo.dekooi.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sander Vesik <email>sander@haldjas.folklore.ee</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sandro Sigala <email>ssigala@globalnet.it</email></para>
+      </listitem>
+
+      <listitem>
+        <para>SANETO Takanori <email>sanewo@strg.sony.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>SASAKI Shunsuke <email>ele@pop17.odn.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sascha Blank <email>blank@fox.uni-trier.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sascha Wildner <email>swildner@channelz.GUN.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Satoh Junichi <email>junichi@astec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>SAWADA Mizuki <email>miz@qb3.so-net.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scot Elliott <email>scot@poptart.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scot W. Hetzel <email>hetzels@westbend.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott A. Kenney <email>saken@rmta.ml.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott A. Moberly <email>smoberly@xavier.dyndns.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott Blachowicz
+	  <email>scott.blachowicz@seaslug.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott Burris <email>scott@pita.cns.ucla.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott Hazen Mueller <email>scott@zorch.sf-bay.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott Michel <email>scottm@cs.ucla.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott Mitchel <email>scott@uk.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Scott Reynolds <email>scott@clmqt.marquette.mi.us</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sebastian Strollo <email>seb@erix.ericsson.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Serge V. Vakulenko <email>vak@zebub.msk.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergei Chechetkin <email>csl@whale.sunbay.crimea.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergei S. Laskavy <email>laskavy@pc759.cs.msu.su</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergey Gershtein <email>sg@mplik.ru</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Sergey Kosyakov <email>ks@itp.ac.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergey Potapov <email>sp@alkor.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergey Samoyloff <email>gonza@techline.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergey Shkonda <email>serg@bcs.zp.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergey Skvortsov <email>skv@protey.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergey V.Dorokhov <email>svd@kbtelecom.nalnet.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sergio Lenzi <email>lenzi@bsi.com.br</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Shaun Courtney <email>shaun@emma.eng.uct.ac.za</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Shawn M. Carey <email>smcarey@mailbox.syr.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Shigio Yamaguchi <email>shigio@tamacom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Shinya Esu <email>esu@yk.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Shinya FUJIE <email>fujie@tk.elec.waseda.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Shuichi Tanaka <email>stanaka@bb.mbn.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Simon <email>simon@masi.ibp.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Simon Burge <email>simonb@telstra.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Simon Dick <email>simond@irrelevant.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Simon J Gerraty <email>sjg@melb.bull.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Simon Marlow <email>simonm@dcs.gla.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Simon Shapiro <email>shimon@simon-shapiro.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sin'ichiro MIYATANI <email>siu@phaseone.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Slaven Rezic <email>eserte@cs.tu-berlin.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Soochon Radee <email>slr@mitre.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Soren Dayton <email>csdayton@midway.uchicago.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Soren Dossing <email>sauber@netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Soren S. Jorvang <email>soren@wheel.dk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stefan Bethke <email>stb@hanse.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stefan Eggers <email>seggers@semyam.dinoco.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stefan Moeding <email>s.moeding@ndh.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stefan Petri <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stefan `Sec` Zehl <email>sec@42.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steinar Haug <email>sthaug@nethelp.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephane E. Potvin <email>sepotvin@videotron.ca</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephane Legrand <email>stephane@lituus.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen Clawson
+	  <email>sclawson@marker.cs.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen F. Combs <email>combssf@salem.ge.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen Farrell <email>stephen@farrell.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen Hocking <email>sysseh@devetir.qld.gov.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen J. Roznowski <email>sjr@home.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen McKay <email>syssgm@devetir.qld.gov.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stephen Melvin <email>melvin@zytek.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Bauer <email>sbauer@rock.sdsmt.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Coltrin <email>spcoltri@unm.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Deering <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Gerakines <email>steve2@genesis.tiac.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Gericke <email>steveg@comtrol.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Piette <email>steve@simon.chi.il.US</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steve Schwarz <email>schwarz@alpharel.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steven Enderle <email>panic@subphase.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steven G. Kargl
+	  <email>kargl@troutmask.apl.washington.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steven H. Samorodin <email>samorodi@NUXI.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steven McCanne <email>mccanne@cs.berkeley.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steven Plite <email>splite@purdue.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Steven Wallace <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stijn Hoop <email>stijn@win.tue.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Stuart Henderson
+	  <email>stuart@internationalschool.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sue Blake <email>sue@welearn.com.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sugimoto Sadahiro <email>ixtl@komaba.utmc.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>SUGIMURA Takashi <email>sugimura@jp.FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sugiura Shiro <email>ssugiura@duo.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sujal Patel <email>smpatel@wam.umd.edu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Sungman Cho <email>smcho@tsp.korea.ac.kr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sune Stjerneby <email>stjerneby@usa.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>SURANYI Peter
+	  <email>suranyip@jks.is.tsukuba.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Suzuki Yoshiaki
+	  <email>zensyo@ann.tama.kawasaki.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Svein Skogen
+          <email>tds@nsn.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Sybolt de Boer <email>bolt@xs4all.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tadashi Kumano <email>kumano@strl.nhk.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Taguchi Takeshi <email>taguchi@tohoku.iij.ad.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>TAKAHASHI Kaoru <email>kaoru@kaisei.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takahiro Yugawa <email>yugawa@orleans.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takashi Mega <email>mega@minz.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takashi Uozu <email>j1594016@ed.kagu.sut.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takayuki Ariga <email>a00821@cc.hc.keio.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takeru NAIKI <email>naiki@bfd.es.hokudai.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takeshi Amaike <email>amaike@iri.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takeshi MUTOH <email>mutoh@info.nara-k.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takeshi Ohashi
+	  <email>ohashi@mickey.ai.kyutech.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takeshi WATANABE
+	  <email>watanabe@crayon.earth.s.kobe-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Takuya SHIOZAKI
+	  <email>tshiozak@makino.ise.chuo-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tatoku Ogaito <email>tacha@tera.fukui-med.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ted Buswell <email>tbuswell@mediaone.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ted Faber <email>faber@isi.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ted Lemon <email>mellon@isc.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Terry Lambert <email>terry@lambert.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Terry Lee <email>terry@uivlsi.csl.uiuc.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tetsuya Furukawa <email>tetsuya@secom-sis.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Theo de Raadt <email>deraadt@OpenBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas <email>thomas@mathematik.uni-Bremen.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas D. Dean <email>tomdean@ix.netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas David Rivers <email>rivers@dignus.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas G. McWilliams <email>tgm@netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas Graichen
+	  <email>graichen@omega.physik.fu-berlin.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas K&ouml;nig
+	  <email>Thomas.Koenig@ciw.uni-karlsruhe.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas Ptacek <email>unknown</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas Quinot <email>thomas@cuivre.fr.eu.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas A. Stephens <email>tas@stephens.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas Stromberg <email>tstrombe@rtci.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas Valentino Crimi
+	  <email>tcrimi+@andrew.cmu.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thomas Wintergerst <email>thomas@lemur.nord.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>&THORN;&oacute;r&eth;ur &Iacute;varsson
+	  <email>totii@est.is</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Thierry Thomas <email>tthomas@mail.dotcom.fr</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Timothy Jensen <email>toast@blackened.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tim Kientzle <email>kientzle@netcom.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tim Singletary
+	  <email>tsingle@sunland.gsfc.nasa.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tim Wilkinson <email>tim@sarc.city.ac.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Timo J. Rinne <email>tri@iki.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tobias Reifenberger <email>treif@mayn.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Todd Miller <email>millert@openbsd.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom <email>root@majestix.cmr.no</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom <email>tom@sdf.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom Gray - DCA <email>dcasba@rain.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom Jobbins <email>tom@tom.tj</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom Pusateri <email>pusateri@juniper.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom Rush <email>tarush@mindspring.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tom Samplonius <email>tom@misery.sdf.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tomohiko Kurahashi
+	  <email>kura@melchior.q.t.u-tokyo.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tony Kimball <email>alk@Think.COM</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tony Li <email>tli@jnx.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Tony Lynn <email>wing@cc.nsysu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Tony Maher <email>Tony.Maher@eBioinformatics.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Torbjorn Granlund <email>tege@matematik.su.se</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Toshihiko SHIMOKAWA <email>toshi@tea.forus.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Toshihiro Kanda <email>candy@kgc.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Toshiomi Moriki
+	  <email>Toshiomi.Moriki@ma1.seikyou.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Trefor S. <email>trefor@flevel.co.uk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Trenton Schulz <email>twschulz@cord.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Trevor Blackwell <email>tlb@viaweb.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Udo Schweigert <email>ust@cert.siemens.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ugo Paternostro <email>paterno@dsi.unifi.it</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ulf Kieber <email>kieber@sax.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ulli Linzen <email>ulli@perceval.camelot.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>URATA Shuichiro <email>s-urata@nmit.tmg.nec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Uwe Arndt <email>arndt@mailhost.uni-koblenz.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vadim Belman <email>vab@lflat.vas.mobilix.dk</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vadim Chekan <email>vadim@gc.lviv.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vadim Kolontsov <email>vadim@tversu.ac.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vadim Mikhailov <email>mvp@braz.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Valentin Nechayev <email>netch@lucky.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Valentino Vaschetto <email>logo@blackened.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Van Jacobson <email>van@ee.lbl.gov</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vasily V. Grechishnikov
+	  <email>bazilio@ns1.ied-vorstu.ac.ru</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vasim Valejev <email>vasim@uddias.diaspro.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vernon J. Schryver <email>vjs@mica.denver.sgi.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Veselin Slavov <email>vess@btc.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vic Abell <email>abe@cc.purdue.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Ville Eerola <email>ve@sci.fi</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vince Valenti <email>vince@blue-box.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vincent Poy <email>vince@venus.gaianet.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vincenzo Capuano
+	  <email>VCAPUANO@vmprofs.esoc.esa.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Virgil Champlin <email>champlin@pa.dec.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vladimir A. Jakovenko
+	  <email>vovik@ntu-kpi.kiev.ua</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vladimir Kushnir <email>kushn@mail.kar.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Vsevolod Lobko <email>seva@alex-ua.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>W. Gerald Hicks <email>wghicks@bellsouth.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>W. Richard Stevens <email>rstevens@noao.edu</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Walt Howard <email>howard@ee.utah.edu</email></para>
+      </listitem>
+
+      <listitem>
+       <para>Walt M. Shandruk <email>walt@erudition.net</email</para>
+      </listitem>
+
+      <listitem>
+        <para>Warren Toomey <email>wkt@csadfa.cs.adfa.oz.au</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wayne Scott <email>wscott@ichips.intel.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Werner Griessl
+	  <email>werner@btp1da.phy.uni-bayreuth.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wes Santee <email>wsantee@wsantee.oz.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wietse Venema <email>wietse@wzv.win.tue.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wiljo Heinen <email>wiljo@freeside.ki.open.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Willem Jan Withagen <email>wjw@surf.IAE.nl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>William Jolitz <email>withheld</email></para>
+      </listitem>
+
+      <listitem>
+        <para>William Liao <email>william@tale.net</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wojtek Pilorz
+	  <email>wpilorz@celebris.bdk.lublin.pl</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wolfgang Helbig <email>helbig@ba-stuttgart.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wolfgang Solfrank <email>ws@tools.de</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wolfgang Stanglmeier <email>wolf@FreeBSD.org</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Wu Ching-hong <email>woju@FreeBSD.ee.Ntu.edu.TW</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Yarema <email>yds@ingress.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Yaroslav Terletsky <email>ts@polynet.lviv.ua</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yasuhiro Fukama <email>yasuf@big.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yasuhito FUTATSUKI <email>futatuki@fureai.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Yen-Ming Lee <email>leeym@bsd.ce.ntu.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Yen-Shuo Su <email>yssu@CCCA.NCTU.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yin-Jieh Chen <email>yinjieh@Crazyman.Dorm13.NCTU.edu.tw</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Yixin Jin <email>yjin@rain.cs.ucla.edu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoichi Asai <email>yatt@msc.biglobe.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoichi Nakayama <email>yoichi@eken.phys.nagoya-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoshiaki Uchikawa <email>yoshiaki@kt.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoshihiko SARUMRU <email>mistral@imasy.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoshihisa NAKAGAWA
+	  <email>y-nakaga@ccs.mt.nec.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoshikazu Goto <email>gotoh@ae.anritsu.co.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoshimasa Ohnishi
+	  <email>ohnishi@isc.kyutech.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yoshishige Arai <email>ryo2@on.rim.or.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yuichi MATSUTAKA <email>matutaka@osa.att.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yujiro MIYATA
+	  <email>miyata@bioele.nuee.nagoya-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Yu-Shun Wang <email>yushunwa@isi.edu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yusuke Nawano <email>azuki@azkey.org</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yuu Yashiki <email>s974123@cc.matsuyama-u.ac.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yuuki SAWADA <email>mami@whale.cc.muroran-it.ac.jp</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Yuuichi Narahara <email>aconitum@po.teleway.ne.jp</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yuval Yarom <email>yval@cs.huji.ac.il</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yves Fonk <email>yves@cpcoup5.tn.tudelft.nl</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Yves Fonk <email>yves@dutncp8.tn.tudelft.nl</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Zach Heilig <email>zach@gaffaneys.com</email></para>
+      </listitem>
+
+      <listitem>
+        <para>Zach Zurflu <email>zach@pabst.bendnet.com</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Zahemszhky Gabor <email>zgabor@code.hu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Zhong Ming-Xun <email>zmx@mail.CDPA.nsysu.edu.tw</email></para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  <sect1 id="contrib-386bsd">
+    <title>386BSD 修補程式貢獻者</title>
+    
+    <para>(依姓氏字母順序排列)：</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>Adam Glass <email>glass@postgres.berkeley.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Adrian Hall <email>ahall@mirapoint.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Andrey A. Chernov <email>ache@astral.msk.su</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Andrew Herbert <email>andrew@werple.apana.org.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Andrew Moore <email>alm@netcom.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Andy Valencia <email>ajv@csd.mot.com</email>
+	  <email>jtk@netcom.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Arne Henrik Juul <email>arnej@Lise.Unit.NO</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Bakul Shah <email>bvs@bitblocks.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Barry Lustig <email>barry@ictv.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Bob Wilcox <email>bob@obiwan.uucp</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Branko Lankester</para>
+      </listitem>
+      
+      <listitem>
+	<para>Brett Lymn <email>blymn@mulga.awadi.com.AU</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Charles Hannum <email>mycroft@ai.mit.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Chris G. Demetriou
+	  <email>cgd@postgres.berkeley.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Chris Torek <email>torek@ee.lbl.gov</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Christoph Robitschko
+	  <email>chmr@edvz.tu-graz.ac.at</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Daniel Poirot <email>poirot@aio.jsc.nasa.gov</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Dave Burgess <email>burgess@hrd769.brooks.af.mil</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Dave Rivers <email>rivers@ponds.uucp</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>David Dawes <email>dawes@physics.su.OZ.AU</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>David Greenman <email>dg@Root.COM</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Eric J. Haug <email>ejh@slustl.slu.edu</email></para>
+      </listitem>
+	    
+      <listitem>
+	<para>Felix Gaehtgens
+	  <email>felix@escape.vsse.in-berlin.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Frank Maclachlan <email>fpm@crash.cts.com</email></para>
+      </listitem>
+	    
+      <listitem>
+	<para>Gary A. Browning <email>gab10@griffcd.amdahl.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Gary Howland <email>gary@hotlava.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Geoff Rehmet <email>csgr@alpha.ru.ac.za</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Goran Hammarback <email>goran@astro.uu.se</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Guido van Rooij <email>guido@gvr.org</email></para>
+      </listitem>
+      
+      <listitem>
+        <para>Guy Antony Halse <email>guy@rucus.ru.ac.za</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Guy Harris <email>guy@auspex.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Havard Eidnes
+	  <email>Havard.Eidnes@runit.sintef.no</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Herb Peyerl <email>hpeyerl@novatel.cuc.ab.ca</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Holger Veit <email>Holger.Veit@gmd.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Ishii Masahiro, R. Kym Horsell</para>
+      </listitem>
+      
+      <listitem>
+	<para>J.T. Conklin <email>jtc@cygnus.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Jagane D Sundar <email>jagane@netcom.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>James Clark <email>jjc@jclark.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>James Jegers <email>jimj@miller.cs.uwm.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>James W. Dolter</para>
+      </listitem>
+      
+      <listitem>
+	<para>James da Silva <email>jds@cs.umd.edu</email> et al</para>
+      </listitem>
+      
+      <listitem>
+	<para>Jay Fenlason <email>hack@datacube.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Jim Wilson <email>wilson@moria.cygnus.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>J&ouml;rg Lohse
+	  <email>lohse@tech7.informatik.uni-hamburg.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>J&ouml;rg Wunsch
+	  <email>joerg_wunsch@uriah.heep.sax.de</email></para>
+      </listitem>
+	    
+      <listitem>
+	<para>John Dyson</para>
+      </listitem>
+      
+      <listitem>
+	<para>John Woods <email>jfw@eddie.mit.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Jordan K. Hubbard <email>jkh@whisker.hubbard.ie</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Julian Elischer <email>julian@dialix.oz.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Julian Stacey <email>jhs@FreeBSD.org</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Karl Dietz <email>Karl.Dietz@triplan.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Karl Lehenbauer <email>karl@NeoSoft.com</email>
+	  <email>karl@one.neosoft.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Keith Bostic <email>bostic@toe.CS.Berkeley.EDU</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Ken Hughes</para>
+      </listitem>
+      
+      <listitem>
+	<para>Kent Talarico <email>kent@shipwreck.tsoft.net</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Kevin Lahey <email>kml%rokkaku.UUCP@mathcs.emory.edu</email>
+	  <email>kml@mosquito.cis.ufl.edu</email></para>
+      </listitem>
+
+      <listitem>
+	<para>Konstantinos Konstantinidis <email>kkonstan@duth.gr</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Marc Frajola <email>marc@dev.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Mark Tinguely <email>tinguely@plains.nodak.edu</email>
+	  <email>tinguely@hookie.cs.ndsu.NoDak.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Martin Renters <email>martin@tdc.on.ca</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Michael Clay <email>mclay@weareb.org</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Michael Galassi <email>nerd@percival.rain.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Mike Durkin <email>mdurkin@tsoft.sf-bay.org</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Naoki Hamada <email>nao@tom-yam.or.jp</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Nate Williams <email>nate@bsd.coe.montana.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Nick Handel <email>nhandel@NeoSoft.com</email>
+	  <email>nick@madhouse.neosoft.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Pace Willisson <email>pace@blitz.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Paul Kranenburg <email>pk@cs.few.eur.nl</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Paul Mackerras <email>paulus@cs.anu.edu.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Paul Popelka <email>paulp@uts.amdahl.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Peter da Silva <email>peter@NeoSoft.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Phil Sutherland
+	  <email>philsuth@mycroft.dialix.oz.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Poul-Henning Kamp<email>phk@FreeBSD.org</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Ralf Friedl <email>friedl@informatik.uni-kl.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Rick Macklem <email>root@snowhite.cis.uoguelph.ca</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Robert D. Thrush <email>rd@phoenix.aii.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Rodney W. Grimes <email>rgrimes@cdrom.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Sascha Wildner <email>swildner@channelz.GUN.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Scott Burris <email>scott@pita.cns.ucla.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Scott Reynolds <email>scott@clmqt.marquette.mi.us</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Sean Eric Fagan <email>sef@kithrup.com</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Simon J Gerraty <email>sjg@melb.bull.oz.au</email>
+	  <email>sjg@zen.void.oz.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Stephen McKay <email>syssgm@devetir.qld.gov.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Terry Lambert <email>terry@icarus.weber.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Terry Lee <email>terry@uivlsi.csl.uiuc.edu</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Tor Egge <email>Tor.Egge@idi.ntnu.no</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Warren Toomey <email>wkt@csadfa.cs.adfa.oz.au</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Wiljo Heinen <email>wiljo@freeside.ki.open.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>William Jolitz <email>withheld</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Wolfgang Solfrank <email>ws@tools.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Wolfgang Stanglmeier <email>wolf@dentaro.GUN.de</email></para>
+      </listitem>
+      
+      <listitem>
+	<para>Yuval Yarom <email>yval@cs.huji.ac.il</email></para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

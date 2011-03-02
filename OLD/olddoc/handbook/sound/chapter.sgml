@@ -1,0 +1,306 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/sound/chapter.sgml,v 1.4 2001/04/24 15:55:07 statue Exp $
+
+     Translate into Chinese by leeym@cae.ce.ntu.edu.tw
+
+     English Version: 1.1
+-->
+
+<chapter id="sound">
+  <title>音效</title>
+
+  <para><emphasis>由 Moses Moore
+    <email>jm-moses@home.com</email>所貢獻，西元 2000 年 11 月 20 日。</emphasis></para>
+
+  <sect1>
+    <title>概要</title>
+
+    <para>手冊中的這一章說明如何在 FreeBSD 系統上設定音效。</para>
+  </sect1>
+
+  <sect1>
+    <title>尋找正確的裝置</title>
+
+    <para>在開始以前，應該要知道擁有的音效卡的型號，它所用的晶片，
+      還有它是 PCI 還是 ISA 卡。FreeBSD 廣泛的支援多種 PCI 及 ISA 卡。
+      如果在底下列表中沒有發現你的卡，請參考 &man.pcm.4; 說明。
+      這不是完整的列表；不過已經列出了大部分通用的音效卡。</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Crystal 4237，4236，4232，4231</para>
+      </listitem>
+
+      <listitem>
+	<para>Yamaha OPL-SAx</para>
+      </listitem>
+
+      <listitem>
+	<para>OPTi931</para>
+      </listitem>
+
+      <listitem>
+	<para>Ensoniq AudioPCI 1370/1371</para>
+      </listitem>
+
+      <listitem>
+	<para>ESS Solo-1/1E</para>
+      </listitem>
+
+      <listitem>
+	<para>NeoMagic 256AV/ZX</para>
+      </listitem>
+
+      <listitem>
+	<para>Sound Blaster Pro，16，32，AWE64，AWE128，Live</para>
+      </listitem>
+
+      <listitem>
+	<para>Creative ViBRA16</para>
+      </listitem>
+
+      <listitem>
+	<para>Advanced Asound 100，110，和 Logic ALS120</para>
+      </listitem>
+
+      <listitem>
+	<para>ES 1868，1869，1879，1888</para>
+      </listitem>
+
+      <listitem>
+	<para>Gravis UltraSound</para>
+      </listitem>
+
+      <listitem>
+	<para>Aureal Vortex 1 or 2</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>核心中使用的驅動程式視所擁有的音效卡而定。
+      底下的段落提供了更多的資訊以及那些需要加入
+      <link linkend="kernelconfig">核心設定</link>的資料。</para>
+
+    <sect2>
+      <title>Creative，Advance，和 ESS 音效卡</title>
+
+      <para>如果有上面這些卡之一，請在核心中加入</para>
+	
+      <programlisting>device pcm</programlisting>
+
+      <para>如果有 PnP ISA 卡，也請在核心中加入</para>
+
+      <programlisting>device sbc</programlisting>
+
+      <para>對於非 PnP ISA 卡，請在核心中加入</para>
+
+      <programlisting>device pcm</programlisting>
+      
+      <para>和</para>
+
+      <programlisting>device sbc0 at isa? port0x220 irq 5 drq 1 flags 0x15</programlisting>
+
+      <para>那些是預設的設定。
+        可能需要改變 IRQ 或其他。其他資訊請參考 &man.sbc.4; 說明。</para>
+
+      <note>
+	<para>Sound Blaster Live 不被未經修補的 FreeBSD 4.0 所支援；
+          這不包含在這分文件中。
+          建議在嘗試使用這張卡以前更新到最新版的 -STABLE。</para>
+      </note>
+    </sect2>
+
+    <sect2>
+      <title>Gravis UltraSound 卡</title>
+
+      <para>對於 PnP ISA 卡，請在核心中加入</para>
+
+      <programlisting>device pcm</programlisting>
+
+      <para>和</para>
+
+      <programlisting>device gusc</programlisting>
+
+      <para>如果有非 PnP ISA 卡，請在核心中加入</para>
+
+      <programlisting>device pcm</programlisting>
+
+      <para>和</para>
+
+      <programlisting>device gus0 at isa? port 0x220 irq 5 drq 1 flags 0x13</programlisting>
+
+      <para>可能需要更改 IRQ 或其他。其他資訊請參考 &man.gusc.4; 說明。</para>
+    </sect2>
+
+    <sect2>
+      <title>Crystal 音效卡</title>
+
+      <para>對於 Crystal 卡，請在核心中加入</para>
+
+      <programlisting>device pcm</programlisting>
+
+      <para>和</para>
+
+      <programlisting>device csa</programlisting>
+
+    </sect2>
+
+    <sect2>
+      <title>一般支援</title>
+
+      <para>對於 PnP ISA 或 PCI 卡，請在核心設定中加入</para>
+
+      <programlisting>device pcm</programlisting>
+
+      <para>如果有不含 bridge 驅動程式的非 PnP ISA 音效卡，請在核心中加入</para>
+
+      <programlisting>device pcm0 at isa? irq 10 drq 1 flags 0x0</programlisting>
+
+      <para>可能需要改變 IRQ 或其他，以符合硬體設定。</para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>重新編譯核心</title>
+
+    <para>在加入所需的驅動程式至核心設定之後，請重新編譯核心。
+      其他資訊請參考手冊的 <xref linkend="kernelconfig-building"></para>
+  </sect1>
+
+  <sect1>
+    <title>建立和測試裝置節點</title>
+
+    <para>重新開機後，登入並執行 <command>cat /dev/sndstat</command>。
+      會出現類似底下的輸出訊息：</para>
+
+    <programlisting>FreeBSD Audio Driver (newpcm) Sep 21 2000 18:29:53
+Installed devices:
+pcm0: &lt;Aureal Vortex 8830&gt; at memory 0xfeb40000 irq 5 (4p/1r +channels duplex)</programlisting>
+
+    <para>如果看到錯誤訊息，表示前面某個步驟錯了。
+      如果發生了，請重新檢查一次核心設定以確定選擇了正確的裝置。</para>
+
+    <para>如果沒有錯誤訊息而且顯示 <devicename>pcm0</devicename>，
+      請執行 <command>su</command> 變成 <username>root</username> 
+      並如下執行：</para>
+
+    <screen>
+&prompt.root; <userinput>cd /dev</userinput>
+&prompt.root; <userinput>sh MAKEDEV snd0</userinput></screen>
+
+    <para>如果沒有錯誤訊息而且顯示
+      <devicename>pcm1</devicename>，請 <command>su</command> 變成
+      <username>root</username> 並如下執行：</para>
+
+    <screen>
+&prompt.root; <userinput>cd /dev</userinput>
+&prompt.root; <userinput>sh MAKEDEV snd1</userinput></screen>
+
+    <para>請注意上面任一個命令將<emphasis>不會</emphasis>產生
+      <devicename>/dev/snd</devicename> 裝置！而是產生一組裝置節點包括：</para>
+
+    <informaltable frame="none">
+      <tgroup cols="2">
+	<thead>
+	  <row>
+	    <entry>裝置</entry>
+	    <entry>說明</entry>
+	  </row>
+	</thead>
+
+	<tbody>
+	  <row>
+	    <entry><devicename>/dev/audio</devicename></entry>
+	    <entry>SPARC-compatible audio device</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/dsp</devicename></entry>
+	    <entry>Digitized voice device</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/dspW</devicename></entry>
+	    <entry>Like <devicename>/dev/dsp</devicename>，
+              但每次取樣為 16 bits</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/midi</devicename></entry>
+	    <entry>Raw midi access device</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/mixer</devicename></entry>
+	    <entry>Control port mixer device</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/music</devicename></entry>
+	    <entry>Level 2 sequencer interface</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/sequencer</devicename></entry>
+	    <entry>Sequencer device</entry>
+	  </row>
+
+	  <row>
+	    <entry><devicename>/dev/pss</devicename></entry>
+	    <entry>Programmable device interface</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>如果順利，現在應該有個可正常運作的音效卡。如果沒有，請參考下一節。</para>
+  </sect1>
+
+  <sect1>
+    <title>一般問題</title>
+
+    <qandaset>
+      <qandaentry>
+	<question>
+	  <para>我遇到 an unsupported subdevice XX error！</para>
+	</question>
+
+	<answer>
+	  <para>一個或多個裝置節點沒有被正確的產生。請重複上面的步驟。</para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>我遇到 a sb_dspwr(XX) timed out 的錯誤！</para>
+	</question>
+
+	<answer>
+	  <para>I/O port 沒有設定正確</para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>我遇到 a bad irq XX 的錯誤！</para>
+	</question>
+
+	<answer>
+	  <para>IRQ 設定有誤。請確定設定的 IRQ 和音效卡 IRQ 一致。</para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>我遇到 "xxx: gus pcm not attached, out of memory"
+	    的錯誤。這是什麼造成的？</para>
+	</question>
+
+	<answer>
+	  <para>如果發生了，表示不能取得足夠的記憶體來使用這個裝置。</para>
+	</answer>
+      </qandaentry>
+    </qandaset>
+  </sect1>
+</chapter>

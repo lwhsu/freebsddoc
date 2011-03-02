@@ -1,0 +1,1107 @@
+<!--
+     The FreeBSD Documentation Project
+     $FreeBSD: doc/zh/big5/handbook/desktop/chapter.sgml,v 1.3 2003/08/02 16:21:41 statue Exp $
+     Translate into Chinese by forth@zbwei.net
+     English Version: 1.26
+-->
+
+<chapter id="desktop">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+        <firstname>Christophe</firstname>
+        <surname>Juniet</surname>
+        <contrib>Contributed by </contrib>
+      </author>
+    </authorgroup>
+  </chapterinfo>
+
+  <title>Desktop Applications</title>
+
+  <sect1 id="desktop-synopsis">
+    <title>Synopsis</title>
+
+    <para>FreeBSD 能執行相當多種桌面應用程式，譬如瀏覽器或文書軟體。
+      這些程式大都有 package 或能從 ports 自動編譯。
+      許多新使用者預期在桌面上就能找到這類應用程式。
+      本章將介紹如何輕鬆地從 package 或 ports 安裝常見的應用程式。</para>
+
+    <para>注意到，從 ports 安裝程式意味著從原始碼開始編譯。
+      視編譯的程式及電腦速度的不同，這可能需要相當長的時間。
+      若覺得從原始碼編譯太花時間，大部份 ports 
+      中的程式都有預先編譯好的版本可以安裝。</para>
+
+    <para>由於 FreeBSD 擁有與 Linux binary 相容的特性，
+      許多原本替 Linux 開發的程式都可以直接拿來用。
+      在安裝任何 Linux 應用程式前，強烈建議您先閱讀 <xref linkend="linuxemu">。
+      當您在尋找特定的 port 時(如使用 &man.whereis.1;)，請記得
+      許多利用 Linux binary 相容特性的 ports 都以 <quote>linux-</quote> 開頭。
+      下文中，都假設安裝 Linux 應用程式前已開啟 Linux binary 相容的功能。</para>
+
+    <para>本章涵蓋以下種類的程式：</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>瀏覽器 (例如 <application>Mozilla</application>,
+          <application>Netscape</application>,
+          <application>Opera</application>)</para>
+      </listitem>
+
+      <listitem>
+        <para>創作軟體 (例如
+          <application>KOffice</application>,
+          <application>AbiWord</application>,
+          <application>The GIMP</application>,
+          <application>OpenOffice.org</application>)</para>
+      </listitem>
+
+      <listitem>
+        <para>文件檢視器 (例如 <application>Acrobat
+          Reader</application>,
+          <application>gv</application>,
+          <application>Xpdf</application>,
+          <application>GQview</application>)</para>
+      </listitem>
+
+      <listitem>
+        <para>財務軟體 (例如
+          <application>GnuCash</application>,
+          <application>Gnumeric</application>,
+          <application>Abacus</application>)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>在閱讀本章前，你應該先：</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>知道如何安裝額外的軟體
+          (<xref linkend="ports">).</para>
+      </listitem>
+
+      <listitem>
+        <para>知道如何安裝 Linux 軟體
+	  (<xref linkend="linuxemu">).</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>如果想要獲得多媒體環境，閱讀 <xref linkend="multimedia">。
+      如果你要建立和使用電子郵件，請參考 <xref linkend="mail">。</para>
+  </sect1>
+
+  <sect1 id="desktop-browsers">
+    <title>瀏覽器</title>
+
+    <para>FreeBSD 並未預先安裝特定的瀏覽器。
+      然而，在 ports 的
+      <ulink url="http://www.FreeBSD.org/ports/www.html">www</ulink>
+      目錄有許多瀏覽器可以安裝。
+      若您沒時間什麼都自己編譯(有時，這實在很久)，大部分都有
+      package 可用。</para>
+
+    <para><application>KDE</application> 和
+      <application>GNOME</application> 已經提供 HTML 瀏覽器。
+      請參考 <xref linkend="x11-wm"> 以得知更多設定這些完整桌面環境的資訊。</para>
+
+    <para>若想找輕薄短小的瀏覽器，可以試試看
+      <filename role="package">www/dillo</filename>、
+      <filename role="package">www/links</filename>、或是
+      <filename role="package">www/w3m</filename>。</para>
+
+    <para>這章節涵蓋這些應用程式：</para>
+
+    <informaltable>
+      <tgroup cols="4">
+        <thead>
+          <row>
+            <entry>軟體名稱</entry>
+            <entry>資源需求</entry>
+            <entry>安裝時間</entry>
+            <entry>主要相依</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><application>Mozilla</application></entry>
+            <entry>多</entry>
+            <entry>須大量時間空間</entry>
+            <entry><application>Gtk+</application></entry>
+          </row>
+
+          <row>
+            <entry><application>Netscape</application></entry>
+            <entry>多</entry>
+            <entry>輕鬆</entry>
+            <entry>Linux Binary 相容</entry>
+          </row>
+
+          <row>
+            <entry><application>Opera</application></entry>
+            <entry>少</entry>
+            <entry>輕鬆</entry>
+            <entry>FreeBSD 版本：無。 Linux 版本：Linux Binary 相容和
+              <application>linux-openmotif</application></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <sect2>
+      <title>Mozilla</title>
+      <indexterm>
+	<primary><application>Mozilla</application></primary>
+      </indexterm>
+
+      <para><application>Mozilla</application> 也許是 FreeBSD Desktop
+        上最合用的瀏覽器了。
+        它新穎、穩定且完整移植到 FreeBSD，擁有非常合乎標準的 HTML 引擎。
+        它也能處理郵件及閱讀新聞群組，甚至提供 HTML 編輯器用來編寫網頁。
+        <application>Netscape</application> 的使用者可以將它視為
+        <application>Communicator</application>，兩者有些部分事實上是共通的。 </para>
+
+      <para>在 CPU 慢於 233MHz 或記憶體少於 64MB 的電腦，
+        <application>Mozilla</application> 會占用不少系統資源而難以使用。
+        此時也許可以試試 <application>Opera</application> 瀏覽器，
+        本章稍後會介紹它。</para>
+
+      <para>若您無法或不想編譯 <application>Mozilla</application>，
+        FreeBSD GNOME team 已經替您做好 package 了。
+        直接透過網路安裝即可：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r mozilla</userinput></screen>
+
+      <para>若沒 package 可以用，但有足夠的時間及磁碟空間，您可以抓
+        <application>Mozilla</application> 的原始碼來編譯、安裝。
+        執行下下的指令即可：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/www/mozilla</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <para><application>Mozilla</application> port 需要 
+        <username>root</username> 權限執行 chrome 註冊設定，
+	來確認正確的初始化。
+	然而，如果你要獲得一些額外的插件，像是 mouse gestures，
+	你必須以 <username>root</username> 來執行
+	<application>Mozilla</application> 讓他們正確地安裝。</para>
+
+      <para>一但你完成了 <application>Mozilla</application> 的安裝，
+        你就在也不需要 <username>root</username> 權限了。
+	你可以用如下方式執行 <application>Mozilla</application> 瀏覽器：</para>
+
+      <screen>&prompt.user; <userinput>mozilla</userinput></screen>
+
+      <para>也可以用如下方式直接開啟電子郵件和新聞閱讀：</para>
+
+      <screen>&prompt.user; <userinput>mozilla -mail</userinput></screen>
+    </sect2>
+    
+    <sect2 id="moz-java-flash">
+      <sect2info>
+	<authorgroup>
+	  <author>
+	    <firstname>Tom</firstname>
+	    <surname>Rhodes</surname>
+	    <contrib>Contributed by </contrib>
+	  </author>
+	</authorgroup>
+    </sect2info>
+
+      <title>Mozilla, &java;, and <trademark class="registered">Macromedia</trademark> <trademark>Flash</trademark></title>
+      
+      <para>安裝 <application>Mozilla</application> 是簡單的，
+        但是安裝 <application>Mozilla</application> 的額外支援，例如 &java;
+	和 <trademark class="registered">Macromedia</trademark>
+	<trademark>Flash</trademark> 就會消耗許多時間和硬碟空間。</para>
+
+      <para>第一件事就是使用 <application>Mozilla</application>
+        下載要安裝的檔案。
+	讓你目前的網頁瀏覽器連道
+	<ulink url="http://www.sun.com/software/java2/download.html"></ulink>
+	並且在他們的網站上建立一個帳號。
+	記得要儲存使用者名稱和密碼，可能未來還需要用到。
+	下載 <filename>j2sdk-1_3_1-src.tar.gz</filename> 
+	並放置到 <filename>/usr/ports/distfiles/</filename> ，
+	因為 port 將不會自動的抓取他。
+	這是因為許可證限制。
+	並從
+	<ulink url="http://java.sun.com/webapps/download/Display?BundleId=7905"></ulink>
+	下載 <quote>java environment</quote>。
+	檔名是 <filename>j2sdk-1_3_1_08-linux-i586.bin</filename> 
+	而且檔案蠻大的(大約 25MB!)。
+        就像之前一樣，
+        檔案必須放置在 <filename>/usr/ports/distfiles/</filename>。
+        最後從 <ulink url="http://www.eyesbeyond.com/freebsddom/java/"></ulink>
+        下載 <quote>java patchkit</quote> 並且放置到
+        <filename>/usr/ports/distfiles/</filename>。</para>	
+      
+      <para>用標準方式 <command>make install clean</command> 安裝 
+        <filename role="package">java/jdk13</filename> port，
+	並且接著安裝 <filename role="package">www/flashpluginwrapper</filename>
+	port。
+	這個 port 需要 <filename role="package">emulators/linux_base</filename>
+	這個龐大的 port。
+	雖然有其他 <application>flash</application> 插件存在，
+	但是對我並不能使用。</para>
+
+      <para>如果 <application>Mozilla</application> 還沒安裝，
+        安裝 <filename role="package">www/mozilla</filename> port。</para>
+
+      <para>現在用如下方式拷貝 <application>flash</application> 的插件檔案：</para>
+    
+      <screen>&prompt.root; <userinput>cp /usr/local/lib/flash/libflashplayer.so \
+	/usr/X11R6/lib/browser_plugins/libflashplayer_linux.so</userinput></screen>
+
+      <screen>&prompt.root; <userinput>cp /usr/local/lib/flash/ShockwaveFlash.class \
+	/usr/X11R6/lib/browser_plugins/</userinput></screen>
+
+      <note><para>假如你正在使用 <filename role="package">www/mozilla-devel</filename>，
+        遠端目錄將會不同。</para></note>
+
+    <para>現在在 <application>Mozilla</application> 的起始 script 
+      <filename>/usr/X11R6/bin/mozilla</filename> 的最上面
+      (但是在 <literal>#!/bin/sh</literal> 之下) 加上以下的幾行：</para>
+
+<programlisting>LD_PRELOAD=/usr/local/lib/libflashplayer.so.1
+export LD_PRELOAD</programlisting>
+
+      <para>這將會啟用 <application>flash</application> 插件。</para>
+
+      <para>現在只要啟動 <application>Mozilla</application> 如下：</para>
+
+      <screen>&prompt.user; <userinput>mozilla &amp;</userinput></screen>
+
+      <para>並且從 <guimenu>Help</guimenu> 選單，存取 
+        <guimenuitem>About Plug-ins</guimenuitem> 選項。
+	所有目前可用的插件列表就會出現。
+	<application>java</application> 和
+	<application>shockwave flash</application> 應該都會被列入。</para>
+    
+    </sect2>
+
+    <sect2>
+      <title>Netscape</title>
+      <indexterm>
+	<primary><application>Netscape</application></primary>
+      </indexterm>
+
+      <para>ports collection 包含許多 Netscape 瀏覽器的版本。
+        因為 native FreeBSD 的包含一個嚴重的安全問題，
+	非常不建議安裝他們。
+	因此，使用最近 Linux or DIGITAL UNIX 的版本。</para>
+
+      <para>最新穩定的 Netscape 瀏覽器是
+        <application>Netscape 7</application>。
+	他可以從 ports collection 中被安裝：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/www/netscape7</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <para>也有本地化過的版本在 French、German、和 Japanese 目錄下。</para>
+
+      <caution>
+        <para><application>Netscape 4.x</application> 
+	  版本並不建議，因為他們和目前的標準並不相容。
+	  然而 <application>Netscape 7.x</application> 只有 i386 平台的支援。</para>
+      </caution>
+    </sect2>
+
+    <sect2>
+      <title>Opera</title>
+      <indexterm>
+	<primary><application>Opera</application></primary>
+      </indexterm>
+
+      <para><application>Opera</application> 是個快速、擁有許多特性、
+        並且是標準相容的瀏覽器。
+	他有兩種版本：<quote>native</quote> FreeBSD 版本和可以在 Linux
+	模擬器下運作的版本。
+	對每個作業系統，都有一個免費但是有廣告，
+	以及一個無廣告但是必須向
+	<ulink url="http://www.opera.com/">Opera web site</ulink>
+	購買的版本。</para>
+
+      <para>要使用 FreeBSD 版本的 <application>Opera</application>
+        來瀏覽網頁，安裝以下 package：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r opera</userinput></screen>
+
+      <para>有些 FTP 站台沒有所有的 packages，
+        你也可以透過 ports collection 來安裝：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/www/opera</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <para>要安裝 Linux 版本的 <application>Opera</application>，
+        將上面範例的 <literal>opera</literal> 替代成
+	<literal>linux-opera</literal>。
+	Linux 版本在某些情況下十分有用，
+	像是需要使用只有 Linux 版本的插件，
+	如 <application>Adobe Acrobat Reader</application>。
+	不然在其他方面，FreeBSD 和 Linux 是完全一致的。</para>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="desktop-productivity">
+    <title>創作軟體</title>
+
+    <para>當要從事創作，新使用者通常都會尋找好用的辦公室套件或是 word 處理器。
+       目前有些 <link linkend="x11-wm">desktop environments</link>
+       像是 <application>KDE</application> 已經提供辦公室套件。
+       FreeBSD 提供所有的需求，桌面環境也不例外。</para>
+
+    <para>本章節涵蓋如下軟體：</para>
+
+    <informaltable>
+      <tgroup cols="4">
+        <thead>
+          <row>
+            <entry>軟體名稱</entry>
+            <entry>資源需求</entry>
+            <entry>安裝時間</entry>
+            <entry>主要相依</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><application>KOffice</application></entry>
+            <entry>light</entry>
+            <entry>heavy</entry>
+            <entry><application>KDE</application></entry>
+          </row>
+
+          <row>
+            <entry><application>AbiWord</application></entry>
+            <entry>light</entry>
+            <entry>light</entry>
+            <entry><application>Gtk+</application> or <application>GNOME</application></entry>
+          </row>
+
+          <row>
+            <entry><application>The Gimp</application></entry>
+            <entry>light</entry>
+            <entry>heavy</entry>
+            <entry><application>Gtk+</application></entry>
+          </row>
+
+          <row>
+            <entry><application>OpenOffice.org</application></entry>
+            <entry>heavy</entry>
+            <entry>huge</entry>
+            <entry><application>GCC 3.1</application>, <application>JDK 1.3</application>, <application>Mozilla</application></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+   
+    <sect2>
+      <title>KOffice</title>
+      <indexterm>
+	<primary><application>KOffice</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>office suite</primary>
+	<secondary><application>KOffice</application></secondary>
+      </indexterm>
+
+      <para>KDE 社群提供了一套辦公室套件，可以用在桌面環境。
+        它包含四個標準元件，這些元件可以在其他辦公室套件中找到。
+	<application>KWord</application> 是文書處理器，
+	<application>KSpread</application> 是試算表程式，
+	<application>KPresenter</application> 管理投影片報告，
+	和 <application>Kontour</application> 讓你繪畫圖形文件。</para>
+
+      <para>在安裝最新的 <application>KOffice</application> 之前，
+        先確認你是否有個最新版本的 <application>KDE</application>。</para>
+
+      <para>要用 package 來安裝 <application>KOffice</application> 如下：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r koffice</userinput></screen>
+
+      <para>假如 packages 無法取得，你可以用 ports collection。
+        要安裝 <application>KDE3</application> 的
+	<application>KOffice</application> 版本如下：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/editors/koffice-kde3</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>AbiWord</title>
+      <indexterm>
+	<primary><application>AbiWord</application></primary>
+      </indexterm>
+
+      <para><application>AbiWord</application> 是個免費的文書處理器，
+        看起來和感覺上就像是 <application>Microsoft Word</application>。
+	他適合用來打論文、文件、報告、備忘等等。
+	他非常快速、包含許多特性、並且是十分容易使用的。</para>
+
+      <para><application>AbiWord</application> 可以匯入或匯出許多檔案格式，
+        包含 Microsoft <filename>.doc</filename>。</para> 
+
+      <para><application>AbiWord</application> 也有 package 可以取得。
+        你可以用如下的方式安裝：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r AbiWord-gnome</userinput></screen>
+
+      <para>>假如 packages 無法取得，你可以用 ports collection。
+        ports collection 應該會更新。你可以透過下面的方式做到：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/editors/AbiWord</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>The GIMP</title>
+      <indexterm>
+	<primary><application>The GIMP</application></primary>
+      </indexterm>
+
+      <para>對影像的編輯或是圖片的潤飾，
+        <application>The GIMP</application> 是非常精通於影像處理的軟體。
+	他可以被用來當作是簡單的繪圖程式，或是專業的照片潤飾套件。
+	它支援眾多的插件，而且有 scripting 介面的特性。
+	<application>The GIMP</application> 可以讀取和寫入眾多的檔案格式。
+	他也支援掃描器和繪圖板。</para>
+
+      <para>你可以用如下指令來安裝：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r gimp</userinput></screen>
+
+      <para>如果你的 FTP 站台沒有這個 package，
+        你可以用 ports collection。
+	ports collection 中的
+	<ulink url="http://www.FreeBSD.org/ports/graphics.html">graphics</ulink>
+	目錄也包含 <application>The Gimp Manual</application>。
+	這邊是如何安裝：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/graphics/gimp1</userinput>
+&prompt.root; <userinput>make install clean</userinput>
+&prompt.root; <userinput>cd /usr/ports/graphics/gimp-manual-pdf</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <note>
+        <para>ports collection 中的
+          <ulink url="http://www.FreeBSD.org/ports/graphics.html">graphics</ulink>
+	  目錄下也有發展中的 <application>The GIMP</application> 版本在
+	  <filename role="package">graphics/gimp-devel</filename>。
+	  HTML 和 PostScript 版本的 <application>The Gimp Manual</application> 
+	  在 <filename role="package">graphics/gimp-manual-html</filename> 和
+          <filename role="package">graphics/gimp-manual-ps</filename>。</para>
+       </note>
+    </sect2>
+
+    <sect2>
+      <title>OpenOffice.org</title>
+      <indexterm>
+	<primary><application>OpenOffice.org</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>office suite</primary>
+	<secondary><application>OpenOffice.org</application></secondary>
+      </indexterm>
+
+      <para><application>OpenOffice.org</application> includes all of the
+        mandatory applications in a complete office productivity
+        suite: a word processor, a spreadsheet, a presentation manager,
+        and a drawing program.  Its user interface is very similar
+        to other office suites, and it can import and export in various
+        popular file formats.  It is available in a number of
+        different languages including interfaces, spell checkers, and
+        dictionaries.</para>
+
+      <para>The word processor of
+        <application>OpenOffice.org</application> uses a native XML
+        file format for increased portability and flexibility.  The
+        spreadsheet program features a macro language and it can be
+        interfaced with external databases.
+        <application>OpenOffice.org</application> is already stable
+        and runs natively on Windows, Solaris, Linux, FreeBSD,
+        and Mac&nbsp;OS&nbsp;X.  More
+        information about <application>OpenOffice.org</application>
+        can be found on the
+	<ulink url="http://www.openoffice.org/">OpenOffice web site</ulink>.
+	For FreeBSD specific information, and to directly
+	download packages use the <ulink
+	url="http://projects.imp.ch/openoffice/">FreeBSD OpenOffice
+	Porting Team</ulink>'s web site.</para>
+
+      <para>To install <application>OpenOffice.org</application>,
+        do:</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r openoffice</userinput></screen>
+
+      <para>Once the package is installed, you must run the setup
+        program and choose a <option>standard workstation installation</option>.
+        Run this command as the user who will use
+        <application>OpenOffice.org</application>:</para>
+
+      <screen>&prompt.user; <userinput>openoffice-setup</userinput></screen>
+
+      <para>If the <application>OpenOffice.org</application> packages
+        are not available, you still have the option to compile the
+        port.  However, you must bear in mind that it requires a lot of
+        disk space and a fairly long time to compile.</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/editors/openoffice</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <para>Once this is done, run the setup as the user who will use
+        <application>OpenOffice.org</application> and choose a
+        <option>standard workstation installation</option> by:</para>
+
+      <screen>&prompt.user; <userinput>cd /usr/ports/editors/openoffice</userinput>
+&prompt.user; <userinput>make install-user</userinput></screen>
+
+      <para>若希望能安裝本土化的版本，有以下 ports：</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <colspec colwidth="1*">
+          <colspec colwidth="2*">
+          <thead>
+            <row>
+              <entry>Language</entry>
+              <entry>Port</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>Arabic</entry>
+              <entry><filename role="package">editors/openoffice-ar</filename></entry>
+            </row>
+
+            <row>
+              <entry>Danish</entry>
+              <entry><filename role="package">editors/openoffice-dk</filename></entry>
+            </row>
+
+            <row>
+              <entry>Spanish</entry>
+              <entry><filename role="package">editors/openoffice-es</filename></entry>
+            </row>
+
+            <row>
+              <entry>Greek</entry>
+              <entry><filename role="package">editors/openoffice-gr</filename></entry>
+            </row>
+
+            <row>
+              <entry>Italian</entry>
+              <entry><filename role="package">editors/openoffice-it</filename></entry>
+            </row>
+
+            <row>
+              <entry>Dutch</entry>
+              <entry><filename role="package">editors/openoffice-nl</filename></entry>
+            </row>
+
+            <row>
+              <entry>Polish</entry>
+              <entry><filename role="package">editors/openoffice-pl</filename></entry>
+            </row>
+
+            <row>
+              <entry>Swedish</entry>
+              <entry><filename role="package">editors/openoffice-se</filename></entry>
+            </row>
+
+            <row>
+              <entry>Turkish</entry>
+              <entry><filename role="package">editors/openoffice-tr</filename></entry>
+            </row>
+
+            <row>
+              <entry>French</entry>
+              <entry><filename role="package">french/openoffice</filename></entry>
+            </row>
+
+            <row>
+              <entry>German</entry>
+              <entry><filename role="package">german/openoffice</filename></entry>
+            </row>
+
+            <row>
+              <entry>Japanese</entry>
+              <entry><filename role="package">japanese/openoffice</filename></entry>
+            </row>
+
+            <row>
+              <entry>Korean</entry>
+              <entry><filename role="package">korean/openoffice</filename></entry>
+            </row>
+	    
+            <row>
+              <entry>Portuguese</entry>
+              <entry><filename role="package">portuguese/openoffice</filename></entry>
+            </row>
+
+            <row>
+              <entry>Russian</entry>
+              <entry><filename role="package">russian/openoffice</filename></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </sect2>
+  </sect1>
+
+  <sect1 id="desktop-viewers">
+    <title>Document Viewers</title>
+
+    <para>某些新的文件格式最近變的十分熱門。
+      他們所需求的標準檢視器可能不在 base system 內。
+      在本章節中我們將告訴你如何安裝他們。
+
+    <para>本節涵蓋這些應用程式：</para>
+
+    <informaltable>
+      <tgroup cols="4">
+        <thead>
+          <row>
+            <entry>軟體名稱</entry>
+            <entry>資源需求</entry>
+            <entry>安裝時間</entry>
+            <entry>主要相依</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><application>Acrobat Reader</application></entry>
+            <entry>少</entry>
+            <entry>輕鬆</entry>
+            <entry>Linux Binary 相容</entry>
+          </row>
+
+          <row>
+            <entry><application>gv</application></entry>
+            <entry>少</entry>
+            <entry>輕鬆</entry>
+            <entry><application>Xaw3d</application></entry>
+          </row>
+
+          <row>
+            <entry><application>Xpdf</application></entry>
+            <entry>少</entry>
+            <entry>輕鬆</entry>
+            <entry><application>FreeType</application></entry>
+          </row>
+
+          <row>
+            <entry><application>GQview</application></entry>
+            <entry>少</entry>
+            <entry>輕鬆</entry>
+            <entry><application>Gtk+</application> or <application>GNOME</application></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <sect2>
+      <title>Acrobat Reader</title>
+      <indexterm>
+	<primary><application>Acrobat Reader</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>PDF</primary>
+	<secondary>viewing</secondary>
+      </indexterm>
+
+      <para>許多文件現在都用 PDF 檔案來散佈，
+        根據 <quote>Portable Document Format</quote> 的標準。
+	一個建議的檢視器是 <application>Acrobat Reader</application>，
+	由 Adobe 所發行的 Linux 版本。
+	因為 FreeBSD 可以執行 Linux Binaries，
+	所以也可以在 FreeBSD 上運行。</para>
+
+      <para>要安裝 <application>Acrobat Reader 5</application>
+        package 如下：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r acroread5</userinput></screen>
+
+      <para>一如往常，如果 package 無法取得或是你要最新的版本，
+        你可以用 ports collection：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/print/acroread5</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <note><para><application>Acrobat Reader</application> 
+        有許多版本可以使用。
+	在寫作的時候，有
+        <filename role="package">print/acroread</filename> (version 3.0.2)、
+        <filename role="package">print/acroread4</filename> (version 4.0.5)、和 
+        <filename role="package">print/acroread5</filename> (version 5.0.6)。
+	他們可能不是都有 package 給你現在版本的 FreeBSD 使用。
+	但是 ports collection 將總是包含最新的版本。</para>
+      </note>
+    </sect2>
+
+    <sect2>
+      <title>gv</title>
+      <indexterm>
+	<primary><application>gv</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>PDF</primary>
+	<secondary>viewing</secondary>
+      </indexterm>
+      <indexterm>
+	<primary>PostScript</primary>
+	<secondary>viewing</secondary>
+      </indexterm>
+
+      <para><application>gv</application> 是個 PortScript 和 PDF 檢視器。
+        他源自於 <application>ghostview</application> 但是使用
+	<application>Xaw3d</application> 函式庫讓他看起來更美觀。
+	他很快速而且介面乾淨。
+	<application>gv</application> 有許多特性像是
+	orientation、paper size、scale、或是 antialias。
+	大部分的操作都可以透過鍵盤或是滑鼠。</para>
+
+      <para>要安裝 <application>gv</application> 的 package 如下：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r gv</userinput></screen>
+
+      <para>如果 package 無法取得，你可以用 ports collection：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/print/gv</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>Xpdf</title>
+      <indexterm>
+	<primary><application>Xpdf</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>PDF</primary>
+	<secondary>viewing</secondary>
+      </indexterm>
+
+      <para>如果你要一個小的 FreeBSD PDF 檢視器，
+        <application>Xpdf</application> 是個輕薄短小且有效率的檢視器。
+	他需要非常少的資源而且非常穩定。
+	他用標準的 X fonts 並且不需要
+	<application>Motif</application> 或其他任何的 X toolkit。</para>
+
+      <para>安裝 <application>Xpdf</application> 的 package 如下：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r xpdf</userinput></screen>
+
+      <para>如果 package 無法取得，你可以用 ports collection：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/graphics/xpdf</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+      <para>安裝完成後，你可以啟動
+        <application>Xpdf</application> 並用滑鼠右鍵來使用選單。</para>
+    </sect2>
+
+    <sect2>
+      <title>GQview</title>
+      <indexterm>
+	<primary><application>GQview</application></primary>
+      </indexterm>
+
+      <para><application>GQview</application> 是個圖片管理器。
+        你可以透過滑鼠單點來觀看檔案，開啟其他的編輯器，
+	使用預先檢視，和更多的功能。
+	他也有投影片放映模式和一些基本的檔案操作。
+	你可以管理圖片集並且簡單的找到重複的。
+	<application>GQview</application> 可以全螢幕觀賞而且支援國際化。</para>
+
+      <para>如果你要安裝 <application>GQview</application> package 如下：</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r gqview</userinput></screen>
+
+      <para>如果 package 無法取得，你可以用 ports collection：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/graphics/gqview</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+  </sect1>
+
+  <sect1 id="desktop-finance">
+    <title>Finance</title>
+
+    <para>If, for any reason, you would like to manage your personal
+      finances on your FreeBSD Desktop, there are some powerful and
+      easy to use applications ready to be installed.  Some of them
+      are compatible with widespread file formats like those of
+      <application>Quicken</application> or <application>Excel</application> documents.</para>
+
+    <para>This section covers these applications:</para>
+     
+    <informaltable>
+      <tgroup cols="4">
+        <thead>
+          <row>
+            <entry>Application Name</entry>
+            <entry>Resources Needed</entry>
+            <entry>Installation from Ports</entry>
+            <entry>Major Dependencies</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><application>GnuCash</application></entry>
+            <entry>light</entry>
+            <entry>heavy</entry>
+            <entry><application>GNOME</application></entry>
+          </row>
+
+          <row>
+            <entry><application>Gnumeric</application></entry>
+            <entry>light</entry>
+            <entry>heavy</entry>
+            <entry><application>GNOME</application></entry>
+          </row>
+
+          <row>
+            <entry><application>Abacus</application></entry>
+            <entry>light</entry>
+            <entry>light</entry>
+            <entry><application>Tcl/Tk</application></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+   
+    <sect2>
+      <title>GnuCash</title>
+      <indexterm>
+	<primary><application>GnuCash</application></primary>
+      </indexterm>
+
+      <para><application>GnuCash</application> is part of the
+        <application>GNOME</application> effort to provide
+        user-friendly yet powerful applications to end-users.  With
+        <application>GnuCash</application>, you can keep track of your
+        income and expenses, your bank accounts, or your stocks.  It
+        features an intuitive interface while remaining very
+        professional.</para>
+
+      <para><application>GnuCash</application> provides a smart
+        register, a hierarchical system of accounts, many keyboard
+        accelerators and auto-completion methods.  It can split a
+        single transaction into several more detailed pieces.
+        <application>GnuCash</application> can import and merge
+        <application>Quicken</application> QIF files.  It also handles most international date
+        and currency formats.</para>
+
+      <para>To install <application>GnuCash</application> on your
+        system, do:</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r gnucash</userinput></screen>
+
+      <para>If the package is not available, you can use the ports
+        collection:</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/finance/gnucash</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>Gnumeric</title>
+      <indexterm>
+	<primary><application>Gnumeric</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>spreadsheet</primary>
+	<secondary><application>Gnumeric</application></secondary>
+      </indexterm>
+
+      <para><application>Gnumeric</application> is a spreadsheet, part
+        of the <application>GNOME</application> desktop environment.
+        It features convenient automatic <quote>guessing</quote> of user
+        input according to the cell format and an autofill system for
+        many sequences.  It can import files in a number of popular
+        formats like those of <application>Excel</application>, <application>Lotus 1-2-3</application>, or <application>Quattro Pro</application>.
+        <application>Gnumeric</application> supports graphs through
+        the <filename role="package">math/guppi</filename> graphing
+        program.  It has a large number of built-in functions and
+        allows all of the usual cell formats such as number, currency,
+        date, time, and much more.</para>
+
+      <para>To install <application>Gnumeric</application> as a
+        package, type in:</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r gnumeric</userinput></screen>
+
+      <para>If the package is not available, you can use the ports
+        collection by doing:</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/math/gnumeric</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>Abacus</title>
+      <indexterm>
+	<primary><application>Abacus</application></primary>
+      </indexterm>
+      <indexterm>
+	<primary>spreadsheet</primary>
+	<secondary><application>Abacus</application></secondary>
+      </indexterm>
+
+      <para><application>Abacus</application> is a small and easy to
+        use spreadsheet.  It includes many built-in functions useful
+        in several domains such as statistics, finances, and
+        mathematics.  It can import and export the <application>Excel</application> file format.
+        <application>Abacus</application> can produce PostScript
+        output.</para>
+
+      <para>To install <application>Abacus</application> from its
+        package, do:</para>
+
+      <screen>&prompt.root; <userinput>pkg_add -r abacus</userinput></screen>
+
+      <para>If the package is not available, you can use the ports
+        collection by doing:</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/ports/deskutils/abacus</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+    </sect2>
+  </sect1>
+
+  <sect1 id="desktop-summary">
+    <title>結論</title>
+
+    <para>當 FreeBSD 因為他的效能和穩定性而熱門於 ISPs，
+      他也完全可以用於桌面環境。
+      擁有數以千計可取得的 
+      <ulink url="http://www.FreeBSD.org/where.html">packages</ulink> 或是
+      <ulink url="http://www.FreeBSD.org/ports/index.html">ports</ulink>，
+      可以為你的需求建立完美的桌面環境。</para>
+
+    <para>Once you have achieved the installation of your desktop, you
+      may want to go one step further with
+      <filename role="package">misc/instant-workstation</filename>.
+      This <quote>meta-port</quote> allows you to build a typical set
+      of ports for a workstation.  You can customize it by editing
+      <filename>/usr/ports/misc/instant-workstation/Makefile</filename>.
+      Follow the syntax used for the default set to add or remove
+      ports, and build it with the usual procedure.
+      Eventually, you will be able to create a big package that
+      corresponds to your very own desktop and install it to your
+      other workstations!</para>
+
+    <para>這邊有個本章所涵蓋的桌面軟體快速回顧：</para>
+
+    <informaltable>
+      <tgroup cols="3">
+        <thead>
+          <row>
+            <entry>軟體名稱</entry>
+	    <entry>Package 名稱</entry>
+	    <entry>Ports 名稱</entry>
+	  </row>
+	</thead>
+
+	<tbody>
+	  <row>
+            <entry><application>Mozilla</application></entry>
+	    <entry><literal>mozilla</literal></entry>
+	    <entry><filename role="package">www/mozilla</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>Netscape</application></entry>
+	    <entry><literal>linux-netscape7</literal></entry>
+	    <entry><filename role="package">www/netscape7</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>Opera</application></entry>
+	    <entry><literal>linux-opera</literal></entry>
+	    <entry><filename role="package">www/linux-opera</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>KOffice</application></entry>
+	    <entry><literal>koffice-kde3</literal></entry>
+	    <entry><filename role="package">editors/koffice-kde3</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>AbiWord</application></entry>
+	    <entry><literal>AbiWord-gnome</literal></entry>
+	    <entry><filename role="package">editors/AbiWord</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>The GIMP</application></entry>
+	    <entry><literal>gimp</literal></entry>
+	    <entry><filename role="package">graphics/gimp1</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>OpenOffice.org</application></entry>
+	    <entry><literal>openoffice</literal></entry>
+	    <entry><filename role="package">editors/openoffice</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>Acrobat Reader</application></entry>
+	    <entry><literal>acroread5</literal></entry>
+	    <entry><filename role="package">print/acroread5</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>gv</application></entry>
+	    <entry><literal>gv</literal></entry>
+	    <entry><filename role="package">print/gv</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>Xpdf</application></entry>
+	    <entry><literal>xpdf</literal></entry>
+	    <entry><filename role="package">graphics/xpdf</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>GQview</application></entry>
+	    <entry><literal>gqview</literal></entry>
+	    <entry><filename role="package">graphics/gqview</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>GnuCash</application></entry>
+	    <entry><literal>gnucash</literal></entry>
+	    <entry><filename role="package">finance/gnucash</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>Gnumeric</application></entry>
+	    <entry><literal>gnumeric</literal></entry>
+	    <entry><filename role="package">math/gnumeric</filename></entry>
+	  </row>
+
+	  <row>
+            <entry><application>Abacus</application></entry>
+	    <entry><literal>abacus</literal></entry>
+	    <entry><filename role="package">deskutils/abacus</filename></entry>
+	  </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </sect1>
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

@@ -1,0 +1,931 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/l10n/chapter.sgml,v 1.8 2003/01/29 06:47:53 statue Exp $
+
+     Translate into Chinese by fari.bbs@bbs.yzu.edu.tw
+
+     English Version: 1.76
+-->
+
+<chapter id="l10n">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+	<firstname>Andrey A.</firstname>
+	<surname>Chernov</surname>
+	<contrib>Contributed by </contrib>
+      </author>
+    </authorgroup>
+    <authorgroup>
+      <author>
+	<firstname>Michael C.</firstname>
+	<surname>Wu</surname>
+	<contrib>Rewritten by </contrib>
+      </author>
+      <!-- 30 Nv 2000 -->
+    </authorgroup>
+  </chapterinfo>
+
+  <title>區域化 - I18N/L10N 使用與設定</title>
+
+  <sect1>
+    <title>概要</title>
+
+    <para>FreeBSD是一個擁有全世界相當多使用者與貢獻者支援的分散式計劃。
+      這個章節將討論FreeBSD中全球化與區域化的特點，
+      而這些特點可以讓非英語系的使用者工作更方便。
+      在系統與應用程式的層次，有許多關於i18n實作方面的觀點。
+      所以以實用為目的可以參考更多特定來源的文件。</para>
+
+    <para>在學習完這個章節後，您將獲得：</para>
+    <itemizedlist>
+      <listitem><para>在現代的作業系統上，不同的語言與 locales 如何編碼。
+      </para></listitem>
+      <listitem><para>如何設定您登入 shell 的 locale。</para></listitem>
+      <listitem><para>對非英文語系者，如何設定您的終端機。</para></listitem>
+      <listitem><para>如何有效率的在不同語言中使用 X 視窗。</para></listitem>
+      <listitem><para>在哪可以找到更多關於撰寫 i18n 相容的應用程式資訊。
+      </para></listitem>
+   </itemizedlist>
+
+    <para>在學習這個章節前，您應該：</para>
+
+    <itemizedlist>
+      <listitem><para>知道如何安裝而外的協力廠商應用軟體
+        (<xref linkend="ports">)。</para></listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1>
+    <title>基本概念</title>
+
+    <sect2>
+      <title>何謂 I18N/L10N？</title>
+    <indexterm><primary>internationalization</primary></indexterm> 
+    <indexterm><primary>localization</primary></indexterm> 
+
+      <para>開發者縮短國際化變成了 i18n 這個名詞，
+        計算在國際化中第一個與最後一個之間字母的個數。 
+	l10n 也是用同樣的方式而來。 
+	將 i18n/l10n 的使用方法、協定、與應用程式作結合後，
+	使用者可以輕鬆使用他們所選擇的語言。</para>
+
+      <para>I18n 應用軟體的開發是使用函式庫下的 i18n 工具套件。
+        它允許開發者去寫一個簡單的檔案然後轉換成各種語言的表單與文字。 
+	我們強烈的鼓勵程式撰寫者遵循這個協定。</para>
+    </sect2>
+
+    <sect2>
+      <title>為什麼我應該使用 I18N/L10N？</title>
+
+      <para>I18n/l10n 被用在無論何時你想要去看、輸入、
+        或者是處理非英文語言的資料。</para>
+    </sect2>
+
+    <sect2>
+      <title>哪些語言是被 i18n 所支援的？</title>
+
+      <para>I18n 與 l10n 不是 FreeBSD 所有的特定標準。就目前而言， 
+        我們可以自其中選擇一個世界上的主要語言，其中包括了中文、德文、日文、
+	韓文、法文、俄文、越南文及其他等等，但是對語言的支援並非只限於上述。</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="using-localization">
+    <title>使用區域化</title>
+
+    <para>i18n 並不是 FreeBSD 所有的特定標準而是一個協定。
+      我們鼓勵你去幫助 FreeBSD 跟隨這樣的協定。</para>
+    <indexterm><primary>locale</primary></indexterm>
+
+    <para>區域化的設定是架構在三個主要的方面：語言碼、國家碼和字元編碼。 
+      區域名是由下列這些部分所構成的：</para>
+
+    <programlisting><replaceable>LanguageCode</replaceable>_<replaceable>CountryCode</replaceable>.<replaceable>Encoding</replaceable></programlisting>
+
+    <sect2>
+      <title>語言與國家碼</title>
+      <indexterm><primary>language codes</primary></indexterm>
+      <indexterm><primary>country codes</primary></indexterm>
+
+      <para>為了區域化 FreeBSD 系統去提供一個特殊的語言
+        (或者任何 其他支援 i18n 的 UNIX)，使用者必須找出特定的國家和語言碼
+	(國家碼告訴應用軟體要去使用那一種語言)。
+	此外，SMTP/POP 伺服器、網頁伺服器、等都是基於以上。
+	以下是語言和國家碼的範例：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>Language/Country Code</entry>
+	      <entry>Description</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry>en_US</entry>
+	      <entry>English - United States</entry>
+	    </row>
+
+	    <row>
+	      <entry>ru_RU</entry>
+	      <entry>Russian for Russia</entry>
+	    </row>
+
+	    <row>
+	      <entry>zh_TW</entry>
+	      <entry>Traditional Chinese for Taiwan</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+    </sect2>
+
+    <sect2>
+      <title>字元編碼</title>
+      <indexterm><primary>encodings</primary></indexterm>
+      <indexterm><primary>ASCII</primary></indexterm>
+
+      <para>有些語言使用 8-bit 的非 ASCII 編碼，寬或多位元，參考 &man.multibyte.3; 
+        得到更多的細節。較舊的應用軟體無法辨識這些字元，且將它們誤認為是控制字元，
+	新的應用軟體通常都辨識 8-bit 字元。為了配合這樣的解決方案，
+	使用者可能被要求去編譯一個提供寬或多位元字元的應用軟體，或者是正確的設定。 
+	為了能夠輸入和處理寬或多字元， <ulink 
+	url="../../../../ports/index.html">FreeBSD Ports collection</ulink>
+	已經對每個語言提供了不同的程式。參考在各個 FreeBSD Port 在 i18n 的文件。
+	</para>
+
+      <para>具體而言，使用者需要去檢查應用軟體文件去決定如何正確的設定，
+        或是傳入正確的值到 configure/Makefile/compiler。</para>
+
+      <para>有些需要牢記在心中的事情：</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>語言特定的單一 C chars 字元集
+	  (參考 &man.multibyte.3;)，例如，
+	    ISO-8859-1、ISO-8859-15、KOI8-R、CP437。</para>
+	</listitem>
+
+	<listitem>
+	  <para>寬或多位元字元編碼，例如，EUC、Big5。</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>你可以檢查字元設定的 active 列表在
+	<ulink
+	url="http://www.iana.org/assignments/character-sets">IANA Registry</ulink>。</para>
+
+      <note>
+      <para>FreeBSD 版本 4.5 以及以上使用 X11 相容 locale 字元編碼來替代。
+        </para>
+      </note>
+
+    </sect2>
+
+    <sect2>
+      <title>I18N 應用軟體</title>
+
+      <para>在 FreeBSD Ports 和套件系統， 
+        I18N 應用軟體為了容易辨識已經被命名帶有 <literal>I18N</literal> 
+	在他們的名字中。 然而，這些並不總是提供所有需要的語言。</para>
+    </sect2>
+
+    <sect2 id="setting-locale">
+      <title>設定 Locale</title>
+
+      <para>理論上，只需要輸出其locale name的數值，
+        如同在login shell的 <envar>LANG</envar>，
+	並且是經常透過使用者的 <filename>~/.login_conf</filename> 
+	或是使用者login shell設定 (<filename>~/.profile</filename>,
+        <filename>~/.bashrc</filename>, <filename>~/.cshrc</filename>)。
+	這應該會設定所有的locale中的相關元素
+	(如 <envar>LC_CTYPE</envar>, <envar>LC_CTIME</envar>, 等等)。
+	請參考特定語言的FreeBSD文件以獲得更多資訊。</para>
+
+      <para>您應該在您的設定檔案中設定以下兩個參數：</para>
+
+      <itemizedlist>
+        <indexterm><primary>POSIX</primary></indexterm>
+        <listitem>
+	  <para><envar>LANG</envar> for POSIX &man.setlocale.3; family
+	    functions</para>
+	</listitem>
+
+        <indexterm><primary>MIME</primary></indexterm>
+	<listitem>
+	  <para><envar>MM_CHARSET</envar> for applications' MIME character
+	    set</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>這包括了使用者 Shell 設定，特定運用軟體設定，與X11的設定。</para>
+
+      <sect3>
+	<title>設定 Locale 方法</title>
+        <indexterm><primary>locale</primary></indexterm>
+        <indexterm><primary>login class</primary></indexterm>
+
+	<para>這裡有兩種如下所述的方法來作區域化設定的工作。 
+	  第一種方法(也是我們所建議的)是在
+	  <link linkend="login-class">login class</link>
+	  中設定其環境變數，而第二種方法是在系統的 shell
+	  <link linkend="startup-file">startup file</link>
+	  中加入環境變數的設定。</para>
+
+	<sect4 id="login-class">
+	  <title>在 Login Classes 中設定</title>
+
+	  <para>這個方法可以使所有 shell 能夠使用這些與 local name 及 MIME 
+	    字集有關的變數，而不需要在所有的殼層啟動檔案中加入這些變數。 
+	    一般使用者可以透過 <link linkend="usr-setup">User
+	    Level Setup</link> 來完成這項工作，而 <link
+	    linkend="adm-setup">Administrator Level Setup</link>
+	    則需要超級使用者的權限。</para>
+
+	  <sect5 id="usr-setup">
+	    <title>User Level Setup</title>
+
+	    <para>這裡有一個
+	      <filename>.login_conf</filename> 的小例子。
+	      這個檔案位在使用者目錄下，裡面包含有對 Latin-1 編碼設定的變數。</para>
+
+	    <programlisting>german:German User:\
+	:charset=ISO-8859-1:\
+	:lang=de_DE.ISO_8859-1:</programlisting>
+
+	    <note>
+	      <para><filename>de_DE.ISO8859-1</filename> 在 FreeBSD
+		      版本 4.5 和以上才存在。</para>
+	    </note>
+
+	    <indexterm><primary>Traditional Chinese / BIG-5 encoding</primary></indexterm>
+	    <para>這裡有一個 <filename>.login_conf</filename> 
+	      設定繁體中文且使用 BIG-5 字元編碼的範例。
+	      注意在此有許多變數被設定，
+	      因為有些軟體並不會正確地重視中文、日文、韓文的 locale 變數。</para>
+
+	    <programlisting>#Users who do not wish to use monetary units or time formats
+#of Taiwan can manually change each variable
+taiwan:Taiwanese User:\
+	lang=zh_TW.Big5:\
+	lc_all=zh_TW.Big:\
+	lc_collate=zh_TW.Big5:\ 
+	lc_ctype=zh_TW.Big5:\
+	lc_messages=zh_TW.Big5:\
+	lc_monetary=zh_TW.Big5:\
+	lc_numeric=zh_TW.Big5:\
+	lc_time=zh_TW.Big5:\
+	charset=big5:\
+	xmodifiers="@im=xcin": #Setting the XIM Input Server</programlisting> 
+
+	    <para>參考 <link linkend="adm-setup">Administrator Level
+	      Setup</link> 與 &man.login.conf.5; 以獲得更多細節。</para>
+	  </sect5>
+
+	  <sect5 id="adm-setup">
+	    <title>Administrator Level Setup</title>
+
+	    <para>檢查 <filename>/etc/login.conf</filename> 
+	      中的語言使用者等級是否正確。
+	      確認 <filename>/etc/login.conf</filename>
+	      存在下列的設定值。</para>
+
+	    <programlisting><replaceable>language_name</replaceable>:<replaceable>accounts_title</replaceable>:\
+	:charset=<replaceable>MIME_charset</replaceable>:\
+	:lang=<replaceable>locale_name</replaceable>:\
+	:tc=default:</programlisting>
+
+	    <para>所以跟前一個使用Latin-1的例子比較起來，它看起來就如下：</para>
+
+	    <programlisting>german:German Users Accounts:\
+	:charset=ISO-8859-1:\
+	:lang=de_DE.ISO_8859-1:\
+	:tc=default:</programlisting>
+
+	    <note>
+	      <para><filename>de_DE.ISO8859-1</filename> for FreeBSD
+		      versions 4.5 and up.</para>
+	    </note>
+
+	    <para>用 &man.vipw.8; 改變 Login Classes</para>
+
+	    <indexterm>
+        <primary><command>vipw</command></primary>
+      </indexterm>
+	    <para>使用 <command>vipw</command> 新增使用者，
+	      並且設定如下所示的參數：</para>
+
+	    <programlisting>user:password:1111:11:<replaceable>language</replaceable>:0:0:User Name:/home/user:/bin/sh</programlisting>
+
+	    <para>用 &man.adduser.8; 改變 Login Classes</para>
+
+	    <indexterm>
+        <primary><command>adduser</command></primary>
+      </indexterm>
+	    <indexterm><primary>login class</primary></indexterm>
+	    <para>使用 <command>adduser</command> 新增使用者，
+	      並且按照下述的步驟：</para>
+
+	    <itemizedlist>
+	      <listitem>
+		<para>Set <literal>defaultclass =
+		  <replaceable>language</replaceable></literal> in
+		  <filename>/etc/adduser.conf</filename>.  Keep in mind
+		  you must enter a <literal>default</literal> class for
+		  all users of other languages in this case.</para>
+	      </listitem>
+
+	      <listitem>
+		<para>An alternative variant is answering the specified
+		  language each time that 
+<screen><prompt>Enter login class: default []: </prompt></screen>
+		  appears from &man.adduser.8;</para>
+	      </listitem>
+
+	      <listitem>
+		<para>另一個選擇是使用下列的方法來決定每一個使用者使用你想要加上的語言：</para>
+
+		<screen>&prompt.root; <userinput>adduser -class <replaceable>language</replaceable></userinput></screen>
+	      </listitem>
+	    </itemizedlist>
+
+	    <para>用 &man.pw.8; 改變 Login Classes</para>
+	    <indexterm>
+        <primary><command>pw</command></primary>
+      </indexterm>
+	    <para>如果你是用 &man.pw.8; 來新增使用者， 請照下列格式輸入：</para>
+
+	    <screen>&prompt.root; <userinput>pw useradd <replaceable>user_name</replaceable> -L <replaceable>language</replaceable></userinput></screen>
+	  </sect5>
+	</sect4>
+
+	<sect4 id="startup-file">
+	  <title>在 Shell 啟動檔案中設定</title>
+
+	  <note>
+	    <para>我們並不建議使用這個方法，因為這必須對所有登入程式作設定。
+	      使用在 <link linkend="login-class">Login Class Method</link>
+	      中設定的方法。</para>
+	  </note>
+
+	  <indexterm><primary>MIME</primary></indexterm>
+	  <indexterm><primary>locale</primary></indexterm>
+	  <para>在 <filename>/etc/profile</filename> 且/或
+	    <filename>/etc/csh.login</filename> shell
+	    啟動檔案中增加下列兩個環境變數，如此方能加入
+	    locale name 與 MIME 字集。我們以德語為例子：</para>
+
+	  <para>在 <filename>/etc/profile</filename> 中：</para>
+
+	  <programlisting><envar>LANG=de_DE.ISO_8859-1; export LANG</envar>
+<envar>MM_CHARSET=ISO-8859-1; export MM_CHARSET</envar></programlisting>
+
+	  <para>或是在 <filename>/etc/csh.login</filename> 中：</para>
+
+	  <programlisting><envar>setenv LANG de_DE.ISO_8859-1</envar>
+<envar>setenv MM_CHARSET ISO-8859-1</envar></programlisting>
+
+	  <note>
+	    <para><filename>de_DE.ISO8859-1</filename> for FreeBSD
+		    versions 4.5 and up.</para>
+	  </note>
+
+	  <para>也可以將上述指令加入到
+	    <filename>/usr/share/skel/dot.profile</filename>
+	    (與上述加入到 <filename>/etc/profile</filename> 的東西相似)
+	    或 <filename>/usr/share/skel/dot.login</filename>
+	    (與上述加入到 <filename>/etc/csh.login</filename> 的東西相似)。</para>
+
+	  <para>For X11:</para>
+
+	  <para>In <filename>$HOME/.xinitrc</filename>:</para>
+
+	  <programlisting><envar>LANG=de_DE.ISO_8859-1; export LANG</envar></programlisting>
+
+	  <para>Or:</para>
+
+	  <programlisting><envar>setenv LANG de_DE.ISO_8859-1</envar></programlisting>
+
+	  <para>依你的 shell 而定(參照前述)。</para>
+
+	  <note>
+	    <para><filename>de_DE.ISO8859-1</filename> for FreeBSD
+		    versions 4.5 and up.</para>
+	  </note>
+	</sect4>
+      </sect3>
+    </sect2>
+
+    <sect2 id="setting-console">
+      <title>終端機設定</title>
+
+      <para>對所有單一字元集，在
+        <filename>/etc/rc.conf</filename> 
+	中針對語言設定正確的終端機字型：</para>
+
+      <programlisting>font8x16=<replaceable>font_name</replaceable>
+font8x14=<replaceable>font_name</replaceable>
+font8x8=<replaceable>font_name</replaceable></programlisting>
+
+      <para>在這邊的
+        <replaceable>font_name</replaceable> 是來自
+	<filename>/usr/share/syscons/fonts</filename> 目錄下，不包含
+	<filename>.fnt</filename> 的字尾。</para>
+
+      <indexterm>
+        <primary><application>sysinstall</application></primary>
+      </indexterm>
+      <indexterm><primary>keymap</primary></indexterm>
+      <indexterm><primary>screenmap</primary></indexterm>
+      <para>也要確認透過設定 <filename>/stand/sysinstall</filename>
+        對單一字元設定了正確的鍵盤對映與螢幕對映。
+	在 sysinstall 中，選擇 <literal>Configure</literal>
+	，然後 <literal>Console</literal>。
+	二者選擇一地將下列的加到 <filename>/etc/rc.conf</filename> 當中：</para>
+
+      <programlisting>scrnmap=<replaceable>screenmap_name</replaceable>
+keymap=<replaceable>keymap_name</replaceable>
+keychange="<replaceable>fkey_number sequence</replaceable>"</programlisting>
+	
+      <para>這邊的 <replaceable>screenmap_name</replaceable>
+        是來自 <filename>/usr/share/syscons/scrnmaps</filename>
+	目錄而且沒有 <filename>.scm</filename> 的字尾。
+	一個有相同對映字型的螢幕對映通常會被用來當作一張
+	VGA顯示卡的字型陣列在先置圖形處理區域的修正，
+	這個修正適用來將位元8擴充至位元9，換言之，
+	當螢幕字型使用一個位元8欄位時，將字移出這個區域。</para>
+
+      <para>當你將滑鼠程式啟動藉由以下在
+	<filename>/etc/rc.conf</filename> 中的設定：</para>
+
+<programlisting>moused_enable="YES"</programlisting>
+
+      <para>然後檢查滑鼠游標資訊在下一段文章。</para>
+
+      <indexterm>
+        <primary><application>moused</application></primary>
+      </indexterm>
+      <para>預設驅動的滑鼠游標會佔領0xd0-0xd3範圍在字元組當中。
+        如果你的語言使用到這個範圍，你需要將游標範圍避開它。
+	為了修正FreeBSD 5.0以前版本將下列這行放到你的
+	kernel config當中：</para>
+
+      <programlisting>options		SC_MOUSE_CHAR=0x03</programlisting>
+
+      <para>對FreeBSD 4.4以上版本請將下列這行放到
+        <filename>/etc/rc.conf</filename>：</para>
+
+      <programlisting>mousechar_start=3</programlisting>
+
+      <para>這裡的 <replaceable>keymap_name</replaceable>
+        是從 <filename>/usr/share/syscons/keymaps</filename> 的目錄中取出的，
+	去掉.kbd副檔名。
+	如果你不確定使用哪個鍵盤對映，使用 &man.kbdmap.1 
+	來測試鍵盤對映而不需重開機。</para>
+
+      <para>當遇到定義功能鍵來符合被選中的終端機型態的時候，
+        變換鍵是需要的，因為功能鍵的連續號無法由鍵盤對映表來定義。</para>
+
+      <para>並且請確定在 <filename>/etc/ttys</filename> 
+        有為所有的 <literal>ttyv*</literal>
+	進入點設定正確的終端型態。目前有先定義的對映如下：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>Character Set</entry>
+	      <entry>Terminal Type</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry>ISO-8859-1 or ISO-8859-15</entry>
+	      <entry><literal>cons25l1</literal></entry>
+	    </row>
+
+	    <row>
+	      <entry>ISO-8859-2</entry>
+	      <entry><literal>cons25l2</literal></entry>
+	    </row>
+
+	    <row>
+	      <entry>ISO-8859-7</entry>
+	      <entry><literal>cons25l7</literal></entry>
+	    </row>
+
+	    <row>
+	      <entry>KOI8-R</entry>
+	      <entry><literal>cons25r</literal></entry>
+	    </row>
+
+	    <row>
+	      <entry>KOI8-U</entry>
+	      <entry><literal>cons25u</literal></entry>
+	    </row>
+
+	    <row>
+	      <entry>CP437 (VGA default)</entry>
+	      <entry><literal>cons25</literal></entry>
+	    </row>
+
+	    <row>
+	      <entry>US-ASCII</entry>
+	      <entry><literal>cons25w</literal></entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>對於寬字元或多位元組字元的語言，使用在 
+        <filename>/usr/ports/<replaceable>language</replaceable></filename>
+	目錄中正確的FreeBSD port。
+	有些port會像是console當系統將它當成是serial vtty's，
+	因此你必須保留足夠的vtty's給X11跟pseudo-serial console。
+	這裡有部分在console中使用其他語言的應用程式的名單：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>Language</entry>
+	      <entry>Location</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry>Traditional Chinese (BIG-5)</entry>
+	      <entry><filename role="package">chinese/big5con</filename></entry>
+	    </row>
+
+	    <row>
+	      <entry>Japanese</entry>
+	      <entry><filename role="package">japanese/ja-kon2-*</filename> or
+	        <filename role="package">japanese/Mule_Wnn</filename></entry>
+	    </row>
+
+	    <row>
+	      <entry>Korean</entry>
+	      <entry><filename role="package">korean/ko-han</filename></entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </sect2>
+
+    <sect2>
+      <title>X11 Setup</title>
+
+      <para>雖然X11並不是 FreeBSD project 的一部份，我們也為了 FreeBSD 
+        的使用者含括了一些資料進去。更詳細的說，參考 
+	<ulink url="http://www.xfree86.org/">XFree86
+	web site</ulink> 或是任何一個你所看的的 X11 Server。</para>
+
+      <para>在 <filename>~/.Xresources</filename> 這個目錄下，
+        你可以同時地對某些特定的 i18n 的設定值做一些調整
+	(例如：字型、選單、等等。)。</para>
+
+      <sect3>
+	<title>Displaying Fonts</title>
+	<indexterm><primary>X11 True Type font server</primary></indexterm>
+	<para>安裝 X11 的 True Type-Common server(XTT-common)
+	  並且安裝語言的 truetype 的字型。設定正確的 locale 
+	  將允許你在選單及其他地方看到你所選的語言。</para>
+      </sect3>
+
+      <sect3>
+	<title>Inputting Non-English Characters</title>
+	<indexterm><primary>X11 Input Method (XIM)</primary></indexterm>
+	<para>X11輸入的方式(XIM)協定是一種對所有 X11 clients 的新的標準。
+	  所有的 X11 的應用程式都應該以採用 XIM Input servers 做輸入的 
+	  XIM clients 所寫成。有數種的 XIM servers 提供不同的語言的需求。</para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>Printer Setup</title>
+
+      <para>一些獨特的 C 的字元集通常利用硬體編碼到印表機中。
+        寬或是多位元集需要特別的設定並且我們建議使用
+	<application>apsfilter</application>。
+	你也可以使用語言特定的轉換器來把這些文件轉成 
+	Postscript 或 PDF 的格式。</para>
+    </sect2>
+
+    <sect2>
+      <title>Kernel 和檔案系統</title>
+
+      <para>FreeBSD 的 FFS 是完整的 8-bit 檔案系統，所以它可以被使用在任何單獨的 
+        C 字元集中(參考 &man.multibyte.3;)，
+	但是沒有一個字元集名單被儲存在檔案系統中；
+	假設，它是原始的 8-bit 並且不知道任何有關編碼順序的事情。
+	正式來說，FFS 還沒支援任何的寬或是多位元集的形式。
+	然而一些寬或是多位元集有為 FFS 所做的獨立的 patches 使其能夠支援。
+	它們只是暫存的不可移植的解決方法或是 hacks 並且我們已經決定不在 
+	source tree 中包含這些東西。
+	參考個別語言的站台以得到更多的資料和 patch 的檔案。</para>
+
+      <indexterm><primary>DOS</primary></indexterm>
+      <indexterm><primary>Unicode</primary></indexterm>
+      <para>FreeBSD 的 MS-DOS 檔案系統有在 MS-DOS、Unicode 字元集和挑選的
+        FreeBSD檔案系統中更改格式的能力。參考 &man.mount.msdos.8; 
+	得到更詳盡的資料。</para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>編譯 I18N 程式</title>
+
+    <para>許多 FreeBSD Ports 在做 port 時都有i18n的支援。
+      其中某些在 port 名稱都有標上「-I18N」。
+      此類與其他種程式都有對 I18N 的支援，不需要任何特殊的考量。</para>
+
+    <indexterm>
+      <primary><application>MySQL</application></primary>
+    </indexterm>
+    <para>然而，某些應用程式例如<application>MySQL</application>，就需要在 
+      configure <filename>Makefile</filename> 之時加入特定的指令。 
+      這可以在 <filename>Makefile</filename> 之中就搞定，
+      也可以在原始碼中傳遞參數。</para> 
+  </sect1>
+
+  <sect1 id="lang-setup">	
+    <title>區域化 FreeBSD 成為特定語言</title>
+
+    <sect2 id="ru-localize">
+      <sect2info>
+	<authorgroup>
+	  <author>
+	    <firstname>Andrey A.</firstname>
+	    <surname>Chernov</surname>
+	    <contrib>Originally contributed by </contrib>
+	  </author>
+	</authorgroup>
+      </sect2info>
+      <title>俄文 (KOI8-R 字元編碼)</title>
+      <indexterm><primary>Russian localization</primary></indexterm>
+
+      <para>想要得到更多有關 KOI8-R 字碼的資訊，請參考 <ulink
+	url="http://koi8.pp.ru/">KOI8-R References
+	(Russian Net Character Set)</ulink>。</para>
+
+      <sect3>
+	<title>Locale 設定</title>
+
+	<para>將下列的資料插入您的
+	  <filename>~/.login_conf</filename> 檔案中：</para>
+
+	<programlisting>me:My Account:\
+	:charset=KOI8-R:\
+	:lang=ru_RU.KOI8-R:</programlisting>
+
+	<para>參考本章節之前的範例來設定
+	  <link linkend="setting-locale">locale</link>。</para>
+      </sect3>
+
+      <sect3>
+	<title>終端機設定</title>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>FreeBSD 版本在 5.0 之前的加入下列的資料到您的
+	      kernel 設定檔：</para>
+
+	    <programlisting>options		SC_MOUSE_CHAR=0x03</programlisting>
+
+	    <para>FreeBSD 版本在 4.4 和以上的插入下列的資料到
+	      <filename>/etc/rc.conf</filename>：</para>
+
+	    <programlisting>mousechar_start=3</programlisting>
+	  </listitem>
+
+	  <listitem>
+	    <para><filename>/etc/rc.conf</filename> 中的俄語終端機設定應該長得像：</para>
+
+	    <programlisting>keymap="ru.koi8-r"
+scrnmap="koi8-r2cp866"
+font8x16="cp866b-8x16"
+font8x14="cp866-8x14"
+font8x8="cp866-8x8"</programlisting>
+
+	  </listitem>
+
+	  <listitem>
+	    <para>在 <filename>/etc/ttys</filename> 中的每個
+	      <literal>ttyv*</literal> 資料，
+	      使用 <literal>cons25r</literal> 作為終端機型態。</para>
+	  </listitem>
+	</itemizedlist>
+
+	<para>參考本章節之前的範例來設定
+	  <link linkend="setting-console">console</link>。</para>
+      </sect3>
+
+      <sect3>
+	<title>印表機設定</title>
+	<indexterm><primary>printers</primary></indexterm>
+	<para>多數附有俄文字型的印表機的硬體字型頁碼都是 CP866， 
+	  所以必須要有一個轉換程式來做 KOI8-R -&gt; CP866 的工作。
+	  系統安裝好以後內定的轉換程式是
+	  <filename>/usr/libexec/lpr/ru/koi2alt</filename>。
+	  所以想要使用俄文印表機的使用者必須在 
+	  <filename>/etc/printcap</filename> 做下列設定：</para>
+
+	<programlisting>lp|Russian local line printer:\
+	:sh:of=/usr/libexec/lpr/ru/koi2alt:\
+	:lp=/dev/lpt0:sd=/var/spool/output/lpd:lf=/var/log/lpd-errs:</programlisting>
+
+	<para>想要獲得更多資訊，請參考 &man.printcap.5; 。</para>
+      </sect3>
+
+      <sect3>
+	<title>MS-DOS FS 以及俄文檔名</title>
+
+	<para>下面是在 &man.fstab.5; 中啟動 MS-DOS 俄文檔名支援的例子：</para>
+
+	<programlisting>/dev/ad0s2      /dos/c  msdos   rw,-Wkoi2dos,-Lru_RU.KOI8-R 0 0</programlisting>
+
+	<para>請參考 &man.mount.msdos.8; 以得到有關
+	  <option>-W</option> 和 <option>-L</option> 選項的詳細說明。</para>
+      </sect3>
+
+      <sect3>
+	<title>X11 設定</title>
+
+	<orderedlist>
+	  <listitem>
+	    <para>先把 <link linkend="setting-locale">non-X locale
+	      setup</link> 設定好。</para>
+
+	    <note>
+	      <para><anchor id="russian-note">俄文 KOI8-R locale 可能無法在舊版的 
+	        XFree86 (低於 3.3 版者) 下正常運作。
+		<filename role="package">x11/XFree86</filename> 裡的 XFree86 port 是最新版的 XFree86，
+		所以果您是從那裡安裝 XFree86 的話，它會正常運作。
+		隨著最新版 FreeBSD 套件一起發行的 XFree86 也可以正常運作
+		(當然要先檢查看看版本是不是小於 3.3)。</para>
+	    </note>
+	  </listitem>
+
+	  <listitem>
+	    <para>到 <filename role="package">russian/X.language</filename> 
+	      目錄下並執行如下的命令：</para>
+
+	    <screen>&prompt.root; <userinput>make install</userinput></screen>
+      
+	    <para>這個 port 會把最新版的 KOI8-R 字型安裝上去。
+	      XFree86 3.3 已經有一些 KOI8-R 字型了，
+	      不過這套字型的縮放功能比較好。</para>
+
+	    <para>檢查您的 <filename>/etc/XF86Config</filename> 的 
+	      <literal>"Files"</literal> 段落，下面這幾行必須要放在其他 
+	      <literal>FontPath</literal> 的<emphasis>前面</emphasis>：</para>
+
+	    <programlisting>FontPath   "/usr/X11R6/lib/X11/fonts/cyrillic/misc"
+FontPath   "/usr/X11R6/lib/X11/fonts/cyrillic/75dpi"
+FontPath   "/usr/X11R6/lib/X11/fonts/cyrillic/100dpi"</programlisting>
+
+	    <para>如果您用的是高解析度顯示模示的話，
+	      把 75 dpi 和 100 dpi 這兩行對調過來。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>要使用俄語鍵盤，請把下面這幾行加到 
+	      <filename>XF86Config</filename> 的 
+	      <literal>"Keyboard"</literal> 段落中。</para>
+
+	    <para>針對 XFree86 v3.*:</para>
+
+	    <programlisting>XkbLayout  "ru"
+XkbOptions "grp:caps_toggle"</programlisting>
+
+	    <para>針對 XFree86 v4.*:</para>
+
+	    <programlisting>Option "XkbLayout"   "ru"
+Option "XkbOptions"  "grp:caps_toggle"</programlisting>
+
+	    <para>並確定您的 <literal>XkbDisable</literal> 
+	      是關掉 (被註解掉了) 的狀態。</para>
+
+	    <para><literal>CapsLock</literal> 被用來當作 RUS/LAT 的切換鍵。
+	      而 <literal>Shift+CapsLock</literal> 做的則是舊的 
+	      <literal>CapsLock</literal> 的功能 
+	      (只有在 LAT 模式下才是如此)。</para>
+
+	    <para>假如您有 <quote>Windows</quote> 按鍵在您的鍵盤上，
+	      而且注意到有些不是照字母順序的按鍵對應到錯誤的 RUS 模式，
+	      加入以下的資訊到您的 <filename>XF86Config</filename> 
+	      檔案。</para>
+
+	    <para>針對 XFree86 v3.*:</para>
+
+	<programlisting>XkbVariant "winkeys"</programlisting>
+
+	    <para>針對 XFree86 v4.*:</para>
+
+	<programlisting>Option "XkbVariant" "winkeys"</programlisting>
+
+	    <note>
+	      <para>俄文的 XKB 鍵盤可能無法在舊版的 XFree86 下正常運作。
+	        請看 <link linkend="russian-note">above
+		note</link> 以得到更多資訊。俄文的 XKB 鍵盤也無法在 
+		non-localized 的應用程式下正常運作，至少 localized 
+		的應用程式必須在程式的一開始就呼叫 
+		<literal>XtSetLanguageProc (NULL, NULL, NULL);</literal> 
+		函數。參考 <ulink
+		url="http://koi8.pp.ru/xwin.html">
+		KOI8-R for X-Window</ulink> 有更多在區域化 X11
+		應用軟體的指令。</para>
+	    </note>
+	  </listitem>
+	</orderedlist>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>台灣的繁體中文區域化</title>
+      <indexterm><primary>Traditional Chinese localization</primary></indexterm>
+      <para>FreeBSD 台灣計畫有個 I18N/L10N 的 FreeBSD 導覽在
+        <ulink url="http://freebsd.sinica.edu.tw/~ncvs/zh-l10n-tut/">http://freebsd.sinica.edu.tw/~ncvs/zh-l10n-tut/</ulink>
+	使用許多 <filename role="package">chinese/*</filename> 應用軟體。
+	<literal>zh-L10N-tut</literal> 的作者是 Clive Lin
+	<email>Clive@CirX.org</email>。
+	您也可以 cvsup 下列 collections 在 <hostid
+	role="fqdn">freebsd.sinica.edu.tw</hostid>:</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>Collection</entry>
+	      <entry>Description</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry>outta-port tag=.</entry>
+	      <entry>Beta-quality ports collection for Chinese</entry>
+	    </row>
+
+	    <row>
+	      <entry>zh-L10N-tut tag=.</entry>
+	      <entry>Localizing FreeBSD Tutorial in BIG-5 Traditional
+		Chinese</entry>
+	    </row>
+
+	    <row>
+	      <entry>zh-doc tag=.</entry>
+	      <entry>FreeBSD Documentation Translation to BIG-5 Traditional
+		Chinese</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>Chuan-Hsing Shen <email>s874070@mail.yzu.edu.tw</email> 
+        建立了 <ulink url="http://cnpa.yzu.edu.tw/~cfc/">Chinese
+	FreeBSD Collection (CFC)</ulink> 使用 FreeBSD-Taiwan's
+	<literal>zh-L10N-tut</literal>。  這個套件和 script 檔案可以在
+	<ulink url="ftp://ftp.csie.ncu.edu.tw/OS/FreeBSD/taiwan/CFC/">ftp://ftp.csie.ncu.edu.tw/OS/FreeBSD/taiwan/CFC/</ulink>
+	取得。</para>
+    </sect2>
+
+    <sect2>
+      <title>德文區域化 (對所有 ISO 8859-1 語言)</title>
+      <indexterm><primary>German localization</primary></indexterm>
+
+      <para>Slaven Rezic <email>eserte@cs.tu-berlin.de</email> 
+        寫了一份有關如何在 FreeBSD 下使用德語變母音的教學文件。
+	這份文件是用德文寫成的，您可以在 <ulink
+	url="http://www.de.FreeBSD.org/de/umlaute/">http://www.de.FreeBSD.org/de/umlaute/</ulink>
+	取得這份文件。</para>
+    </sect2>
+
+    <sect2>
+      <title>日文和韓文的區域化</title>
+      <indexterm><primary>Japanese localization</primary></indexterm>
+      <indexterm><primary>Korean localization</primary></indexterm>
+      <para>日文可以參考 <ulink
+	url="http://www.jp.FreeBSD.org/">http://www.jp.FreeBSD.org/</ulink>，
+	而韓文可以參考 <ulink
+	url="http://www.kr.FreeBSD.org/">http://www.kr.FreeBSD.org/</ulink>。</para>
+    </sect2>
+
+    <sect2>
+      <title>非英文的 FreeBSD 文件</title>
+
+      <para>一些 FreeBSD 貢獻者翻譯了一部分 FreeBSD 的文件成為他們常用的語言。
+        他們可以從以下這個連結 <ulink
+	url="../../../../index.html">main site</ulink> 或是在
+	<filename>/usr/share/doc</filename> 找到。</para>
+    </sect2>
+  </sect1>
+</chapter>

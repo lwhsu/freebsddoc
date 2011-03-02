@@ -1,0 +1,2466 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/security/chapter.sgml,v 1.9 2003/01/29 06:48:00 statue Exp $
+
+     Translate into Chinese by 藍迪 [a101a@ms13.hinet.net]
+
+     English Version:
+-->
+
+<chapter id="security">
+  <title>安全</title>
+
+  <para><emphasis>這個章節有談到許多安全性的問題。</emphasis></para>
+
+  <sect1>
+    <title>概要</title>
+
+    <para>
+	這章將對系統安全概念作一個的基本介紹，還有一些通用的好的規則，和一些在
+	FreeBSD 下的高級主題。這兒提到的許多主題已經很好地應用於系統和 Internet 的安全。
+	確保系統安全將保護系統的資料，不至於被駭客所竊取。
+	FreeBSD 提供了許多工具和機制來確保你的系統和網路的安全。
+	讀完這章，將瞭解到這些：
+	‧ FreeBSD 的基本系統安全概念。
+	‧ FreeBSD 中可用的如DES 和MD5 這樣的加密（crypt）機制。
+	‧ 如何設置 S/Key，一種一次性的密碼驗證機制。
+	‧ 如何設置 Kerberos，另一種密碼驗證機制。
+	‧ 如何使用 IPFW 來創建防火牆。
+	‧ 如何配置 IPSec。
+	‧ 如何配置和使用 OpenSSH，FreeBSD 的 SSH 執行方式。在閱讀這章之前，必須瞭解：
+	‧ 瞭解基本的 FreeBSD 和 internet 概念。
+    </para>
+  </sect1>
+
+  <sect1 id="security-intro">
+    <title>介紹</title>
+
+    <para>
+	安全是系統管理至始至終最基本的要求。所有的 BSD UNIX 系統都有它自身內在的安
+	全性，建構和維護額外的安全機制，確保用戶的"誠實"大概是系統管理最艱巨的工作之一。
+	機器僅保持著建構時最原始的安全性，而安全性必須要考慮到用戶使用的便利性。通常
+	UNIX 系統能夠支援巨大的同步排程處理，而這些處理中絕大部分是以伺服器形式處理的----
+	這意味著外部的實體能夠連接和互相交談。早期的小型電腦和主機變成了今天的桌面機，電
+	腦已可連結區域網路和網際網路，安全就成了一個非常嚴峻的問題。
+    </para>
+
+    <para>
+	通過一個分層的方法，安全能夠很好地實現。所要做的就是創建很多的安全層，然後
+	仔細地監視系統以防入侵。不要過多地創建安全層，否則將會影響檢測面。檢測是許多
+	安全機制中最重要的方法。例如，在每一個二進位程式中，很難判斷 schg 標記，因為這樣
+	會臨時地保護二進位，它會妨礙對一個已經侵入的攻擊者作一個很容易的檢測，以至最終安全機制根本檢測不到攻擊者。
+    </para>
+
+    <para>
+	系統安全也涉及到攻擊的許多方面，包括試圖摧毀或使一個系統無法使用。安全問題主
+	要被分成幾類：
+    </para>
+
+    <orderedlist>
+      <listitem>
+	<para>拒絕服務的攻擊。</para>
+      </listitem>
+
+      <listitem>
+	<para>竊取用戶的帳戶。</para>
+      </listitem>
+
+      <listitem>
+	<para>通過最近的伺服器竊取root 帳戶。</para>
+      </listitem>
+
+      <listitem>
+	<para>通過用戶帳戶竊取root 帳戶。</para>
+      </listitem>
+
+      <listitem>
+	<para>創建後門。</para>
+      </listitem>
+    </orderedlist>
+
+    <para>
+	拒絕式服務攻擊是侵佔機器所需資源的一種方法。有代表性的，D.O.S 攻擊，是非常殘
+	忍的攻擊機制，是通過壓倒性的流量來破壞伺服器和網路堆疊，試圖摧毀機器或使機器無法
+	使用。一些D.O.S 攻擊利用在網路堆疊中的錯誤，僅用一個簡單的資訊包就可以摧毀一台機
+	器。這可以向內核添加一個錯誤補丁來修復。在一些不利的條件下，對伺服器的攻擊能夠被
+	修復，只要適當地修改一下系統的選項來限制系統對伺服器的負荷。頑強的網路攻擊是很難
+	對付的。例如，一個欺騙性信息封包的攻擊，無法阻止入侵者切斷系統與 internet 的連接。
+	不會使機器死掉，但會把 internet 管道塞滿。
+    </para>
+
+    <para>
+	竊取用戶帳戶要比D.O.S 攻擊更加普遍。許多系統管理員仍然在它們的伺服器上運行著
+	基本的 telnetd,rlogind,rshd,ftpd 服務。這些伺服器默認情況下，不會通過加密連接來操作。
+	結果是如果系統有中等規模大小的用戶，在通過遠端登陸的方式登陸到系統的用戶
+	中，一些人的密碼會被人竊取。仔細的系統管理員會從那些成功登陸系統的遠端存取日誌中
+	尋找可疑的資源地址。
+    </para>
+
+    <para>
+	假定，一個入侵者已經竊取到了一個用戶的帳戶，入侵者就會使 root 用戶失效。然而，
+	事實是在一個安全的系統中，訪問用戶的帳戶不應該給入侵者竊取 root 的許可權。這個區別
+	是很重要的，因為沒有 root 的許可權，入侵者是無法隱藏它的軌跡的，但可能不需要做
+	什麼，就可以把用戶的檔弄亂或使機器崩潰。竊取用戶帳戶是很普遍的事情，因為用戶往
+	往不會對系統管理員的警告採取措施。
+    </para>
+
+    <para>
+	系統管理員應該牢牢記住，可能有許多潛在的方法會使 root 失效。入侵者可能知道 root
+	的密碼，可以在一個以 root 許可權運行的伺服器上找到一個錯誤（bug），就可以通過網路連
+	接到那台伺服器上使 root 失效，或者一旦入侵者已經侵入了一個用戶的帳戶，可以在自己
+	的機器上運行一個程式來發現伺服器的漏洞，從而讓他侵入到伺服器使 root 失效。如果入
+	侵者已經找到了方法使 root 失效，入侵者就不需要安裝一個後門。許多 root 漏洞被找到之
+	後，入侵者會想盡辦法去刪除日期來清除自己的訪問痕跡，所以很多入侵者會安裝後門。後
+	門能給入侵者提供一個簡單的重新獲取訪問系統的 root 許可權，但它也會給聰明的系統管理
+	員一個探測入侵的簡便方法。認為入侵者不可能安裝了後門，這種思想事實上對你的系統安
+	全是有害的，因為這樣他就不會隔離從一開始就侵入系統的駭客發現的漏洞。
+    </para>
+
+    <para>
+	安全的管理方法應當使用像剝洋蔥皮一樣多層次，層層逼近的方法來實現，可以按下面
+	的方式進行分類：
+    </para>
+
+    <orderedlist>
+      <listitem>
+	<para>確保 root 用戶和所有用戶帳戶的安全。</para>
+      </listitem>
+
+      <listitem>
+	<para>確保 root 用戶以 root 用戶許可權運行的伺服器和 suid/sgid 二進位程式的安全。</para>
+      </listitem>
+
+      <listitem>
+	<para>確保用戶帳戶的安全。</para>
+      </listitem>
+
+      <listitem>
+	<para>確保密碼檔的安全。</para>
+      </listitem>
+
+      <listitem>
+	<para>確保內核中內核設備和檔系統的安全。</para>
+      </listitem>
+
+      <listitem>
+	<para>快速檢測系統中發生的不適當的變化。</para>
+      </listitem>
+
+      <listitem>
+	<para>偏執狂。</para>
+      </listitem>
+    </orderedlist>
+
+    <para>下一個部份章節將討論有關地區性的公告深度。</para>
+  </sect1>
+
+  <sect1 id="securing-freebsd">
+    <title>FreeBSD 系統安全</title>
+
+    <para>
+      下面這節將講述確保系統安全的方法。<link linkend="security-intro">last section</link> 
+    </para>
+
+    <sect2 id="securing-root-and-staff">
+      <title>確保 root 用戶和所有用戶帳戶的安全</title>
+
+      <para>
+	首先，如果沒有確保 root 帳戶的安全，請不要為確保所有用戶的安全而煩惱。絕大
+	多數系統都會指派一個密碼給 root 用戶帳戶。第一件事是假定密碼總是不方便。這並不意
+	味著要把密碼刪掉。密碼通常對用控制臺訪問機器是必須的。也就是說，不應當讓所有用戶輕易
+	到控制臺訪問機器，即使是使用 su 命令。例如，確信 pty's 作為不安全的因素已經被
+	記錄在 <filename>/etc/ttys</filename> 檔中，以至直接通過 telnet 或 rlogin 登入 root 會不被接受。如果使用(如<application>sshd</application>)
+	的登入服務，確認直接登入 root 根本不行。考慮到每一種訪問方法（如<application>FTP</application> 服務）通
+	過 cracks 經常失敗。直接登陸 root 應當只有通過系統控制臺被允許。
+      </para>
+
+      <para>
+	當然，作為一個系統管理員，應當獲得 root 許可權，所以公開幾個漏洞。但
+	確信這些漏洞需要額外的密碼確認才能操作。成為 root 權限是增加適當用戶的帳戶
+	到 wheel 群組（在<filename>/etc/group</filename> 中）。Wheel 群組中的用戶可以使用 su 命令來取得 root 權限。在密
+	碼登入口，放置在 wheel 組中，你就永遠不會給用戶成員訪問本地 wheel 的許可權。
+	用戶帳戶應當被放置在 staff 群組中，然後通過 <filename>/etc/group</filename> 檔加入到 wheel 組。事實上，那些
+	需要訪問 root 的用戶成員將會被放置在 wheel 組中。當然也會有可能，用一個如 kerberos
+	的認證方法。在 root 帳戶中使用 kerberos 的.k5login 檔，可以不需要把任何人放置在wheel
+	組中就允許 ksu 訪問 root.如果入侵者已經獲得了密碼檔，或者已侵入了一個用戶帳戶，這
+	可能是一個比較好的解決方法，因為 wheel 機制仍然可能會使入侵者 break root。雖然 wheel
+	機制要什麼都沒有要好得多，但它也不是最安全的選擇。
+      </para>
+
+      <para>
+        員工帳號和 root 帳號的密碼檔案存在 <filename>/etc/master.passwd</filename> ，
+        而一般沒有設定密碼會出現 <literal>*</literal> 可以 man vipw 查看這個部份的資料。
+        使用 vipw 可以修改更新所有相關權限和使用者的資料庫。
+      </para>
+
+      <para>一般員工帳號：</para>
+
+      <programlisting>foobar:R9DT/Fa1/LV9U:1000:1000::0:0:Foo Bar:/home/foobar:/usr/local/bin/tcsh</programlisting>
+
+      <para>可以修改為：</para>
+
+      <programlisting>foobar:*:1000:1000::0:0:Foo Bar:/home/foobar:/usr/local/bin/tcsh</programlisting>
+
+      <para>
+	確保超級用戶帳戶安全的間接方法是通過使用一個有選擇性的登入訪問方法確保
+	用戶帳戶的安全。這樣做，入侵者可能會偷竊到密碼檔，但不會侵入任何用戶帳戶。用戶
+	成員通過使用一對私有或公共密匙（如 kerberos 或 ssh）的安全機制來進入。當
+	使用kerberos 時，必須確保使用 kerberos 的伺服器或工作站的安全。當使用一對ssh
+	的公共/私有密匙系統，必須確保所登入的那台機器的安全，但當用 ssh-keygen 創建
+	時，可以添加一個額外的保護層到鑰匙對中。可以強制所有的用戶成員使用加密
+	的方法連接活動，這樣就可以關閉可能會被入侵者使用的一個重要漏洞：將一個毫無
+	關係，很不安全的機器與網路隔離。
+      </para>
+
+      <para>
+	更多間接的安全機制能夠被實現。可以從一個帶有限制性的伺服器到一個毫無限制性
+	的伺服器進行登入。例如，如果主郵箱運行在所有種類的伺服器上，那工作站就無
+	法運行任何東西。為了確保工作站的安全，盡可能少運行伺服器，直到根本就沒有伺服器
+	運行，然後運行一個受密碼保護。當然，一個入侵者強行訪問工作站，就會把
+	所設置的所有安全特性都破壞掉。有一個問題必須明確，必須考慮到這樣一個事實，絕
+	大多數入侵是從那些沒有物理訪問工作站或伺服器許可權的人那裏，通過一個網路來侵入的。
+	使用象 kerberos 這樣的技術，也會無法使用系統，或者改變用戶帳戶的密碼，從而影響
+	到擁有一個帳戶的所有用戶成員。如果一個用戶成員的帳戶已經失去安全，應當改變它在所
+	有機器上的密碼。對於不連續的密碼，在 n 台機器上改變一個密碼可能是很亂的。可能要
+	用 kerberos 重建密碼的限制：一張 kerberos 的許可證可能一段時間後會過期，但 kerberos 系
+	統可能要求用戶在一段時間以後選擇一個新密碼（一般是一個月）。
+      </para>
+
+    <sect2>
+      <title>確保以 root 許可權運行的伺服器和 suid/sgid 二進位程式的安全</title>
+
+      <para>
+	謹慎的系統管理員只運行需要的伺服器，不多也不少。要清醒地認識到第三方的服
+	務器經常有很多的錯誤。例如，運行一個老版本的 <application>imapd</application> 或 <application>popper</application> ,就像是給出了一個通用
+	的 root 帳號來訪問外部世界。運行每一個伺服器，都要仔細地檢查。許多伺服器不一定
+	需要用 root 來運行。例如，<application>ntalk</application>, <application>comsat</application>, 和 <application>finger</application> 守護程式可能運行在一個特殊的用
+	戶 sandboxes 上。一個 sandbox 是不完全的，除非遇到了許多問題，但安全的層級模式
+	仍然支持：如果能夠通過運行在一個 sandbox 上的一個伺服器侵入，仍然必須要攻破
+	sandbox。攻擊者必須通過很多的安全層，這樣侵入的可能性就很小了。過去已經找到了
+	很多 root 的安全漏洞，包括基本的系統伺服器。如果運行著用戶通過 <application>sshd</application> 來登入而從
+	不用 <application>telnetd</application> 或 <application>rshd</application> 或 <application>rlogind</application> 來登入的伺服器，最好把這些伺服器關掉。
+      </para>
+
+      <para>
+	現在，FreeBSD 默認在 sandbox 中運行 <application>ntalkd</application>, <application>comsat</application>,和 <application>finger</application>。還有一個叫做 <application>named</application>
+	的程式。<filename>/etc/defaults/rc.conf</filename> 中包含了運行 <<application>named</application> 的選項，但被注意掉了。無論是在
+	安裝一個新的系統，還是升級一個已存在的系統，被這些 sandboxes 使用的特殊用戶帳號
+	可能沒有被安裝。謹慎的系統管理員無論何時都要認真研究和執行 sandboxes。
+	有許多的伺服器通常不能運行在 sandboxes 中：<application>sendmail, popper, imapd, ftpd,</application>
+	和一些。可以選一些，但安裝可能需要做很多工作。可能必須以 root 來運
+	行這些伺服器，然後依靠另外的機制來檢測可能通過進行的侵入活動。
+      </para>
+
+      <para>
+	比較大的潛在的 root 漏洞是安裝在系統中的 suid-root 和 sgid 程式。這些程式，
+	象 rlogin，都放在<filename>/bin, /sbin, /usr/bin,</filename>或 <filename>/usr/sbin</filename> 中。當然，世上沒有100%的安全，
+	系統默認的 suid 和 sgid 程式可能認為是比較安全的。
+      </para>
+
+      <para>
+	另外，root 漏洞有時候能在這些程式中找到。在1998 年在 xterm 的 Xlib 中的一個 root
+	漏洞被發現。謹慎的系統管理員需要限制 suid 的程式，只有指定的人可以運行，指定人所
+	在的特殊群組可以訪問，所有人都不能使用。一台沒有顯示器的伺服器通常不需要一個 xterm 程式。
+	Sgid 程式可能也會有危險。如果一個入侵者能夠攻破 sgid-kmem 程式，入侵者就可以
+	讀到 <filename>/dev/kmem</filename>，因而可以讀到 crypted 密碼檔，從而危及到受密碼保護的帳戶的安全。
+	另外，一個侵入組 kmem 的入侵者可以通過 pty's 來監測到擊鍵的情況，包括通過安全方
+	法登陸的用戶的情況。一個侵入 tty 組的入侵者可以寫入幾乎任何用戶的 tty。如果用戶正
+	在運行一個終端程式或帶有鍵盤類比特性的模擬器，入侵者可以偷偷地發送一個資料流程來
+	使用戶的終端顯示一個命令，然後就以那個用戶的身份來運行。
+      </para>
+    </sect2>
+
+    <sect2 id="secure-users">
+      <title>確保用戶帳戶的安全</title>
+
+      <para>
+	用戶的帳戶通常是很難確保安全的。當用嚴格的訪問限制來約束用戶時，不
+	可以使用普通用戶帳戶來這樣做。如果有充分的控制，那可以確保用戶帳戶的
+	安全。如果沒有，必須時刻警惕地監視那些帳戶。為用戶的帳戶使用 <application>ssh</application> 和 kerberos 可
+	能會有問題，需要額外的管理和技術支援，但與 crypted 密碼檔相比仍是一個比較好解決
+	方案。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>確保密碼檔的安全</title>
+
+      <para>
+	唯一的確保安全的方法是用 * 號來代替輸入的密碼，使用 <application>ssh</application> 或 kerberos 來訪問那些帳
+	戶。即使 crypted 密碼檔(<filename>/etc/spwd.db</filename>)只能被 root 讀取，入侵者可能無法獲得 root 寫
+	的許可權，但也可能會獲得讀的許可權。
+      </para>
+
+      <para>
+        安全腳本必須經常檢查和報告密碼檔的修改情況。(看<link linkend="security-integrity">Checking file integrity</link>這裡).
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>確保內核核心，Raw 設備和檔系統的安全</title>
+
+      <para>
+	如果一個入侵者攻破 root，就可以做任何事情。例如，絕大多數現代內核都有一個
+	包來探測內建的設備啟動器。在 FreeBSD 下，它被叫做 bpf 設備。一個入侵者通常會試圖
+	在一台不安全的機器上運行一個包探測器。所以，絕大多數系統都不把 bpf 設備編譯進內
+	核。
+      </para>
+
+      <para>
+	但即使關閉了bpf 設備，仍然可能會對 <filename>/dev/mem</filename> 和 <filename>/dev/kmem</filename> 擔心。因為，入侵
+	者仍可以寫到 raw 磁片設備。另外，還有另一個叫做 module loader 的內核特性，kldload。
+	一個入侵者可以在運行內核時使用一個 KLD module 來安裝它自己的 bpf 設備，或其他檢測設備。
+	要避免這些問題，必須在更高安全級別上運行內核，至少在 securelevel 1 上。
+	Securelevel 可以在 kern.securelevel 變數上用 sysctl 來設置。一旦把 securelevel 設
+	置成1，對 raw 設備的寫入操作將被拒絕，特殊的 chflags 標記如 schg 將被強迫執行。
+	必須保證 schg 標記被設置在特定的啟動程式，目錄和腳本檔上。這樣做可能有點誇大了。
+	當在一個安全性比較高的水平上操作時，升級系統可能比較困難。
+	可以折中一下，將系統運行在一個安全性更高的水平上，但不對每個系統檔和目
+	錄設置 schg 標記。另外一個方法是簡單地將 <filename>/</filename> 和 <filename>/usr</filename> 設為唯讀。這樣就可以阻止所有重要
+	的侵入檢測了。
+      </para>
+    </sect2>
+
+    <sect2 id="security-integrity">
+      <title>檢查檔的完整性：程式，配置檔等</title>
+
+      <para>
+	需要保護核心系統配置和控制檔。例如，在 <filename>/</filename> 和 <filename>/usr</filename> 中的絕大多數檔上使用
+	chflag 來設置 schg 位可能達不到預期的目標，因為當保護檔的時候，也會關閉一個
+	檢測窗口。安全層的最後一層也許是最重要的檢測層。如果不能檢測到潛在的入侵，
+	安全層的其餘部分可能就沒有用了。工作是要讓入侵者慢下來，而不是阻止它，以
+	便尋找時機抓住它。
+      </para>
+
+      <para>
+	檢測入侵的最好方法是尋找有沒有修改，丟失或不需要的檔。尋找修改檔的最好
+	方法是來自另一個訪問受限制的系統。在一個特別的訪問受到限制的系統上寫上安全
+	腳本使得入侵者不可見，這一點很重要。為了集中優勢，通常必須使用有限訪問的機器
+	來訪問另外機器，通常是執行一個另外機器的唯讀 NFS 輸出到有限訪問的機器，或通過設
+	置 <application>ssh</application> 鑰匙對來允許有限訪問的機器 <application>ssh</application> 到另外機器。除了網路傳輸，NFS 是很少用的
+	方法---允許監視每個客戶機的檔系統。
+      </para>
+
+      <para>
+	如果有限訪問伺服器通過一個 switch 來連接到客戶機，<application>NFS</application> 方法是比較好的選擇。
+	如果有限訪問伺服器是通過一個 hub 或通過幾層的路由連接到客戶機，<application>NFS</application> 方法可能很
+	不安全，使用 <application>ssh</application> 可能是更好的選擇。
+      </para>
+
+      <para>
+	一旦使用一個訪問受限制的機器，至少需要能讀取客戶系統，必須寫一些腳本來
+	執行即時的檢測。掛上 <application>NFS</application> 之後，可以用 <application>find</application> 和 <application>md5</application> 這樣的工具。至少每天一次物理地
+	<application>md5</application> 客戶機文件。當發現匹配錯誤時，會發出"尖叫聲"提示系統管理員去檢查。一個安全
+	腳本也會檢查不適當的 suid 程式和系統分區上新增或刪除的檔。
+      </para>
+
+      <para>
+	當使用 <application>ssh</application> 而不是 <application>NFS</application> 時，寫入安全腳本是很困難的。為了運行，必須 <application>scp</application> 腳
+	本到客戶機上，使看得見，為了安全也必須 <application>scp</application> 那些腳本使用的程式。在客戶機上
+	的 <application>ssh</application> 程式已經有安全問題了。總的來講，當通過不安全的連接運行時，使用 <application>ssh</application> 可能是
+	必須的，但也比較難處理。
+      </para>
+
+      <para>
+	一個好的安全腳本將通過訪問配置檔來檢查用戶的變
+	化：<application>.rhosts, .shosts, .ssh/authorized_keys</application>。已經超出了 <application>MD5</application> 檢查的範圍。
+	如果有一個巨大的磁碟空間，可能需要花很長時間來檢查每個檔。在這種情況
+	下，設置掛載標記來不接受 suid 程式和設備在那些分區上是一個好主意。nodev 選項 nosuid
+	選項正是所看到的。可以掃描一下，至少一個星期一次。
+      </para>
+
+      <para>
+	處理帳戶是作業系統的一個相關特性，可以作為一個 post-break-in 的評價機制。
+	在跟蹤入侵者是如何侵入系統的時候特別有用.
+      </para>
+
+      <para>
+	最後，安全腳本應當處理日誌檔。一個入侵者設法掩蓋自己的蹤跡，日誌檔可以
+	指示系統管理員設法追蹤到最初侵入的時間和方法。確保日誌檔持久記錄的日誌檔的
+	一個方法是運行系統控制臺到一個串列口，通過持續不斷地檢測控制臺來收集資訊。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>偏執狂</title>
+
+      <para>
+	帶點偏執可能不會有傷害。作為一個慣例，一個系統管理員需要添加許多安全特性，
+	並且盡可能地不影響到使用的便利性。更重要的是一個安全系統管理員應當經常修復漏洞。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>拒絕式服務攻擊（DoS）</title>
+
+      <para>
+	這節將介紹拒絕式服務攻擊。一個 DoS 攻擊通常是一個包攻擊，它可以使網路癱
+	瘓。應當做一些限制，讓攻擊不會癱瘓伺服器。
+      </para>
+
+      <orderedlist>
+	<listitem>
+	  <para>限制伺服器的forks.</para>
+	</listitem>
+
+	<listitem>
+	  <para>限制跳板springboard 攻擊(ICMP response attacks, ping broadcast, etc.)。</para>
+	</listitem>
+
+	<listitem>
+	  <para>內核通道的緩存。</para>
+	</listitem>
+      </orderedlist>
+
+      <para>
+	一個普通的 DoS 攻擊通常試圖讓伺服器吃掉所有進程，檔描述和記憶體，直到機器死
+	當。<application>inetd</application> 有好幾個選項可以來限制這種攻擊。需要注意的是當無法阻止一個服務被攻擊所
+	打斷時，可以阻止一台機器當機。閱讀一下 <application>inetd</application> 的手冊，特別需要注意 -c, -C, 和
+	-R 選項。注意，哄騙式的 IP 攻擊可以饒過 <application>inetd</application> 的-C 選項。所以，最好一起使用這些選項。
+      </para>
+
+      <para>
+	<application>Sendmail</application> 有一個 -OMaxDaemonChildren 選項，往往要比 <application>sendmail</application> 的負載限制選項工
+	作得好。必須指定一個 MaxDaemonChildren 參數，當啟動 <application>sendmail</application> 時，可能期望有
+	很高的負載，但電腦無法處理這麼高的負載。在佇列模式運行 <application>sendmail</application> 時要非常謹慎
+	(-ODeliveryMode=queued)。如果在一個很短的時間間隔內即時分發運行的佇列，如
+	-q1m，一定要為 <application>sendmail</application> 指定一個合適的 MaxDaemonChildren 選項以免發生錯誤。
+	<application>Syslogd</application> 可能會被直接攻擊，強烈建議使用 -s 選項，或 -a 選項。也應當注意象
+	<application>tcpwrapper</application> 的 reverse-identd 這樣的後臺連接服務，可以被直接攻擊。因為這個原因，
+	通常不要使用<application>tcpwrappers</application> 的reverse-ident 特性。
+      </para>
+
+      <para>
+	在路由器上設置一道防火牆來隔離內部網路與外部網路之間的連接是非常好的安
+	全方法。這樣可以阻止內部網路受到來自外部網路的攻擊。
+	這個方法可以阻斷除了指定的如 <application>named, ntalkd, sendmail</application> 這樣的服務以外的低級
+	埠。如果設法使用另外方法來配置防火牆，可能會忘記關閉一對服務，或添加了
+	一個新的內部服務而忘記了升級防火牆。
+      </para>
+
+      <para>
+	也可以在防火牆上打開比較高的埠範圍，允許有許可性質的操作，而不會危及
+	低級埠的安全。FreeBSD 允許控制用來動態綁定的埠號碼的範圍，通過不同的
+	<application>net.inet.ip.portrange sysctl's(sysctl -a | fgrep portrange)</application>，將會減輕防火牆
+	配置的複雜性。例如，可以使用普通的4000 到5000 埠範圍，以及更高的49152 到
+	65535 埠範圍，然後隔斷4000 以下的埠。
+      </para>
+
+      <para>
+	另一個普通的 DoS 攻擊叫做 <application>springboard</application> 攻擊-會讓伺服器不斷產生回應，最終導
+	致伺服器，本地網路或另外機器超載。最普通的攻擊是 <application>ICMP ping broadcast attack</application>。
+	攻擊者欺騙性地用源 IP 位址向 LAN 廣播位址發送 ping 資料包到希望攻擊的
+	實際機器。如果路由器無法阻止 ping 廣播地址， LAN 就會對每個欺騙性的請
+	求產生回應，從而侵佔大量的網路資源，特別是當攻擊者使用同樣的欺騙手段用幾十個廣
+	播位址從幾十個不同的網路進攻時。
+      </para>
+
+      <para>
+	超過120MB 的廣播攻擊是常用的。另外一個普通的攻擊是針對 <application>ICMP</application> 錯誤報告系統的。
+	通過產生資料包來形成 <application>ICMP</application> 錯誤請求，一個攻擊者可以侵佔一個個伺服器的輸入網路，使
+	得伺服器用 <application>ICMP</application> 請求占滿輸出網路。如果伺服器不能很快地處理 <application>ICMP</application> 請求的話，這
+	種類型的攻擊也可以使伺服器癱瘓。FreeBSD 內核有一個叫做 ICMP_BANDLIM 的新的內核選
+	項，可以限制這些埠攻擊的效率。這種跳板類的攻擊是與象這樣的 udp echo 服務的某
+	個內部 <application>inetd</application> 服務有關的。
+      </para>
+
+      <para>
+	一個攻擊者只要簡單地用成為伺服器 A 的 echo 埠的源位址和成為伺服器 B 的 echo
+	埠的目的地址來哄騙一個 <application>UDP</application> 資料包。兩個伺服器就來回地彈發資料包。攻擊者只要發
+	送幾個這種類型的資料包就可以使伺服器和內部網癱瘓。類似的問題也存在於內部 chargen
+	埠。一個熟練的系統管理員會關閉所有這些內部的 <application>inetd</application> 測試服務。
+	哄騙式資料包攻擊也可以被用來是內核路由緩存超載。可以參考一下
+	<application>net.inet.ip.rtexpire, rtminexpire,</application> 和 <application>rtmaxcache sysctl</application> 參數。隨意使用一個源 IP
+	進行的哄騙式的資料包攻擊將使內核在路由表中產生一個臨時的高速緩衝路由，可以用
+	<application>netstat -rna | fgrep W3</application> 檢查一下。這些路由大約會超時1600 秒。如果內核檢測到緩衝
+	路由表太大，它將動態地減少 <application>rtexpire</application>，但不會小於 <application>rtminexpire</application>。有兩個問題：
+      </para>
+	
+      <orderedlist>
+	<listitem>
+	  <para>當一個負載量很小的伺服器突然受到攻擊時，內核沒有很快地回應。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>由於 rtminexpire 太小而無法抵抗住一個持續不斷的攻擊。</para>
+	</listitem>
+      </orderedlist>
+      
+      <para>
+	如果你的伺服器通過 T3 或更高速度的線路連接到 internet，可能需要通過使用 sysctl
+	來手動地調整 <application>rtexpire</application> 和 <application>rtminexpire</application>。千萬不要把參數設為0（除非想要摧毀機器）。
+	把參數設為 2 秒對於保護路由表免受攻擊是非常好的。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>使用 Kerberos 和 SSH 登入問題</title>
+
+      <para>
+        如果打算使用的話，在 kerberos 和 <application>ssh</application> 之間有好幾個問題需要記住。Kerberos
+	V 是一個非常卓越的驗證協議，但在加密 <application>telnet</application> 和 <application>rlogin</application> 應用程式時會有一些錯誤，可能
+	會不太適合處理二進位資料流。另外，默認的 kerberos 也無法加密一個會話，除非
+	使用-x 選項。<application>ssh</application> 默認能加密任何東西。
+      </para>
+
+      <para>
+	建議無論用戶什麼時候登入系統，都可以結合 kerberos 來使用 <application>ssh</application>。<application>ssh</application> 可以在
+	編譯時加入對 kerberos 的支持。也建議在 <application>ssh</application> 配置中關閉 key-forwarding，或者在
+	<application>authorized_keys</application> 檔中使用 from=IP/DOMAIN 選項使得只有用作實體的密匙可以從特殊
+	機器登陸進系統。
+      </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="crypt">
+    <title>DES, MD5 和 Crypt</title>
+    
+    <para><emphasis>Parts rewritten and updated by &a.unfurl;, 21 March
+      2000.</emphasis></para>
+
+    <para>
+	在 unix 系統上的每個用戶有一個與帳號相關聯的密碼。看起來這些密碼只有用
+	戶和作業系統知道。為了確保這些密碼的秘密，通過一種叫做 one-way hash 的方式來
+	加密，能被很容易地加密，但不能解密。換句話說，以前告訴大家通常不是真的：
+	作業系統通常並不真正知道密碼。只知道密碼的加密形式。
+    </para>
+
+    <para>
+	加密密碼的唯一安全方式是以 <application>DES</application> 為基礎的資料加密標準。這對於 US 用戶來說沒有什
+	麼問題，但 <application>DES</application> 的源代碼不允許被輸出到 US 以外的國家，FreeBSD 必須找到一個既遵守US
+	法律，又要與所有使用 <application>DES</application> 的 unix 相容的方法。
+    </para>
+
+    <para>
+	解決方法是分解加密庫以至於 US 用戶可以安裝 <application>DES</application> 庫和使用 <application>DES</application>，而國際用戶也有一
+	個加密方法。這就是 FreeBSD 為什麼使用 <application>MD5</application> 來作為默認的加密方法。<application>MD5</application> 被認為要比 <application>DES</application>
+	更安全，所以使用 <application>DES</application> 主要是為了相容性的原因。
+    </para>
+
+    <sect2>
+      <title>重新配置 Crypt 機制</title>
+
+      <para>
+	可以很容易地設置 FreeBSD 使用哪種加密方法。檢查 <filename>/etc/master.passwd</filename> 文件中的加
+	密密碼是一種方法。用 <application>MD5</application> 加密的密碼通常要比用 <application>DES</application> 加密的密碼長，通常以$1$字元作為
+	起始。<application>DES</application> 密碼字元沒有任何鑒別特徵，但要比 <application>MD5</application> 密碼短，通常是以64 位元字元的字
+	母表來編碼的，不包括$字元，所以通常一個不以$符號開始的很可能是 <application>DES</application> 密碼。
+	也可以通過區別庫來鑒別密碼。<application>DES</application> 庫能夠鑒別 <application>MD5</application> 密碼，使用 <application>MD5</application> 來檢查用哪種方法
+	加密的密碼，然後用 <application>DES</application> 加密剩下的。之所以可以這樣做，是因為 <application>DES</application> 庫也包括 <application>MD5</application>。但是，
+	倒過來就不行了，所以 <application>MD5</application> 庫不能鑒別用 <application>DES</application> 加密的密碼。
+      </para>
+
+      <para>
+	鑒別當前系統使用的是哪個庫也是很容易的。任何使用 <application>crypt</application> 的程式是與 libcrypt
+	連接在一起的，每一種類型的庫是與適當的執行程式有一個符號連接的。例如，在使用 <application>DES</application>
+	的系統上：
+     </para>
+
+      <screen>&prompt.user; <userinput>ls -l /usr/lib/libcrypt*</userinput>
+lrwxr-xr-x  1 root  wheel  13 Mar 19 06:56 libcrypt.a -&gt; libdescrypt.a
+lrwxr-xr-x  1 root  wheel  18 Mar 19 06:56 libcrypt.so.2.0 -&gt; libdescrypt.so.2.0
+lrwxr-xr-x  1 root  wheel  15 Mar 19 06:56 libcrypt_p.a -&gt; libdescrypt_p.a</screen>
+
+      <para>
+	在使用 <application>MD5</application> 庫的系統上，同樣的連接也會出現，但目標庫是 libscrypt 而不是
+	libdescrypt。如果安裝了 <application>DES</application> 用的 crypt 庫 libdescrypt，哪個密碼格式將被用作新的密
+	碼可以通過在 <filename>/etc/login.conf</filename> 中設置 <application>passwd_format</application> 來控制，要麼使用 <application>DES</application>，要麼使用 <application>MD5</application>。
+	看看 <filename>login.conf</filename> 的聯機手冊瞭解更多資訊。
+      </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="skey">
+    <title>S/Key</title>
+
+    <para>
+	<application>S/key</application> 是基於單向 hash 功能的一次性密碼管理方式。FreeBSD 為了考慮相容性，就使
+	用 <application>MD4</application> hash 函數，但另外系統則使用 <application>MD5</application> 和D <application>ES-MAC</application>。從1.1.5 版開始，<application>S/key</application> 已經成為
+	FreeBSD 的基本系統，同時也廣泛應用於其他作業系統。<application>S/key</application> 是Bell Communications
+	Research, Inc 的注冊商標。
+    </para>
+
+    <para>
+	下面將討論三種不同的密碼形式。第一種是通常使用的 Unix 風格或 Kerberos 密碼；
+	叫做 Unix password。第二種是由 <application>S/key</application> 程式產生，然後被 <application>keyinit</application> 程式和登陸命
+	令接受的一次性密碼；叫做 one-time password。最後一種密碼是由專門的密碼生
+	成程式生成的秘密密碼；叫做 secret password 或絕對 password。
+    </para>
+
+    <para>
+	秘密密碼與 unix password 毫無關係；也可能是一樣的，但並不推薦使用。<application>S/key</application>
+	秘密密碼不象 unix 密碼需要限制在8 位元以內，可能會更長。一般都使用 6 到 7 位的長
+	度。另外，<application>S/key</application> 系統操作完全獨立於 unix password 系統。
+    </para>
+
+    <para>
+	除了密碼，對於 <application>S/key</application> 有兩個資料很重要。一個是以 seed 或 key 出名，包含兩個字母
+	和五個數字。另外的被叫做 iteration count，在 1 到 100 之間。<application>S/key</application> 通過連接"種子"
+	（seed）和秘密密碼來生成一次性密碼，然後通過反復計算多次應用 <application>MD4</application> hash，再把結果
+	變成六個英文字。這六個英文字就是你的一次性密碼。如果用戶提供的密碼的 hash 值與先
+	前的密碼相一致，那用戶就通過了認證；每個成功的登陸確保用戶和登陸程式保持同步之
+	後，計算的次數就不斷減少。當反復計算的降到 1 時，<application>S/key</application> 必須被重新初始化。
+    </para>
+
+    <para>
+	有四個程式被包含在 <application>S/key</application> 系統中，下面會談到。密碼程式接受一個反復計算數，
+	一個種子，和一個秘密密碼，然後產生一個一次性密碼。<application>Keyinit</application> 程式被用來初始化 <application>S/key</application>，
+	然後改變密碼，反復計算數或種子；不是接受一個秘密密碼，就是一個反復計算數，種
+	子和一次性密碼。<application>Keyinfo</application> 程式會檢查檔，然後列印出被調用的當前反復計算數和種子。
+	最後，login 和 su 套裝程式含了用於認證 <application>S/key</application> 一次性密碼的必需的邏輯性。login 程式也
+	可以不使用unix 密碼。
+    </para>
+
+    <para>
+	將講述四種不同的操作。第一種是首先通過一個安全連接設置 <application>S/key</application> 使用 <application>keyinit</application>
+	程式，或改變密碼或種子。第二種操作是通過一個不安全的連接使用 <application>keyinit</application> 程式，
+	通過一個安全的連接與密碼程式相關聯，同樣能達到目的。第三種是使用密碼程式產生許
+	多 key，可以被記錄或列印出來。
+    </para>
+
+    <sect2>
+      <title>安全連接的初始化</title>
+
+      <para>
+	首先是當通過一個安全連接登陸時，初始化 <application>S/key</application>，改變密碼，或改變種子，
+	當自己登陸時，使用不帶任何參數的 <application>keyinit</application> 程式：
+      </para>
+
+      <screen>&prompt.user; <userinput>keyinit</userinput>
+Adding unfurl:
+Reminder - Only use this method if you are directly connected.
+If you are using telnet or rlogin exit with no password and use keyinit -s.
+Enter secret password: 
+Again secret password: 
+
+ID unfurl s/key is 99 to17757
+DEFY CLUB PRO NASH LACE SOFT</screen>
+
+      <para>
+	在鍵入秘密密碼時：必須鍵入一個密碼或短語。記住，這不是用來登入的密碼，
+	只是用來產生一次性登陸密碼。ID 行給出了特定的 <application>S/key</application> 實例的參數；登陸名，
+	反復計算數，和種子。當用 <application>S/key</application> 登陸系統時，系統將記住這些參數，然後返回給
+	，所以不必記住。最後一行給出了與那些參數和秘密密碼相一致的特定的一
+	次性密碼；如果需要立刻重新登入，這個一次性密碼就是使用的。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>不安全連接初始化</title>
+      
+      <para>
+	通過一個不安全的連接來初始化 <application>S/key</application> 或改變秘密密碼，必須已經有連接到可
+	以運行密碼程式的地方的安全連接。這可以是在M acintosh 上桌面訪問的方式，或是在
+	信任的機器上的一個 shell 命令。也必須指定一個反復計算數（通常是100），可以使
+	用自己的種子，或使用一個隨機產生的值。在一個不安全的連接上，可以使用 <application>keyinit</application> -s
+	命令：
+      </para>
+
+      <screen>&prompt.user; <userinput>keyinit -s</userinput>
+Updating unfurl:
+Old key: to17758
+Reminder you need the 6 English words from the key command.
+Enter sequence count from 1 to 9999: <userinput>100</userinput>
+Enter new key [default to17759]: 
+s/key 100 to 17759
+s/key access password:</screen>
+
+      <para>
+	要接受默認的種子，鍵入 return。然後鍵入一個訪問密碼，轉移到安全連接或 <application>S/key</application>
+	桌面程式，給指定一樣的參數：
+      </para>
+
+      <screen>&prompt.user; <userinput>key 100 to17759</userinput>
+Reminder - Do not use this program while logged in via telnet or rlogin.
+Enter secret password: <userinput>&lt;secret password&gt;</userinput>
+CURE MIKE BANE HIM RACY GORE</screen>
+
+      <para>
+	現在，切換到不安全的連接，拷貝一次性通過密碼程式產生的一次性密碼給 <application>keyinit</application>
+	程式：
+      </para>
+
+      <screen>s/key access password:<userinput>CURE MIKE BANE HIM RACY GORE</userinput>
+ID unfurl s/key is 100 to17759
+CURE MIKE BANE HIM RACY GORE</screen>
+
+      <para>The rest of the description from the previous section applies
+	here as well.</para>
+    </sect2>
+
+    <sect2>
+      <title>產生一個簡單的一次性密碼</title>
+
+      <para>
+	一旦初始化 <application>S/key</application>，當登入時，會看到下面的命令行：
+      </para>
+
+<screen>&prompt.user; <userinput>telnet example.com</userinput>
+Trying 10.0.0.1...
+Connected to example.com
+Escape character is '^]'.
+
+FreeBSD/i386 (example.com) (ttypa)
+
+login: <userinput>&lt;username&gt;</userinput>
+s/key 97 fw13894
+Password: </screen>
+
+      <para>
+	另外，<application>S/key</application> 有一個很有用的特性：如果在密碼行鍵入 return 鍵，登入程式將會把
+	鍵入的密碼顯示出來，所以可以看到鍵入的密碼。如果試圖手工鍵入一個 <application>S/key</application>，這
+	個非常有用。如果這台機器被配置成通過一個來自源機器的連接不接受 unix 密碼，命令行
+	也將包括注意（<application>S/key</application> 必須），指出只有 <application>s/key</application> 一次性密碼將被接受。
+	基於這點，必須產生一次性密碼來回答這個登入命令。這必須在一個可以運行密
+	碼命令的可信任的系統上做。密碼程式既需要反復計算數和種子，也需要命令行選項。可
+	以從登入的機器的命令行剪切和粘貼這些選項。
+	在可信任的系統上：
+      </para>
+
+      <screen>&prompt.user; <userinput>key 97 fw13894</userinput>
+Reminder - Do not use this program while logged in via telnet or rlogin.
+Enter secret password: 
+WELD LIP ACTS ENDS ME HAAG</screen>
+
+      <para>
+	現在，已經有了可以繼續登陸的一次性密碼：
+      </para>
+
+      <screen>login: <userinput>&lt;username&gt;</userinput>
+s/key 97 fw13894
+Password: <userinput>&lt;return to enable echo&gt;</userinput>
+s/key 97 fw13894
+Password [echo on]: WELD LIP ACTS ENDS ME HAAG
+Last login: Tue Mar 21 11:56:41 from 10.0.0.2 ... </screen>
+
+      <para>
+	如果有一個可信任的系統，這是最容易的機制。有一個 java <application>S/key</application> 密碼小程式，The
+	Java OTP Calculator，可以下載和在本地支援 java 的流覽器中運行。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>產生多個一次性密碼</title>
+
+      <para>
+	有時，會來到不能訪問一個可信任的機器或安全連接的地方。在這個例子中，可以
+	使用密碼命令來產生許多一次性密碼，例如：
+      </para>
+
+      <screen>&prompt.user; <userinput>key -n 5 30 zz99999</userinput>
+Reminder - Do not use this program while logged in via telnet or rlogin.
+Enter secret password: <userinput>&lt;secret password&gt;</userinput>
+26: SODA RUDE LEA LIND BUDD SILT 
+27: JILT SPY DUTY GLOW COWL ROT  
+28: THEM OW COLA RUNT BONG SCOT  
+29: COT MASH BARR BRIM NAN FLAG  
+30: CAN KNEE CAST NAME FOLK BILK</screen>
+
+      <para>
+	-n 5 按順序請求 5 個密匙，30 指定了最後的反復計算的號碼是什麼。注意這些將按與
+	實際相反的順序列印出來。如果是一個偏執狂，可以手工寫下這些結果；否則可以打
+	印出來。注意，每一行都顯示了重複計算數和一次性的密碼。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>Unix 密碼的限制使用</title>
+
+      <para>
+	這種限制可能是基於主機名，用戶名，終端口，或登陸時的 IP 位址的 unix 密碼的使用。
+	這些限制可以在配置檔 <filename>/etc/skey.access</filename> 中找到。<filename>skey.access</filename> 的手冊中，有這個文
+	件的完整格式和細節。
+      </para>
+
+      <para>
+	如果沒有 <filename>/etc/skey.access</filename> 檔（這是 FreeBSD 默認的），那所有的用戶將被允許使
+	用 unix 密碼。如果檔存在，那所有的用戶將被要求使用 <application>s/key</application>，除非明確地允許這樣做。
+	在所有的案例中，unix 密碼是允許用在控制臺的。
+      </para>
+
+      <para>
+	這兒是一個配置檔的例子，下面舉三種普通使用的配置例子：
+      </para>
+
+      <programlisting>permit internet 192.168.0.0 255.255.0.0
+permit user fnord
+permit port ttyd0</programlisting>
+
+      <para>
+	第一行允許Ip 源位址與指定的值和遮罩相配的用戶使用unix 密碼。這不應當被認
+	為是一種安全的機制，但應當提醒那些使用不安全連接的網路的用戶必須使用 <application>s/key</application> 驗證。
+	第二行允許指定用戶名在任何時候使用 unix 密碼，在這個例子中是 fnord。一般來講，
+	這將被那些不能使用密碼程式的人或不可教育的人來使用。
+      </para>
+
+      <para>
+	第三行允許所有的通過指定的終端行登陸的用戶使用 unix 密碼；這將被用在撥號中。
+      </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="kerberos">
+    <sect1info>
+      <authorgroup>
+        <author>
+          <firstname>Mark</firstname>
+          <surname>Murray</surname>
+          <contrib>Contributed by </contrib>
+        </author>
+      </authorgroup>
+      <authorgroup>
+        <author>
+          <firstname>Mark</firstname>
+          <surname>Dapoz</surname>
+          <contrib>Based on a contribution by </contrib>
+        </author>
+      </authorgroup>
+    </sect1info>
+
+    <title>Kerberos</title>
+    
+    <para>
+	Kerberos 是一個網路附加系統/協定，可以允許用戶通過一個安全伺服器的服務來驗證
+	自己。象遠端登陸，遠端拷貝，系統間的相互檔拷貝和另外高風險任務的服務將被變
+	得相當安全和可控制。
+    </para>
+
+    <para>
+	下面的文章將用來指導如何為 FreeBSD 設置 Kerberos。也可以參考相關的手冊
+	瞭解更詳細的說明。
+    </para>
+
+    <para>
+	在 FreeBSD 中，Kerberos 不是來自最初的 4.4BSD-Lite，而是 eBones，來自於 USA/Canada
+	以外的地區，那些受到美國加密代碼出口限制的國家就可以使用它。
+    </para>
+    
+    <sect2>
+      <title>創建最初的資料庫</title>
+      
+      <para>
+	這只可以由 Kerberos 伺服器來做。首先確定沒有舊的 Kerberos 資料庫。必須改變
+	<filename>/etc/kerberosIV</filename> 的目錄，然後只檢查下面出現的檔：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>cd /etc/kerberosIV</userinput>
+&prompt.root; <userinput>ls</userinput>
+README		krb.conf        krb.realms</screen>
+	  
+      <para>
+	如果任何檔(如 <filename>principal.*</filename> 或 <filename>master_key</filename>)存在，那使用 kdb_destroy 命令就
+	可以破壞舊的 Kerberos 資料庫，或者如果 Kerberos 不在運行，只要刪除另外的檔。
+      </para>
+	  
+      <para>
+	現在必須編輯 <filename>krb.conf</filename> 和 <filename>krb.realms</filename> 檔來定義 Kerberos 規則。在這個例子
+	中，規則將是 GRONDAR.ZA，伺服器是 grunt.grondar.za。可以編輯或創建 <filename>krb.conf</filename>
+	文件：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>cat krb.conf</userinput>
+GRONDAR.ZA
+GRONDAR.ZA grunt.grondar.za admin server
+CS.BERKELEY.EDU okeeffe.berkeley.edu
+ATHENA.MIT.EDU kerberos.mit.edu
+ATHENA.MIT.EDU kerberos-1.mit.edu
+ATHENA.MIT.EDU kerberos-2.mit.edu
+ATHENA.MIT.EDU kerberos-3.mit.edu
+LCS.MIT.EDU kerberos.lcs.mit.edu
+TELECOM.MIT.EDU bitsy.mit.edu
+ARC.NASA.GOV trident.arc.nasa.gov</screen>
+	  
+      <para>
+	在這個例子中，另外規則沒有出現。在這兒作為一個機器如何應用多種規則的例子。
+	可能希望不要簡單地包括。
+      </para>
+	  
+      <para>
+	第一行命名了這個系統工作的規則。其他行包含了規則/主機的記錄。每行的第一項就
+	是一個規則，第二個是充當一個 key distribution center 的規則中的一台主機。接在一個
+	主機名後面的管理伺服器的命令意味著主機也要提供一個管理資料庫伺服器。更多資訊，可
+	以參考 Kerberos 的聯機手冊。
+      </para>
+	  
+      <para>
+	現在，必須添加 grunt.grondar.za 到 GRONDAR.ZA，然後添加一個記錄把所有主機
+	放在 .grondar.za 域中。krb.realms 檔將被升級：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>cat krb.realms</userinput>
+grunt.grondar.za GRONDAR.ZA
+.grondar.za GRONDAR.ZA
+.berkeley.edu CS.BERKELEY.EDU
+.MIT.EDU ATHENA.MIT.EDU
+.mit.edu ATHENA.MIT.EDU</screen>
+	  
+      <para>
+	在這兒作為一個例子來指出一台機器如何可以知道多個領域。也可以簡單地刪除。
+      </para>
+	  
+      <para>
+	第一行把指定的系統放在已命名的域中。行顯示了如何把一個特殊子域的系統默認
+	設為一個命名的域。
+      </para>
+	  
+      <para>
+	現在已經準備創建資料庫。這將需要運行 Kerberos 伺服器。執行命令 kdb_init：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>kdb_init</userinput>
+<prompt>Realm name [default  ATHENA.MIT.EDU ]:</prompt> <userinput>GRONDAR.ZA</userinput>
+You will be prompted for the database Master Password.
+It is important that you NOT FORGET this password.
+		
+<prompt>Enter Kerberos master key:</prompt> </screen>
+	  
+      <para>
+	現在必須保存密匙，以便本地機器的伺服器能夠得到加速。使用 kstash 命令：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>kstash</userinput>
+	      
+<prompt>Enter Kerberos master key:</prompt>
+
+Current Kerberos master key version is 1.
+
+Master key entered. BEWARE!</screen>
+	  
+      <para>
+	這保存加密過的主密碼在 <filename>/etc/kerberosIV/master_key</filename>。
+      </para>
+    </sect2>
+    
+    <sect2>
+      <title>完全運行</title>
+	  
+      <para>
+	有兩個主要的東西需要被添加到要用 Kerberos 確保安全的每個系統的資料庫中。
+	名稱是 <application>kpasswd</application> 和 <application>rcmd</application>。這些程式允許另外系統改變 Kerberos 的密碼，然後象 <application>rcp, rlogin</application>
+	和 <application>rsh</application> 一樣運行命令。
+      </para>
+	  
+      <para>
+	現在，添加這些記錄：
+      </para>
+	    
+      <screen>&prompt.root; <userinput>kdb_edit</userinput>
+Opening database...
+
+<prompt>Enter Kerberos master key:</prompt>
+
+Current Kerberos master key version is 1.
+
+Master key entered.  BEWARE!
+Previous or default values are in [brackets] ,
+enter return to leave the same, or new value.
+
+<prompt>Principal name:</prompt> <userinput>passwd</userinput>
+<prompt>Instance:</prompt> <userinput>grunt</userinput>
+
+&lt;Not found&gt;, <prompt>Create [y] ?</prompt> <userinput>y</userinput>
+
+Principal: passwd, Instance: grunt, kdc_key_ver: 1
+<prompt>New Password:</prompt>                    &lt;---- enter RANDOM here
+Verifying password
+
+<prompt>New Password:</prompt> &lt;---- enter RANDOM here
+
+<prompt>Random password [y] ?</prompt> <userinput>y</userinput>
+
+Principal's new key version = 1
+<prompt>Expiration date (enter yyyy-mm-dd) [ 2000-01-01 ] ?</prompt>
+<prompt>Max ticket lifetime (*5 minutes) [ 255 ] ?</prompt>
+<prompt>Attributes [ 0 ] ?</prompt>
+Edit O.K.
+<prompt>Principal name:</prompt> <userinput>rcmd</userinput>
+<prompt>Instance:</prompt> <userinput>grunt</userinput>
+
+&lt;Not found&gt;, <prompt>Create [y] ?</prompt>
+
+Principal: rcmd, Instance: grunt, kdc_key_ver: 1
+<prompt>New Password:</prompt>		&lt;---- enter RANDOM here
+Verifying password
+
+<prompt>New Password:</prompt>           &lt;---- enter RANDOM here
+
+<prompt>Random password [y] ?</prompt>
+
+Principal's new key version = 1
+<prompt>Expiration date (enter yyyy-mm-dd) [ 2000-01-01 ] ?</prompt>
+<prompt>Max ticket lifetime (*5 minutes) [ 255 ] ?</prompt>
+<prompt>Attributes [ 0 ] ?</prompt>
+Edit O.K.
+<prompt>Principal name:</prompt>         &lt;---- null entry here will cause an exit</screen>
+    </sect2>
+
+    <sect2>
+      <title>創建新的伺服器檔</title>
+      
+      <para>
+	現在必須分析在每台機器上定義的服務的所有情況。使用 <application>ext_srvtab</application> 命令。
+	這將創建一個檔，必須通過安全方式被拷貝或移動到每個 Kerberos 用戶端的
+	<filename>/etc/kerberosIV</filename> 目錄。這個檔必須在每個伺服器和客戶機上出現，這對 Kerberos 的操
+	作是很重要的。
+      </para>
+	  
+	  
+      <screen>&prompt.root; <userinput>ext_srvtab grunt</userinput>
+<prompt>Enter Kerberos master key:</prompt>
+		
+Current Kerberos master key version is 1.
+
+Master key entered. BEWARE!
+Generating 'grunt-new-srvtab'....</screen>
+	  
+      <para>
+	現在，這個命令只產生一個暫存檔案，必須被重命名為 <application>srvtab</application>，以便所有的服務可
+	以得到加速。使用 mv 命令移到最初的系統上：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>mv grunt-new-srvtab srvtab</userinput></screen>
+	  
+      <para>
+	如果檔是針對客戶系統的，那網路可能就會不安全，拷貝 client-new-srvtab 到可抽
+	取式設備上，然後通過安全的物理方式進行傳輸。確信在客戶機的 <filename>/etc/kerberosIV</filename> 目錄中
+	把它重命名為srvtab，確定它是mode 600：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>mv grumble-new-srvtab srvtab</userinput>
+&prompt.root; <userinput>chmod 600 srvtab</userinput></screen>
+    </sect2>
+    
+    <sect2>
+      <title>定位資料庫</title>
+      
+      <para>
+	現在添加一些用戶記錄到資料庫。首先，讓用戶 jane 創建一個記錄。使用
+	kdb_edit 命令來完成：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>kdb_edit</userinput>
+Opening database...
+
+<prompt>Enter Kerberos master key:</prompt>
+
+Current Kerberos master key version is 1.
+
+Master key entered.  BEWARE!
+Previous or default values are in [brackets] ,
+enter return to leave the same, or new value.
+
+<prompt>Principal name:</prompt> <userinput>jane</userinput>
+<prompt>Instance:</prompt>
+
+&lt;Not found&gt;, <prompt>Create [y] ?</prompt> <userinput>y</userinput>
+
+Principal: jane, Instance: , kdc_key_ver: 1
+<prompt>New Password:</prompt>                &lt;---- enter a secure password here
+Verifying password
+
+<prompt>New Password:</prompt>                &lt;---- re-enter the password here
+Principal's new key version = 1
+<prompt>Expiration date (enter yyyy-mm-dd) [ 2000-01-01 ] ?</prompt>
+<prompt>Max ticket lifetime (*5 minutes) [ 255 ] ?</prompt>
+<prompt>Attributes [ 0 ] ?</prompt>
+Edit O.K.
+<prompt>Principal name:</prompt>		   &lt;---- null entry here will cause an exit</screen>
+    </sect2>
+
+    <sect2>
+      <title>測試所有的</title>
+      
+      <para>
+	首先必須啟動 Kerberos 守護程式。注意如果沒有正確地編輯 <filename>/etc/rc.conf</filename>
+	檔，那這將在重啟系統的時候自動發生。這只有在 Kerberos 伺服器上是必須的。
+	Kerberos 客戶機將從 <filename>/etc/kerberosIV</filename> 目錄自動獲得所需要的。
+      </para>
+	  
+      <screen>&prompt.root; <userinput>kerberos &amp;</userinput>
+Kerberos server starting
+Sleep forever on error
+Log file is /var/log/kerberos.log
+Current Kerberos master key version is 1.
+
+Master key entered. BEWARE!
+
+Current Kerberos master key version is 1
+Local realm: GRONDAR.ZA
+&prompt.root; <userinput>kadmind -n &amp;</userinput>
+KADM Server KADM0.0A initializing
+Please do not use 'kill -9' to kill this job, use a
+regular kill instead
+
+Current Kerberos master key version is 1.
+
+Master key entered.  BEWARE!</screen>
+	  
+      <para>
+	現在，可以使用命令 kinit 得到一個 id 為 jane 的"入場券"：
+      </para>
+	  
+      <screen>&prompt.user; <userinput>kinit jane</userinput>
+MIT Project Athena (grunt.grondar.za)
+Kerberos Initialization for "jane"
+<prompt>Password:</prompt> </screen>
+	  
+      <para>
+	如果真的有，使用 klist 設法列出記號：
+      </para>
+	  
+      <screen>&prompt.user; <userinput>klist</userinput>
+Ticket file:    /tmp/tkt245
+Principal:      jane@GRONDAR.ZA
+
+  Issued           Expires          Principal
+Apr 30 11:23:22  Apr 30 19:23:22  krbtgt.GRONDAR.ZA@GRONDAR.ZA</screen>
+	  
+      <para>
+	現在，如果 kpasswd 程式可以得到資料庫的驗證，可以使用 passwd 來檢查正在修改的
+	密碼：
+      </para>
+	  
+      <screen>&prompt.user; <userinput>passwd</userinput>
+realm GRONDAR.ZA
+<prompt>Old password for jane:</prompt>
+<prompt>New Password for jane:</prompt>
+Verifying password
+<prompt>New Password for jane:</prompt>
+Password changed.</screen>
+    </sect2>
+
+    <sect2>
+      <title>添加 su 特權</title>
+      
+      <para>
+	Kerberos 允許給每個需要 root 許可權的用戶分離 supassword。現在
+	可以添加一個被用來驗證 su 到 root 的 id。使用 kdb_edit，可以在 Kerberos 資料庫中
+	創建一個記錄 jane.root：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>kdb_edit</userinput>
+Opening database...
+
+<prompt>Enter Kerberos master key:</prompt>
+
+Current Kerberos master key version is 1.
+
+Master key entered.  BEWARE!
+Previous or default values are in [brackets] ,
+enter return to leave the same, or new value.
+
+<prompt>Principal name:</prompt> <userinput>jane</userinput>
+<prompt>Instance:</prompt> <userinput>root</userinput>
+
+&lt;Not found&gt;, Create [y] ? y
+
+Principal: jane, Instance: root, kdc_key_ver: 1
+<prompt>New Password:</prompt>                    &lt;---- enter a SECURE password here
+Verifying password
+
+<prompt>New Password:</prompt>    	 	 &lt;---- re-enter the password here
+
+Principal's new key version = 1
+<prompt>Expiration date (enter yyyy-mm-dd) [ 2000-01-01 ] ?</prompt>
+<prompt>Max ticket lifetime (*5 minutes) [ 255 ] ?</prompt> <userinput>12</userinput> &lt;--- Keep this short!
+<prompt>Attributes [ 0 ] ?</prompt>
+Edit O.K.
+<prompt>Principal name:</prompt>		         &lt;---- null entry here will cause an exit</screen>
+	  
+      <para>
+	現在設法獲得一些記號來確定在做什麼：
+      </para>
+      
+      <screen>&prompt.root; <userinput>kinit jane.root</userinput>
+MIT Project Athena (grunt.grondar.za)
+Kerberos Initialization for "jane.root"
+<prompt>Password:</prompt></screen>
+	  
+      <para>
+	現在，必須添加用戶到 root 的 .klogin 文件：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>cat /root/.klogin</userinput>
+jane.root@GRONDAR.ZA</screen>
+	  
+      <para>
+	現在設法執行 su:
+      </para>
+	  
+      <screen>&prompt.user; <prompt>su</prompt>
+<prompt>Password:</prompt></screen>
+	  
+      <para>
+	看看有些什麼符號：
+      </para>
+	  
+      <screen>&prompt.root; klist
+Ticket file:	/tmp/tkt_root_245
+Principal:      jane.root@GRONDAR.ZA
+
+  Issued           Expires          Principal
+May  2 20:43:12  May  3 04:43:12  krbtgt.GRONDAR.ZA@GRONDAR.ZA</screen>
+    </sect2>
+
+    <sect2>
+      <title>使用額外命令</title>
+      
+      <para>
+	在一個早期的例子中，創建了一個叫做 jane 的用戶作為一個 root。這裏就以這個
+	用戶為例，這是 Kerberos 默認的；如果必須的記錄在 .klogin 檔中，那形式
+	&lt;username&gt;.root 的&lt;principal&gt;.&lt;instance&gt;將允許 
+        &lt;username&gt;
+        <command>su</command> 到<username>root</username>：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>cat /root/.klogin</userinput>
+jane.root@GRONDAR.ZA</screen>
+      
+      <para>
+	同樣的，如果一個用戶已在自己的 home 目錄行中：
+      </para>
+      
+      <screen>&prompt.user; <userinput>cat ~/.klogin</userinput>
+jane@GRONDAR.ZA
+jack@GRONDAR.ZA</screen>
+	  
+      <para>
+	這允許在 GRONDAR.ZA 中的已通過 jane 或 jack 驗證的任何人通過 <application>rlogin, rsh</application> 或 <application>rcp</application>
+	訪問並登陸到 jane 的在這個系統上的帳戶或檔。
+      </para>
+	  
+      <para>
+	例如，jane 現在登陸進另一個系統，使用 Kerberos：
+      </para>
+	  
+	    <screen>&prompt.user; <userinput>kinit</userinput>
+MIT Project Athena (grunt.grondar.za)
+<prompt>Password:</prompt>
+%prompt.user; <userinput>rlogin grunt</userinput>
+Last login: Mon May  1 21:14:47 from grumble
+Copyright (c) 1980, 1983, 1986, 1988, 1990, 1991, 1993, 1994
+        The Regents of the University of California.   All rights reserved.
+
+FreeBSD BUILT-19950429 (GR386) #0: Sat Apr 29 17:50:09 SAT 1995</screen>
+	  
+      <para>
+	或者 jack 登陸進在同一機器上的 jane 的帳戶。
+      </para>
+	  
+      <screen>&prompt.user; <userinput>kinit</userinput>
+&prompt.user; <userinput>rlogin grunt -l jane</userinput>
+MIT Project Athena (grunt.grondar.za)
+<prompt>Password:</prompt>
+Last login: Mon May  1 21:16:55 from grumble
+Copyright (c) 1980, 1983, 1986, 1988, 1990, 1991, 1993, 1994
+        The Regents of the University of California.   All rights reserved.
+FreeBSD BUILT-19950429 (GR386) #0: Sat Apr 29 17:50:09 SAT 1995</screen>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="firewalls">
+    <title>防火牆</title>
+
+    <para><emphasis>Contributed by &a.gpalmer; and Alex Nash.</emphasis></para>
+
+    <para>
+	防火牆是提高人們訪問互聯網的興趣的一個工具，能夠提高私有網路的安全性。這節
+	將介紹防火牆是什麼，如何使用，和如何使用內核中提供的工具來實現。
+    </para>
+
+    <note>
+      <para>
+	注意：人們經常認為在內部網路與外部網路之間建立一個防火牆能夠解決所有的安
+	全問題。但是一個糟糕的防火牆設置要比沒有防火牆可能更加危險。一個防火牆可以為
+	系統增加另一個安全層，但不可能完全阻止一些駭客高手侵入系統。如果覺得
+	防火牆能夠完全阻止駭客入侵而放鬆了安全設置，那可能會讓駭客侵入系統變得更加
+	容易。
+      </para>
+    </note>
+
+    <sect2>
+      <title>什麼是防火牆？</title>
+      
+      <para>
+	今天，經常使用的防火牆主要有兩種類型。第一種類型是叫做 packet filtering
+	router，主要是通過設置一定的規則來轉發或阻止資料包的傳輸。第二種是 proxy server，
+	依靠守護程式來提供驗證，然後轉發資料包。
+      </para>
+	  
+      <para>
+	有時，有些站點同時使用兩種類型的防火牆，以至只有某台機器(主要是 bastion host)
+	才能被允許發送資料包到內部網路。代理服務運行在 bastion host上，通常要比普通的
+	驗證機制安全。
+      </para>
+	  
+      <para>
+	FreeBSD 有一個內核資料包過濾程式(<application>IPFW</application>)，在這節的餘下部分將詳細講到，但由於有
+	很多的代理伺服器可以使用，所以在這篇文檔中無法一一講到。
+      </para>
+	  
+      <sect3 id="firewalls-packet-filters">
+	<title>數據包過濾路由</title>
+
+	<para>
+	路由器是負責在網路之間轉發資料的機器。一個資料包過濾路由器在內核中有額外
+	一部分代碼，在決定資料包是被轉發還是被阻止之前，會根據給出的規則比較每個資料
+	包。絕大多數現代的 IP 路由軟體都有資料包過濾代碼。要啟用這些篩檢程式，必須定義一
+	些過濾代碼的規則，以便能決定資料包是否被允許轉發或阻止。
+	</para>
+	    
+	<para>
+	過濾代碼會檢查所設定的匹配一個資料包頭部內容的規則來決定這個資料包是否被通
+	過。一旦一個匹配找到了，這個規則動作就啟用了。這個規則可能會減慢資料包以便傳輸數
+	據，或是發送一個 <application>ICMP</application> 資訊給這個資料包的發送者。只有第一個匹配會計數，以便按順序
+	來查找到這些規則。因此，這些規則的列表可以被看作是規則鏈。
+	</para>
+	    
+	<para>
+	資料包匹配標準的變化依賴於使用的軟體，但典型可以指定依賴資料包的來源 IP
+	位址，目的 IP 位址，源埠號，目的埠號，或是資料包類型(<application>UDP, TCP, ICMP</application> 等)的規則，
+	</para>
+      </sect3>
+	  
+      <sect3 id="firewalls-proxy-servers">
+	<title>代理型伺服器</title>
+	    
+	<para>
+	代理型伺服器是把普通系統守護程式(<application>telnetd, ftpd</application> 等)用作特殊伺服器的機器。這些
+	伺服器被叫做 proxy servers。這個可以在防火牆主機上運行一個代理 <application>telnet</application> 伺服器，
+	人們可以從外部 <application>telnet</application> 進入防火牆， 通過一些驗證機制，然後獲得訪問內部網路的權
+	利。
+	</para>
+	    
+	<para>
+	代理型伺服器通常要比普通的伺服器更安全，可以提供更廣泛的驗證機制，包括
+	one-shot 口令系統，所以即使有人設法尋找使用的密碼，也不能使用獲得訪問
+	系統的權利，因為密碼會立即失效。由於不能給用戶訪問主機的權利，所以使得想
+	要在的系統上安裝後門變得困難得多。
+	</para>
+	    
+	<para>
+	代理型伺服器有很多種限制訪問的方法，所以只有某個主機獲得了訪問伺服器的權利，
+	才可以被設置，以至可以限制哪個用戶可以跟哪個機器交談。另外，要使用哪個完全
+	取決於選擇的代理軟體哪個更強大。
+	</para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title> IPFW 允許做些什麼？</title>
+      
+      <para>
+	<application>IPFW</application>,由FreeBSD 提供的軟體，是一個位於內核中的資料包過濾和結算系統，有一個用
+	戶水平的控制工具，<application>ipfw</application>。允許定義和查詢內核正在使用的規則。
+      </para>
+	  
+      <para>
+	<application>IPFW</application> 有兩個相關的部分。防火牆那節允許執行資料包過濾。也有一個 IP 結算章節允
+	許追蹤路由器的情況。這將允許看到路由器從某個機器得到了多少的傳輸量，
+	或有多少的 WWW 資料被轉發。
+      </para>
+	  
+      <para>
+	可以使用在沒有路由的機器上在輸入與輸出的連接之間，使用 <application>IPFW</application> 來執行資料包
+	過濾。這是 <application>IPFW</application> 一個比較特殊的用法，同樣的命令和技術也可以被用到。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>在FreeBSD 上啟用IPFW</title>
+      
+      <para>
+	由於 <application>IPFW</application> 的主要部分被捆綁在內核中，必須要在內核配置檔中添加一個或多
+	個選項，這取決於要使用哪個工具，然後重新編譯內核。
+      </para>
+      
+      <para>
+	與 <application>IPFW</application> 相關的有三種內核配置選項：
+      </para>
+	  
+      <variablelist>
+	<varlistentry>
+	  <term><literal>options IPFIREWALL</literal></term>
+
+	  <listitem>
+	    <para>
+		將數據包過濾編譯進內核。
+	    </para>
+	  </listitem>
+	</varlistentry>
+	      
+	<varlistentry>
+	  <term><literal>options IPFIREWALL_VERBOSE</literal></term>
+		
+	  <listitem>
+	    <para>
+	通過 <application>syslogd</application> 啟用代碼來允許記錄資料包的日誌。沒有這個選項，即使指定了，資料
+	包也不在過濾規則中被記錄進日誌。
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><literal>options IPFIREWALL_VERBOSE_LIMIT=10</literal></term>
+		
+	  <listitem>
+	    <para>
+		通過 <application>syslogd</application> 限制資料包日誌的記錄。可以使用這個選項記錄防火牆的活動,但不要
+		過多地使用 <application>syslogd</application>,否則會給拒絕式服務攻擊提供機會。
+	    </para>
+
+	    <para>W
+		當一個資料鏈記錄到達指定的受限制的資料包時,日誌會在那個特殊的記錄被關閉.
+		要繼續進行日誌,必須使用 <application>ipfw</application> 工具刷新相關的記數器:
+            </para>
+	    
+	    <screen>&prompt.root; <userinput>ipfw zero 4500</userinput></screen>
+	    <para>
+		這兒的 4500 是希望繼續日誌的資料鏈記錄。
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <para>
+	先前的 FreeBSD 版本已經包含了 <application>IPFIREWALL_ACCT</application> 選項。現在，現在把作為防火牆代
+	碼已經變得很陳舊了。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>配置IPFW</title>
+      
+      <para>
+	<application>IPFW</application> 的配置可以通過使用 <application>ipfw</application> 工具來完成。這個命令的語法看起來很複雜，但一旦
+	理解個它的結構就會變得很簡單。
+      </para>
+
+      <para>
+	當前，這個工具可以使用四種不同的命令：<application>addition/deletion, listing, flushing</application> 和 <application>clearing</application>。
+	<application>Addition/deletion</application> 被用來建構控制資料包如何被接受，拒絕，和日誌的控制規則。 <application>Listing</application> 被
+	用來檢查規則設置的內容和資料包記數器。<application>Flushing</application> 被用來刪除所有記錄鏈的記錄。
+	<application>Clearing</application> 被用來對一個或多個記數記錄進行清零。
+      </para>
+	  
+      <sect3>
+	<title>改變IPFW 的規則</title>
+
+	<para>這種形式的命令語法是：
+	  <cmdsynopsis>
+	    <command>ipfw</command>
+	    <arg>-N</arg>
+	    <arg choice="plain">command</arg>
+	    <arg>index</arg>
+	    <arg choice="plain">action</arg>
+	    <arg>log</arg>
+	    <arg choice="plain">protocol</arg>
+	    <arg choice="plain">addresses</arg>
+	    <arg>options</arg>
+	  </cmdsynopsis></para>
+
+	<para>當使用這種形式的命令時，會有一個正確的標記：</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>-N</term>
+
+	    <listitem>
+	      <para>在輸出中解決地址和服務的名稱。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+	<para>給出的命令可以被縮短到最短的獨特形式。正確的命令是這樣的：</para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>add</term>
+
+	    <listitem>
+	      <para>添加一個記錄到 <application>firewall/accounting</application> 規則列表</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>delete</term>
+	    
+	    <listitem>
+	      <para>從 <application>firewall/accounting</application> 規則列表中刪除一個記錄</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+	<para>
+	先前使用的 <application>IPFW</application> 可以分離 <application>firewall</application> 和 <application>accounting</application> 記錄。現在的版本提供了與每個防
+	火牆記錄資料包 <application>accounting</application>。
+	</para>
+	    
+	<para>
+	如果提供一個索引值，會被放置在資料鏈中的一個指定點的記錄。否則，記錄會被放
+	置在超過上次資料鏈記錄的索引值100 的資料鏈的結尾（這不包括默認的策略，一般是
+	65535，deny）。
+	</para>
+	    
+	<para>
+	如果內核編譯進 <application>IPFIREWALL_VERBOSE</application>，日誌選項會把匹配規則輸出到系統控制臺。
+	</para>
+	    
+	<para>正確的指令是:</para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>reject</term>
+
+	    <listitem>
+	      <para>阻止資料包，然後發送一個 <application>ICMP</application> 主機或無法到達資料包埠給資料源。</para>
+	    </listitem>
+	  </varlistentry>
+		
+	  <varlistentry>
+	    <term>allow</term>
+	    
+	    <listitem>
+	      <para>通過資料包。（別名：pass and accept）</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>deny</term>
+	    
+	    <listitem>
+	      <para>阻止數據包。資料源沒有得到<application>ICMP</application> 消息的通報。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>count</term>
+	    
+	    <listitem>
+	      <para>
+		升級資料包記數器，但不允許/阻止以這個規則為基礎的資料包。會繼續對下一個資料
+		鏈記錄進行搜索。
+              </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+	<para>每個動作會通過加上一個簡短明確的首碼來驗證。</para>
+	    
+	<para>可能被指定的協議是：</para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>all</term>
+
+	    <listitem>
+	      <para>匹配所有的IP 資料包</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>icmp</term>
+	    
+	    <listitem>
+	      <para>匹配ICMP 資料包</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>tcp</term>
+	    
+	    <listitem>
+	      <para>匹配TCP 資料包</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>udp</term>
+	    
+	    <listitem>
+	      <para>匹配UDP 資料包</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+	<para>位址的規則：</para>
+
+	<cmdsynopsis>
+	  <arg choice="plain">from</arg>
+	  <arg choice="plain"><replaceable>address/mask</replaceable></arg><arg><replaceable>port</replaceable></arg>
+	  <arg choice="plain">to</arg>
+	  <arg choice="plain"><replaceable>address/mask</replaceable></arg><arg><replaceable>port</replaceable></arg>
+	  <arg>via <replaceable>interface</replaceable></arg>
+	</cmdsynopsis>
+	    
+	<para>可以只指定與支援埠的協定相關聯的埠(<application>UDP 和TCP</application>)。</para>
+	    
+	<para>
+	所通過的路徑是可選擇的，可以指定一個本地 IP 介面的 IP 位址或功能變數名稱，或是一個隻與
+	來自這個介面的資料包匹配的介面名（如：ed0）.介面單位數目可以用一個可選擇的通配符
+	來表示。例如，ppp* 將匹配所有內核 PPP 介面。
+	</para>
+	    
+	<para>指定一個 address/mask 的語法：
+	  
+	  <screen><replaceable>address</replaceable></screen>
+	      
+	  或
+	      
+	  <screen><replaceable>address</replaceable>/<replaceable>mask-bits</replaceable></screen>
+	      
+	  或
+	      
+	  <screen><replaceable>address</replaceable>:<replaceable>mask-pattern</replaceable></screen>
+	</para>
+
+	<para>
+	一個正確的主機名可以被指定用來代替 IP 位址。mask-bits是一個十進位的數，可以
+	用來表示位址將被設置成多少位。例如，指定192.216.222.1/24 將創建一個允許與在 C 類
+	子網中所有的地址相匹配的地址範圍。（在這個例子中是，192.216.222）。mask-pattern
+	是一個將與給定的位址想邏輯聯繫的 IP 位址。任何關鍵字都可以被用來指定"任何 IP 位址"。
+	</para>
+	    
+	<para>指定將被阻止的埠號碼：
+	  
+	  <cmdsynopsis>
+	    <arg choice="plain"><replaceable>port</replaceable><arg>,<replaceable>port</replaceable><arg>,<replaceable>port</replaceable><arg>&hellip;</arg></arg></arg></arg>
+	  </cmdsynopsis>
+
+	  指定一個簡單的埠或埠列表，
+	  
+	  <cmdsynopsis>
+	    <arg choice="plain"><replaceable>port</replaceable>-<replaceable>port</replaceable></arg>
+	  </cmdsynopsis>
+
+	  指定一個埠範圍。也可以結合一個簡單的列表範圍，但範圍必須先被指定。</para>
+	    
+	<para>可用的選項是：</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>frag</term>
+
+	    <listitem>
+	      <para>匹配資料包中第一個片段。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>in</term>
+	    
+	    <listitem>
+	      <para>匹配進入的資料包</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>out</term>
+	    
+	    <listitem>
+	      <para>匹配輸出的資料包</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>ipoptions <replaceable>spec</replaceable></term>
+	    
+	    <listitem>
+	      <para>
+		匹配 IP 頭包含用逗號分割的用 spec 指定的選項列表。IP 選項的支援列表是：ssrr (嚴
+		格源代碼路由), lsrr (寬鬆源代碼路由), rr (記錄資料包路由),和ts (時間標記)。
+              </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>established</term>
+	    
+	    <listitem>
+	      <para>
+		匹配已經建立 TCP 連接的部分資料包。可以通過在資料鏈中通過放置一個建立的規則
+		來調整防火牆的性能。
+              </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>setup</term>
+	    
+	    <listitem>
+	      <para>
+		匹配試圖建立一個 TCP 連接的資料包。
+              </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>tcpflags <replaceable>flags</replaceable></term>
+	    
+	    <listitem>
+	      <para>
+		匹配包含flags標記的用逗號分割的TCP 頭。支援的標記是fin, syn, rst, psh, ack,
+		和urg。
+              </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>icmptypes <replaceable>types</replaceable></term>
+	    
+	    <listitem>
+	      <para>
+		匹配在 types 列表中出現的 <application>ICMP</application> 類型。列表可以用一個以逗號隔開的聯合或分離的排
+		列形式。通常使用的 <application>ICMP</application> 類型是：0 echo reply (ping reply), 3 destination unreachable, 5 redirect,
+		8 echo request (ping request), 和11 time exceeded
+              </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+      
+      <sect3>
+	<title>列出IPFW 規則</title>
+
+	<para>這種形式的命令的語法是：
+	  <cmdsynopsis>
+	    <command>ipfw</command>
+	    <arg>-a</arg>
+	    <arg>-t</arg>
+	    <arg>-N</arg>
+	    <arg choice="plain">l</arg>
+	  </cmdsynopsis></para>
+
+	<para>當使用這種命令時，有三種正確的標記：</para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>-a</term>
+
+	    <listitem>
+	      <para>當列條目時，顯示計數器的值。這個選項是唯一可以看到計數器值的方法。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-t</term>
+	    
+	    <listitem>
+	      <para>顯示每個資料鏈記錄的最後匹配次數。定時的列表與用 ipfw 工具輸入的語法是不相容的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-N</term>
+	    
+	    <listitem>
+	      <para>試圖分解給定的地址和服務名稱。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+      
+      <sect3>
+	<title>提高IPFW 規則</title>
+
+	<para>語法是：
+	  <cmdsynopsis>
+	    <command>ipfw</command>
+	    <arg choice="plain">flush</arg>
+	  </cmdsynopsis></para>
+
+	<para>
+	這將把防火牆鏈中的所有記錄都刪除，除了內核中指定的可修復的默認策略（索引
+	65535）。當提高規則時可以使用警告，默認的阻止策略將迫使你的系統斷開網路，知道允許
+	記錄被添加到鏈中。
+	</para>
+      </sect3>
+      
+      <sect3>
+	<title>刷新IPFW 資料包記數器</title>
+
+	<para>刷新一個或多個資料包記數器的方法：
+	  <cmdsynopsis>
+	    <command>ipfw</command>
+	    <arg choice="plain">zero</arg>
+	    <arg choice="opt"><replaceable>index</replaceable></arg>
+	  </cmdsynopsis></para>
+
+	<para>
+	當使用不帶索引值選項時，所有的資料包計數器將被刷新。如果一個索引被啟用，那刷
+	新操作將只影響一個指定的資料鏈記錄。
+        </para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>使用ipfw 命令的例子</title>
+      
+      <para>
+	這個命令會阻止所有從主機 evil.crackers.org 到主機 nice.people.org 的telnet 端
+	口的數據包：
+      </para>
+	  	  
+      <screen>&prompt.root <userinput>ipfw add deny tcp from evil.crackers.org to nice.people.org 23</userinput></screen>
+	  
+      <para>
+	下一個例子會阻止和日誌任何從 crackers.org 網路（c 類位址）記錄到機器
+	nice.people.org 的TCP 傳輸（任何埠）。
+      </para>
+	  
+      <screen>&prompt.root; <userinput>ipfw add deny log tcp from evil.crackers.org/24 to nice.people.org</userinput></screen>
+	  
+      <para>
+	如果不要任何人發送 X 會話給內部網路（C 類子網），下面的命令將會作必要的
+	過濾：
+      </para>
+	  
+      <screen>&prompt.root; <userinput>ipfw add deny tcp from any to my.org/28 6000 setup</userinput></screen>
+	  
+      <para>看看計算記錄：
+	    
+	<screen>&prompt.root; <userinput>ipfw -a list</userinput></screen>
+
+	或用一個簡短的形式：
+	    
+	<screen>&prompt.root; <userinput>ipfw -a l</userinput></screen>
+      </para>
+
+      <para>也可以看看上次相配的資料鏈記錄：</para>
+      
+      <screen>&prompt.root; <userinput>ipfw -at l</userinput></screen>
+    </sect2>
+    
+    <sect2>
+      <title>建構一個資料包過濾防火牆</title>
+      
+      <note>
+	<para>
+	注意：下面的建議僅僅是建議。每個防火牆的要求是不同的，我們不能告訴如何建構
+	一個符合特殊要求的防火牆。
+	</para>
+      </note>
+	  
+      <para>
+	當一開始設置防火牆時，除非有一個可測試的設置，可以在一個可控的環境中配
+	置防火牆，否則強烈建議使用命令的日誌版本，和在內核中啟用日誌。這將允許快
+	速地確定問題所在，以便不需要太久就可以修復。即使初始安裝已經完成，還是建議使用
+	日誌來"阻止"有可能的攻擊，或根據要求修改防火牆的規則。
+      </para>
+	  
+      <note>
+	<para>
+	注意：如果使用接受命令的日誌版本，可以產生巨大的日誌資料，所以巨大的
+	<application>FTP/http</application> 傳輸將使系統的性能大大下降。在資料包通過之前會要求內核做更多的工作。
+	<application>syslogd</application> 將開始使用更多的處理時鐘，以至有許多額外的日誌被記錄到磁片上，不久就會填
+	滿 <filename>/var/log</filename> 分區。
+	</para>
+      </note>
+	  
+      <para>
+	可以從 <filename>/etc/rc.conf.local</filename> 或 <filename>/etc/rc.conf</filename> 啟用防火牆。相關的聯機手冊會解
+	釋如何列出當前的防火牆配置。如果不使用當前的配置，<application>ipfw</application> 列表將輸出當前的規則設
+	置到一個檔 <filename>rc.conf</filename>。如果不使用 <filename>/etc/rc.conf.local</filename> 或 <filename>/etc/rc.conf</filename> 來啟用防火牆，
+	在任何介面被配置之前，確認防火牆被啟用是很重要的。
+      </para>
+	  
+      <para>
+	下一個問題是防火牆實際上做了些什麼！這主要依賴於允許什麼從外部訪問
+	網路，和允許多少訪問外部網路。一些通常的規則是：
+      </para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para>阻止所有 <application>TCP</application> 埠小於1024 的訪問。這是安全服務最敏感的地方，象 <application>finger, SMTP
+		(mail)</application> 和 <application>telnet</application>。
+          </para>
+	</listitem>
+
+	<listitem>
+	  <para>
+	阻止所有進入的 <application>UDP</application> 傳輸。通過 <application>UDP</application> 傳輸的有很多有用的服務，有什麼有用的傳輸
+	服務，就會有什麼安全問題。（如 <application>Suns RPC</application> 和 <application>NFS</application> 協議)。這也是缺點，既然 <application>UDP</application>
+	是一個無連接協議，阻止進入的 <application>UDP</application> 傳輸也會阻止對輸出 <application>UDP</application> 傳輸的回應。這可能會對
+	使用外部 <application>archie</application> 服務的人們帶來麻煩。如果要允許訪問 <application>archie</application>,將必須允許來自端
+	口191 和1525 的資料包能夠通過防火牆進入內部 <application>UDP</application> 埠。<application>ntp</application> 是另一個可以允許
+	訪問通過的服務，它使用埠123。
+	  </para>
+	</listitem>
+	      
+	<listitem>
+	  <para>
+		阻止埠6000 與外部的傳輸服務。埠6000 被用來訪問X11 伺服器，可能會帶來
+		一個潛在的安全問題。X11 實際上可以使用以6000 開始的埠範圍，上面的限制取決於
+		可以在機器上運行多少個X 顯示程式。上面的限制通過RFC 1700 定義的是6063。
+	    </para>
+	</listitem>
+	      
+	<listitem>
+	  <para>C
+		檢查內部伺服器使用什麼伺服器(如SQL servers 等)。阻止這些服務可能是一個好
+		主意，因為分佈於上面指定的1-1024 的範圍之內。
+	    </para>
+	</listitem>
+      </itemizedlist>
+	  
+      <para>另外可以到下面這個網站去查看一下防火牆配置的列表<ulink
+	  url="http://www.cert.org/tech_tips/packet_filtering.html">http://www.cert.org/tech_tips/packet_filtering.html</ulink></para>
+	  
+	<para>
+	就象上面提到的，這些只是 <application>guidelines</application> （建議/ 指導原則）。必須根據具體情況決
+	定使用什麼過濾規則。如果有人侵入了網路，不承擔任何責任，即使按照了上面
+	提到的方法做了。
+	</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="openssl">
+    <title>OpenSSL</title>
+
+    <para>
+	自從FreeBSD 4.0 以來，<application>OpenSSL</application> 工具包已經成為基本系統的一部分了。<application>OpenSSL</application> 提供
+	了一個普通的密碼庫，就象安全套接層v2/v3 (SSLv2/SSLv3)，和傳輸層安全v1(TLSv1)網
+	絡安全協議。
+    </para>
+
+    <para>
+	然而，包含在 <application>openssl</application> 中的某些加密演算法(特別是 <application>IDEA</application>)被USA 加以限制了，不能不
+	受限制地使用。在FreeBSD 中，<application>IDEA</application> 被包含在 <application>openssl</application> 的源代碼中，但默認情況下沒有
+	被構建。如果想使用，需要照著許可條款來操作，在 <filename>/etc/make.conf</filename> 中啟用 <filename>MAKE_IDEA</filename>，
+	然後重新建構整個系統。
+    </para>
+
+    <para>今天，<application>RSA</application> 演算法被自由使用在美國和所有國家。在過去是受保護的。</para>
+
+    <sect2>
+      <title>源代碼安裝</title>
+      
+      <para>
+	<application>OpenSSL</application> 是 src-crypto 和 src-secure cvsup collections 的一部分。可以看看獲得
+	FreeBSD 那節瞭解更多有關獲得和升級FreeBSD 源代碼的資訊。
+      </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="ipsec">
+    <title>IPsec</title>
+    <para><emphasis>Contributed by &a.shin;, 5 March
+	2000.</emphasis></para>
+
+    <para>
+	<application>IPsec</application> 機制提供了 IP 層與 socket 層之間安全的通訊方式。這節將介紹如何使用。
+	有關執行細節，請參考開發人員手冊。
+    </para>
+
+    <para>
+	當前的 <application>IPsec</application> 執行模式既支援傳輸模式也支援隧道模式。但隧道模式有一些限制。在
+	http://www.kame.net/newsletter/上有比較詳細的例子：
+    </para>
+
+    <para>為了使用這個功能，請保持清醒，必須將下面這些選項編譯進內核：</para>
+
+    <programlisting>options          IPSEC              #IP security
+options          IPSEC_ESP          #IP security (crypto; define w/IPSEC)</programlisting>
+
+    <sect2>
+      <title>基於IPv4 的傳輸模式例子</title>
+
+      <para>
+	設置一個安全的連接以便在主機A (10.2.3.4)和主機B (10.6.7.8)之間配置一
+	個安全的通道。這兒列出了幾個複雜的例子。從主機A 到主機B ，只有老的AH 可以被使用。
+	從主機B 到主機A，新的AH 和新的ESP 將被結合起來。
+      </para>
+
+      <para>
+	現在，必須選擇一個演算法以用來適應"AH"/"new AH"/"ESP"/"new ESP"。請參考
+	setkey 的聯機手冊瞭解演算法的命名。選擇是對AH 用 <application>MD5</application>，對新AH 用 <application>new-HMAC-SHA1</application>，
+	對新 ESP 用帶有8 位的 <application>new-DES-expIV</application>。
+      </para>
+
+      <para>
+	關鍵字的長度依賴於每個演算法。例如，關鍵字的長度對於 <application>MD5</application> 需要用16 位元，對於
+	<application>new-HMAC-SHA1</application> 需要用20 位元，對於 <application>new-DES-expIV</application> 需要用8 位元。現在分別選擇
+	"MYSECRETMYSECRET", "KAMEKAMEKAMEKAMEKAME", "PASSWORD"。
+      </para>
+
+      <para>
+	好的，為每個協議分派一個 <application>SPI(Security Parameter Index)</application>。請注意需要
+	為這個安全通道設計 3 個SPIs，因為產生了三個安全 headers。(one for from HOST A to HOST
+	B, two for from HOST B to HOST A)。另外，也要注意 <application>SPI</application> 必須要超過或等於256。
+	依次選擇1000, 2000 和3000。
+      </para>
+
+      <screen>
+
+	         (1)
+	HOST A ------> HOST B
+
+	(1)PROTO=AH
+		ALG=MD5(RFC1826)
+		KEY=MYSECRETMYSECRET
+		SPI=1000
+
+	         (2.1)
+	HOST A <------ HOST B
+	       <------
+	         (2.2)
+
+	(2.1)
+	PROTO=AH
+		ALG=new-HMAC-SHA1(new AH)
+		KEY=KAMEKAMEKAMEKAMEKAME
+		SPI=2000
+
+	(2.2)
+	PROTO=ESP
+		ALG=new-DES-expIV(new ESP)
+			IV length = 8
+		KEY=PASSWORD
+		SPI=3000
+
+      </screen>
+
+      <para>現在，設置安全連接。在主機A 和B 上執行setkey:</para>
+
+      <screen>
+
+&prompt.root; <command>setkey -c</command>
+add 10.2.3.4 10.6.7.8 ah-old  1000 -m transport -A keyed-md5 "MYSECRETMYSECRET" ;
+add 10.6.7.8 10.2.3.4 ah  2000 -m transport -A hmac-sha1 "KAMEKAMEKAMEKAMEKAME" ;
+add 10.6.7.8 10.2.3.4 esp 3000 -m transport -E des-cbc "PASSWORD" ;
+^D
+
+     </screen>
+
+     <para>事實上，除非定義了安全策略記錄，否則 <application>IPsec</application> 通訊是不起作用的。在這個例子，必須設置每個主機。</para>
+
+     <screen>
+
+At A:
+
+&prompt.root; <command>setkey -c</command>
+spdadd 10.2.3.4 10.6.7.8 any -P out ipsec
+	ah/transport/10.2.3.4-10.6.7.8/require ;
+^D
+
+At B:
+
+&prompt.root; <command>setkey -c</command>
+spdadd 10.6.7.8 10.2.3.4 any -P out ipsec
+	esp/transport/10.6.7.8-10.2.3.4/require ;
+spdadd 10.6.7.8 10.2.3.4 any -P out ipsec
+	ah/transport/10.6.7.8-10.2.3.4/require ;
+^D
+
+
+   HOST A --------------------------------------> HOST E
+  10.2.3.4                                       10.6.7.8
+          |                                     |
+          ========== old AH keyed-md5 ==========>
+
+          <========= new AH hmac-sha1 ===========
+          <========= new ESP des-cbc ============
+
+     </screen>
+    </sect2>
+
+    <sect2>
+      <title>用IPv6 傳輸模式的例子</title>
+
+      <para>另一個使用IPv6 的例子：</para>
+
+      <para>ESP 傳輸模式建議使用主機A 和B 之間的TCP 埠110。</para>
+
+      <screen>
+
+              ============ ESP ============
+              |                           |
+           Host-A                        Host-B
+          fec0::10 -------------------- fec0::11
+
+      </screen>
+
+      <para>加密演算法是blowfish-cbc，關鍵字是"kamekame"，驗證演算法是hmac-sha1，關鍵字是"this is the test key"。在主機A 上配置：</para>
+
+      <screen>
+
+        &prompt.root; <command>setkey -c</command> &lt;&lt;<filename>EOF</filename>
+        spdadd fec0::10[any] fec0::11[110] tcp -P out ipsec
+                esp/transport/fec0::10-fec0::11/use ;
+        spdadd fec0::11[110] fec0::10[any] tcp -P in ipsec
+                esp/transport/fec0::11-fec0::10/use ;
+        add fec0::10 fec0::11 esp 0x10001
+                -m transport
+                -E blowfish-cbc "kamekame"
+                -A hmac-sha1 "this is the test key" ;
+        add fec0::11 fec0::10 esp 0x10002
+                -m transport
+                -E blowfish-cbc "kamekame"
+                -A hmac-sha1 "this is the test key" ;
+        EOF
+
+      </screen>
+
+      <para>在主機B 上:</para>
+
+      <screen>
+        &prompt.root; <command>setkey -c</command> &lt;&lt;<filename>EOF</filename>
+        spdadd fec0::11[110] fec0::10[any] tcp -P out ipsec
+                esp/transport/fec0::11-fec0::10/use ;
+        spdadd fec0::10[any] fec0::11[110] tcp -P in ipsec
+                esp/transport/fec0::10-fec0::11/use ;
+        add fec0::10 fec0::11 esp 0x10001 -m transport
+                -E blowfish-cbc "kamekame"
+                -A hmac-sha1 "this is the test key" ;
+        add fec0::11 fec0::10 esp 0x10002 -m transport
+                -E blowfish-cbc "kamekame"
+                -A hmac-sha1 "this is the test key" ;
+        EOF
+
+      </screen>
+
+      <para>注意SP 的方向。</para>
+    </sect2>
+
+    <sect2>
+      <title>用IPv4 通道模式的例子</title>
+
+      <para>在兩個安全閘道之間的通道模式</para>
+
+      <para>安全協定是老的AH 通道模式，由RFC1826 制定，用 keyed-md5 作為驗證演算法，關鍵字是"this is the test"。</para>
+
+      <screen>
+
+                             ======= AH =======
+                             |                |
+         Network-A       Gateway-A        Gateway-B        Network-B
+        10.0.1.0/24 ---- 172.16.0.1 ----- 172.16.0.2 ---- 10.0.2.0/24
+
+      </screen>
+
+      <para>在閘道A 上配置:</para>
+
+      <screen>
+
+        &prompt.root; <command>setkey -c</command> &lt;&lt;<filename>EOF</filename>
+        spdadd 10.0.1.0/24 10.0.2.0/24 any -P out ipsec
+                ah/tunnel/172.16.0.1-172.16.0.2/require ;
+        spdadd 10.0.2.0/24 10.0.1.0/24 any -P in ipsec
+                ah/tunnel/172.16.0.2-172.16.0.1/require ;
+        add 172.16.0.1 172.16.0.2 ah-old 0x10003 -m any
+                -A keyed-md5 "this is the test" ;
+        add 172.16.0.2 172.16.0.1 ah-old 0x10004 -m any
+                -A keyed-md5 "this is the test" ;
+
+        EOF
+
+      </screen>
+
+      <para>如果埠號碼範圍被忽略，就象上面一樣使用"[any]"。`-m'指定了使用 SA 的模式。"-m any"意味著安全協定的模式。可以為通道和傳輸模式都使用這個SA。</para>
+
+      <para>在閘道B 上:</para>
+
+      <screen>
+
+        &prompt.root; <command>setkey -c</command> &lt;&lt;<filename>EOF</filename>
+        spdadd 10.0.2.0/24 10.0.1.0/24 any -P out ipsec
+                ah/tunnel/172.16.0.2-172.16.0.1/require ;
+        spdadd 10.0.1.0/24 10.0.2.0/24 any -P in ipsec
+                ah/tunnel/172.16.0.1-172.16.0.2/require ;
+        add 172.16.0.1 172.16.0.2 ah-old 0x10003 -m any
+                -A keyed-md5 "this is the test" ;
+        add 172.16.0.2 172.16.0.1 ah-old 0x10004 -m any
+                -A keyed-md5 "this is the test" ;
+
+        EOF
+
+      </screen>
+
+      <para>在兩個安全閘道之間建立SA 包</para>
+
+      <para>在閘道A 和B 之間必須使用AH 傳輸模式和 ESP 通道模式。在這個例子中，先應用 ESP 通道模式，然後是AH 傳輸模式。</para>
+
+      <screen>
+
+                            ========== AH =========
+                            |  ======= ESP =====  |
+                            |  |               |  |
+       Network-A          Gateway-A        Gateway-B           Network-B
+    fec0:0:0:1::/64 --- fec0:0:0:1::1 ---- fec0:0:0:2::1 --- fec0:0:0:2::/64
+
+      </screen>
+    </sect2>
+
+    <sect2>
+      <title>使用IPv6 的通道模式的例子</title>
+
+      <para>加密演算法是 3des-cbc，針對 ESP 的驗證演算法是 hmac-sha1。針對AH 的驗證演算法是 hmac-md5。在閘道A 上配置：</para>
+
+      <screen>
+
+        &prompt.root; <command>setkey -c</command> &lt;&lt;<filename>EOF</filename>
+        spdadd fec0:0:0:1::/64 fec0:0:0:2::/64 any -P out ipsec
+                esp/tunnel/fec0:0:0:1::1-fec0:0:0:2::1/require
+                ah/transport/fec0:0:0:1::1-fec0:0:0:2::1/require ;
+        spdadd fec0:0:0:2::/64 fec0:0:0:1::/64 any -P in ipsec
+                esp/tunnel/fec0:0:0:2::1-fec0:0:0:1::1/require
+                ah/transport/fec0:0:0:2::1-fec0:0:0:1::1/require ;
+        add fec0:0:0:1::1 fec0:0:0:2::1 esp 0x10001 -m tunnel
+                -E 3des-cbc "kamekame12341234kame1234"
+                -A hmac-sha1 "this is the test key" ;
+        add fec0:0:0:1::1 fec0:0:0:2::1 ah 0x10001 -m transport
+                -A hmac-md5 "this is the test" ;
+        add fec0:0:0:2::1 fec0:0:0:1::1 esp 0x10001 -m tunnel
+                -E 3des-cbc "kamekame12341234kame1234"
+                -A hmac-sha1 "this is the test key" ;
+        add fec0:0:0:2::1 fec0:0:0:1::1 ah 0x10001 -m transport
+                -A hmac-md5 "this is the test" ;
+
+        EOF
+
+      </screen>
+
+      <para>用不同的結尾來使用SA</para>
+
+      <para>
+	在主機A 和閘道A 之間需要使用 ESP 通道模式。加密演算法是 cast128-cbc，針對 ESP 的
+	驗證演算法是 hmac-sha1。建議在主機A 和B 之間使用ESP 傳輸模式。加密演算法是 rc5-cbc，
+	針對 ESP 的驗證演算法是 hmac-md5。
+      </para>
+
+      <screen>
+
+              ================== ESP =================
+              |  ======= ESP =======                 |
+              |  |                 |                 |
+             Host-A            Gateway-A           Host-B
+          fec0:0:0:1::1 ---- fec0:0:0:2::1 ---- fec0:0:0:2::2
+
+      </screen>
+
+      <para>在主機A 上配置:</para>
+
+      <screen>
+
+        &prompt.root; <command>setkey -c</command> &lt;&lt;<filename>EOF</filename>
+        spdadd fec0:0:0:1::1[any] fec0:0:0:2::2[80] tcp -P out ipsec
+                esp/transport/fec0:0:0:1::1-fec0:0:0:2::2/use
+                esp/tunnel/fec0:0:0:1::1-fec0:0:0:2::1/require ;
+        spdadd fec0:0:0:2::1[80] fec0:0:0:1::1[any] tcp -P in ipsec
+                esp/transport/fec0:0:0:2::2-fec0:0:0:l::1/use
+                esp/tunnel/fec0:0:0:2::1-fec0:0:0:1::1/require ;
+        add fec0:0:0:1::1 fec0:0:0:2::2 esp 0x10001
+                -m transport
+                -E cast128-cbc "12341234"
+                -A hmac-sha1 "this is the test key" ;
+        add fec0:0:0:1::1 fec0:0:0:2::1 esp 0x10002
+                -E rc5-cbc "kamekame"
+                -A hmac-md5 "this is the test" ;
+        add fec0:0:0:2::2 fec0:0:0:1::1 esp 0x10003
+                -m transport
+                -E cast128-cbc "12341234"
+                -A hmac-sha1 "this is the test key" ;
+        add fec0:0:0:2::1 fec0:0:0:1::1 esp 0x10004
+                -E rc5-cbc "kamekame"
+                -A hmac-md5 "this is the test" ;
+
+        EOF
+
+      </screen>
+    </sect2>
+  </sect1>
+
+  <sect1 id="openssh">
+    <title>OpenSSH</title>
+    <para><emphasis>Contributed by &a.chern;, April 21, 
+      2001.</emphasis>
+    </para>
+
+    <para>
+	安全 shell 是一套用於安全地訪問遠端機器的網路連接工具。可以被用來代替 <application>rlogin,
+	rsh, rcp,</application> 和 <application>telnet</application>。另外，TCP/IP 連接也可以通過 <application>ssh</application> 來建立隧道和轉發資料。<application>Ssh</application>
+	可以對所有傳輸的資料包進行加密以便防止被人竊聽，網路入侵和攻擊。
+    </para>
+
+    <para>
+	<application>OpenSSH</application> 是由 OpenBSD 計畫來維護的，建立在 <application>SSH</application> v1.2.12 基礎之上，並作了最新的
+	錯誤修補。它也相容 <application>SSH</application> 協議1 和2。自從FreeBSD4.0 開始，<application>OpenSSH</application> 已作為基本系統的
+	一部分了。
+    </para>
+
+    <sect2>
+      <title>使用 OpenSSH 的優勢</title>
+  
+      <para>
+	通常，當使用 <application>telnet</application> 或 <application>rlogin</application> 時，資料是以明碼的形式發送的，並沒有加密。在客戶
+	機和伺服器上的網路探測器可以在會話中偷竊到傳輸的用戶名/密碼。<application>OpenSSH</application> 提供
+	了多種驗證和加密的方法來阻止這種事情的發生。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>啟用sshd</title>
+      <para>B確信已將下面這行加入了 <filename>rc.conf</filename> 文件：
+      </para>
+      <screen>sshd_enable="YES"</screen>
+      <para>這將在下次系統初始化時載入 <application>ssh</application> 程式。或者，可以簡單地運行 <application>sshd</application> 程式。</para>
+    </sect2>
+
+    <sect2>
+      <title>SSH 客戶機</title>
+      <para><application>Ssh</application> 的工具與 <application>rlogin</application> 工作起來很象：</para>
+
+      <screen>&prompt.root <userinput>ssh <replaceable>user@foobardomain.com</replaceable></userinput>
+Host key not found from the list of known hosts.
+Are you sure you want to continue connecting (yes/no)? <userinput>yes</userinput>
+Host 'foobardomain.com' added to the list of known hosts.
+user@foobardomain.com's password: <userinput>*******</userinput>
+      </screen>
+
+      <para>
+	如果使用 <application>rlogin</application> 或 <application>telnet</application> 創建了一個會話，那登陸會繼續。當用戶端連接時，<application>SSH</application> 會
+	利用關鍵字指紋系統來指定這個伺服器的驗證。當第一次連接的時候，會提示用戶只要鍵入
+	'yes'。以後的登陸會自動檢驗已保存的指紋關鍵字。如果保存的指紋與登陸時接受的指紋不
+	同，<application>SSH</application> 用戶端將發出警告。指紋被保存在~/.ssh/known_hosts 中。
+      </para>
+    </sect2>
+    
+    <sect2>
+      <title>安全拷貝</title>
+      <para><application>Scp</application> 命令與 <application>rcp</application> 工作起來很象；會拷貝一個檔到或從一個遠端機器上。</para>
+
+      <screen>&prompt.root <userinput> scp <replaceable>user@foobardomain.com:/COPYRIGHT COPYRIGHT</replaceable></userinput>
+user@foobardomain.com's password: 
+COPYRIGHT            100% |*****************************|  4735       
+00:00    
+&prompt.root
+      </screen>
+      <para>既然指紋已被保存在這台主機上，那當使用 <application>scp</application> 時，將被修改。</para>
+    </sect2>
+
+    <sect2>
+      <title>配置</title>
+      <para>針對 <application>OpenSSH</application> 程式和用戶端系統的配置檔放在 <filename>/etc/ssh</filename> 目錄中。</para>
+      <para><filename>ssh_config</filename> 配置客戶機系統，<filename>sshd_config</filename> 配置守護程式。</para>
+    </sect2>
+
+    <sect2>
+      <title>ssh-keygen</title>
+
+      <para><application>Ssh-keygen</application> 可以用來產生 <application>RSA</application> 密匙來驗證一個用戶以代替使用密碼。</para>
+
+      <screen>&prompt.user <userinput>ssh-keygen</userinput>
+Initializing random number generator...
+Generating p:  .++ (distance 66)
+Generating q:  ..............................++ (distance 498)
+Computing the keys...
+Key generation complete.
+Enter file in which to save the key (/home/user/.ssh/identity):
+Enter passphrase:
+Enter the same passphrase again:
+Your identification has been saved in /home/user/.ssh/identity.
+...
+      </screen>
+
+      <para>
+	<application>Ssh-keygen</application> 將產生一個公共的和私有的密匙對來用於驗證。私有密匙保存在
+	<filename>~/.ssh/identity</filename> 中，而公共密匙保存在 <filename>~/.ssh/identity.pub</filename> 中。為了安裝工作，公共密
+	匙必須放在遠端機器的 <filename>~/.ssh/authorized_keys</filename> 中。
+      </para>
+
+      <para>
+	這將允許連接到基於 <application>RSA</application> 驗證的遠端機器以代替使用密碼。
+	如果一條公共短語使用 <application>ssh-keygen</application>，那用戶為了使用私有密匙需要每次都鍵入一個密碼。
+      </para>
+
+      <para>
+	一個 <application>SSH</application> v2 DSA 密匙可以使用 ssh-keygen -d 命令（或ssh-keygen -t dsa ，在
+	FreeBSD-CURRENT 中）來創建。這將只在SSH v2 會話的中創建一個公共/私有DSA 密匙來使
+	用。
+      </para>
+
+      <para>
+	公共密匙被存儲在 <filename>~/.ssh/id_dsa.pub</filename> 中，而私有密匙被存儲在 <filename>~/.ssh/id_dsa</filename> 中。<application>DSA</application>
+	公共密匙被放在遠端機器的 <filename>~/.ssh/authorized_keys2</filename> 中。<application>ssh-agent</application> 和 <application>ssh-add</application> 是用來管
+	理多密碼私有密匙的工具。
+      </para>
+    </sect2>
+
+    <sect2>
+      <title>SSH 通道</title>
+      <para><application>OpenSSH</application> 可以在一個加密的會話中創建一個通道來壓縮另一個協議。下面的命令告訴<application>ssh</application> 為 <application>telnet</application> 創建一個通道。</para>
+
+       <screen>&prompt.user; <userinput>ssh -2 -N -f -L <replaceable>5023:localhost:23 user@foo.bar.com</replaceable></userinput>
+&prompt.user;
+       </screen>
+
+       <itemizedlist>
+         <listitem>
+           <para>-2這迫使ssh 使用2.0 版的協定。</para>       
+         </listitem>
+         <listitem>
+           <para>-N不指出命令，而只有通道。如果忽略了，ssh 將初始化一個普通的會話。</para>
+         </listitem>
+         <listitem><para>-f迫使ssh 在後臺運行ssh。</para>
+         </listitem>
+         <listitem>
+           <para>-L以localport:localhost:remoteport的風格初始化一個本地通道。
+           </para>
+         </listitem>
+         <listitem>
+           <para>foo.bar.com是遠端/目標SSH 伺服器。
+            </para>
+         </listitem>
+       </itemizedlist>
+
+       <para>
+	一個 <application>SSH</application> 通道通過在本地的主機和埠上指定一個偵聽套接字來工作。通過 <application>SSH</application> 連接
+	到遠端機器把所有的連接指向本地主機/埠。
+       </para>
+
+       <para>
+	在這個例子中，在本機上的埠5023被指向遠端機器的埠23。由於23 是用於 <application>telnet</application>
+	的，所以這將通過SSH 通道創建一個安全的 <application>telnet</application> 會話。
+       </para>
+
+       <para>這可以用來隱藏許多不安全的TCP 協議如smtp, pop3, ftp 等。</para>
+
+       <para>一個典型的SSH 通道</para>
+       <screen>&prompt.user; <userinput>ssh -2 -N -f -L <replaceable>5025:localhost:25 user@mailserver.foobar.com</replaceable></userinput>
+user@mailserver.foobar.com's password: <userinput>*****</userinput>
+&prompt.user; <userinput>telnet localhost 5025</userinput>
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+220 mailserver.foobar.com ESMTP
+       </screen>     
+
+       <para>
+	這可以用來連接 <application>ssh-keygen</application> 和額外用戶帳戶來創建一個無縫的 <application>SSH</application> 通道環境。密匙可
+	以被用來代替鍵入密碼，通道可以被運行在一個相互分離的用戶上。
+       </para>
+    </sect2>
+
+    <sect2>
+      <title>Further Reading</title>
+      <para><ulink url="http://www.openssh.com">OpenSSH</ulink></para>
+      <para>&man.ssh.1; &man.scp.1; &man.ssh-keygen.1; 
+        &man.ssh-agent.1; &man.ssh-add.1;</para>
+      <para>&man.sshd.8; &man.sftp-server.8;</para>
+    </sect2>
+  </sect1>
+
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

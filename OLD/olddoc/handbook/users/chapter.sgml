@@ -1,0 +1,536 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/users/chapter.sgml,v 1.6 2002/02/28 15:42:31 statue Exp $
+
+     Translate into Chinese by Yen-Ming Lee <leeym@leeym.com>
+
+     Original revision: 1.8
+-->
+
+<chapter id="users">
+  <title>使用者及基本帳號管理</title>
+  
+  <sect1 id="users-synopsis">
+    <title>概要</title>
+    
+    <para><emphasis>由 &a.nbm; 所貢獻，2000 年二月</emphasis>.</para>
+    
+    <para>所有的系統存取經由帳號來達成，所有的行程由使用者執行，所以
+      使用者及帳號管理是 FreeBSD 系統上不可或缺的重點。</para>
+
+    <para>主要有三種類型的帳號；
+        <link linkend="users-superuser">超級使用者</link>，
+        <link linkend="users-system">系統帳號</link>，
+        以及 <link linkend="users-user">使用者帳號</link>。
+      超級使用者的帳號，通常稱為 <username>root</username>，用來
+      不受限得管理系統。系統帳號用來執行伺服程式。最後，使用者帳號
+      則由真正的使用者所使用，用來登入，讀信等等。</para>
+  </sect1>
+    
+  <sect1 id="users-superuser">
+    <title>超級使用者帳號</title>
+    
+    <para>超級使用者帳號，通常稱為 <username>root</username>，是預設的，
+      使得系統管理更為便利，而且不該用來做一些日常例行工作，像是收發信件，
+      系統檢查或者程式開發。</para>
+      
+    <para>這是因為超級使用者不像一般使用者帳號，他可以不受限制地運作，
+      而濫用超級使用者帳號可能造成可怕的災難。一般使用者帳號不會因為失誤而
+      破壞系統，所以最好盡可能得使用一般使用者帳號，除非你特別地需要額外的
+      權限。</para>
+
+    <para>另外，請記得再三地檢查你用超級使用者帳號所執行的命令，因為額外的
+      空白或者疏漏的字元可能造成不可回復的資料遺失。這些當你決定變換為超級
+      使用者時才有的額外權限，是一般使用者帳號所無法擁有的保護措施。</para>
+
+    <para>所以，讀完本章以後你第一件該做的事，就是去開一個無特殊權限的
+      使用者帳號一般的用途，如果你還沒有的話。不論你是在多人使用者或者單人
+      使用者的主機上都一樣。這章節後面的部分，我們將討論如何建立帳號，以及
+      如何在一般使用者及超級使用者之間切換。</para>
+  </sect1>
+    
+  <sect1 id="users-system">
+    <title>系統帳號</title>
+
+    <para>系統帳號是用來執行伺服程式，例如領域名稱伺服器 (DNS)，電子郵件，
+      網頁伺服器等等。這樣做是為了安全的理由；如果所有的伺服程式都由超級
+      使用者執行，它們可能不受限制的運作。</para>
+
+    <para>舉例來說系統帳號有 <username>daemon</username>，
+      <username>operator</username>，<username>bind</username> (為了
+      領域名稱伺服器)，和 <username>news</username>。許多系統管理員建立
+      <username>httpd</username> 來跑他們所安裝的網頁伺服器。</para>
+
+    <para><username>nobody</username> 是用來給一般無特殊權限的系統帳號，
+      但是如果越多的服務由 <username>nobody</username> 執行，則它也擁有
+      越多權限。</para>
+  </sect1>
+
+  <sect1 id="users-user">
+    <title>使用者帳號</title>
+
+    <para>使用者帳號主要是給真正的系統使用者存取系統之用，而這些帳號隔絕了
+      使用者以及系統環境，避免使用者破壞系統或者其他使用者，而且讓使用者
+      客製化他們的環境而不影響其他使用者。</para>
+
+    <para>每一個人存取系統都應該有一個單一的帳號。這可以讓你知道誰正在做
+      什麼，避免不同使用者的設定互相干擾，或者讀對方的信之類的。</para>
+
+    <para>每個使用者可順應個人的習慣設定自己的環境，例如變更 shell，編輯器
+      控制按鍵，或者語系。</para>
+  </sect1>
+
+  <sect1 id="users-modifying">
+    <title>更改帳號</title>
+
+    <para><application>pw</application> 是一個強力且可彈性的更改帳號的
+      方法，但是建議用 <application>adduser</application> 來新增帳號，
+      用 <application>rmuser</application> 來刪除帳號。</para>
+
+    <para><application>chpass</application> 讓系統管理員和一般使用者皆可
+      調整密碼，shells，和個人資料。另外 <application>passwd</application>
+      是比較普遍用來更改密碼的方法。</para>
+
+
+    <sect2 id="users-adduser">
+      <title>adduser</title>
+
+      <para><application>adduser</application> 是一個簡單的程式用來新增帳號。
+        它為使用者建立 <filename>passwd</filename> 和 <filename>group</filename>
+        的記錄，也建立他們的家目錄，從 <filename>/usr/share/skel</filename>
+        複製一些預設的設定檔，也可自由選擇地寄給使用者歡迎訊息。</para>
+
+      <para>要建立初始的設定檔，請用
+	<command>adduser -s -config_create</command>.
+	<footnote>
+	  <para>參數 <option>-s</option> 使得 adduser 預設變得安靜。
+	    我們之後可以用 <option>-v</option> 如果想改變預設值時。</para>
+	</footnote>接下來，我們設定 adduser 預設值，建立第一個使用者帳號，
+        因為用 root 來做一般的用途是有害且危險的。</para>
+
+      <example>
+	<title>更改 adduser 的設定 </title>
+
+	<screen>&prompt.root; <userinput>adduser -v</userinput>
+Use option ``-silent'' if you don't want to see all warnings and questions.
+Check /etc/shells
+Check /etc/master.passwd
+Check /etc/group
+Enter your default shell: csh date no sh tcsh [sh]: <userinput>tcsh</userinput>
+Your default shell is: tcsh -> /usr/local/bin/tcsh
+Enter your default HOME partition: [/home]:
+Copy dotfiles from: /usr/share/skel no [/usr/share/skel]: 
+Send message from file: /etc/adduser.message no 
+[/etc/adduser.message]: <userinput>no</userinput>
+Do not send message
+Use passwords (y/n) [y]: <userinput>y</userinput>
+
+Write your changes to /etc/adduser.conf? (y/n) [n]: <userinput>y</userinput>
+
+Ok, let's go.
+Don't worry about mistakes. I will give you the chance later to correct any input.
+Enter username [a-z0-9_-]: <userinput>jru</userinput>
+Enter full name []: <userinput>J. Random User</userinput>
+Enter shell csh date no sh tcsh [tcsh]: 
+Enter home directory (full path) [/home/jru]: 
+Uid [1001]: 
+Enter login class: default []: 
+Login group jru [jru]: 
+Login group is ``jru''. Invite jru into other groups: guest no 
+[no]: <userinput>wheel</userinput>
+Enter password []: 
+Enter password again []: 
+
+Name:	  jru
+Password: ****
+Fullname: J. Random User
+Uid:	  1007
+Gid:	  1007 (jru)
+Class:	  
+Groups:	  jru wheel
+HOME:     /home/jru
+Shell:	  /usr/local/bin/tcsh
+OK? (y/n) [y]: <userinput>y</userinput>
+Added user ``jru''
+Copy files from /usr/share/skel to /home/jru
+Add another user? (y/n) [y]: <userinput>n</userinput>
+Goodbye!
+&prompt.root;</screen>
+      </example>
+
+      <para>簡單來說，我們變更預設 shell 為 <application>tcsh</application>，
+        關掉送出歡迎信給新增的使用者。接著我們儲存了設定值，並且為
+        <username>jru</username> 新增了一個帳號，確定 <username>jru</username>
+        屬於 <username>wheel</username> 群組(之後我們將發現這很重要)。</para>
+
+      <note>
+	<para>你鍵入的密碼並沒有顯示出來，也沒有星星顯示出來。
+	請確定你兩次都沒有打錯密碼:)</para>
+      </note>
+
+      <note>
+	<para>從今天起請用 <command>adduser</command> 不加上任何參數，
+          也不用執行一次變更預設值了。如果程式要求你變更預設值，請離開程式，
+          並試試看 <option>-s</option> 的參數。</para>
+      </note>
+    </sect2>
+
+    <sect2 id="users-rmuser">
+      <title>rmuser</title>
+
+      <para><application>rmuser</application> 從系統中刪除帳號，包括使用者
+        資料庫中的任何記錄。</para>
+
+      <para><application>rmuser</application> 執行下列步驟：</para>
+
+      <procedure>
+	<step>
+	  <para>刪除使用者的 &man.crontab.1; 記錄 (如果有的話)。</para>
+	</step>
+	<step>
+	  <para>刪除所有屬於此使用者的 &man.at.1; 工作。</para>
+	</step>
+	<step>
+	  <para>中止所有此使用者擁有的行程。</para>
+	</step>
+	<step>
+	  <para>從系統密碼檔中刪除使用者資料。</para>
+	</step>
+	<step>
+	  <para>刪除此使用者的家目錄 (如果是此使用者所擁有的話)。</para>
+	</step>
+	<step>
+	  <para>刪除 <filename>/var/mail</filename> 之下屬於此使用者的信件。</para>
+	</step>
+	<step>
+	  <para>刪除暫存區中所有此使用者擁有的檔案，例如 <filename>/tmp</filename>。</para>
+	</step>
+	<step>
+	  <para>最後，刪除 <filename>/etc/group</filename> 之中所有此使用者
+            所屬的群組的帳號。
+	    
+	    <note>
+	      <para>如果某群組變成空的且群族名稱和帳號名稱相同，則此群組也將
+                被移除；這補足了那些由 &man.adduser.8; 為個別使用者建立的
+                單獨群組。</para>
+	    </note>
+	  </para>
+	</step>
+      </procedure>
+
+      <para><application>rmuser</application> 不能用來刪除超級使用者帳號，
+        因為這表示了一個嚴重的破壞行為。</para>
+
+      <para>預設使用互動模式，這將確認你知道你正在做什麼。</para>
+
+      <example>
+	<title>rmuser 帳號刪除互動過程</title>
+
+	<screen>&prompt.root; <userinput>rmuser jru</userinput>
+Matching password entry:
+jru:*:1000:1000::0:0:J. Random User:/home/jru:/usr/local/bin/tcsh
+Is this the entry you wish to remove? <userinput>y</userinput>
+Remove user's home directory (/home/jru)? <userinput>y</userinput>
+Updating password file, updating databases, done.
+Updating group file: trusted (removing group jru -- personal group is empty) done.
+Removing user's incoming mail file /var/mail/jru: done.
+Removing files belonging to jru from /tmp: done.
+Removing files belonging to jru from /var/tmp: done.
+Removing files belonging to jru from /var/tmp/vi.recover: done.
+&prompt.root;</screen>
+      </example>
+    </sect2>
+
+    <sect2 id="users-pw">
+      <title>pw</title>
+
+      <para><application>pw</application> 是一個命令列工具，用來
+	建立，刪除，修改，以及顯示使用者和群組，並當成系統用戶檔
+	及群組檔的編輯器。</para>
+
+      <para>它是被設計來不論對直接執行命令列或者放在 shell script
+	裡面都很有用。</para>
+
+      <para>&man.pw.8; 有所有的資訊。</para>
+    </sect2>
+
+    <sect2 id="users-chpass">
+      <title>chpass</title>
+
+      <para><application>chpass</application> 更改使用者資料例如密碼，
+	shells，和個人資訊等。</para>
+
+      <para>只有系統管理員，例如超級使用者，可以用 chpass 更改其他
+	使用者的資料或密碼。</para>
+
+      <para>不加任何參數，除了可有可無的帳號名稱，
+	<application>chpass</application> 顯示一個內含使用者資訊的編輯器，
+	並在離開編輯器時，更改使用者資料庫中的資訊。</para>
+
+      <example>
+	<title>超級使用者互動式 chpass</title>
+
+	<screen>#Changing user database information for jru.
+Login: jru
+Password: *
+Uid [#]: 1000
+Gid [# or name]: 1000
+Change [month day year]:
+Expire [month day year]:
+Class:
+Home directory: /home/jru
+Shell: /usr/local/bin/tcsh
+Full Name: J. Random User
+Office Location:
+Office Phone:
+Home Phone:
+Other information:</screen>
+      </example>
+
+      <para>一般的使用者只能更改他們自己的一小部分資訊。</para>
+
+      <example>
+	<title>一般使用者互動式 chpass</title>
+
+	<screen>#Changing user database information for jru.
+Shell: /usr/local/bin/tcsh
+Full Name: J. Random User
+Office Location:
+Office Phone:
+Home Phone:
+Other information:</screen>
+      </example>
+
+      <note>
+	<para><command>chfn</command> 和 <command>chsh</command> 就像
+	  chpass，以及 <command>ypchpass</command>，<command>ypchfn</command>，
+	  和 <command>ypchsh</command>。自動支援 NIS，所以命令前不需要加上
+	  <literal>yp</literal>。</para>
+      </note>
+    </sect2>
+    <sect2 id="users-passwd">
+      <title>passwd</title>
+
+      <para><application>passwd</application> 是一個常用的工具，讓一般使用者
+	更改自己的密碼，或者讓超級使用者更改其他使用者的密碼。</para>
+
+      <note>
+	<para>修改密碼以前，使用者必須輸入他們原先的密碼，以避免未經授權的
+	  人在使用者離開控制台時更改使用者的密碼。</para>
+      </note>
+
+      <example>
+	<title>passwd</title>
+
+	<screen>&prompt.user; <userinput>passwd</userinput>
+Changing local password for jru.
+Old password:
+New password:
+Retype new password:
+passwd: updating the database...
+passwd: done
+
+&prompt.root; <userinput>passwd jru</userinput>
+Changing local password for jru.
+New password:
+Retype new password:
+passwd: updating the database...
+passwd: done</screen>
+      </example>
+
+      <note>
+	<para><command>yppasswd</command> 連結到 <command>passwd</command>。
+	  自動支援 NIS，所以在命令前不需要加上<literal>yp</literal>。</para>
+      </note>
+    </sect2>
+  </sect1>
+
+  <sect1 id="users-limiting">
+    <title>限制使用者</title>
+
+    <para>如果你運作了一個多重使用者的系統，有可能你並不信任所有使用者都不會
+      破壞系統。FreeBSD 提供了一些方法讓系統管理可以限制每個個別使用者可使用
+      的系統資源。這些限制一般分為兩個部分：磁碟配額，和其他資源限制。</para>
+
+    <para>磁碟配額是一個由系統管理員告訴檔案系統每個使用可以使用的空間量的方法
+      ，此外，它也提供了一個快速計算某使用者磁碟使用量的方法，而不用每次加總。
+      磁碟配額在 <xref linkend="quotas"> 討論。</para>
+
+    <para>其他資源限制包括了限制 CPU，記憶體，和其他使用者可使用的資源。
+      這些用登入分類 (login classes) 來定義的將在此討論。</para>
+
+    <para>登入分類定義在 <filename>/etc/login.conf</filename>。精確的語法不在
+      這一節詳述，而在 &man.login.conf.5; 說明頁有詳細解釋。可以說每個使用者
+      被分配進一個登入分類中 (預設是 <literal>default</literal>)，而每一個登入
+      分類有一組相關的登入容量。登入容量是一對
+      <literal><replaceable>name</replaceable>=<replaceable>value</replaceable></literal>
+      ，<replaceable>name</replaceable> 是眾所周知的鑑別字而
+      <replaceable>value</replaceable> 是一個依據 name 來處理的任意字串。
+      設定登入分類和容量並不簡單，在 &man.login.conf.5; 有詳細說明。</para>
+
+    <para>資源限制在兩方面和一般的登入容量不同。第一，每一項限制，有軟性限制
+      及硬性限制。軟性限制可由使用者或應用程式調整，但不能高於硬性限制。後者
+      可被使用者降低，但不能提高。第二，大部分資源限制針對在單一使用者的個別
+      行程，而不是這使用者全部行程。注意，這些不同處是託管藉著特定的限制處理
+      ，而不是藉著登入容量架構的實作 (例如，他們不是 <emphasis>真正</emphasis>
+      登入容量的特例)。</para>
+
+    <para>另外，底下順便列出一些常用的資源限制 (剩下的，以及其他的登入容量，
+      在 &man.login.conf.5; 有說明)。</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><literal>coredumpsize</literal></term>
+
+	<listitem>
+	  <para>這限制了由程式所產生的 core 檔的大小，顯然是為了磁碟使用空間
+          的理由 (例如， <literal>filesize</literal>，或者硬碟配額)。
+          儘管如此，它常用來當成建議的硬碟空間消耗的控制方法：因為使用者自己
+          不會產生 core 檔，而且也不會刪除這些 core 檔，控制這個選項可以避免
+          在大型程式 (例如 Emacs) 掛掉的時候塞爆磁碟空間。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>cputime</literal></term>
+
+	<listitem>
+	  <para>這是一個使用者行程最大可使用的 CPU 時間總量。超出的行程會被
+            kernel 殺掉。                  
+
+	    <note>
+	      <para>這是限制消耗的 CPU <emphasis>時間</emphasis>，而不是
+                顯示在 &man.top.1; 和 &man.ps.1; 的 CPU 使用百分比。在寫
+                此說明時，後者的限制是不太可能的，而且也沒什麼用的：一個
+                編譯器 &mdash; 可能是一個合法的工作 &mdash; 可以在某一時刻
+                輕易的用掉 100% 的 CPU。</para>
+	    </note>
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>filesize</literal></term>
+
+	<listitem>
+	  <para>這是限制使用者可擁有的檔案大小。不同於
+            <link linkend="quotas">磁碟配額</link>，限制針對個別的檔案，
+	    而不是某使用者所擁有的所有檔案。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>maxproc</literal></term>
+
+	<listitem>
+	  <para>這限制了使用者最大可執行的行程數。包括了前景以及背景的行程。
+            因為明顯的理由，此限制不可超過 <literal>kern.maxproc</literal>
+	    的系統限制。另外注意這如果限制太小，可能妨礙使用者的產能：有可能
+            常常會同時登入多次或者執行管線。某些工作，像是編譯大型的檔案，
+            也會衍生出多個行程 (例如 &man.make.1;， &man.cc.1;，和其他中介
+            前置處理器)。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>memorylocked</literal></term>
+
+	<listitem>
+	  <para>這是某行程在主記憶體中最大可要求鎖定的空間量。
+            (請看 &man.mlock.2;)。一些系統關鍵程式會這樣，像是 &man.amd.8;，
+            在它們 swap 時不會產生系統的麻煩。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>memoryuse</literal></term>
+
+	<listitem>
+	  <para>這限制了某行程在任一時刻最大可使用的記憶體空間。
+            這包含了記憶體以及 swap 空間。這不是限制記憶體使用的總量限制，
+            但是是一個好的開始。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>openfiles</literal></term>
+
+	<listitem>
+	  <para>這是某行程最大可開啟的檔案數目。在 FreeBSD，檔案也用來代表
+            socket 或者 IPC channels；因此，小心別設定得太低。全系統的設定
+            定義在 <literal>kern.maxfiles</literal>。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>sbsize</literal></term>
+
+	<listitem>
+	  <para>這限制了某使用者可使用的網路記憶體，例如 mbuf。
+            一開始是用來回應產生一堆 socket 的古老 DoS 攻擊，但是也可用在
+            限制網路溝通。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>stacksize</literal></term>
+
+	<listitem>
+	  <para>這限制了一個行程的堆疊最大可成長的大小。此單獨的限制不能限制
+            某程式可以使用的空間；因此，它常常用來搭配其他限制。</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>其他還有另外幾個要記得設定的資源限制。接下來是一些一般的提示，
+      建議，和其他的意見。</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>在系統啟動時由 <filename>/etc/rc</filename> 啟動的程式被指派
+          到 <literal>daemon</literal> 登入分類。</para>
+      </listitem>
+
+      <listitem>
+        <para>雖然系統內的 <filename>/etc/login.conf</filename> 的大部分限制
+          是個合理值的好來源 ，但是只有你，系統管理員，知道什麼才適合你的系統。
+          設定限制太高可能造成你的系統被濫用，設定太低則可能造成產能的負擔。</para>
+      </listitem>
+
+      <listitem>
+        <para>X 視窗系統 (X11) 使用者應該被允許比其他使用者擁有更多的資源。
+          X11 自己消耗掉許多資源，同時鼓勵使用者同時執行更多的程式。</para>
+      </listitem>
+
+      <listitem>
+        <para>請記住許多的限制只針對單一的行程，而不是針對使用者全部。
+          舉例來說，設定 openfiles 為 50 代表一個使用者的每個程式最多可以
+          開啟 50 個檔案，因此一個使用者可檔案總量為 <literal>openfiles</literal>
+          的值乘以 <literal>openfiles</literal> 的值。在記憶體消耗方面也一樣。</para> 
+      </listitem>
+    </itemizedlist>
+
+    <para>其他有關資源限制和登入分類的資訊，請參考相關的說明頁：
+          &man.cap.mkdb.1;，&man.getrlimit.2;，&man.login.conf.5;。</para>
+  </sect1>
+
+  <sect1 id="users-personalizing">
+    <title>個人化使用者</title>
+
+    <para>區域化是一個由系統管理員或者使用者建立的環境，提供了不同的語言，
+      字集，日期和時間標準之類的。這在 <link linkend="l10n">區域化</link>
+      的章節有討論。</para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

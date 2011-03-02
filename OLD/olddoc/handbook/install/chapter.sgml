@@ -1,0 +1,4503 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/install/chapter.sgml,v 1.9 2003/08/02 05:34:34 statue Exp $
+     
+     Translate into Chinese by Chih-Hsuan Dennis Lee (c_hsuan@hotmail.com)
+
+     English Version: 1.142
+-->
+
+<chapter id="install">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+        <firstname>Jim</firstname>
+	<surname>Mock</surname>
+	<contrib>結構、組織重整，部分重寫：</contrib>
+      </author>
+    </authorgroup>
+
+    <authorgroup>
+      <author>
+	<firstname>Randy</firstname>
+	<surname>Pratt</surname>
+	<contrib>sysinstall 操作流程、螢幕抓圖以及一般性文稿：</contrib>
+      </author>
+    </authorgroup>
+    <!-- January 2000 -->
+  </chapterinfo>
+
+  <title>安裝 FreeBSD</title>
+
+  <sect1>
+    <title>概論</title>
+
+    <indexterm><primary>installation</primary></indexterm>
+
+    <para>FreeBSD 提供一個以文字為主，簡單好用的安裝程式，叫做 
+    <application>Sysinstall</application>。這是 FreeBSD 預設使用的安裝程式；廠商
+    如果想，也可以提供自己的安裝程式。本章說明如何使用 <application>Sysinstall</application> 
+    來安裝 FreeBSD。</para>
+
+    <para>在閱讀過本章後，您將會知道：</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>如何製作 FreeBSD 安裝磁片。</para>
+      </listitem>
+      
+      <listitem>
+	<para>FreeBSD 如何參照及分割您的硬碟。</para>
+      </listitem>
+
+      <listitem>
+	<para>如何啟動 <application>Sysinstall</application>。</para>
+      </listitem>
+
+      <listitem>
+	<para>在執行 <application>Sysinstall</application> 時所要您回答的問題、這些
+	問題代表什麼意義，以及該如何回答它們。</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>在閱讀這個章節前，您應該：</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>閱讀您要安裝的 FreeBSD 版本所附之硬體支援列表以確定您的硬體有沒有被支援。</para>
+      </listitem>
+    </itemizedlist>
+
+    <note>
+      <para>一般來說，此安裝說明是針對 I386（<quote>PC 相容</quote>）架構的電腦。
+      如果有其他架構（如 Alpha）的安裝說明，我們會一併列出。</para>
+    </note>
+
+  </sect1>
+
+  <sect1 id="install-pre">
+    <title>安裝之前的工作</title>
+
+    <sect2 id="install-inventory">
+      <title>列出您電腦的硬體清單</title>
+
+      <para>在安裝 FreeBSD 之前，您應該試著將您電腦中的硬體列出來。FreeBSD 安裝
+  程序會將這些硬體（硬碟、網路卡、光碟機等等）以型號及製造廠商列出來。FreeBSD 
+  也會嘗試為這些裝置找出最適當的 IRQ 及 IO 埠的設定。但是因為 PC 的硬體種類實在
+  太過繁雜，這個步驟不一定總是能成功。這時，您就可能需要手動更改有問題的裝置的
+  設定值。</para>
+
+      <para>如果您已經安裝了其他的作業系統，如 Windows 或 Linux，那麼您可以先由
+  這些系統所提供的工具來查看您的裝置設定值是怎麼分配的。如果您真的沒辦法確定某
+  些介面卡用什麼設定值，那麼您可以檢查看看，說不定它的設定已經標示在卡上。常用
+  的 IRQ 號碼為 3、5 以及 7；IO 埠的值通常以 16 進位表示，例如 0x330。</para>
+
+      <para>我們建議您在安裝 FreeBSD 前列印或者把這個資訊寫下來，做成表格的樣子
+  或許會比較有幫助，例如：</para>
+
+      <table pgwide="1" frame="none">
+	<title>硬體清單列表</title>
+
+	<tgroup cols="4">
+	  <thead>
+	    <row>
+	      <entry>裝置名稱</entry>
+
+	      <entry>IRQ</entry>
+
+	      <entry>IO 埠</entry>
+
+	      <entry>備註</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry>第一個硬碟</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>4GB, Seagate 製, primary IDE master</entry>
+	    </row>
+
+	    <row>
+	      <entry>CDROM</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>Primary IDE slave</entry>
+	    </row>
+
+	    <row>
+	      <entry>第二個硬碟</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>2GB, IBM 製, secondary IDE master</entry>
+	    </row>
+
+	    <row>
+	      <entry>第一個 IDE 控制器</entry>
+
+	      <entry>14</entry>
+
+	      <entry>0x1f0</entry>
+
+	      <entry></entry>
+	    </row>
+
+	    <row>
+	      <entry>網路卡</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>Intel 10/100</entry>
+	    </row>
+
+	    <row>
+	      <entry>數據機</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>3Com 56K faxmodem, on COM1:</entry>
+	    </row>
+
+	    <row>
+	      <entry>&hellip;</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect2>
+
+    <sect2>
+      <title>備份您的資料</title>
+      
+      <para>如果在您的電腦上面存有重要的資料，那麼在安裝 FreeBSD 前請確定您已
+  經將這些資料備份了，並且先測試過這些備份檔是否沒有問題。FreeBSD 安裝程序在
+  要寫入任何資料到您的硬碟前都會先提醒您確認，一旦您確定要寫入，那麼以後就沒
+  有反悔的機會。</para>
+    </sect2>
+
+    <sect2 id="install-where">
+      <title>決定要將 FreeBSD 安裝到哪裡</title>
+
+      <para>如果您想讓 FreeBSD 使用整顆硬碟，那麼請直接跳到下一節。</para>
+
+      <para>然而，如果您想要 FreeBSD 跟您已有的系統並存，那麼您必須對您資料存在
+  硬碟的分布方式有深入的了解以及其所造成的影響。</para>
+
+      <sect3 id="install-where-i386">
+	<title>i386 架構的磁碟分配方式</title>
+
+      <para>一個 PC 磁碟可以被細分為許多分散的區域。這些區域叫做<firstterm>分割區
+  （partition）</firstterm>。因為設計的方式，每個磁碟僅支援 4 個分割區；這些分割
+  叫做<firstterm>主要分割區（Primary partition）</firstterm>。為了突破這個限制以
+  便能使用更多的分割區，就有了新的分割類型，叫做<firstterm>延伸分割區（Extended 
+  partition）</firstterm>；一個磁碟只可以擁有一個延伸分割。在延伸分割裡面可以建
+  立許多個所謂的<firstterm>邏輯分割區（Logical artition）</firstterm>。</para>
+
+      <para>每個分割都有其獨立的<firstterm>分割代號（Partition ID）</firstterm>
+  用以區別每個分割的資料類型。FreeBSD 分割的代號是 <literal>165</literal>。</para>
+
+      <para>一般而言，每種作業系統都會有自己獨特的方式來區別分割區。例如 DOS 及
+  其之後的 Windows，會分配給個主要及邏輯分割區一個<firstterm>磁碟代號（drive 
+  letter）</firstterm>，從 <devicename>C:</devicename>開始。</para>
+
+      <para>FreeBSD 必須安裝在主要分割區。FreeBSD 可以在這個分割區上面存放系統
+  資料或是您建立的任何檔案。然而，如果您有很多顆硬碟，您也可以在這些硬碟（全部
+  或部分）建立 FreeBSD 分割區。在您安裝 FreeBSD 的時候，必須要有一個分割區可以
+  給 FreeBSD 使用。這個分割區可以是尚未規劃的分割或是已規劃好，但是裡面的資料
+  您都不想保存的分割。</para>
+
+      <para>如果您已經用完了您磁碟上所有的分割區，那麼您必須使用其他作業系統所
+  提供的工具（如 DOS 或 Windows 的 <command>fdisk</command>）來騰出一個分割給
+  FreeBSD 用。</para>
+
+      <para>如果您的某個分割有多餘的空間，您可以使用它。但是使用前您可能需要先
+  整理一下這些分割。</para>
+
+      <para>FreeBSD 最小安裝需要約 100MB 的空間，但是這僅是<emphasis>非常very</emphasis>
+  基本的安裝，幾乎沒有剩下多少空間可以建立您自己的檔案。較理想的最小安裝是
+  250MB，不含圖形介面；或是 350MB 以上，包含圖形介面。如果您還需要安裝其他的第
+  三廠商的套件，那麼將需要更多的硬碟空間。</para>
+
+      <para>您可以使用商業軟體，例如 <application>Partition Magic（空間魔術師）
+  </application>來建立給 FreeBSD 用的空間。FreeBSD 光碟的 <filename>tools</filename> 
+  目錄包含兩個免費的工具也可以達成這個工作：<application>FIPS</application> 以及
+	<application>PResizer</application>。這些工具的說明文件可以在同個目錄下面找到。</para>
+
+      <warning>
+	<para>不當的使用這些工具可能會刪除所有您磁碟上的資料！在使用這些工具前請確定
+	您有最近、沒問題的備份資料。</para>
+      </warning>
+
+      <example>
+	<title>使用現存的分割區</title>
+
+	<para>假設您只有一個 4GB 的硬碟，而且已經裝了 Windows；然後您將這顆硬碟分成兩
+	個槽 <devicename>C:</devicename> 跟 <devicename>D:</devicename>，每個大小為
+	2GB。在 <devicename>C:</devicename> 槽存放 1GB 的資料、<devicename>D:</devicename>
+	槽放 0.5GB 的資料。</para>
+
+	<para>這表示您的硬碟上有兩個分割區，一個槽是一個分割區。您可以把所有存在 
+	<devicename>D:</devicename> 的資料移動到 <devicename>C:</devicename> 去，這
+	樣就空出了一個分割區可以給 FreeBSD 用囉。</para>
+      </example>
+
+      <example>
+	<title>縮減現存的分割區</title>
+
+	<para>假設您只有一個 4GB 的硬碟，而且已經裝了 Windows。您在安裝 Windows 的時
+	候把 4GB 都給了 <devicename>C:</devicename> 磁碟，並且現在使用了 1.5GB 的空
+	間。您想將剩餘空間中的 2GB 給 FreeBSD 用。</para>
+
+	<para>為了安裝 FreeBSD，您必須從下面兩種方式中選擇一種：</para>
+
+	<orderedlist>
+	  <listitem>
+	    <para>備份 Windows 資料，然後重新安裝 Windows，並給 Windows 2GB 的分割空
+	    間。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>使用上面提及的 <application>Partition Magic</application> 來整理或
+	    切割您的分割區。</para>
+	  </listitem>
+	</orderedlist>
+      </example>
+
+      </sect3>
+
+      <sect3>
+	<title>Alpha 架構的磁碟分配方式</title>
+
+	<indexterm><primary>Alpha</primary></indexterm>
+
+	<para>在 Alpha 上，您必須使用一整顆硬碟給 FreeBSD，沒有辦法在同顆硬碟上跟其他
+	作業系統共存。根據不同的 Alpha 機器，您的硬碟可以是 SCSI 或 IDE 硬碟，只要您
+	的機器可以從這些硬碟開機就可以。</para>
+
+	<para>按照 Digital / Compaq 使用手冊書寫的慣例，所有 SRM 輸入的部分都用大寫表
+	示。注意，SRM 大小寫有別。</para>
+
+	<para>要得知您磁碟的名稱以及型號，可以在 SRM console 提示下使用 <literal>SHOW DEVICE</literal>
+	指令：</para>
+
+	<screen>&gt;&gt;&gt;<userinput>show device</userinput>
+dka0.0.0.4.0               DKA0           TOSHIBA CD-ROM XM-57  3476
+dkc0.0.0.1009.0            DKC0                       RZ1BB-BS  0658
+dkc100.1.0.1009.0          DKC100             SEAGATE ST34501W  0015
+dva0.0.0.0.1               DVA0
+ewa0.0.0.3.0               EWA0              00-00-F8-75-6D-01
+pkc0.7.0.1009.0            PKC0                  SCSI Bus ID 7  5.27
+pqa0.0.0.4.0               PQA0                       PCI EIDE
+pqb0.0.1.4.0               PQB0                       PCI EIDE</screen>
+
+	<para>此範例使用 Digital Personal Workstation 433au 並且顯示出此機器有連接三個
+	磁碟機。第一個是 CDROM，叫做 <devicename>DKA0</devicename>；另外兩個是磁碟機，
+	分別叫做 <devicename>DKC0</devicename> 及 <devicename>DKC100</devicename>。</para>
+
+	<para>磁碟機的名稱中有 <devicename>DKx</devicename> 字樣的是 SCSI 介面。
+	  例如：<devicename>DKA100</devicename> 表示是一個 SCSI 裝置，其 SCSI ID 為 1，
+	  位在第一個 SCSI 匯流排（A）。<devicename>DKC300</devicename> 表示一個 SCSI
+	  硬碟，ID 為 3，位於第三個 SCSI 匯流排（C）。裝置名稱 <devicename>
+	  PKx</devicename> 表示 SCSI 控制卡。由以上 <literal>SHOW DEVICE</literal> 指令
+	  的輸出結果看來，SCSI 光碟機也被視為是 SCSI 硬碟的一種。</para>
+
+	<para>IDE 磁碟機的名稱類似 <devicename>DQx</devicename>；而
+	  <devicename>PQx</devicename> 則表示相對應的 IDE 磁碟控制器。</para>
+
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>蒐集您的網路設定相關資料</title>
+
+      <para>如果您想透過網路（FTP 站或 NFS）安裝 FreeBSD，那麼您就必須知道您的
+  網路組態。在安裝 FreeBSD 的過程中將會提示您輸入這些資訊，以順利完成安裝過程。</para>
+
+      <sect3>
+	<title>使用網際網路或纜線／DSL 數據機</title>
+
+	<para>如果您直接連到網際網路或是要透過纜線／DSL 數據機連上網路，那麼您必須準備
+	下面的資訊：</para>
+
+	<orderedlist>
+	  <listitem>
+	    <para>IP 位址。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>預設閘道的 IP 位址。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>機器名稱。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>DNS 伺服器的 IP 位址。</para>
+	  </listitem>
+	</orderedlist>
+
+	<para>如果您不知道這些資訊，您可以詢問系統管理者或是您的網路服務提供者。他們
+	可能會說這些資訊會由 <firstterm>DHCP</firstterm> 自動指派；如果是這樣的話，
+	請記住這一點就可以了。</para>
+      </sect3>
+
+      <sect3>
+	<title>使用數據機連線</title>
+
+	<para>如果您由一般的數據機撥接上網，您仍然可以透過它安裝 FreeBSD，只是會需要
+	很長的時間。</para>
+
+	<para>您必須知道：</para>
+
+	<orderedlist>
+	  <listitem>
+	    <para>撥接到 ISP 的電話號碼。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>您的數據機是連到哪個 COM 埠。</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>您撥接到 ISP 所用的帳號跟密碼。</para>
+	  </listitem>
+	</orderedlist>
+      </sect3>
+    </sect2>
+    <sect2>
+      <title>檢查 FreeBSD 有沒有錯誤</title>
+      
+      <para>雖然我們盡力使得每個 FreeBSD 釋出版本都很穩定，但是過程中仍然不免有
+  時會發生錯誤。在很罕見的情形下，這些錯誤會影響到安裝的過程。當我們發現這些錯
+  誤並且修正後，會將它們列在 FreeBSD 網站的 FreeBSD Errata（勘誤表）中。在您安
+  裝 FreeBSD 前應該先看看勘誤表中有沒有什麼問題會影響到您的安裝。</para>
+
+      <para>關於所有釋出版本的資訊，包括勘誤表，可以在
+	<ulink
+	url="../../../../index.html">FreeBSD 網站</ulink>的
+	<ulink
+	url="../../../../releases/index.html">釋出版本資訊
+	information</ulink>一章節中找到。</para>
+    </sect2>
+
+    <sect2 id="install-floppies">
+      <title>準備安裝開機片</title>
+      
+      <para>FreeBSD 可以透過許多種媒介安裝，如 CDROM、DVD、FTP（匿名或非匿名）、
+	NFS、磁帶或是現有的	MS-DOS 分割區。</para>
+
+      <tip>
+	<para>如果您有 FreeBSD 的 CDROM 或 DVD，而且您的電腦允許您從光碟開機（通常在
+	BIOS 中會有 <quote>Boot Order</quote> 或類似的選項可以設），那麼您可以跳過此
+	小節，因為 FreeBSD 光碟及 DVD 影像檔都是可開機的，用它們開機您不用做什麼特別
+	的準備。</para>
+      </tip>
+    
+      <para>FreeBSD 的安裝過程開始於將您的電腦開機進入 FreeBSD 安裝環境－並非
+  在其他的作業系統跑一隻程式。因為如此，您必須先建立 FreeBSD 安裝磁片。</para>
+
+      <para>如果您<emphasis>並非</emphasis>由光碟、DVD 或 FTP 安裝，那麼您就必
+  須準備好您自己的安裝媒介（例如一個 MS-DOS 分割區）。這個過程稍微複雜些，您可
+  以在 <xref linkend="install-diff-media"> 一節找到相關資料。其中包含一些教您
+  如何在區域網路建立一台 FTP 伺服器，並且讓您區域網路內的其他電腦可以透過這台
+  FTP 伺服器安裝 FreeBSD。</para>
+
+      <para>一般來說，要建立安裝磁片請依照下列的步驟：</para>
+
+      <procedure>
+	<step>
+	  <title>取得開機磁片映像檔</title>
+	  
+	  <para>開機磁片映像檔可以在您的安裝媒體的 floppies 目錄下找到，或是您也可以
+	  到 <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/floppies/">
+	  開機磁片目錄</ulink>下載。</para>
+
+	  <para>磁片映像檔的副檔名為 <filename>.flp</filename>。在 <filename>floppies/</filename>
+	  目錄中包含了許多個不同的映像檔，根據您要安裝的 FreeBSD 版本有不同的映像檔；
+	  有時候不同的硬體也需要不同的映像檔。在大部分的情形下，您需要兩個檔案：<filename>kern.flp</filename>
+	  以及 <filename>mfsroot.flp</filename>；但是，請看一下同目錄中的
+	  <filename>README.TXT</filename> 檔來看看正不正確。</para>
+
+	  <important>
+	    <para>您的 FTP 程式必須使用<emphasis>二進位模式</emphasis>來下載這些映像
+	    檔。有些瀏覽器只會用 <emphasis>text</emphasis>（或 <emphasis>ASCII</emphasis>）
+	    模式來傳輸資料，用這些瀏覽器下載的映像檔做成的磁片可能沒辦法正常開機。</para>
+	  </important>
+	</step>
+
+	<step>
+	  <title>準備開機磁片</title>
+	  
+	  <para>一個映像檔需要一張磁片，並且請避免使用到壞掉的磁片。最簡單的方式就是您
+	  先將這些磁片格式化，不要相信所謂的已格式化的磁片。</para>
+	  
+	  <important>
+	    <para>如果您在安裝 FreeBSD 的過程中造成當機、凍結或是其他怪異的現象，第一
+	    個要懷疑的就是開機磁片。請用其他的磁片製作映像檔再試試看。</para>
+	  </important>
+	</step>
+
+	<step>
+	  <title>將映像檔寫入到磁片中</title>
+
+	  <para><filename>.flp</filename> 檔案<emphasis>並非</emphasis>一般的檔案，
+	  您不能直接將它複製到磁片上。事實上它是一張包含完整磁片內容的對應檔。這表示
+	  您<emphasis>不能</emphasis>使用 DOS 的 <command>copy</command> 指令將檔案寫
+	  到磁片上，而必須使用特別的工具程式將映像檔直接寫到磁片中。</para>
+
+	  <indexterm><primary>DOS</primary></indexterm>
+	  <para>如果您使用 DOS 或 Windows 作業系統來製作安裝磁片，那麼您可以使用我們
+	  提供的 <command>fdimage</command> 程式來將映像檔寫到磁片中。</para>
+
+	  <para>如果您用的是光碟，假設光碟機代號是 <devicename>E:</devicename>，那麼
+	  請執行下面的指令：</para>
+
+	  <screen><prompt>E:\&gt;</prompt> <userinput>tools\fdimage floppies\kern.flp A:</userinput></screen>
+
+	  <para>重複上述的指令以完成每個 <filename>.flp</filename> 檔的寫入，每換一個
+	  映像檔都必須更換磁片；製作好的磁片請註明是使用哪個映像檔做的。如果您的映像檔
+	  存在不同的地方，請自行修改上面的指令。要是您沒有 FreeBSD 光碟，您可以到
+	  <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/tools/"><filename>tools</filename>
+	  目錄</ulink>中下載 <command>fdimage</command>。</para>
+	  
+	  <para>如果您是用 Unix 系統（例如其他 FreeBSD 機器）來寫入映像檔，您可以使用 &man.dd.1; 
+	  指令來將映像檔寫到磁片中。如果您用 FreeBSD，可以執行下面的指令：</para>
+	  
+	  <screen>&prompt.root; <userinput>dd if=kern.flp of=/dev/fd0</userinput></screen>
+
+	  <para>在 FreeBSD 中，<filename>/dev/fd0</filename> 指的是第一台軟碟機（即
+	  <devicename>A:</devicename> 磁碟機）；<filename>/dev/fd1</filename> 是
+	  <devicename>B:</devicename> 磁碟機，餘類推。其他的 Unix 系統可能會用不同的名
+	  稱，這時您就要查閱該系統的說明文件囉。</para>
+	</step>
+      </procedure>
+
+      <para>您現在可以開始安裝 FreeBSD 了</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="install-start">
+    <title>開始安裝</title>
+
+    <important>
+      <para>預設的情況下，安裝過程並不會改變任何您磁碟機中的資料，除非您看到下
+  面的訊息：</para>
+
+      <literallayout class="monospaced">Last Chance: Are you SURE your want continue the installation?
+
+If you're running this on a disk with data you wish to save then WE
+STRONGLY ENCOURAGE YOU TO MAKE PROPER BACKUPS before proceeding!
+
+We can take no responsibility for lost disk contents!</literallayout>
+
+      <para>在看到這最後的警告訊息前您都可以隨時離開安裝程式而不會變更您的硬碟。
+  如果您發現有任何設定錯誤，這時您可以直接將電源關掉而不會造成任何傷害。</para>
+    </important>
+
+    <sect2 id="install-starting">
+      <title>開機啟動</title>
+
+      <sect3 id="install-starting-i386">
+        <title>i386 架構啟動</title>
+
+      <procedure>
+	<step>
+	  <para>從電腦尚未開機開始說起。</para>
+	</step>
+
+	<step>
+	  <para>將電腦電源打開。剛開始的時候它應該會顯示進入系統設定要按哪個鍵，常見的
+	  是 <keycap>F2</keycap>、<keycap>F10</keycap>、<keycap>Del</keycap> 或
+	    <keycombo action="simul">
+	      <keycap>Alt</keycap>
+	      <keycap>S</keycap>
+	    </keycombo>。不論是要按哪個鍵，請按它進入 BIOS 設定畫面。</para>
+	</step>
+
+	<step>
+	  <para>找到設定開機順序的選項，通常會列出一些裝置讓您選擇，例如：
+	    <literal>Floppy</literal>、<literal>CDROM</literal>、
+	    <literal>First Hard Disk</literal> 等等。</para>
+
+	  <para>如果您要用磁片安裝，請確定選到 floppy disk；如果您要用光碟安裝，那請
+	  選擇 CDROM。為了避免疑惑，請參考您的主機板說明手冊。</para>
+
+	  <para>儲存設定並離開，系統應該會重新開機。</para>
+	</step>
+
+	<step>
+	  <para>如果您用磁片安裝，請將在 <xref linkend="install-floppies"> 一節中製作
+	  好的安裝磁片放到第一台軟碟機中，通常這片磁片應該是用 <filename>kern.flp</filename>
+	  做的。</para>
+
+	  <para>如果您是從光碟安裝，那麼開機後請將 FreeBSD 光碟放入光碟機。</para>
+
+	  <para>如果您開機後如往常一樣並沒有從軟碟或光碟開機，請檢查：</para>
+
+	  <orderedlist>
+	    <listitem>
+	      <para>是不是磁片或光碟太晚放入而錯失開機時間。如果是，請將它們放入然後
+	  重新開機。</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>BIOS 設定不對，請重新檢查 BIOS 的設定。</para>
+	    </listitem>
+	</orderedlist>
+	</step>
+    
+	<step>
+	  <para>FreeBSD 即將啟動。如果您是從光碟開機，您會見到類似下面的畫面：</para>
+	  
+	  <screen>Verifying DMI Pool Data ........
+Boot from ATAPI CD-ROM :
+ 1. FD 2.88MB  System Type-(00)
+Uncompressing ... done
+
+BTX loader 1.00 BTX version is 1.01
+Console: internal video/keyboard
+BIOS drive A: is disk0
+BIOS drive B: is disk1
+BIOS drive C: is disk2
+BIOS drive C: is disk3
+BIOS 639kB/261120kB available memory
+
+FreeBSD/i386 bootstrap loader, Revision 0.8
+(murray@builder.freebsdmall.com, Thu Jan 17 19:28:57 PST 2002)
+/kernel text=0x266691 data=0x407c+0x20d68 \
+|
+Hit [Enter] to boot immediately, or any other key for command prompt.
+Booting [kernel] in 9 seconds... _</screen>
+	
+	  <para>如果您從軟碟開機，會看到類似下面的畫面：</para>
+	
+	  <screen>Verifying DMI Pool Data ........ 
+
+BTX loader 1.00  BTX version is 1.01 
+Console: internal video/keyboard 
+BIOS drive A: is disk0 
+BIOS drive C: is disk1 
+BIOS 639kB/261120kB available memory 
+
+FreeBSD/i386 bootstrap loader, Revision 0.8 
+ (murray@builder.freebsdmall.com, Thu Jan 17 19:28:57 PST 2002) 
+/kernel text=0x266691 data=0x407c+0x20d68 | 
+
+Please insert MFS root floppy and press enter:</screen>
+
+	  <para>依照指示，將 <filename>kern.flp</filename> 磁片移出，放入
+	    <filename>mfsroot.flp</filename> 磁片，然後按 <keycap>Enter</keycap>。</para>
+	</step>
+
+	<step>
+	  <para>不論從軟碟或光碟開機，您都會看到下面這段訊息：</para>
+
+	  <screen>Hit [Enter] to boot immediately, or any other key for command prompt. 
+Booting [kernel] in 9 seconds... _</screen>
+
+	  <para>您可以等待 10 秒或是按 <keycap>Enter</keycap> 跳過。之後就會進入核心
+	  設定選單。</para>
+	</step>
+      </procedure>
+
+      </sect3>
+      <sect3>
+        <title>Alpha 架構啟動</title>
+
+	<indexterm><primary>Alpha</primary></indexterm>
+
+      <procedure>
+	<step>
+	  <para>從電腦尚未打開電源開始。</para>
+	</step>
+
+	<step>
+	  <para>打開電腦電源並等待螢幕上出現開機提示字串。</para>
+        </step>
+
+	<step>
+	  <para>如果您需要準備安裝磁片，請參考 <xref linkend="install-floppies">。將
+	  用 <filename>kern.flp</filename> 做的開機片放入軟碟機中然後輸入下列指令（
+	  請視實際情況修改指令中的軟碟機代號）：</para>
+
+	  <screen>&gt;&gt;&gt;<userinput>BOOT DVA0 -FLAGS '' -FILE ''</userinput></screen>
+
+	  <para>如果您要從光碟開機，請將光碟放入光碟機中然後輸入下列指令開始安裝（請
+	  視情況修改指令中的光碟機代號）：</para>
+
+          <screen>&gt;&gt;&gt;<userinput>BOOT DKA0 -FLAGS '' -FILE ''</userinput></screen>
+	</step>
+    
+	<step>
+	  <para>然後 FreeBSD 就會啟動。如果您從軟碟開機，到某個階段您會看到下面的訊息：</para>
+
+	  <screen>Please insert MFS root floppy and press enter:</screen>
+
+	  <para>依照螢幕指示，將 <filename>kern.flp</filename> 磁片取出，換上
+	    <filename>mfsroot.flp</filename> 磁片，然後按 <keycap>Enter</keycap> 繼續。</para>
+	</step>
+
+	<step>
+	  <para>不論從軟碟或光碟開機，您都會看到下面這段訊息：</para>
+
+	  <screen>Hit [Enter] to boot immediately, or any other key for command prompt. 
+Booting [kernel] in 9 seconds... _</screen>
+
+	  <para>您可以等待 10 秒或是按 <keycap>Enter</keycap> 跳過。之後就會進入核心
+	  設定選單。</para>
+	</step>
+      </procedure>
+
+      </sect3>
+
+    </sect2>
+
+    <sect2 id="start-userconfig">
+      <title>核心組態設定</title>
+
+      <para><firstterm>核心（kernel）</firstterm> 是作業系統最重要的部分。它負
+  責很多工作，包括存取系統上所有的裝置，如硬碟、網路卡、音效卡等等。每一個
+  FreeBSD 核心支援的裝置都有其相對應的驅動程式。這些驅動程式的名稱由兩個或三個
+  字母組成，譬如：<devicename>sa</devicename> 表示 SCSI 存取驅動程式；
+  <devicename>sio</devicename> 表示序列 I/O 驅動程式（管理 COM 埠）。</para>
+
+      <para>當核心啟動的時候，每個驅動程式對會檢查系統中有沒有它支援的裝置。如
+  果有找到，這些驅動程式就會設定這些裝置的組態以供核心使用。</para>
+
+      <para>上述裝置的檢查我們稱做 <firstterm>裝置搜尋（device probing）</firstterm>。
+  但是很不幸地，這樣做並不是完全安全的。因為有些硬體驅動程式沒有辦法相互共存，
+  有時找到這個裝置卻讓另一個裝置處在不穩定的狀態。這是 PC 設計上的限制。</para>
+
+      <para>許多早期的裝置稱做 ISA 裝置（介面）（相對於 PCI 裝置而言）。ISA 裝
+  置的規格需要將硬體的某些資訊寫死在裝置上，最具代表性的就是中斷要求號碼（IRQ）
+  以及 IO 埠位址。這些設定值通常藉由改變裝置上的 <firstterm>跳線（jumpers）</firstterm>
+  位置或是使用廠商所提供的 DOS 工具程式來改變。</para>
+
+      <para>這通常是問題的所在，因為這沒辦法讓兩個裝置共同分享一個 IRQ 或是 IO
+  位址。</para>
+
+      <para>新的裝置都依照 PCI 規格設計，這些裝置就沒有上述的限制；它們會參考
+  BIOS 中的設定然後動態分配 IRQ 及 IO 位址。</para>
+
+      <para>如果您的系統中有任何 ISA 裝置，那麼在設定 FreeBSD 驅動程式的時候您
+  就必須指定這些裝置的 IRQ 及 IO 位址。這也是我們在 <xref linkend="install-inventory">
+  一節中希望您先準備一份裝置清單的用意。
+
+      <para>仍然很不幸地，預設給某些裝置使用的 IRQ 跟記憶體位址會互相衝突。這是
+  因為有些 ISA 裝置出廠的設定值就會跟其他的裝置衝突。撇開這個不談，FreeBSD 驅動
+  程式通常都會根據各製造商裝置的出廠設定值來設定，這也是為什麼許多裝置可以在
+  FreeBSD 順利驅動的原因。</para>
+
+      <para>在跑 FreeBSD 的時候根本不會有上述衝突的問題，因為當兩個裝置互相衝突
+  的時候，其中一個裝置將被停用（不論您用的是哪種作業系統）。</para>
+
+      <para>通常在安裝 FreeBSD 的時候才會有問題，因為為安裝而定製的系統核心希望
+  儘量多包含一些驅動程式，這樣才能支援許多不同裝置的組態。這意味著在找到的這些裝
+  置中有可能設定值會互相衝突。FreeBSD 在搜尋系統裝置的時候會照一定的順序，如果
+  您的某個裝置在較後面搜尋到，但是跟前面找到的裝置設定衝突，那麼在安裝 FreeBSD
+  的時候，這個裝置不一定能正確啟用。</para>
+
+      <para>因為如此，當您在安裝 FreeBSD 前，可以先看看在安裝用的系統核心中包含
+  了哪些驅動程式，如果您沒有某些裝置，則可以將它們的驅動程式移除或是在稍後您也
+  可以確認您有的裝置的設定值有沒有問題。</para>
+
+      <para>這聽起來好像很複雜，但不全然如此。</para>
+
+      <para><xref linkend="kernel-config"> 顯示的是核心組態設定的第一個畫面。我
+  們建議您選擇 <guimenuitem>Start kernel configuration in full-screen visual
+	  mode</guimenuitem> 選項，因為這對新手來說比較容易。</para>
+
+      <figure id="kernel-config">
+	<title>核心組態設定畫面</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/userconfig" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>之後，核心組態畫面分為四個區域（圖 <xref linkend="fig-userconfig">）。</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>在 <quote>active（可用）</quote> 區域的展開式選單分為四個群組，例如
+	  <literal>Storage（儲存裝置）</literal>、<literal>Network（網路裝置）</literal>。
+	  每項裝置會顯示對應的說明、由二或三個字母組成的驅動程式名稱以及驅動程式所使用
+	  的 IRQ 跟記憶體位址。另外，如果一個可用的驅動程式跟另一個可用的有衝突，在他
+	  們的驅動程式名稱之後會顯示 <literal>CONF</literal> 字樣。同時欄位標題也會顯示
+	  可用的裝置中總共有幾個裝置有衝突。</para>
+	</listitem>
+
+	<listitem>
+	  <para>在 Inactive（停用）區的驅動程式仍然保留在核心中，但是當核心啟動的時候
+	  並不會搜尋這些裝置。這個區域的分組方式跟可用區一樣。</para>
+	</listitem>
+
+	<listitem>
+	  <para>第三區（訊息顯示區）顯示的是目前所選擇裝置的細項設定，包括 IRQ 及記憶\
+	  體位置。</para>
+	</listitem>
+
+	<listitem>
+	  <para>第四區告訴您這個畫面的操作按鍵。</para>
+	</listitem>
+      </orderedlist>
+
+      <figure id="fig-userconfig">
+	<title>核心裝置視覺化組態設定介面</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/userconfig2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>在這個階段，您總是會看到有衝突的裝置被列出。請不要擔心，因為這是正
+  常的；前面提到再安裝的時候所有的裝置都會被啟用，而其中的某些裝置就會跟其他的
+  裝置產生衝突。</para>
+
+      <para>現在您必須逐一檢查這些裝置驅動程式，然後解決衝突的問題。</para>
+
+      <procedure>
+	<title>解決驅動程式衝突</title>
+
+	<step>
+	  <para>按下 <keycap>X</keycap> 鍵可以將所選擇區域的驅動程式完全展開以方面您
+	  檢閱。您可以使用方向鍵在可用裝置區前後移動。</para>
+
+	  <para><xref linkend="hardware-conflicts"> 顯示按下 <keycap>X</keycap> 鍵後
+	  的結果。</para>
+
+	  <figure id="hardware-conflicts">
+	    <title>展開驅動程式清單</title>
+
+	    <mediaobject>
+	      <imageobject>
+		<imagedata fileref="install/hdwrconf" format="PNG">
+	      </imageobject>
+	    </mediaobject>
+	  </figure>
+	</step>
+
+	<step>
+	  <para>停用任何您沒有的裝置驅動程式。要停用一項裝置，用方向鍵移動將該裝置反白
+	  然後按下 <keycap>Del</keycap> 鍵，則此裝置驅動程式就會被移到
+	  <literal>Inactive Drivers（停用裝置區）</literal>。</para>
+
+	  <para>如果您不小心將一個裝置停用，那麼請按 <keycap>Tab</keycap> 鍵切換到
+	  <literal>Inactive Drivers</literal> 區，選擇被停用的裝置，然後按下
+	  <keycap>Enter</keycap> 鍵將它移回可用裝置區。</para>
+
+	  <important>
+	    <para>請不要移除 <devicename>sc0</devicename>。這個驅動程式是控制螢幕用，
+	  除非您是透過序列線安裝，否則請不要移除它。</para>
+	  </important>
+
+	  <important>
+	    <para>如果您用的是 USB 鍵盤才可以停用 <devicename>atkbd0</devicename>；用
+	  一般的鍵盤請保留此裝置。</para>
+	  </important>
+	</step>
+
+	<step>
+	  <para>如果現在顯示沒有衝突，那麼您可以跳過這一步驟。否則，剩下的衝突還是必
+	  須解決。如果在訊息顯示區沒有看到 <quote>allowed conflict（允許衝突）</quote>
+	  ，那麼您必須改變這邊顯示的 IRQ/記憶體位址，<emphasis>或</emphasis>必須變更
+	  裝置上面的 IRQ/記憶體位址。</para>
+
+	  <para>要改變裝置驅動程式的 IRQ 及記憶體位址，選擇要變更的驅動程式然後按下
+	  <keycap>Enter</keycap> 鍵。之後等游標移到第三區（訊息顯示區）候您就可以更
+	  改這些設定。您應該輸入在之前做硬體清單列表的時候所紀錄的 IRQ 及 IO 位址。
+	  要完成變更請按 <keycap>Q</keycap> 鍵並回到可用裝置區。</para>
+	  
+	  <para>如果您不確定該設定什麼值，那您可以試試看 <literal>-1</literal>。有些
+	  FreeBSD 驅動程式在搜尋裝置的時候可以安全找出裝置的正確設定值；所以這邊設定
+	  <literal>-1</literal> 就是告訴這些驅動程式自行去嘗試找出適合的設定。</para>
+
+	  <para>如果要直接在裝置硬體上改變設定值，設定的方法每種裝置都不大相同。有些
+	  裝置您必須將它從電腦中拆下來然後調整跳線或是 DIP 開關；其他的可能廠商會提供
+	  DOS 工具磁片，裡面有程式可以更改這些設定。不論是哪一種方式，您都應該參考裝
+	  置所附之使用手冊。很明顯地，改變這些設定值必須重新開機後才會生效，所以您必
+	  須重新進入 FreeBSD 安裝程式。</para>
+	</step>
+
+	<step>
+	  <para>當所有的衝突都解決了以後，您會看到類似 <xref linkend="userconfig-done">
+	  的畫面。</para>
+
+	  <figure id="userconfig-done">
+	    <title>沒有衝突的裝置驅動程式組態畫面</title>
+
+	    <mediaobject>
+	      <imageobject>
+		<imagedata fileref="install/probstart" format="PNG">
+	      </imageobject>
+	    </mediaobject>
+	  </figure>
+
+	  <para>如您所見，可用裝置區變得乾淨多了，只列出您系統中有的裝置。</para>
+	  
+	  <para>現在您可以儲存所做的變更，然後進到下一個安裝步驟。按 <keycap>Q</keycap>
+	  鍵離開裝置設定介面，您會看到下面的訊息：</para>
+
+	  <screen>Save these parameters before exiting? ([Y]es/[N]o/[C]ancel)</screen>
+
+	  <para>回答 <keycap>Y</keycap> 儲存設定然後就會開始搜尋裝置。在裝置搜尋完畢
+	  後，<application>Sysinstall</application> 就會啟動並且顯示它的主畫面（
+	  <xref linkend="sysinstall-main">）。</para>
+
+	  <figure id="sysinstall-main">
+	    <title>Sysinstall 主畫面</title>
+	    
+	    <mediaobject>
+	      <imageobject>
+		<imagedata fileref="install/main1" format="PNG">
+	      </imageobject>
+	    </mediaobject>
+	  </figure>
+	</step>
+      </procedure>
+    </sect2>
+
+    <sect2 id="view-probe">
+      <title>查看裝置搜尋的結果</title>
+
+      <para>前面螢幕顯示的最後幾百行字會存在暫存區以便您查閱。</para>
+
+      <para>要瀏覽暫存區，您可以按下 <keycap>Scroll Lock</keycap> 鍵，這會開啟
+  畫面的捲動功能。然後您就可以使用方向鍵或是 <keycap>PageUp</keycap>、<keycap>PageDown</keycap>
+  鍵來上下翻閱。再按一次 <keycap>Scroll Lock</keycap> 停止畫面捲動。</para>
+
+      <para>在您瀏覽的時候會看到類似 <xref linkend="install-dev-probe"> 的畫面。
+  真正的結果依照您的電腦裝置而有所不同。</para>
+
+      <figure id="install-dev-probe">
+	<title>典型的裝置搜尋結果</title>
+
+	<screen>avail memory = 254611456 (248644K bytes)
+Preloaded elf kernel "kernel" at 0xc069a000.
+Preloaded mfs_root "/mfsroot" at 0xc069a084.
+md1: Malloc disk
+npx0: &lt;math processor> on motherboard
+npx0: INT 16 interface
+pcib0: &lt;Host to PCI bridge> on motherboard
+pci0: &lt;PCI bus> on pcib0
+pcib1: &lt;VIA 82C598MVP (Apollo MVP3) PCI-PCI (AGP bridge> at device 1.0 on pci0
+pci1: &lt;PCI bus> on pcib1
+pci1: &lt;Matrox MGA G200 AGP graphics accelerator> at 0.0 irq 11
+isab0: &lt;VIA 82C586 PCI-ISA bridge> at device 7.0 on pci0
+isa0: &lt;ISA bus> on isab0
+atapci0: &lt;VIA 82C586 ATA33 controller> port 0xe000-0xe00f at device 7.1 on pci0
+ata0: at 0x1f0 irq 14 on atapci0
+uhci0: &lt;VIA 83C572 USB controller> port 0xe400-0xe41f irq 10 at device 7.2 on pci0
+usb0: &lt;VIA 83C572 USB controller> on uhci0
+usb0: USB revision 1.0
+uhub0: VIA UHCI root hub, class 9/0, rev 1.00/1.00, addr 1
+uhub0: 2 ports with 2 removable, self powered
+chip1: &lt;VIA 82C586B ACPI interface> at device 7.3 on pci0
+ed0: &lt;NE2000 PCI Ethernet (RealTek 8029)> port 0xe800-0xe81f irq 9 at device 10.0 on pci0
+ed0: address 52:54:05:de:73:1b, type NE2000 (16bit)
+isa0: too many dependant configs (8)
+isa0: unexpected small tag 14
+orm0; &lt;Option ROM> at iomem 0xc0000-0xc7fff on isa0
+fdc0: &lt;NEC 72065B or clone> at port 0x3f0-0x3f5,0x3f7 irq6 drq2 on isa0
+fdc0: FIFO enabled, 8 bytes threshold
+fd0: &lt;1440-KB 3.5" drive> on fdc0 drive 0
+atkbdc0: &lt;keyboard controller (i8042)> at port 0x60-0x64 on isa0
+atkbd0: &lt;AT Keyboard> flags 0x1 irq 1 on atkbdc0
+kbd0 at atkbd0
+psm0: &lt;PS/2 Mouse> irq 12 on atkbdc0
+psm0: model Generic PS/2 mouse, device ID 0
+vga0: &lt;Generic ISA VGA> at port 0x3c0-0c3df iomem 0xa0000-0xbffff on isa0
+sc0: &lt;System console> at flags 0x100 on isa0
+sc0: VGA &lt;16 virtual consoles, flags-0x300>
+sio0 at port 0x3f8-0x3ff irq 4 flags 0x10 on isa0
+sio0: type 16550A
+sio1: at port 0x2f8-0x2ff irq3 on isa0
+sio1: type 16550A
+ppc0: &lt;Parallel port> at port 0x378-0x37f irq 7 on isa0
+ppc0: SMC-like chipset (ECP/EPP/PS2/NIBBLE) in COMPATIBLE mode
+ppc0: FIFO with 16/16/15 bytes threshold
+ppbus0: IEEE1284 device found /NIBBLE
+Probing for PnP devices on ppbus0:
+ppi0: &lt;Parallel I/O> on ppbus0
+plip0: &lt;PLIP network interface> on ppbus0
+ad0: 8063MB &lt;IBM-DHEA-38451> [16383/16/63] at ata0-master using UDMA33
+acd0: CDROM &lt;DELTA OTC-H101/ST3 F/W by OIPD> at ata0-slave using PIO4
+Mounting root from ufs:/dev/md0c
+/stand/sysinstall running as init on vty0</screen>
+      </figure>
+
+      <para>仔細檢查搜尋的結果以確定 FreeBSD 有找到所有您預期出現的裝置。如果裝
+  置沒有找到，那麼就不會列出。如果此裝置需要設定 IRQ 及記憶體位址，請您再確定是
+  否設定正確。</para>
+
+      <para>如果您需要變更某些裝置的設定，您可以很容易地離開
+  <command>sysinstall</command> 程式然後重頭來過。這也有助於您熟悉這些過程。</para>
+
+      <figure id="sysinstall-exit">
+	<title>選擇離開 Sysinstall</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/sysinstall-exit" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>在主畫面使用方向鍵來選擇 <guimenuitem>Exit Install</guimenuitem>。
+  您會看到如下的訊息：</para>
+
+
+      <screen>                      User Confirmation Requested 
+         Are you sure you wish to exit? The system will reboot 
+           (be sure to remove any floppies from the drives).
+
+                            [ Yes ]    No</screen>
+
+      <para>如果您的光碟還在光碟機裡並且選擇了 <guibutton>[Yes]</guibutton>，則
+  安裝程式會重新開始。</para>
+
+      <para>如果您是從軟碟開機，那麼重新開機前您必須將 <filename>mfs.root</filename>
+  磁片取出再換上 <filename>kern.flp</filename> 磁片。</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="using-sysinstall">
+    <title>介紹 Sysinstall</title>
+
+    <para><application>Sysinstall</application> 是 FreeBSD 計畫所提供的安裝程式。
+    它以 console 為主，分為幾個選單及畫面以讓您設定及控制安裝過程。</para>
+
+    <para><application>Sysinstall</application> 選單畫面由方向鍵、<keycap>Enter</keycap>
+    、<keycap>Space</keycap> 以及其他按鍵所控制。在主畫面的 Usage 選單有這些按鍵
+    的說明。</para>
+
+    <para>要查閱這些說明，請將游標移到 <guimenuitem>Usage</guimenuitem> 項目，然
+    後 <guibutton>[Select]</guibutton> 按鈕被選擇，如圖 <xref linkend="sysinstall-main3">
+    ，然後按下 <keycap>Enter</keycap> 鍵。</para>
+
+    <para>安裝畫面的使用說明會顯示出來，閱讀完畢請按 <keycap>Enter</keycap> 回
+    到主畫面。</para>
+
+    <figure id="sysinstall-main3">
+      <title>選取 Sysinstall 主畫面的 Usage 項目</title>
+
+      <mediaobject>
+	<imageobject>
+	  <imagedata fileref="install/main1" format="PNG">
+	</imageobject>
+      </mediaobject>
+    </figure>
+
+    <sect2 id="select-doc">
+      <title>選取 Documentation（說明文件）選單</title>
+
+      <para>在主畫面用方向鍵選擇 <guimenuitem>Doc</guimenuitem> 然後按下 <keycap>Enter</keycap>。</para>
+
+      <figure id="main-doc">
+	<title>選擇說明文件選單</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/main-doc" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>這將會進入說明文件選單。</para>
+
+      <figure id="docmenu1">
+	<title>Sysinstall 說明文件選單</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/docmenu1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>閱讀這些說明文件很重要。</para>
+
+      <para>要閱讀一篇文件，請用方向鍵選取要閱讀的文件然後按 <keycap>Enter</keycap>。
+  閱讀中再按一下 <keycap>Enter</keycap> 就會回到說明文件畫面。</para>
+
+      <para>若要回到主畫面，用方向鍵選擇 <guimenuitem>Exit</guimenuitem> 然後按下
+	<keycap>Enter</keycap> 鍵。</para>
+    </sect2>
+
+    <sect2 id="keymap">
+      <title>選擇鍵盤對應（Keymap）選單</title>
+
+      <para>如果要改變鍵盤按鍵的對應方式，請在主畫面選取 <guimenuitem>Keymap</guimenuitem>
+  然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="sysinstall-keymap">
+	<title>Sysinstall 主畫面</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/main-keymap" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>您可以使用上下鍵移動到您想使用的鍵盤對應方式，然後按下 <keycap>Space</keycap>
+  鍵以選取它；再按一下 <keycap>Space</keycap> 鍵可以取消選取。當您完成後，請選擇
+  &gui.ok; 然後按 <keycap>Enter</keycap>。</para>
+
+      <para>在這個畫面顯示的只是一小部分；選擇 &gui.cancel; 將會使用預設的鍵盤對
+  應方式並返回主畫面。</para>
+
+      <figure id="sysinstall-keymap-menu">
+	<title>Sysinstall 鍵盤對應選單</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/keymap" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+    </sect2>
+
+    <sect2 id="viewsetoptions">
+      <title>安裝選項設定畫面</title>
+
+    <para>選擇 <guimenuitem>Options</guimenuitem> 然後按 <keycap>Enter</keycap>。</para>
+
+    <figure id="sysinstall-options">
+      <title>Sysinstall 主畫面</title>
+
+      <mediaobject>
+        <imageobject>
+	  <imagedata fileref="install/main-options" format="PNG">
+	</imageobject>
+      </mediaobject>
+    </figure>
+
+      <figure id="options">
+	<title>Sysinstall 選項設定</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/options" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>預設值通常可以適用於大部分的使用者，您並不需要改變它們。</para>
+
+      <para>目前選擇項目的描述會在畫面下方以藍底白字顯示。注意，其中有一個選項是
+  <guimenuitem>Use Defaults（使用預設值）</guimenuitem>，您可以藉由此選項將所有
+  的設定還原為預設值。</para>
+
+      <para>可以按下 <keycap>F1</keycap> 來閱讀各選項的說明。</para>
+
+      <para>按 <keycap>Q</keycap> 可以回到主畫面。</para>
+    </sect2>
+
+    <sect2 id="start-install">
+      <title>開始進行標準安裝</title>
+
+      <para><guimenuitem>Standard（標準）</guimenuitem>安裝適用於那些初探
+	Unix 或 FreeBSD 的使用者。用方向鍵選擇 <guimenuitem>Standard</guimenuitem>
+	然後按 <keycap>Enter</keycap> 即可開始進入標準安裝。</para>
+
+      <figure id="sysinstall-standard">
+	<title>開始進行標準安裝</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/main-std" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+    </sect2>
+  </sect1>
+
+  <sect1 id="install-steps">
+    <title>磁碟空間配置</title>
+
+    <para>您的第一個工作就是要分配給 FreeBSD 用的磁碟空間以便 <application>Sysinstall
+  </application>先做好一些準備。為了完成這個工作，您必須先對 FreeBSD 如何找到磁碟資訊
+  做一個了解。</para>
+
+    <sect2 id="install-drive-bios-numbering">
+      <title>BIOS 磁碟機編號</title>
+
+      <para>在您安裝及設定 FreeBSD 之前，有一個很重要的一點必須注意，尤其當您有
+  許多顆硬碟的時候。</para>
+
+      <indexterm><primary>DOS</primary></indexterm>
+      <indexterm><primary>Microsoft Windows</primary></indexterm>
+      <para>在 PC 架構，當您跑像 MS-DOS 或 Windows 這種跟 BIOS 相關的作業系統
+  的時候，BIOS 有能力改變正常的磁碟機順序，然後這些作業系統會跟著 BIOS 做改變。
+  這讓使用者不一定非要由所謂的 <quote>primary master</quote> 硬碟開機。許多人發
+  現最簡單而便宜備份系統的方式就是再去買一顆一模一樣的硬碟，然後定期將資料從第
+  一顆硬碟複製到第二顆硬碟（使用 <application>Ghost</application> 或
+  <application>XCOPY</application>。所以，當第一顆硬碟死了（病毒、壞軌），他們
+  可以調整 BIOS 中的開機順序而直接用第二顆硬碟開機。這跟將機殼拆開，把第二顆硬
+  碟跟第一顆硬碟對調（要調 jumper）有同樣的效果，差別就是不用拆殼；因此，對有這
+  方面需求的人而言，直接在 BIOS 中設定非常方便。</para>
+
+      <indexterm><primary>SCSI</primary></indexterm>
+      <indexterm><primary>BIOS</primary></indexterm>
+      <para>比較昂貴，配有 SCSI 控制卡的系統通常可以延伸 BIOS 的功能來讓 SCSI
+  裝置（可達七個）達到類似改變順序的功能。</para>
+
+      <para>習慣於使用這種方式的使用者很可能會感到驚訝，因為在 FreeBSD 中並非如
+  此。FreeBSD 不會參考 BIOS，而且也不知道所謂的 <quote>BIOS 邏輯磁碟機對應</quote>
+  是怎麼回事。這會讓人感覺很疑惑，明明就是一樣的硬碟而且資料也完全從另一顆複製
+  過來的，結果卻沒辦法像以前那樣用。</para>
+
+      <para>當使用或安裝 FreeBSD 之前，請將 BIOS 中的硬碟開機順序調回正常的順序，
+  並且以後不要再變更。如果您仍然需要交換硬碟，那請用硬體的方式，打開機殼，調
+  jumper 及排線。</para>
+
+      <sidebar>
+	<title>範例：Bill 及 Fred 的安裝歷險</title>
+      
+	<para>Bill 替 Fred 把舊的，Wintel 的機器另外灌 FreeBSD。他裝了一台 SCSI 硬碟，
+	ID 是 0，然後把 FreeBSD 裝在上面。</para>
+
+	<para>Fred 開使用他新的 FreeBSD 系統；但是過了幾天，他發現這老舊的 SCSI 硬碟
+	發生了許多小問題。之後，他就跟 Bill 說起這件事。</para>
+
+	<para>又過了幾天，Bill 決定是該解決問題的時候了，所以他從後面房間的硬碟
+	<quote>收藏</quote>中找出了一個一模一樣的硬碟，並且經過表面測試後顯示這顆硬碟
+	沒有問題。因此，Bill 將它的 ID 調成 4，然後安裝到 Fred 的機器，並且將資料從
+	磁碟 0 複製到磁碟 4。現在新硬碟裝好了，而且看起來好像一切正常；所以，Bill 認
+	為現在應該可以開始用它了。Bill 於是到 SCSI BIOS 中設定 SCSI ID 4 為開機碟，用
+	磁碟 4 重新開機後，一切跑得很順利。</para>
+
+	<para>繼續用了幾天後，Bill 跟 Fred 決定要來玩點新的：該將 FreeBSD 升級了。
+	Bill 將 ID 0 的硬碟移除（因為有問題）並且又從收藏區中拿了一顆一樣的硬碟來。
+	然後他用 Fred 神奇的網路 FTP 磁片將新版的 FreeBSD 安裝在這顆硬碟上；安裝過程
+	沒什麼問題發生。</para>
+
+	<para>Fred 用了這新版本幾天後，覺得它很適合用在工程部門...是時候將以前放在舊
+	系統的工作資料複製過來了。因此，Fred 將 ID 4 的 SCSI 硬碟（裡面有放從舊系統
+	中複製過來的最新資料）mount 起來，結果竟然發現在 ID 4 的硬碟上，他以前的所有
+	資料都不見了！</para>
+
+	<para>資料跑到哪裡去了呢？</para>
+
+	<para>當初 Bill 將 ID 0 硬碟的資料複製到 ID 4 硬碟的時候，ID 4 即成為一個
+	<quote>新的複本</quote>。而當他調 SCSI BIOS 設定 ID 4 為開機碟，想讓系統重
+	ID 4 開機，這其實只是他自己笨，因為大部分的系統可以直接調 BIOS 而改變開機
+	順序，但是 FreeBSD 卻會把開機順序還原成正常的模式，因此，Fred 的 FreeBSD 還
+	是從原來那顆 ID 0 的硬碟開機的。所有的資料都還在那顆硬碟上，而不是在想像之
+	中的 ID 4 硬碟。</para>
+
+	<para>我們很高興在我們發現這件事的時候那些資料都還在，我們把資料從最早的那顆
+	ID 0 硬碟取出來並交還給 Fred，而且 Bill 也從此了解 0 的重要....</para>
+
+	<para>雖然我們這邊的例子使用 SCSI 硬碟，但是相同的觀念也可以套用在 IDE 硬碟上。</para>
+      </sidebar>
+    </sect2>
+
+    <sect2>
+      <title>磁碟組織</title>
+
+      <para>FreeBSD 用來尋找檔案的最小單位就是檔案的名稱了。檔名有分大小寫，即
+	<filename>readme.txt</filename> 跟 <filename>README.TXT</filename> 是不一樣的
+	兩的檔。FreeBSD 並不使用檔案的副檔名（<filename>.txt</filename>）來判別這個檔
+	案是程式檔、文件檔或是其他類型的檔案。</para>
+
+      <para>檔案存在目錄裡面。一個目錄中可能沒有任何檔案，也可能有好幾百個檔案。
+  目錄之中也可以包含其他的目錄；您可以建立階層式的目錄以便資料的管理。</para>
+
+      <para>檔案或目錄的對應是藉由給定的檔案或目錄名稱，然後加上斜線符號「/」；
+  之後再視需要加上其他的目錄名稱。例如，您有一個 <filename>foo</filename> 目錄，
+  裡面有一個子目錄叫 <filename>bar</filename>，bar 目錄中有一個叫做
+	<filename>readme.txt</filename> 的檔。那麼，相對於這個檔的全名或「路徑」就是
+	<filename>foo/bar/readme.txt</filename>。</para>
+
+      <para>目錄以及檔案儲存在檔案系統中。每個檔案系統都有唯一一個最上層的目錄，
+  叫做「根目錄（root directory）」。然後在這個根目錄下面才能有其他的目錄。</para>
+
+      <para>到目前為止，這根您所使用的其他作業系統都差不多。有一些差別就是，比
+  如 DOS，使用 <literal>\</literal> 來區別檔案跟目錄的名稱；在 MacOS 下用的是
+	<literal>:</literal> 符號。</para>
+
+      <para>FreeBSD 的路徑中不使用磁碟代號或是其他的磁碟名稱。因此，您不可以使
+  用 <filename>c:/foo/bar/readme.txt</filename>。</para>
+
+      <para>每個檔案系統都有一個根目錄，根目錄由 <literal>/</literal> 表示。所有
+  其他的檔案系統就<firstterm>「掛（mounted）」</firstterm>在根目錄下面。不論您有
+  多少顆硬碟，所有的目錄都顯示成在同一個磁碟上。</para>
+
+      <para>假設您有三個檔案系統，叫做 <literal>A</literal>、<literal>B</literal>
+  以及 <literal>C</literal>。每個檔案系統都包含兩個目錄，叫做
+  <literal>A1</literal>、<literal>A2</literal>（B 跟 C 類推）。</para>
+
+      <para>稱 <literal>A</literal> 為主要的檔案系統；如果您用
+	<command>ls</command> 指令查看此目錄的內容，您會看到兩個子目錄：
+	<literal>A1</literal> 以及 <literal>A2</literal>，如下所示：</para>
+
+      <literallayout class="monospaced"> /
+ |
+ +--- A1
+ |
+ `--- A2</literallayout>
+
+      <para>一個檔案系統必須以目錄形式掛在另一個檔案系統上。因此，假設您將
+	<literal>B</literal> 掛在 <literal>A1</literal> 下，則 <literal>B</literal>
+	的根目錄就變成了 <literal>A1</literal>，而在 <literal>B</literal> 之下的任何
+	目錄路徑也會相對改變。</para>
+
+      <literallayout class="monospaced"> /
+ | 
+ +--- A1
+ |     |
+ |     +--- B1
+ |     |
+ |     `--- B2
+ |
+ `--- A2</literallayout>
+
+      <para>在 <literal>B1</literal> 或 <literal>B2</literal> 目錄中的任何檔案
+  必須經由路徑 <filename>/A1/B1</filename> 或 <filename>/A1/B2</filename> 才能
+  達到。所有原來在 <filename>/A1</filename> 中的檔案會暫時被隱藏起來，等
+	<literal>B</literal><firstterm>「移除（unmounted）」</firstterm> 後才會再顯
+	現出來。</para>
+
+      <para>如果 <literal>B</literal> 掛在 <literal>A2</literal> 上，圖示如下：</para>
+
+      <literallayout class="monospaced"> /
+ |
+ +--- A1
+ |
+ `--- A2
+       |
+       +--- B1
+       |
+       `--- B2</literallayout>
+
+      <para>上面的路徑分別為 <filename>/A2/B1</filename> 以及
+  <filename>/A2/B2</filename>。</para>
+
+      <para>檔案系統可以掛在其他檔案系統的目錄最上層，延續之前的例子，
+	<literal>C</literal> 檔案系統可以掛在 <literal>B</literal> 下面的最上層目錄
+	<literal>B1</literal> 下，如下所示。</para>
+
+      <literallayout class="monospaced"> /
+ |
+ +--- A1
+ |
+ `--- A2
+       |
+       +--- B1
+       |     |
+       |     +--- C1
+       |     |
+       |     `--- C2
+       |
+       `--- B2</literallayout>
+
+      <para>或，<literal>C</literal> 可以直接掛在	<literal>A</literal> 的
+  <literal>A1</literal> 目錄下。</para>
+
+      <literallayout class="monospaced"> /
+ |
+ +--- A1
+ |     |
+ |     +--- C1
+ |     |
+ |     `--- C2
+ |
+ `--- A2
+       |
+       +--- B1
+       |
+       `--- B2</literallayout>
+
+      <para>如果您熟悉 DOS，這跟 <command>join</command> 指令很類似（雖然不盡相
+  同）。</para>
+
+      <para>通常，您並不需要擔心這個。通常您只要在安裝 FreeBSD 的時候建立檔案系
+  統並決定要將它們掛在哪裡；之後除非您有安裝新的硬碟，否則是不必改變它們的。</para>
+
+      <para>您完全可以使用單一一個大的主檔案系統（root filesystem），而不建立其
+  他的。這裡有許多缺點跟一個優點。</para>
+
+      <itemizedlist>
+	<title>使用多個檔案系統的好處</title>
+      
+	<listitem>
+	  <para>不同的檔案系統在掛上的時候可以有不同的 <firstterm>mount 參數設定</firstterm>。
+	例如，小心地計畫下，您可以將 root 檔案系統設定成唯讀，以免您不小心刪除或是變更
+	重要的檔案。</para>
+	</listitem>
+
+	<listitem>
+	  <para>FreeBSD 會自動根據您檔案系統的使用方式來做最佳的檔案配置方式。因此，一
+	個有很多小檔案、常常寫入的檔案系統跟只有幾個較大的檔案的檔案系統配置是不一樣的。
+	因此，如果您只有單一一個檔案系統，這部分就沒用了。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>FreeBSD 的檔案系統在停電的時候很穩固。但是，在某些重要的時候停電仍然會
+	對檔案系統結構造成損害。如果分為許多個檔案系統則系統在停電後比較能夠正常啟動，
+	以便您在需要的時候將備份資料回存回來。</para>
+	</listitem>
+      </itemizedlist>
+
+      <itemizedlist>
+	<title>使用單一檔案系統的好處</title>
+
+	<listitem>
+	  <para>檔案系統的大小是固定的。您當初安裝 FreeBSD 的時候可能會給定一個大小，
+	  可是後來您可能會想把空間加大。這如果沒有備份的話是很難達成的；您必須將檔案
+	  系統重新建立為您需要的大小，然後將備份回存回來。</para>
+
+	  <important>
+	    <para>FreeBSD 4.4 及以後的版本有一個指令：&man.growfs.8，可以突破此限制直
+	  接變更檔案系統的大小。</para>
+	  </important>
+	</listitem>
+      </itemizedlist>
+    
+      <para>檔案系統包含在分割區裡面，但是因為 FreeBSD 承襲 UNIX 架構，所以，這
+  邊講的分割區的意義跟之前的章節中提到的不大一樣。每個分割區由英文字母的
+  <literal>a</literal> 到 <literal>h</literal> 來區別。而一個分割區只能包含一個
+  檔案系統；因此，檔案系統通常以他們實際掛在根目錄下的節點名稱或是相對應的英文字
+  母來區別。</para>
+
+      <para>FreeBSD 也有所謂的磁碟交換空間（<firstterm>swap space</firstterm>。
+  交換空間提供作為 FreeBSD 的 <firstterm>虛擬記憶體</firstterm>；這讓您的電腦好
+  像擁有比實際更多的記憶體。當 FreeBSD 記憶體用完了，它會將現在記憶體中不常用到
+  的資料移到交換空間去，當需要用到的時候再移回到記憶體中（把其它的不常用到的先
+  移出）。</para>
+
+      <para>底下是一些分割區常見的慣例用法。</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>分割區</entry>
+
+	      <entry>慣例</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><literal>a</literal></entry>
+
+	      <entry>通常為根檔案系統（root filesystem）</entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>b</literal></entry>
+
+	      <entry>通常是交換空間</entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>c</literal></entry>
+
+	      <entry>通常跟切割的硬碟大小一樣，用來給一些會檢查整個切割的工具（如磁碟
+	  壞軌掃描工具）來使用。通常我們不會把檔案系統建立在這個分割區。</entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>d</literal></entry>
+
+	      <entry><literal>d</literal> 分割區以前是有特殊意義的，雖然現在已經不再
+	  使用了。因為有些工具在此分割區執行起來會有問題，所以
+	  <application>Sysinstall</application> 正常不會去建立
+	  <literal>d</literal>分割區。</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>每個有包含檔案系統的分割區儲存在所謂的<firstterm>「切割片段（slice）」</firstterm>
+  中。Slice 在 FreeBSD 早期也稱為 partition，同樣，也是因為 FreeBSD 是 Unix 系
+  統。切割片段有編號碼，從 1 到 4。</para>
+
+	<indexterm><primary>slices</primary></indexterm>
+	<indexterm><primary>partitions</primary></indexterm>
+	<indexterm><primary>dangerously dedicated</primary></indexterm>
+
+      <para>切割片段的編號是根據裝置名稱，以 <literal>s</literal> 開頭，編號從
+  1 開始。因此，<quote>da0<emphasis>s1</emphasis></quote> 是第一顆 SCSI 硬碟上
+  的第一個切割片段。一個磁碟上最多只能有四個實體切割片段，但是，在實體片段中可
+  以有適當類型的邏輯切割片段。這種延伸的片段編號從 5 開始，所以，
+	<quote>ad0<emphasis>s5</emphasis></quote> 是一個磁碟的第一個延伸切割片段。</para> 
+
+      <para>切割區，用來表示實體磁碟機或是其他含有分割區的磁碟機，編號從字母
+  <literal>a</literal> 到 <literal>h</literal>。這些字母編號附加在裝置名稱之後，
+  所以，<quote>da0<emphasis>a</emphasis></quote> 表示第一個 da 磁碟機上面的 a
+  分割區。<quote>ad1s3<emphasis>e</emphasis></quote> 表示位於第二個 IDE 磁碟機，
+  第三個切割區上面的第五個分割。</para>
+	
+      <para>最後，我們就可以把系統上的每個磁碟都區分出來了。一個磁碟的名稱會有
+  一個代碼來表示這個磁碟的類型，接著是一個數字，表示這是哪一個磁碟。這邊跟切割
+  區每個磁碟編號從 0 開始不一樣。常見的代碼可以參考
+  <xref linkend="install-dev-codes">。</para>
+
+      <para>當要參照一個分割區的時候，FreeBSD 需要您一併輸入包含這個分割區的切
+  割跟磁碟機名稱；當要參照一個切割區的時候，也必須輸入包含這個切割區的磁碟名稱。
+  怎麼做呢？首先先列出磁碟名稱，然後 <literal>s</literal> 加上切割區編號，最後
+  再輸入分割區字母代號。範例可以參考 <xref linkend="install-disk-slice-part">。</para>
+
+      <para><xref linkend="install-concept-disk-model"> 展示一個基本的磁碟分布
+  模式，相信對您有些幫助。</para>
+
+      <para>要安裝 FreeBSD，您必須先建置磁碟切割區，然後再在切割區中建立要給
+  FreeBSD 用的分割區。最後在這些分割區中建立檔案系統（或磁碟交換空間）並決定
+  要將這些檔案系統掛（mount）在哪裡（譯註：指定 mount 點）。</para>
+
+      <table frame="none" id="install-dev-codes">
+	<title>磁碟機代碼</title>
+
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>代碼</entry>
+	    
+	      <entry>意義</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><devicename>ad</devicename></entry>
+
+	      <entry>ATAPI (IDE) 磁碟機</entry>
+	    </row>
+
+	    <row>
+	      <entry><devicename>da</devicename></entry>
+	      
+	      <entry>SCSI 直接存取磁碟機</entry>
+	    </row>
+	    
+	    <row>
+	      <entry><devicename>acd</devicename></entry>
+	      
+	      <entry>ATAPI (IDE) 光碟機</entry>
+	    </row>
+	    
+	    <row>
+	      <entry><devicename>cd</devicename></entry>
+	      
+	      <entry>SCSI 光碟機</entry>
+	    </row>
+	    
+	    <row>
+	      <entry><devicename>fd</devicename></entry>
+	      
+	      <entry>軟碟機</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      
+      <example id="install-disk-slice-part">
+	<title>磁碟、切割區、分割區命名範例</title>
+	
+	<informaltable frame="none">
+	  <tgroup cols="2">
+	    <thead>
+	      <row>
+		<entry>名稱</entry>
+		
+		<entry>意義</entry>
+	      </row>
+	    </thead>
+	    
+	    <tbody>
+	      <row>
+		<entry><literal>ad0s1a</literal></entry>
+		
+		<entry>位於第一個 IDE 磁碟機（<literal>ad0</literal>）上，第一個切割區（
+		<literal>s1</literal>）中的第一個分割（<literal>a</literal>）。</entry>
+	      </row>
+
+	      <row>
+		<entry><literal>da1s2e</literal></entry>
+		
+		<entry>位於第二個 SCSI 磁碟機（<literal>da1</literal>）上，第二個切割區（
+		<literal>s2</literal>）中的第五個分割（<literal>e</literal>）</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </example>
+
+      <example id="install-concept-disk-model">
+	<title>基本磁碟機分布模式</title>
+
+	<para>此圖顯示 FreeBSD 中接到系統的第一個 IDE 磁碟機內部配置圖。假設這個磁碟
+	的容量是 4GB，並且包含了兩個 2GB 的切割區（DOS 的分割區）。第一個切割區是
+	DOS 的 <devicename>C:</devicename> 槽，第二個則安裝了 FreeBSD。這個例子中的
+	所安裝的 FreeBSD 有三個分割區以及一個磁碟交換分割（swap）。</para>
+
+	<para>這三個分割區每個都是一個檔案系統。<literal>a</literal> 分割是根（root）
+	檔案系統；分割 <literal>e</literal> 是 <filename>/var</filename>；而
+	<literal>f</literal> 分割是 <filename>/usr</filename> 目錄結構。</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="install/disk-layout" format="EPS">
+          </imageobject>
+ 
+          <textobject>
+	    <literallayout class="monospaced">.-----------------.  --.
+|                 |    |
+|  DOS / Windows  |    |
+:                 :     >  第一個切割區：ad0s1
+:                 :    |
+|                 |    |
+:=================:  ==:                               --.
+|                 |    |  a 分割區，mount 點為 /         |
+|                 |     > 以 ad0s2a 表示                 |
+|                 |    |                                 |
+:-----------------:  ==:                                 |
+|                 |    |  b 分割區，為磁碟交換分割       |
+|                 |     > 以 ad0s2b 表示                 |
+|                 |    |                                 |
+:-----------------:  ==:                                 |  c 分割區，無檔案
+|                 |    |  e 分割區，mount 為 /var         > 系統，全為 FreeBSD
+|                 |     > 以 ad0s2e 表示                 |  切割，以 ad0s2c 表示
+|                 |    |                                 |  
+:-----------------:  ==:                                 |
+|                 |    |                                 |
+:                 :    |  f 分割區，mount 為 /usr        |
+:                 :     > 以 ad0s2f 表示                 |
+:                 :    |                                 |
+|                 |    |                                 |
+|                 |  --'                                 |
+`-----------------'                                    --'</literallayout>
+          </textobject>
+        </mediaobject>
+      </example>
+    </sect2>
+
+
+    <sect2 id="main-fdisk">
+      <title>使用 FDisk 建立切割區</title>
+
+      <note>
+	<para>在這時候您所做的變更都不會真正寫到硬碟中。如果您發現做錯了，可以利用選
+	單離開 <application>Sysinstall</application> 然侯重新做一次。如果您弄亂了而
+	且不知道怎麼離開，您可以直接將電腦電源關掉再重來。</para>
+      </note>
+
+      <para>當您在 <application>Sysinstall</application> 主畫面選擇使用標準安裝
+  後，您會看到下面的訊息：</para>
+
+      <screen>                                 Message
+ In the next menu, you will need to set up a DOS-style ("fdisk")
+ partitioning scheme for your hard disk. If you simply wish to devote
+ all disk space to FreeBSD (overwriting anything else that might be on
+ the disk(s) selected) then use the (A)ll command to select the default
+ partitioning scheme followed by a (Q)uit. If you wish to allocate only
+ free space to FreeBSD, move to a partition marked "unused" and use the
+ (C)reate command. 
+                                [  OK  ] 
+
+                      [ Press enter to continue ]</screen>
+
+      <para>如螢幕指示，按下 <keycap>Enter</keycap> 鍵，然後您就會看到一個列表
+  列出所有在搜尋裝置的時候找到的磁碟機。<xref linkend="sysinstall-fdisk-drive1">
+  範例顯示的是有找到兩個 IDE 磁碟機的情形，這兩個磁碟機分別為
+	<devicename>ad0</devicename> 及 <devicename>ad2</devicename>。</para>
+
+      <figure id="sysinstall-fdisk-drive1">
+	<title>選擇要 FDisk 的磁碟機</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/fdisk-drive1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>您可能正在奇怪，為什麼 <devicename>ad1</devicename> 沒有列出來？
+	為什麼遺失了呢？</para>
+
+      <para>試想，如果您有兩顆 IDE 硬碟，一個是 primary master，一個是 secondary
+  master，這樣會發生什麼事呢？如果 FreeBSD 依照找到的順序來為他們命名，如
+  <devicename>ad0</devicename> 以及	<devicename>ad1</devicename>，那麼就不會有
+  什麼問題。</para>
+
+      <para>但是，現在問題來了。如果您現在想在 primary slave 加裝第三顆硬碟，
+  那麼這顆硬碟的名稱就會是 <devicename>ad1</devicename>，之前的
+  <devicename>ad1</devicename> 就會變成	<devicename>ad2</devicename>。這會造成
+  什麼問題呢？因為裝置的名稱（如 <devicename>ad1s1a</devicename>）是用來尋找檔
+  案系統的，因此您可能會發現，突然，您有些檔案系統從此無法正確地顯示出來，必須
+  修改 FreeBSD 組態（譯註：/etc/fstab）才可以正確顯示。</para>
+      
+      <para>為了解決這個問題，在設定核心的時候可以叫 FreeBSD 直接用 IDE 裝置所
+  在的位置來命名，而不是根據找到的順序。使用這種方式的話，在 secondary master
+  的 IDE 裝置就 <emphasis>always</emphasis> 永遠是<devicename>ad2</devicename>，
+  即使您的系統中沒有 <devicename>ad0</devicename> 或 <devicename>ad1</devicename>
+	也不受影響。</para>
+
+      <para>此為 FreeBSD 核心的預設值，這也是為什麼上面的畫面只有顯示
+	<devicename>ad0</devicename> 以及 <devicename>ad2</devicename> 的原因。畫面上
+	這台機器的兩顆硬碟是裝在 primary 及 seconday 的 master 上面；並沒有任何一個硬
+	碟裝在 slave 匯流排上。</para>
+
+      <para>您應該選擇您想安裝 FreeBSD 的硬碟，然後按下 &gui.ok;。之後
+	<application>FDisk</application> 就會開始，您會看到類似
+	<xref linkend="sysinstall-fdisk1">的畫面。</para>
+
+      <para><application>FDisk</application> 的顯示畫面分為三個區域。</para>
+
+      <para>第一區是畫面的最上面兩行，顯示的是目前所選擇磁碟的資訊，包含它的
+  FreeBSD 名稱、磁碟分布以及磁碟的總容量。</para>
+
+      <para>第二區顯示的是目前選擇的磁碟上有哪些切割區，每個切割區的開頭及結束
+  位置、所佔容量、FreeBSD 名稱、它們的描述以及子類別（subtype）。此範例顯示有
+  兩個未使用的切割區、一個大的 FAT 切割區（很可能是 DOS 或 Windows 的
+  <devicename>C:</devicename>）、以及一個延伸切割區（在 DOS 或 Windows 裡面還
+  可以包含邏輯分割）。</para>
+
+      <para>第三個區域顯示 <application>FDisk</application> 中可用的指令。</para>
+
+      <figure id="sysinstall-fdisk1">
+	<title>典型尚未編輯前的 Fdisk 分割表</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/fdisk-edit1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>接下來要做的事跟您要怎麼切割您的硬碟有關。</para>
+
+      <para>如果您要讓 FreeBSD 使用整顆硬碟（稍後您確認要
+  <application>Sysinstall</application> 繼續安裝後會刪除所有這顆硬碟上的資料），
+  那麼您可以按 <keycap>A</keycap>（<guimenuitem>Use Entire Disk</guimenuitem>）。
+  目前已有的切割都會被移除，取而代之的是一個小的，標示為 <literal>unused</literal>
+  的切割，以及一個大的 FreeBSD 切割區。之後，請用方向鍵將游標移到這個 FreeBSD
+  切割，然後按 <keycap>S</keycap> 以將此切割區設為開機啟動。您會看到類似
+	<xref linkend="sysinstall-fdisk2"> 的畫面。注意在 <literal>Flags</literal>
+	欄位的 <literal>A</literal> 記號表示這個切割區是<emphasis>啟動</emphasis>狀態，
+	並且會由此切割區開機。</para>
+
+      <para>如果要刪除已有的切割以空出空間給 FreeBSD，您可以移到要刪除的切割區
+  後按 <keycap>D</keycap>。然後就可以按 <keycap>C</keycap>，會出現對話框請您輸
+  入要產生的切割區大小。輸入適合的大小然後按 <keycap>Enter</keycap>。</para>
+      
+      <para>如果您已經建立好給 FreeBSD 用的空間（使用像
+  <application>Partition Magic</application> 類似的工具），那麼您可以按下
+	<keycap>C</keycap> 鍵來建立一個新的切割區。同樣的，會有對話方框詢問您要建立的
+	切割大小。</para>
+
+      <figure id="sysinstall-fdisk2">
+	<title>Fdisk 分割使用整顆硬碟</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/fdisk-edit2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>完成後，請按 <keycap>Q</keycap>。您的變更會存在
+	<application>Sysinstall</application> 中，但是還不會真正寫入您的硬碟。</para>
+    </sect2>
+
+    <sect2 id="bootmgr">
+      <title>安裝開機管理員</title>
+
+      <para>在這步驟您可以選擇要不要安裝開機管理員。一般而言，如果碰到下列的情
+  形，您應該選擇要安裝開機管理員：</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>您有一個以上的硬碟，並且 FreeBSD 並不是安裝在第一顆硬碟上。</para>
+	</listitem>
+
+	<listitem>
+	  <para>在同一顆硬碟上，除了 FreeBSD，您還有安裝其他的作業系統；然後您想要選
+	擇在開機的時候要進入哪個系統。</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>選擇好後請按 <keycap>Enter</keycap>。</para>
+
+      <figure id="sysinstall-bootmgr">
+	<title>Sysinstall 開機管理員畫面</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/boot-mgr" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>按下 <keycap>F1</keycap> 鍵所顯示的線上說明中有討論一些作業系統共存
+  可能發生的問題。</para>
+    </sect2>
+
+    <sect2>
+      <title>在其它磁碟上建立切割區</title>
+
+      <para>如果您的系統上有一顆以上的硬碟，在選擇完開機管理員後會再回到選擇磁碟
+  的畫面。如果您要將 FreeBSD 安裝在多顆硬碟上，那麼您可以在這邊選擇其它的硬碟，
+  然後重複使用 <application>FDisk</application> 來建立切割區。</para>
+
+      <figure id="sysinstall-fdisk-drive2">
+	<title>離開選擇磁碟畫面</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/fdisk-drive2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para><keycap>Tab</keycap> 鍵可以在您最後選擇的磁碟、&gui.ok; 以及
+	&gui.cancel; 間切換。</para>
+
+      <para>用 <keycap>Tab</keycap> 鍵將游標移到 &gui.ok; 然後按 <keycap>Enter</keycap>
+	鍵繼續安裝過程。</para>
+    </sect2>
+
+    <sect2 id="disklabeleditor">
+      <title>使用	<application>Disklabel</application> 製作分割區</title>
+      
+      <para>您現在必須在剛剛建立好的切割區中規劃一些分割區。請記住，每個分割區
+  代號是從 <literal>a</literal> 到 <literal>h</literal>，並且分割區
+	<literal>b</literal>、<literal>c</literal> 以及 <literal>d</literal> 
+	為慣例使用的特殊分割，不應隨意變動。</para>
+
+      <para>某些應用程式可以利用一些特殊的分割區而達到較好的效能，尤其是分割區
+  散佈在不同磁碟的時候。但是，現在您是第一次安裝 FreeBSD，所以不需要去煩惱如何
+  分割您的硬碟。最重要的是，裝好 FreeBSD 然後學習如何使用它。當您對 FreeBSD 有
+  相當程度的熟悉後，您可以隨時重新安裝 FreeBSD，然後改變您分割的方式。</para>
+
+      <para>下面的範例中有四個分割&mdash;一個是磁碟交換空間，另外三個是檔案系
+  統。</para>
+
+      <table frame="none">
+	<title>第一顆硬碟的分割區配置</title>
+
+	<tgroup cols="4">
+	  <thead>
+	    <row>
+	      <entry>分割區</entry>
+	      
+	      <entry>檔案系統</entry>
+
+	      <entry>大小</entry>
+
+	      <entry>描述</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><literal>a</literal></entry>
+
+	      <entry><filename>/</filename></entry>
+
+	      <entry>100MB</entry>
+
+	      <entry>此為根檔案系統（root filesystem）。任何其它的檔案系統都會掛在根
+	  目錄（譯註：用根目錄比較親切）下面。100MB 對於根目錄來說是合理的大小，因為
+	  您往後並不會在這裡存放許多資料；在安裝 FreeBSD 後會用掉約 40MB 的根目錄空
+	  間。剩下的空間是用來存放暫存檔用的，同時，您也應該預留一些空間，因為以後的
+	  FreeBSD 版本可能會需要較多的根目錄空間。</entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>b</literal></entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>RAM 的 2-3 倍</entry>
+
+	      <entry><para>此區為系統磁碟交換空間（swap space）。選擇正確的交換空間
+	    大小可是一門學問唷。一般來說，交換空間的大小應該是您系統上實體記憶體
+	    （RAM）大小的 2 到 3 倍。交換空間的至少要 64MB，因此，如果您的電腦上的
+	    RAM 比 32MB 小，請將交換空間大小設為 64MB。</para><para>
+
+		  如果您有一個以上的硬碟，您可以在每個硬碟上都配置交換空間。FreeBSD 會利用
+		  每顆硬碟上的交換空間，swap 速度會比較快。如果是這種情形，先算出您總共需
+		  要的交換空間大小（如 128MB），然後除以您擁有的硬碟數目（如 2 顆），算出
+		  的結果就是每顆硬碟上要配置的交換空間大小。在這個例子中，每顆硬碟的交換空
+		  間為 64MB。</para></entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>e</literal></entry>
+
+	      <entry><filename>/var</filename></entry>
+
+	      <entry>50MB</entry>
+
+	      <entry><filename>/var</filename> 目錄會存放不同長度的檔案、紀錄檔以及
+	  其他管理用途的檔案。大部分這些檔案都是 FreeBSD 每天在跑的時候會讀取或是寫
+	  入的。機這些檔案放在另外的檔案系統（譯註：即 /var）可以避免影響到其它目錄
+	  下面類似的檔案存取機制。</entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>f</literal></entry>
+
+	      <entry><filename>/usr</filename></entry>
+
+	      <entry>剩下的硬碟空間</entry>
+
+	      <entry>您所有其它的檔案通常都會存在	<filename>/usr</filename> 目錄以及
+	  其子目錄下面。</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      
+      <para>如果您要將 FreeBSD 安裝在一顆以上的硬碟，那麼您必須在您配置的其它切
+  割區上再建立分割區。最簡單的方式就是在每顆硬碟上建立兩個分割，一個是交換空間，
+  一個是檔案系統。</para>
+
+      <table frame="none">
+	<title>接下來的硬碟分割區配置</title>
+
+	<tgroup cols="4">
+	  <thead>
+	    <row>
+	      <entry>分割區</entry>
+	      
+	      <entry>檔案系統</entry>
+
+	      <entry>大小</entry>
+
+	      <entry>描述</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><literal>b</literal></entry>
+
+	      <entry>N/A</entry>
+
+	      <entry>見描述</entry>
+
+	      <entry>之前提過，交換空間是可以跨硬碟的。但是，即使 <literal>a</literal>
+	  分割區沒有使用，慣例上還是會把交換空間放在 <literal>b</literal> 分割區。</entry>
+	    </row>
+
+	    <row>
+	      <entry><literal>e</literal></entry>
+
+	      <entry>/disk<replaceable>n</replaceable></entry>
+
+	      <entry>剩下的硬碟空間</entry>
+
+	      <entry>剩下的空間是一個大的分割區，最簡單的做法是將之規劃為
+	  <literal>a</literal> 分割，而不是 <literal>e</literal> 分割。然而，慣例上
+	  <literal>a</literal> 分割是保留給根目錄（<filename>/</filename>）用的。您不
+	  一定要遵守這個慣例，但是 <application>Sysinstall</application> 會，所以照著
+	  它做會使您的安裝較為清爽乾淨。您可以將這些檔案系統掛在任何地方，本範例建議
+	  將它們掛在 <filename>/disk<replaceable>n</replaceable></filename> 目錄，
+		<replaceable>n</replaceable> 依據每顆硬碟而有所不同。但是，您喜歡的話也可以
+		將它們掛在別的地方。</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+
+      <para>分割區的配置完成後，您就可以用 <application>Sysinstall</application>
+  來建立它們了。您會看到下面的訊息：</para>
+
+      <screen>                                 Message
+ Now, you need to create BSD partitions inside of the fdisk
+ partition(s) just created. If you have a reasonable amount of disk
+ space (200MB or more) and don't have any special requirements, simply
+ use the (A)uto command to allocate space automatically. If you have
+ more specific needs or just don't care for the layout chosen by
+ (A)uto, press F1 for more information on manual layout.  
+
+                                [  OK  ] </screen>
+
+      <para>按下 <keycap>Enter</keycap> 鍵開始 FreeBSD 分割表編輯器，稱做
+	<application>Disklabel</application>。</para>
+
+      <para><xref linkend="sysinstall-label"> 顯示您第一次執行
+	<application>Disklabel</application> 的畫面。畫面分為三個區域。</para>
+
+      <para>前幾行顯示的是您正在編輯的硬碟以及您正在建立的分割位於哪個切割上。
+  （在這裡，<application>Disklabel</application> 使用的是
+	<literal>分割名稱</literal> 而不是切割名稱）。此畫面也會顯示切割區還有多少空
+	間可以使用；亦即，有多餘的空間，但是尚未指派分割區。</para>
+
+      <para>畫面的中間區域顯示已建立的分割區，每個分割區的檔案系統名稱、所佔的大
+  小以及一些關於建立這些檔案系統的參數選項。</para>
+
+      <para>下方的第三區顯示在 <application>Disklabel</application> 中可用的按
+  鍵。</para>
+
+      <figure id="sysinstall-label">
+	<title>Sysinstall Disklabel 編輯器</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-ed1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para><application>Disklabel</application> 可以自動配置分割區以及給它們預
+  設的大小。您可以按 <keycap>A</keycap> 鍵使用此功能。您會看到類似
+  <xref linkend="sysinstall-label2"> 的畫面。根據您硬碟的大小，自動分配所配置的
+  大小不一定適合。但是沒關係，您並不一定要使用預設的大小。</para>
+
+	<note>
+	  <para>從 FreeBSD 4.5 開始，自動配置會給 <filename>/tmp</filename> 目錄一個
+	獨立分割，而不是附屬在 <filename>/</filename> 之下。這樣可以避免將一些暫存的
+	檔案放到根目錄中（譯註：可能會用完根目錄空間）。</para>
+	</note>
+
+      <figure id="sysinstall-label2">
+	<title>Sysinstall Disklabel 編輯器－使用自動配置</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-auto" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>如果要刪除自動配置的分割，然後想自行建立，您可以使用方向鍵移到第一
+  個分割區，然後按 <keycap>D</keycap> 鍵刪除它。重複此動作直到刪除所有自動配置
+  的分割區。</para>
+
+      <para>要建立第一個分割區（<literal>a</literal>，配置點為
+  <filename>/</filename>），先確定畫面上方的磁碟資訊有被選取（反藍），然後按下
+  <keycap>C</keycap> 鍵。接著會出現一個對話方塊問您要配置的分割大小（如
+	<xref linkend="sysinstall-label-add">）。您可以輸入要使用的 block 數量或是
+  （譯註：通常會）輸入想使用的大小，然後後面加上 <literal>M</literal> 表示 MB，
+  、<literal>G</literal> 表示 GB 或是 <literal>C</literal> 表示	cylinders（磁柱）。</para>
+
+      <figure id="sysinstall-label-add">
+	<title>根目錄使用空間</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-root1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>顯示在對話框中的數量預設使用整個切割區的大小，您可以用
+  <keycap>Backspace</keycap> 鍵刪除這些數字然後照上述的方式輸入您想要的大小，
+  如 64MB（<xref linkend="sysinstall-label-add2">），然後按 &gui.ok;。</para>
+      
+      <figure id="sysinstall-label-add2">
+	<title>編輯根目錄大小</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-root2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>輸入完大小後接著會問您要建立的分割是檔案系統還是交換空間，如
+	<xref linkend="sysinstall-label-type"> 所示。第一個分割是檔案系統，所以確認選
+	擇 <guimenuitem>FS</guimenuitem> 後按	<keycap>Enter</keycap> 鍵。</para>
+
+      <figure id="sysinstall-label-type">
+	<title>選擇根目錄類型</title>
+	
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-fs" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+      
+      <para>最後，因為您要建立的是一個檔案系統，所以必須告訴
+	<application>Disklabel</application> 這個檔案系統要掛在哪裡，如
+	<xref linkend="sysinstall-label-mount">。根目錄的配置點是 <filename>/</filename>，
+	所以請輸入 <userinput>/</userinput> 然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="sysinstall-label-mount">
+	<title>選擇根目錄配置點</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-root3" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>剛剛製作好的分割區會顯現在畫面上。您應該重複上述的動作以建立其它的
+  分割區。當建立交換空間的時候，系統不會問您要將它掛在哪裡，因為交換空間是不用
+  掛在系統上的。當您在建立最後一個分割（<filename>/usr</filename>）的時候，您
+  可以直接使用預設的大小，即所有此切割區剩餘的空間。</para>
+
+      <para>您最後的 FreeBSD DiskLabel 編輯器畫面會類似
+	<xref linkend="sysinstall-label4">，實際數字依您的選擇而有所不同。按下
+	<keycap>Q</keycap> 鍵完成分割區的建立。</para>
+
+      <figure id="sysinstall-label4">
+	<title>Sysinstall Disklabel 編輯器</title>
+	
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/disklabel-ed2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>選擇要安裝的套件集</title>
+
+    <sect2 id="distset">
+      <title>選擇安裝套件集</title>
+
+      <para>這些套件的抉擇跟您的硬碟大小有絕對的關係。預先準備好的套件集合從最
+  小安裝到完整安裝都有。Unix 或 FreeBSD 的新手通常直接選擇其中一個設定好的套件
+  集就可以了。自訂套件比較適合進階的使用者使用。</para>
+
+      <para>按下 <keycap>F1</keycap> 可以參考有關套件集的更多選項資訊，以及它們
+  包含了哪些軟體。當看完輔助說明可以按 <keycap>Enter</keycap> 回到套件選擇畫面。</para>
+
+      <para>如果您想要使用圖形介面，您必須選擇套件集名稱開頭是
+  <literal>X</literal> 的套件。XFree86 的設定以及選擇其預設桌面管理員必須等到安
+  裝完畢後再來做。</para>
+
+      <para>預設安裝的 XFree86 版本是 3.x 版。您應該到
+	<ulink url="http://www.xfree86.org/">XFree86</ulink> 網站看看您的顯示卡有沒有
+	被支援。如果您的顯示卡只有在 4.x 版才有支援，那麼您就必須在安裝完成後再安裝
+	4.x 版的 XFree86 並做相關的設定。選擇不含 X 的套件，然後參考
+	<xref linkend="x11"> 一章以獲得更多的資訊。</para>
+
+      <para>如果您以後要自行編譯系統核心，那麼請選擇包含原始碼的套件集。如果您
+  想知道為什麼要建製自訂的核心或是如何建製自訂核心，請參考
+	<xref linkend="kernelconfig"> 一章。</para>
+
+      <para>很明顯地，安裝容量最大的當然就是全部都安裝囉。如果您的硬碟夠大，您可
+  以選擇 <guimenuitem>All</guimenuitem>（如圖 <xref linkend="distribution-set1">）
+  然後按下 <keycap>Enter</keycap>。如果您硬碟空間有問題，那麼請選擇一個適合您情
+  況的套件集。在安裝完畢後，您還是可以再安裝其它的套件。</para>
+
+      <figure id="distribution-set1">
+	<title>選擇套件集</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/dist-set" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+    </sect2>
+
+    <sect2 id="portscol">
+      <title>安裝 Ports 軟體集合</title>
+
+      <para>當選擇完您想要安裝的部分後，接著會詢問您要不要安裝 FreeBSD Ports 軟
+  體集合；Ports 集合可以讓您簡單方便地安裝套裝軟體。Ports 本身並不包含編譯軟體
+  所需要的原始程式碼，而是一個包含自動下載、編譯以及安裝的檔案集合。
+	<xref linkend="ports"> 一章討論如何使用 ports。</para>
+
+      <para>安裝程式並不會檢查您是否有足夠的硬碟空間來放 ports，所以，如果要安裝
+  ports 集合，請先確定您有足夠的硬碟空間。</para>
+
+<screen>                         User Confirmation Requested
+ Would you like to install the FreeBSD ports collection? 
+
+ This will give you ready access to over &os.numports; ported software packages,
+ at a cost of around 100MB of disk space when "clean" and possibly much
+ more than that if a lot of the distribution tarballs are loaded
+ (unless you have the extra CDs from a FreeBSD CD/DVD distribution
+ available and can mount it on /cdrom, in which case this is far less
+ of a problem). 
+
+ The ports collection is a very valuable resource and well worth having
+ on your /usr partition, so it is advisable to say Yes to this option. 
+
+ For more information on the ports collection & the latest ports,
+ visit: 
+     http://www.FreeBSD.org/ports  
+
+                              [ Yes ]     No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 以安裝 ports；或選擇
+  <guibutton>[ No ]</guibutton> 以跳過此步驟。選好後按下 <keycap>Enter</keycap>
+  繼續。之後會將您所選擇的安裝套件再顯示一次。</para>
+
+      <figure id="distribution-set2">
+	<title>Confirm Distributions</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/dist-set2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>選好了之後，用方向鍵將游標移到 <guimenuitem>Exit</guimenuitem> 並確
+  定 &gui.ok; 有反藍，然後按 <keycap>Enter</keycap> 繼續。</para>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="install-media">
+    <title>選擇您要使用的安裝媒介</title>
+
+    <para>如果要從 CDROM 安裝，使用方向鍵將游標移到
+      <guimenuitem>Install from a FreeBSD CD/DVD</guimenuitem>。確定
+      &gui.ok; 有選取，然後按 <keycap>Enter</keycap> 開始安裝程序。</para>
+    
+    <para>如果要用其他的方式安裝，請選擇適當的安裝媒介然後遵照螢幕指示進行安裝。</para>
+
+    <para>按 <keycap>F1</keycap> 可以顯示安裝媒介的線上說明。按一下
+      <keycap>Enter</keycap> 可返回選擇安裝媒介的畫面。</para>
+
+    <figure id="choose-media">
+      <title>選擇安裝媒介</title>
+
+      <mediaobject>
+	<imageobject>
+	  <imagedata fileref="install/media" format="PNG">
+	</imageobject>
+      </mediaobject>
+    </figure>
+
+    <note>
+      <title>FTP 安裝模式</title>
+
+      <indexterm>
+	<primary>installation</primary>
+	<secondary>network</secondary>
+	<tertiary>FTP</tertiary>
+      </indexterm>
+      
+      <para>使用 FTP 安裝，有三種方式：主動式（active）FTP、被動式（passive）FTP
+	或是透過 HTTP 代理伺服器。</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>主動式 FTP，<guimenuitem>從 FTP 伺服器安裝</guimenuitem></term>
+	  
+	  <listitem>
+	    <para>這個選項將會使所有的 FTP 傳輸使用 <quote>Active</quote> 模式。這將
+	    無法穿過防火牆，但是可以使用在那些比較早期，不支援被動模式的 FTP 站。
+	    如果您的連線在使用被動（預設值）模式卡住了，請換主動模式看看！</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>被動式 FTP，<guimenuitem>透過防火牆從 FTP 伺服器安裝</guimenuitem></term>
+	  
+	  <listitem>
+	    <indexterm>
+	      <primary>FTP</primary>
+	      <secondary>Passive mode</secondary>
+	    </indexterm>
+
+	    <para>此選項會讓所有的 FTP 連線使用<quote>被動</quote>模式。這使得使用者
+	      可以穿過不允許用非固定 port 連入的防火牆。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FTP 透過 HTTP 代理伺服器，<guimenuitem>透過 http 代理伺服器，由 FTP
+	  伺服器安裝</guimenuitem></term>
+	    
+	  <listitem>
+	    <indexterm>
+	      <primary>FTP</primary>
+	      <secondary>via a HTTP proxy</secondary>
+	    </indexterm>
+	    
+	    <para>此選項會讓 FTP 連線透過 HTTP 協定（像瀏覽器一樣）連到 proxy 伺服器。
+	      Proxy 伺服器會解譯送出的請求，然後通知 FTP 伺服器。因為透過 HTTP 協定，
+	      所以可以穿過防火牆。
+	      要用這種方式，您必須指定 proxy 伺服器的位址。</para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <para>對於一個 proxy FTP 伺服器而言，通常在使用者登入名稱中加入您要登入
+  的 server 的名稱（加在 <quote>@</quote> 符號後面）。然後 proxy server 就會
+  <quote>假裝</quote>成一個真的 server。例如，假設您要從
+  <hostid role="fqdn">ftp.FreeBSD.org</hostid> 安裝，透過 proxy FTP	server
+  <hostid role="fqdn">foo.example.com</hostid>，使用 1024 port。</para>
+      
+      <para>在這種情況下，您可以到 options 選單，將 FTP username 設為
+	<literal>ftp@ftp.FreeBSD.org</literal>，密碼設為您的電子郵件信箱。安裝媒介部
+	分，指定 FTP（或是被動式 FTP，如果 proxy server 支援的話），以及 URL 為
+	<literal>ftp://foo.example.com:1234/pub/FreeBSD</literal>。</para>
+
+      <para>因為 <hostid role="fqdn">ftp.FreeBSD.org</hostid> 的
+  <filename>/pub/FreeBSD</filename> 目錄會被快取到
+  <hostid role="fqdn">foo.example.com</hostid> 之下，您就可以從
+	<emphasis>這台</emphasis>機器（會從 <hostid role="fqdn">ftp.FreeBSD.org</hostid>
+	抓檔案）安裝。</para>
+    </note>
+  </sect1>
+
+  <sect1 id="install-final-warning">
+    <title>安裝確認</title>
+
+    <para>到此為止，可以開始進行安裝了；這也是您避免更動到您的硬碟的最後機會。</para>
+
+    <screen>                       User Confirmation Requested
+ Last Chance! Are you SURE you want to continue the installation? 
+
+ If you're running this on a disk with data you wish to save then WE
+ STRONGLY ENCOURAGE YOU TO MAKE PROPER BACKUPS before proceeding! 
+
+ We can take no responsibility for lost disk contents!  
+
+                             [ Yes ]    No</screen>
+
+    <para>選擇 <guibutton>[ Yes ]</guibutton> 然後按下 <keycap>Enter</keycap>
+    確認安裝。</para>
+
+    <para>安裝所需的時間會根據您所選擇的套件、安裝媒介以及您電腦的速度而有所不
+    同。在安裝的過程中會有一些訊息來顯示目前的進度。</para>
+    
+    <para>當您看到下面的訊息表示已經安裝完成了：</para>
+
+    <screen>                               Message 
+
+Congratulations! You now have FreeBSD installed on your system. 
+
+We will now move on to the final configuration questions. 
+For any option you do not wish to configure, simply select No. 
+
+If you wish to re-enter this utility after the system is up, you may
+do so by typing: /stand/sysinstall .  
+
+                                 [ OK ] 
+
+                      [  Press enter to continue  ]</screen>
+
+    <para>按下 <keycap>Enter</keycap> 以進行安裝後的設定。</para>
+
+    <para>選擇 <guibutton>[ No ]</guibutton> 然後按 <keycap>Enter</keycap> 會取
+    消安裝，不會對您的系統造成更動。您會看到下面的訊息：</para>
+
+    <screen>                                Message
+Installation complete with some errors.  You may wish to scroll
+through the debugging messages on VTY1 with the scroll-lock feature. 
+You can also choose "No" at the next prompt and go back into the
+installation menus to try and retry whichever operations have failed. 
+
+                                 [ OK ]</screen>
+
+    <para>產生這個訊息是因為什麼東西都沒有安裝，按下 <keycap>Enter</keycap> 後
+    會離開安裝程序回到主安裝畫面。</para>
+  </sect1>
+
+  <sect1 id="install-post">
+    <title>安裝後的設定</title>
+
+    <para>如果安裝成功，您將可以對一些基本的項目作安裝後初步的設定。任何一項設
+    定再重新開機前都可以重新設定，系統會抓最後一次的設定值。重新開機後如果要再
+    做設定，可以執行 <command>/stand/sysinstall</command> 指令然後選擇
+    <guimenuitem>Configure（組態設定）</guimenuitem>選項。</para>
+
+    <sect2 id="inst-network-dev">
+      <title>網路裝置組態</title>
+
+      <para>如過您之前有設定用 PPP 透過 FTP 安裝，那麼這個畫面將不會出現；如之
+  所說的，您可以稍後再做設定。</para>
+
+      <para>如要對區域網路（Local Area Networks）或將 FreeBSD 設定為 gateway
+  或 router 有更深入的了解，請參考
+  <ulink url="../ppp-primer/index.html">PPP- Pendantic PPP Primer</ulink> 教學
+  文件。</para>
+
+      <screen>                      User Confirmation Requested 
+   Would you like to configure Ethernet or SLIP/PPP network devices?
+
+                             [ Yes ]   No</screen>
+
+      <para>如果要設定網路裝置，請選擇 <guibutton>[ Yes ]</guibutton> 然後按
+   <keycap>Enter</keycap>。否則請選擇 <guibutton>[ No ]</guibutton> 繼續。</para>
+
+      <figure id="ed-config1">
+	<title>選擇網路裝置</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/ed0-conf" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>用方向鍵選擇您要設定的網路介面，然後按 <keycap>Enter</keycap>。</para>
+
+      <screen>                      User Confirmation Requested 
+       Do you want to try IPv6 configuration of the interface?
+
+                              Yes   [ No ]</screen>
+
+      <para>目前私人區域網路的 IP 協定（IPv4）已經足夠，所以選
+  <guibutton>[ No ]</guibutton> 然後按 <keycap>Enter</keycap>。</para>
+
+      <para>如果您想試試新的 IP 通訊協定（IPv6），請選擇 <guibutton>[ Yes ]</guibutton>
+  然後按 <keycap>Enter</keycap>。之後系統會花幾秒鐘去搜尋 RA 伺服器。</para>
+
+      <screen>                             User Confirmation Requested 
+        Do you want to try DHCP configuration of the interface?
+
+                              Yes   [ No ]</screen>
+
+      <para>如果您不需要使用 DHCP（Dynamic Host Configuration Protocol，動態機器
+  組態配置），選擇 <guibutton>[ No ]</guibutton> 然後按	<keycap>Enter</keycap>。</para>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 會執行
+	<application>dhclient</application>，如果成功，它會自動將網路組態資訊填上。請參
+	考 <xref linkend="dhcp"> 以取得更多資料。</para>
+
+      <para>下面的網路組態顯示在區域網路中將系統上的網路裝置設為 gateway
+  （閘道器）。</para>
+
+      <figure id="ed-config2">
+	<title>設定網路裝置 ed0 的組態</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/ed0-conf2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>用 <keycap>Tab</keycap> 鍵可以在各個欄位間切換，請輸入適當的資訊：</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>Host（機器名稱）</term>
+
+	  <listitem>
+	    <para>完整的機器名稱，例如本例中的 k6-2.example.com。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Domain（網域）</term>
+
+	  <listitem>
+	    <para>您機器所在的網域名稱，如本例的 example.com。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>IPv4 Gateway（IPv4 閘道器）</term>
+
+	  <listitem>
+	    <para>輸入將封包傳遞到遠端網路的機器（譯註：閘道器的功用） IP 位址。只有
+	    當這台機器是網路上的一個節點才要輸入。如果這台機器是要當作您區域網路中的
+	    閘道器，<emphasis>請將此欄設為空白</emphasis>。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Name server（名稱伺服器）</term>
+
+	  <listitem>
+	    <para>區域網路中名稱伺服器的 IP 位址。本例中假設機器所在的區網中沒有名稱
+	    伺服器，所以填入的是 ISP 提供的名稱伺服器位址（208.163.10.2）。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>IPv4 address（IPv4 位址）</term>
+
+	  <listitem>
+	    <para>此台機器所使用的 IP 位址（本例為 192.168.0.1）。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Netmask（網路遮罩）</term>
+
+	  <listitem>
+	    <para>本範例中的 IP 位址屬於 Class C（192.168.0.0 - 192.168.255.255），預
+	    設的網路遮罩是 255.255.255.0。（譯註：網路等級有 A, B, C, D, E，網路遮罩
+	    依等級而有所不同。）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>ifconfig 額外參數設定</term>
+
+	  <listitem>
+	    <para>任何 <command>ifconfig</command> 指令跟網路裝置介面有關的參數。本範
+	    例中沒有。</para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+      <para>輸入完成後請用 <keycap>Tab</keycap> 鍵選擇 &gui.ok; 然後按
+	<keycap>Enter</keycap>。</para>
+
+
+      <screen>                      User Confirmation Requested 
+        Would you like to Bring Up the ed0 interface right now?
+
+                             [ Yes ]   No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 然後按 <keycap>Enter</keycap>
+  將會將機器的網路組態啟動以便離開安裝後即可使用。</para>
+    </sect2>
+
+    <sect2 id="gateway">
+      <title>閘道器組態</title>
+
+      <screen>                       User Confirmation Requested 
+       Do you want this machine to function as a network gateway?
+
+                              [ Yes ]    No</screen>
+
+      <para>如果這台機器要作為區網跟其他機器之間傳遞封包的閘道器，請選擇
+	<guibutton>[ Yes ]</guibutton> 然後按 <keycap>Enter</keycap>。如果這台機器只是
+	網路上的一個節點，請選擇 <guibutton>[ No ]</guibutton> 並按
+	<keycap>Enter</keycap> 繼續。</para>
+    </sect2>
+
+    <sect2 id="inetd-services">
+      <title>網路服務組態</title>
+
+      <screen>                      User Confirmation Requested
+Do you want to configure inetd and the network services that it provides?
+
+                               Yes   [ No ]</screen>
+
+      <para>如果選擇 <guibutton>[ No ]</guibutton>，許多網路服務，如
+	<application>telnetd</application> 將不會啟動。這表示遠端的 user 將沒有辦法
+	<application>telnet</application> 進入這台機器。內部的 user 還是可以使用
+	<application>telnet</application> 連到遠端機器。</para>
+
+      <para>這些服務在安裝後可以藉由修改 <filename>/etc/inetd.conf</filename>
+  來啟動它們。請參閱 <xref linkend="network-inetd-overview"> 以獲得更多資訊。</para>
+
+      <para>如果您現在就想設定這些網路服務，請選擇
+  <guibutton>[ Yes ]</guibutton>，然後會看到下面的確認訊息。</para>
+
+      <screen>                      User Confirmation Requested
+The Internet Super Server (inetd) allows a number of simple Internet
+services to be enabled, including finger, ftp and telnetd.  Enabling
+these services may increase risk of security problems by increasing
+the exposure of your system.
+
+With this in mind, do you wish to enable inetd?
+
+                             [ Yes ]   No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 繼續。</para>
+
+      <screen>                      User Confirmation Requested
+inetd(8) relies on its configuration file, /etc/inetd.conf, to determine
+which of its Internet services will be available.  The default FreeBSD
+inetd.conf(5) leaves all services disabled by default, so they must be
+specifically enabled in the configuration file before they will
+function, even once inetd(8) is enabled.  Note that services for
+IPv6 must be seperately enabled from IPv4 services.
+
+Select [Yes] now to invoke an editor on /etc/inetd.conf, or [No] to
+use the current settings.
+
+                             [ Yes ]   No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 將允許您加入網路服務（藉由刪除
+  每行網路服務開頭的 <literal>#</literal> 符號）。</para>
+
+      <figure id="inetd-edit">
+	<title>編輯 <filename>inetd.conf</filename> 檔</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/edit-inetd-conf" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>在加入您想啟用的服務後，按下 <keycap>Esc</keycap> 鍵會出現一個對話
+  框可以讓您離開以及儲存變更的設定。</para>
+
+    </sect2>
+
+    <sect2 id="ftpanon">
+      <title>匿名 FTP</title>
+
+      <screen>                      User Confirmation Requested
+ Do you want to have anonymous FTP access to this machine? 
+
+                              Yes    [ No ]</screen>
+
+      <sect3 id="deny-anon">
+	<title>不允許匿名 FTP 存取</title>
+      
+	<para>選擇預設的 <guibutton>[ No ]</guibutton> 並按下 <keycap>Enter</keycap>
+	仍然可以讓在這台機器上有帳號的 user FTP 進入。</para>
+      </sect3>
+
+      <sect3 id="ftpallow">
+	<title>允許匿名 FTP 存取</title>
+
+	<para>如果您選擇允許匿名 FTP 存取，那麼網路上任何人都可以使用 FTP 存取您的機
+	器。在啟用匿名存取之前應該考慮網路安全的問題。如果要知道更多有關網路安全的資
+	訊，請參閱 <xref linkend="security">。</para>
+
+	<para>要啟用 FTP 匿名存取，用方向鍵選擇 <guibutton>[ Yes ]</guibutton> 然後按
+	下 <keycap>Enter</keycap> 鍵。您會看到下面的（或類似的）畫面：</para>
+
+	<figure id="anon-ftp2">
+	  <title>預設的匿名 FTP 組態</title>
+
+	  <mediaobject>
+	    <imageobject>
+	      <imagedata fileref="install/ftp-anon1" format="PNG">
+	    </imageobject>
+	  </mediaobject>
+	</figure>
+
+	<para>按下 <keycap>F1</keycap> 會顯示線上說明：</para>
+
+	<screen>This screen allows you to configure the anonymous FTP user.
+
+The following configuration values are editable:
+
+UID:     The user ID you wish to assign to the anonymous FTP user.
+         All files uploaded will be owned by this ID.
+
+Group:   Which group you wish the anonymous FTP user to be in.
+
+Comment: String describing this user in /etc/passwd
+
+
+FTP Root Directory:
+
+        Where files available for anonymous FTP will be kept.
+
+Upload subdirectory:
+
+        Where files uploaded by anonymous FTP users will go.</screen>
+
+	<para>預設的 FTP 根目錄將放在 <filename>/var</filename> 目錄。如果您的 /var
+	目錄空間不足以應付您的 FTP 需求，您可以將 FTP 的根目錄改為
+	<filename>/usr/ftp</filename>。</para>
+
+	<para>當一切都滿意之後，請按 <keycap>Enter</keycap> 繼續。</para>
+
+	<screen>                          User Confirmation Requested 
+         Create a welcome message file for anonymous FTP users?
+
+                              [ Yes ]    No</screen>
+
+	<para>如果您選擇 <guibutton>[ Yes ]</guibutton> 並按下 <keycap>Enter</keycap>，
+	系統會自動開啟文字編輯器讓您編輯 FTP 歡迎訊息。</para>
+
+	<figure id="anon-ftp4">
+	  <title>編輯 FTP 歡迎訊息</title>
+
+	  <mediaobject>
+	    <imageobject>
+	      <imagedata fileref="install/ftp-anon2" format="PNG">
+	    </imageobject>
+	  </mediaobject>
+	</figure>
+
+	<para>此文字編輯器叫做 <command>ee</command>。依照指示修改訊息文字或是稍後再用
+	您喜愛的文字編輯器來修改。請記得畫面下方顯示的檔案位置。</para>
+
+	<para>按下 <keycap>Esc</keycap> 鍵會出現對話框，預設選項是
+	<guimenuitem>a) leave editor（離開編輯器）</guimenuitem>。按下
+	<keycap>Enter</keycap> 離開並繼續。</para>
+      </sect3>
+    </sect2>
+
+    <sect2 id="nfsconf">
+      <title>網路檔案服務（NFS）組態</title>
+
+      <para>網路檔案服務可以讓您在網路上分享您的檔案。一台機器可以設定為 NFS 伺
+  服器、客戶端，或是兩者並存。請參考 <xref linkend="nfs"> 以獲得更多資訊。</para>
+
+      <sect3 id="nsf-server-options">
+	<title>NFS 伺服器</title>
+
+	<screen>                       User Confirmation Requested
+ Do you want to configure this machine as an NFS server? 
+
+                              Yes    [ No ]</screen>
+
+	<para>如果您不想安裝 NFS 伺服器或客戶端，請選擇 <guibutton>[ No ]</guibutton>
+	然後按 <keycap>Enter</keycap> 鍵。</para>
+
+	<para>如果您選擇 <guibutton>[ Yes ]</guibutton>，將會出現一個對話框提醒您必須
+	先建立一個 exports 檔。</para>
+
+	<screen>                               Message
+Operating as an NFS server means that you must first configure an
+/etc/exports file to indicate which hosts are allowed certain kinds of
+access to your local file systems.
+Press [Enter] now to invoke an editor on /etc/exports
+                               [ OK ]</screen>
+
+	<para>按 <keycap>Enter</keycap> 繼續。系統會啟動編輯器讓您編輯 exports 檔。</para>
+
+	<figure id="nfs-server-edit">
+	  <title>編輯 Exports 檔</title>
+
+	  <mediaobject>
+	    <imageobject>
+	      <imagedata fileref="install/nfs-server-edit" format="PNG">
+	    </imageobject>
+	  </mediaobject>
+	</figure>
+
+	<para>依照指示加入真實輸出的檔案目錄或是稍後用您喜愛的編輯器自行編輯。請記下
+	畫面下方顯示的檔案名稱及位置。</para>
+
+	<para>按下 <keycap>Esc</keycap> 鍵會出現對話框，預設選項是
+	<guimenuitem>a) leave editor（離開編輯器）</guimenuitem>。按下
+	<keycap>Enter</keycap> 離開並繼續。</para>
+      </sect3>
+
+      <sect3 id="nfs-client-options">
+	<title>NFS 客戶端</title>
+
+	<screen>                       User Confirmation Requested
+ Do you want to configure this machine as an NFS client? 
+
+                              Yes   [ No ]</screen>
+
+	<para>依您的需要，選擇 <guibutton>[ Yes ]</guibutton> 或
+	  <guibutton>[ No ]</guibutton> 然後按 <keycap>Enter</keycap>。</para>
+      </sect3>
+    </sect2>
+
+    <sect2 id="securityprofile">
+      <title>安全性組態</title>
+
+      <para><quote>安全性組態</quote>中包含了一些可以藉由啟動或停用某些程式來達
+  成某些程度的安全性設定。安全組態愈嚴格，則預設啟動程式就愈少。基本的原則是，
+  除非必要，否則不要執行一些有的沒的程式。</para>
+
+      <para>請注意，安全組態檔的設定都是預設值，在安裝完 FreeBSD 後您都可以藉由
+  編輯 <filename>/etc/rc.conf</filename> 檔來改變這些設定。如要取得更多資訊，
+  請參閱 &man.rc.conf.5; 手冊。</para>
+
+      <para>下表說明每一種安全等級的意義。每行所代表的是安全等級，每列所代表的
+  是程式或功能為啟動或停止。</para>
+
+      <table>
+	<title>可能的安全等級</title>
+
+	<tgroup cols=3>
+	  <thead>
+	    <row>
+	      <entry></entry>
+
+	      <entry>極／高度安全</entry>
+
+	      <entry>中度安全</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+
+	    <row>
+	      <entry>&man.sendmail.8;</entry>
+
+	      <entry>否</entry>
+
+	      <entry>是</entry>
+	    </row>
+
+	    <row>
+	      <entry>&man.sshd.8;</entry>
+
+	      <entry>否</entry>
+
+	      <entry>是</entry>
+	    </row>
+
+	    <row>
+	      <entry>&man.portmap.8;</entry>
+
+	      <entry>否</entry>
+
+	      <entry>不一定
+		<footnote>
+		  <para>如果之前安裝時設定機器為 NFS 客戶端或伺服器，則會啟動此項目。</para>
+		</footnote>
+	      </entry>
+	    </row>
+
+	    <row>
+	      <entry>NFS server</entry>
+
+	      <entry>否</entry>
+
+	      <entry>是</entry>
+	    </row>
+
+	    <row>
+	      <entry>&man.securelevel.8;</entry>
+
+	      <entry>是 (2)
+		<footnote>
+		  <para>如果您選擇的安全等級會設定 securelevel（極度或高度），請閱讀
+		    &man.init.8; 手冊並特別注意有關安全等級意義的部分；否則稍後您可能會遇到
+		    很大的困難！</para>
+		</footnote>
+	      </entry>
+
+	      <entry>否</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+
+      <screen>                       User Confirmation Requested
+ Do you want to select a default security profile for this host (select
+ No for "medium" security)? 
+
+                            [ Yes ]    No</screen>
+
+      <para>選擇 <guibutton>[ No ]</guibutton> 並按	<keycap>Enter</keycap>
+  會將安全等級設為中度安全。</para>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 並按 <keycap>Enter</keycap>
+  會允許您選擇不同程度的安全等級。</para>
+
+      <figure id="security-profile">
+	<title>選擇安全等級</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/security" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>按 <keycap>F1</keycap> 顯示線上說明；按 <keycap>Enter</keycap>
+  可以回到選擇畫面。</para>
+
+      <para>如果您沒有特殊安玄等級的需求，請用方向鍵選擇
+  <guimenuitem>Medium（中度）</guimenuitem>，確定 &gui.ok; 有選取，然後按
+	<keycap>Enter</keycap>。</para>
+
+      <para>依據您選擇的安全等級，會顯示相對應的確認訊息。</para>
+
+      <screen>                                 Message
+
+Moderate security settings have been selected.
+
+Sendmail and SSHd have been enabled, securelevels are
+disabled, and NFS server setting have been left intact.
+PLEASE NOTE that this still does not save you from having
+to properly secure your system in other ways or exercise
+due diligence in your administration, this simply picks
+a standard set of out-of-box defaults to start with.
+
+To change any of these settings later, edit /etc/rc.conf
+
+                                  [OK]</screen>
+
+      <screen>                                 Message
+
+Extreme security settings have been selected.
+
+Sendmail, SSHd, and NFS services have been disabled, and
+securelevels have been enabled.
+PLEASE NOTE that this still does not save you from having
+to properly secure your system in other ways or exercise
+due diligence in your administration, this simply picks
+a more secure set of out-of-box defaults to start with.
+
+To change any of these settings later, edit /etc/rc.conf
+
+                                  [OK]</screen>
+
+      <para>按下 <keycap>Enter</keycap> 繼續安裝後的設定。</para>
+
+      <warning>
+	<para>安全等級並非萬能丹！即使您選擇極度安全，您還是必須要時常閱讀
+	  <ulink url="../handbook/eresources.html#ERESOURCES-MAIL">郵件列表</ulink>中
+	  有關安全的部分、使用有效的密碼以及平常就注意安全的問題。這邊只是稍為設定
+	  一下常用的安全等級而已。</para>
+      </warning>
+
+    </sect2>
+
+    <sect2 id="console">
+      <title>系統終端機設定</title>
+
+      <para>系統提供了幾個選項可以讓您設定終端機的表現方式。</para>
+
+      <screen>                      User Confirmation Requested 
+       Would you like to customize your system console settings?
+
+                              [ Yes ]  No</screen>
+
+      <para>要檢閱及修改這些設定，請選擇
+	<guibutton>[ Yes ]</guibutton> 然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="saver-options">
+	<title>系統終端機組態設定</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/console-saver1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>最常用的選項就是螢幕保護程式的設定了。請用方向鍵將游標移到
+	<guimenuitem>Saver</guimenuitem> 然後按	<keycap>Enter</keycap>。</para>
+
+      <figure id="saver-select">
+	<title>螢幕保護程式選項</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/console-saver2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>選擇您想用的螢幕保護程式，然後按 <keycap>Enter</keycap>。之後會回到
+  終端機組態設定畫面。</para>
+
+      <para>預設的閒置時間是 300 秒。如果要更改此時間，請再選擇
+	<guimenuitem>Saver</guimenuitem>。然後選擇
+	<guimenuitem>Timeout</guimenuitem> 並按 <keycap>Enter</keycap> 鍵。系統會跳出
+	一個對話框如下：</para>
+
+      <figure id="saver-timeout">
+	<title>螢幕保護程式閒置時間設定</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/console-saver3" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>您可以更改這個值，然後選 &gui.ok; 並按 <keycap>Enter</keycap> 鍵返
+  回終端機組態設定畫面。</para>
+
+      <figure id="saver-exit">
+	<title>結束終端機組態設定</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/console-saver4" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>選擇 <guimenuitem>Exit</guimenuitem> 然後按下 <keycap>Enter</keycap>
+  鍵會回到安裝後的組態設定畫面。</para>
+    </sect2>
+
+    <sect2 id="timezone">
+      <title>設定所在時區</title>
+
+      <para>設定您機器的時區可以讓系統自動校正任何區域時間的變更並且在執行一些
+  跟時區相關的程式時不會出錯。</para>
+
+      <para>範例中假設此台機器位於美國東部的時區。請參考您所在的地理位置來設定。</para>
+
+      <screen>                      User Confirmation Requested 
+          Would you like to set this machine's time zone now?
+
+                            [ Yes ]   No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 並按下 <keycap>Enter</keycap>
+  鍵以設定時區。</para>
+
+      <screen>                       User Confirmation Requested
+ Is this machine's CMOS clock set to UTC? If it is set to local time
+ or you don't know, please choose NO here! 
+
+                              Yes   [ No ]</screen>
+
+      <para>這裡依據您機器時間的設定，選擇 <guibutton>[ Yes ]</guibutton> 
+	或 <guibutton>[ No ]</guibutton> 然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="set-timezone-region">
+	<title>選擇地理區域</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/timezone1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>請選擇適當的區域然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="set-timezone-country">
+	<title>選擇您所在的國家</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/timezone2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>請選擇您所在的國家然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="set-timezone-locality">
+	<title>選擇時區</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/timezone3" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>請選擇您所在的時區然後按 <keycap>Enter</keycap>。</para>
+
+      <screen>                            Confirmation 
+            Does the abbreviation 'EDT' look reasonable?
+
+                            [ Yes ]   No</screen>
+
+      <para>檢查一下時區的縮寫對不對，如果沒錯，請按 <keycap>Enter</keycap>
+  返回安裝後組態設定畫面。</para>
+    </sect2>
+
+    <sect2 id="linuxcomp">
+      <title>Linux 相容性設定</title>
+
+      <screen>                      User Confirmation Requested 
+          Would you like to enable Linux binary compatibility?
+
+                            [ Yes ]   No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 並按下 <keycap>Enter</keycap>
+  將允許您在 FreeBSD 中執行 Linux 的軟體。安裝程式會安裝一些為了跟 Linux 相容
+  的套件。</para>
+
+      <para>如果您是透過 FTP 安裝，那麼您必須連上網路。有時候 FTP 站並不會包含
+  所有的安裝套件（例如 Linux 相容套件）；不過，稍後您還可以再安裝這個項目。</para>
+    </sect2>
+
+    <sect2 id="mouse">
+      <title>滑鼠設定</title>
+
+      <para>此選項可以讓您在終端機前使用三鍵滑鼠剪貼文字。如果您用的滑鼠只有兩個
+  按鈕，請參考使用手冊 &man.moused.8; 以取得有關模擬三個按鈕運作的資訊。範例中使
+  用的滑鼠不是 USB 介面。</para>
+
+      <screen>                      User Confirmation Requested 
+         Does this system have a non-USB mouse attached to it?
+
+                            [ Yes ]   No</screen>
+
+      <para>如果您使用的不是 USB 滑鼠，請選擇 <guibutton>[ Yes ]</guibutton>；否
+  則請選擇 <guibutton>[ No ]</guibutton>。然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="mouse-protocol">
+	<title>選擇滑鼠類型</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mouse1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>用方向鍵將游標移到 <guimenuitem>Type</guimenuitem> 然後按
+  <keycap>Enter</keycap>。</para>
+
+      <figure id="set-mouse-protocol">
+	<title>選擇滑鼠通訊協定</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mouse2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>範例中使用的規格是 PS/2 滑鼠，所以可以使用預設的
+  <guimenuitem>Auto（自動）</guimenuitem>。您可以用方向鍵選擇適合的項目，確定
+  &gui.ok; 有被核取，然後按 <keycap>Enter</keycap> 離開此畫面。</para>
+
+      <figure id="config-mouse-port">
+	<title>設定滑鼠連接埠</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mouse3" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>選擇 <guimenuitem>Port</guimenuitem> 然後按 <keycap>Enter</keycap>。</para>
+
+      <figure id="set-mouse-port">
+	<title>設定滑鼠連接埠</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mouse4" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>假設這台機器用的是 PS/2 滑鼠，您可以採用預設的
+  <guimenuitem>PS/2</guimenuitem> 選項。請選擇適當的項目然後按
+  <keycap>Enter</keycap>。</para>
+
+      <figure id="test-daemon">
+	<title>啟動滑鼠服務</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mouse5" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>最後，啟動滑鼠服務並測試。</para>
+
+      <figure id="test-mouse-daemon">
+	<title>測試滑鼠功能</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mouse6" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>滑鼠指標可以在螢幕上移動，所以滑鼠服務已經正常啟動。</para>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 回到上一個畫面然後選擇
+	<guimenuitem>Exit</guimenuitem> 並按 <keycap>Enter</keycap> 回到安裝後組態設
+	定畫面。</para>
+    </sect2>
+
+    <sect2 id="x-server">
+      <title>X-Server 組態設定</title>
+
+      <para>為了使用圖形介面，例如 <application>KDE</application>、
+  <application>GNOME</application> 或其它視窗管理程式，您必須設定 X server。</para>
+
+      <para>要知道您的顯示卡有沒有被支援，請參考
+	<ulink url="http://www.xfree86.org/">XFree86</ulink> 網站。如果您的顯示卡在
+	XFree86 4.x 才支援，請參考 <xref linkend="x11"> 一章來安裝及設定。</para>
+
+      <screen>                      User Confirmation Requested 
+        Would you like to configure your X server at this time?
+
+                            [ Yes ]   No</screen>
+
+      <warning>
+	<para>您必須知道您的顯示器及顯示卡的製造規格。如果設定錯誤，有可能造成您裝置
+	損毀。如果您手邊沒有這些資訊，請選擇 <guibutton>[ No ]</guibutton> 並等到您有
+	這些資訊後再執行 <command>/stand/sysinstall</command>，選擇
+	<guimenuitem>Configure</guimenuitem> 下的 <guimenuitem>XFree86</guimenuitem>
+	來設定。
+	</para>
+      </warning>
+
+      <para>如果您手邊有顯示卡及顯示器的製造規格資訊，請選擇
+	<guibutton>[ Yes ]</guibutton> 然後按下 <keycap>Enter</keycap> 鍵來設定
+	X server.</para>
+
+      <figure id="xserver2">
+	<title>選擇要使用的組態設定方式</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/xf86setup" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>您可以藉由許多方式來組態 X server。
+  <application>XF86Setup</application> 為簡單易用的圖形介面。用方向鍵選擇
+	<guimenuitem>XF86Setup</guimenuitem> 然後按	<keycap>Enter</keycap>。</para>
+
+      <screen>                                Message
+ You have configured and been running the mouse daemon. 
+ Choose "/dev/sysmouse" as the mouse port and "SysMouse" or
+ "MouseSystems" as the mouse protocol in the X configuration utility. 
+
+                                 [ OK ]
+
+                      [ Press enter to continue ]</screen>
+
+      <para>這表示系統有偵測到之前我們所設定的滑鼠。請按
+	<keycap>Enter</keycap> 繼續。</para>
+
+      <screen>                Press [Enter] to switch to graphics mode. 
+
+                         This may take a while... 
+
+                                 [ OK ]</screen>
+
+      <para>按 <keycap>Enter</keycap> 進入圖形介面並繼續設定。注意，您
+  <emphasis>必須</emphasis>按下 <keycap>Enter</keycap> 後才會進入圖形介面。之後
+  螢幕會先變黑，稍後您就會看到螢幕中央有一個大 X。請耐心等候程式啟動。</para>
+
+      <para>等了一會兒後，會先看到 <application>XF86Setup</application> 的說明。
+  請<emphasis>仔細</emphasis>閱讀所有的說明，然後按 <keycap>Enter</keycap> 繼續。</para>
+
+      <procedure>
+	<title><application>XF86Setup</application> 簡介</title>
+
+	<para>有許多種類的設定必須完成。因為細部的設定必須依照您的硬體來選擇，因此這
+	邊僅做一個概述。</para>
+
+	<para>在畫面上方有一些按鈕表示要設定哪個部分。如果您之前有設定滑鼠，那麼現在
+	您可以用滑鼠點選要設定的部分。瀏覽每個部分並做適當的設定。</para>
+
+	<step>
+	<title><guimenuitem>Mouse（滑鼠）</guimenuitem></title>
+
+	  <para>第一個要設定的項目就是滑鼠。如果您之前已經設定過滑鼠，那麼滑鼠服務將
+	  已經啟動並且會自動在滑鼠協定（protocol）顯示
+	  <guimenuitem>SysMouse</guimenuitem>。如果您的滑鼠只有兩個按鍵，您也應該選擇
+	  <guimenuitem>Emulate3Buttons（模擬三鍵滑鼠）</guimenuitem>。還有一些其它的
+	  選項，請依照需要設定。</para>
+
+	  <para>當設定好後請按 <guimenuitem>Apply（套用）</guimenuitem> 並且動動滑鼠看
+	  看是不是正常。如果需要調整，請直接修改相關部分然後再按
+	  <guimenuitem>Apply</guimenuitem>。當設定完成後請切換到下一個項目。</para>
+	</step>
+
+	<step>
+	  <title><guimenuitem>Keyboard（鍵盤）</guimenuitem></title>
+
+	  <para>選擇適合的鍵盤模式；預設的鍵盤是
+	    <guimenuitem>Generic 101-key PC</guimenuitem>。</para>
+
+	  <para>選擇鍵盤的語言配置；預設是 <guimenuitem>U.S. English</guimenuitem>。如
+	  果您不是用美式鍵盤，請依照您的鍵盤種類選擇。</para>
+
+	  <para>在 Shift/Lock behavior 以及 Control Key Position 中還有一些選項，請依
+	  照您的需要做設定。基本上使用預設值就可以了。</para>
+
+	  <para>設定好後請按 <guimenuitem>Apply</guimenuitem> 然後切換到下個項目。</para>
+	</step>
+
+	<step>
+	  <title><guimenuitem>Card（顯示卡）</guimenuitem></title>
+
+	  <para>按 <guimenuitem>Read README file</guimenuitem> 以閱讀一些跟設定您的
+	  顯示卡相關的說明。</para>
+
+	  <para>請用捲軸上下捲動，選擇您的顯示卡。當您點選一個顯示卡後，在清單列表上
+	  方的 <quote>Card selected:</quote> 會顯示您所選擇的顯示卡。</para>
+
+	  <para>接下來請按 <guimenuitem>Detailed Setup（細部設定）</guimenuitem> 檢查
+	  看看細部的設定。一般來說，如果您的顯示卡有列在清單中，您不需要更動這些設定。</para>
+
+	  <para>完成後請移到下個項目。</para>
+	</step>
+
+	<step>
+	  <title><guimenuitem>Monitor（顯示器）</guimenuitem></title>
+
+	  <para>有兩種設定的方式。一種是您自行在文字方塊中輸入您顯示器所能支援的水平
+	  及垂直更新頻率。</para>
+
+	  <para>另一種方式就是直接從列出的清單中選擇一個顯示器。在選擇清單中的顯示器
+	  後，此顯示器所支援的水平及垂直更新頻率會顯示在螢幕上。請將顯示的數值跟您顯
+	  示器規格比較，您的顯示器必須能支援顯示的頻率範圍。</para>
+
+	  <para>請不要超出您顯示器所能支援的頻率範圍，否則可能會對您的顯示器造成傷害。
+	    如果您不確定，請選擇 <guimenuitem>ABORT（取消）</guimenuitem>並找出您顯示
+	    器的規格資訊。剩下的安裝過程不會受到影響；之後您可以使用
+	    <command>/stand/sysinstall</command> 再來設定 X Server。</para>
+
+	  <para>完成後請移到下個項目。</para>
+	</step>
+
+	<step>
+	  <title><guimenuitem>Mode（顯示模式）</guimenuitem></title>
+
+	  <para>選擇您想使用的視訊模式。您可以選擇多種模式。一般來說，常用的模式為
+	  640x480、800x600、以及 1024x768。但是實際的情況必須依據您的顯示卡支援能力、
+	  顯示器的大小以及眼睛是否舒適而定。</para>
+
+	  <para>接下來，選擇您預設想使用的色階。可選擇的項目有 8bpp, 16bpp, 24bpp,
+	  以及 32bpp。選擇您的顯示卡所能支援的最高色階。</para>
+
+	  <para>完成後請移到下個項目。</para>
+	</step>
+
+	<step>
+	  <title><guimenuitem>Other（其它）</guimenuitem></title>
+
+	  <para>預設的都是合理的設定，基本上您不需要變更這邊的設定值。</para>
+
+	  <para>預設可以使用熱鍵 <keycombo action='simul'><keycap>Ctrl</keycap><keycap>Alt</keycap>
+	    <keycap>Backspace</keycap></keycombo> 來強制關閉 X Server，請保留此設定。
+	    當設定錯誤時您可以使用此熱鍵將 X Server 關閉並防止對硬體造成傷害。</para>
+
+	  <para>預設在 X 中切換視訊模式（解析度）的熱鍵為：
+	    <keycombo action='simul'>
+	      <keycap>Alt</keycap><keycap>+</keycap>
+	    </keycombo> 或
+	    <keycombo action='simul'>
+	      <keycap>Alt</keycap><keycap>-</keycap>
+	    </keycombo>。
+	    
+	  </para>
+	</step>
+
+	<step>
+	  <title>測試 X Server</title>
+
+	  <para>最後再檢查所有的設定一次，確認後請按 <guibutton>Done</guibutton> 然後
+	  會顯示下面的訊息：</para>
+
+	  <screen>If you've finished configuring everything press the
+Okay button to start the X server using the configuration
+you've selected.  If you still wish to configure some things,
+press one of the buttons at the top and then press "Done" again,
+when you've finished.</screen>
+
+	  <para>當選擇 <guibutton>Okay</guibutton> 後，會有一段訊息提示您請您稍後一下
+	  並且系統會嘗試啟動 X-server。此過程會花一些時間，請耐心等候。</para>
+
+	  <para>隨後畫面就會變黑，正常的話，一段時間後您會看到螢幕顯示下面的訊息：
+	    <quote>Congratulations, you've got a running server!</quote></para>
+
+	  <para>如果什麼都沒顯現或是畫面扭曲，請用組合鍵
+	    <keycombo action='simul'>
+	      <keycap>Ctrl</keycap>
+	      <keycap>Alt</keycap>
+	      <keycap>Backspace</keycap>
+	    </keycombo>
+	    強制關閉 X-server 然後調整設定或是等安裝完畢後再回來設定。</para>
+	</step>
+
+	<step>
+	  <title>執行 <command>xvidtune</command></title>
+
+	  <para>顯示的畫面可以藉由 <application>xvidtune</application> 來調整其高度、
+	  寬度以及置中。</para>
+
+	  <para>會有警告訊息提示您不當的設定可能會損害您的裝備，因此請小心。如果有任
+	  何疑問，現在先不要動它。請直接用顯示器上面的按鍵來調整顯示 x-windows 的畫面。
+	  這樣做有可能在切換回文字模式的時候畫面會有些偏移，但是這總比損害您的裝備好。
+	  以後如果要執行 <application>xvidtune</application> 可以透過
+	  <command>/stand/sysinstall</command> 指令。</para>
+
+	  <para>在您做任何調整之前，請先閱讀 &man.xvidtune.1; 說明文件。</para>
+	</step>
+
+	<step>
+	  <title>儲存組態設定值</title>
+
+	  <para>當一切都滿意後，您可以將這些設定儲存起來。選擇
+	    <guimenuitem>Save the configuration and Exit（儲存設定並離開）</guimenuitem>
+	    後，設定值會存放在 <filename>/etc/XF86Config</filename> 檔案中。</para> 
+	</step>
+      </procedure>
+
+      <para>當設定完成後，安裝程序必須為 X-server 建立連結：</para>
+
+      <screen>         Do you want to create an 'X' link to the SVGA server? 
+
+               (the link will be created in the directory:
+                        /usr/X11R6/bin) Okay?
+
+                            [ Yes ]   No</screen>
+
+      <para>選擇 <guibutton>[ Yes ]</guibutton> 然後按 <keycap>Enter</keycap> 以
+      建立連結。</para>
+
+      <screen>                        Link created successfully.
+
+                                  [ OK ]</screen>
+
+      <para>按下 <keycap>Enter</keycap> 鍵繼續組態的設定。</para>
+    </sect2>
+
+    <sect2 id="default-desktop">
+      <title>選擇預設的 X 桌面管理程式</title>
+
+      <para>有很多種視窗管理程式可以用。這些管理程式從最基本的到擁有許多套裝軟體
+  的完整桌面環境都有。有些只要很小的硬碟空間以及少量的記憶體；其它功能愈多的就需
+  要愈多的空間以及記憶體。決定哪種桌面管理最適合自己的方法就是試用幾個看看。這些
+  管理程式在安裝完後可以用 ports 裝或是直接安裝套件。</para>
+
+      <para>您可以選擇安裝最受歡迎的桌面管理程式，並把它設為預設的桌面。這樣您在
+  安裝完就可以直接啟動它。</para>
+
+      <figure id="x-desktop">
+	<title>選擇預設桌面環境</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/desktop" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>用方向鍵選擇一個桌面環境然後按 <keycap>Enter</keycap> 就會開始安裝
+  所選擇的桌面套件。</para>
+    </sect2>
+
+    <sect2 id="packages">
+    <title>安裝軟體套件</title>
+
+      <para>這些套件都是預先編譯好的 binary 檔，您可以很方便地安裝這些軟體。</para>
+
+      <para>這邊我們舉例安裝一個套件。如果您要安裝其它的套件，也可以在這個時候
+  安裝。在安裝完後您仍然可以藉由 <command>/stand/sysinstall</command> 來加裝這些
+  套件。</para>
+
+      <screen>                     User Confirmation Requested
+ The FreeBSD package collection is a collection of hundreds of
+ ready-to-run applications, from text editors to games to WEB servers
+ and more. Would you like to browse the collection now? 
+
+                            [ Yes ]   No</screen>
+
+      <para>選擇 <guimenuitem>[ Yes ]</guimenuitem> 然後按 <keycap>Enter</keycap>
+  後，您會看到如下的套件選擇畫面：</para>
+
+      <figure id="package-category">
+	<title>選擇套件類別</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/pkg-cat" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>如果您選擇 <guimenuitem>All</guimenuitem>，那麼所有的套件就會顯示出
+  來；您也可以選擇一個單一的類別。用方向鍵將游標移到您想安裝的類別然後按
+	<keycap>Enter</keycap>。</para>
+
+      <para>接下來會根據您的選擇，列出所選擇類別下所有套件的清單。</para>
+
+      <figure id="package-select">
+	<title>選擇套件</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/pkg-sel" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>圖中的 <application>bash</application> shell 為選取狀態。您可以用
+	<keycap>Space</keycap> 鍵選取所有您想安裝的套件。當游標移到某個套件時，在畫
+	面左下角會顯示該套件的說明。</para>
+
+      <para>按 <keycap>Tab</keycap> 可以在您最後選擇的套件、&gui.ok; 以及
+	&gui.cancel; 間切換。</para>
+
+      <para>當您標註好所有要安裝的套件後，請用 <keycap>Tab</keycap> 鍵切換到
+	&gui.ok; 然後按 <keycap>Enter</keycap> 回到前一個畫面。</para>
+
+      <para>左、右方向鍵也可以在 &gui.ok; 及 &gui.cancel; 間切換，您也可以用此
+  方式選到 &gui.ok; 並按下 <keycap>Enter</keycap> 回前一個畫面。</para>
+
+      <figure id="package-install">
+	<title>安裝套件</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/pkg-install" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>使用方向鍵選取 <guibutton>[ Install ]</guibutton> 然後按
+	<keycap>Enter</keycap>。之後您必須確認是否要安裝所選擇的套件。</para>
+
+      <figure id="package-install-confirm">
+	<title>套件安裝確認</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/pkg-confirm" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>選取 &gui.ok; 然後按 <keycap>Enter</keycap> 就會開始安裝所選擇的套
+  件。在安裝過程中會顯示一些安裝訊息，請注意有沒有任何錯誤訊息出現。</para>
+
+      <para>在安裝完套件後，會繼續請您做最後的組態設定。</para>
+    </sect2>
+
+    <sect2 id="addusers">
+      <title>增加使用者∕群組</title>
+
+      <para>在安裝時您應該至少新增一個使用者以避免進入系統時用 root 登入。因為
+  根目錄通常很小，所以用 root 執行程式可能很快就會把根目錄空間用完。較明確的警
+  告訊息如下：</para>
+
+      <screen>                     User Confirmation Requested
+ Would you like to add any initial user accounts to the system? Adding
+ at least one account for yourself at this stage is suggested since
+ working as the "root" user is dangerous (it is easy to do things which
+ adversely affect the entire system). 
+
+                            [ Yes ]   No</screen>
+
+      <para>選取 <guibutton>[ Yes ]</guibutton> 然後按 <keycap>Enter</keycap>
+  以新增使用者。</para>
+
+      <figure id="add-user2">
+	<title>選擇新增使用者</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/adduser1" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>用方向鍵選擇 <guimenuitem>Add User</guimenuitem> 然後按
+	<keycap>Enter</keycap>。</para>
+
+      <figure id="add-user3">
+	<title>新增使用者資訊</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/adduser2" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>當用 <keycap>Tab</keycap> 切換到個個欄位的同時，螢幕下面會顯示相對
+  應的說明以幫助您填入所需的資訊。</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>Login ID</term>
+
+	  <listitem>
+	    <para>新使用者用來登入系統的名稱</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>UID</term>
+	
+	  <listitem>
+	    <para>使用者 ID（數字，不輸表示自動選擇）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Group</term>
+
+	  <listitem>
+	    <para>使用者所屬於的群組（空白表示自動選擇）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Password</term>
+
+	  <listitem>
+	    <para>使用者的密碼（請慎選密碼！）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Full name</term>
+
+	  <listitem>
+	    <para>使用者全名（或註解）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Member groups</term>
+
+	  <listitem>
+	    <para>使用者屬於哪個群組（可存取的權限）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Home directory</term>
+
+	  <listitem>
+	    <para>使用者的家目錄（空白表示使用預設值）</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>Login shell</term>
+	  <listitem>
+	    <para>使用者登入所使用的 shell（空白表示使用預設值 <filename>/bin/sh</filename>）</para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>範例中的 shell 由原來的	<filename>/bin/sh</filename> 改為先前安裝套
+  件時所選擇安裝的 <filename>/usr/local/bin/bash</filename> 以讓使用者使用
+	<application>bash</application> shell。請不要嘗試使用系統中不存在的 shell，否
+	則您將無法登入系統。</para>
+
+      <para>範例中也將使用者加入 <groupname>wheel</groupname> 成員群組以便將來
+  可以切換身分為擁有 root 權限的超級使用者。</para>
+
+      <para>當一切都完成後，請按下 &gui.ok;，然後會回到使用者及群組管理畫面。</para>
+
+      <figure id="add-user4">
+	<title>離開使用者及群組管理畫面</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/adduser3" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>如果有特殊的需求，您也可以在這個時候新增群組。在安裝完成後您仍然可
+  以利用 <filename>/stand/sysinstall</filename> 再做設定</para>
+
+      <para>當您新增完使用者後，請用方向鍵將游標移到
+  <guimenuitem>Exit</guimenuitem> 然後按 <keycap>Enter</keycap> 繼續安裝過程。</para>
+    </sect2>
+
+    <sect2 id="rootpass">
+      <title>設定 <username>root</username> 密碼</title>
+
+      <screen>                        Message
+ Now you must set the system manager's password.  
+ This is the password you'll use to log in as "root". 
+
+                         [ OK ] 
+
+               [ Press enter to continue ]</screen>
+
+      <para>按下 <keycap>Enter</keycap> 鍵以設定 root 的密碼。</para>
+
+      <para>您必須輸入正確的密碼兩次，當然囉，您必須有方法在您忘記密碼的時候幫
+  助您找到正確的密碼。</para>
+
+      <screen>Changing local password for root. 
+ New password : 
+ Retype new password :</screen>
+
+      <para>在密碼正確輸入後會繼續安裝過程。</para>
+    </sect2>
+
+    <sect2 id="exit-inst">
+      <title>離開安裝程序</title>
+
+      <para>如果您需要進一步設定網路裝置或是其它的東西，您可以在這個時候做；或
+  是安裝完利用 <filename>/stand/sysinstall</filename> 再設定。</para>
+
+      <screen>                     User Confirmation Requested
+ Visit the general configuration menu for a chance to set any last
+ options? 
+
+                              Yes   [ No ]</screen>
+
+      <para>選擇 <guibutton>[ No ]</guibutton> 並按下 <keycap>Enter</keycap>
+  鍵會返回主安裝畫面。</para>
+
+      <figure id="final-main">
+	<title>離開安裝程序</title>
+
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="install/mainexit" format="PNG">
+	  </imageobject>
+	</mediaobject>
+      </figure>
+
+      <para>選取 <guibutton>[X Exit Install]</guibutton> 然後按
+  <keycap>Enter</keycap>，系統會請您確認是否真的要離開安裝程序：</para>
+
+      <screen>                     User Confirmation Requested
+ Are you sure you wish to exit? The system will reboot (be sure to  
+ remove any floppies from the drives). 
+
+                            [ Yes ]   No</screen>
+
+      <para>按下 <guibutton>[ Yes ]</guibutton>，如果您用軟碟開機，請將開機片移
+  除。如果是用光碟，光碟機在重新啟動後才會解除鎖定，您才可以將光碟片取出（動作
+  要快一點）。</para>
+
+      <para>之後系統就會重新啟動，所以，請注意是否有任何錯誤訊息出現。</para>
+    </sect2>
+
+    <sect2 id="freebsdboot">
+      <title>FreeBSD 啟動</title>
+
+      <sect3 id="freebsdboot-i386">
+        <title>i386 機器上面的 FreeBSD 啟動過程</title>
+
+      <para>如果一切都正常，您會看到啟動過程中的訊息不斷隨螢幕向下捲動，最後會
+  出現登入提示字串。您可以按下 <keycap>Scroll-Lock</keycap> 後再按
+	<keycap>PgUp</keycap> 及 <keycap>PgDn</keycap> 來觀看剛剛啟動過程中所出現的訊
+	息。再按一次 <keycap>Scroll-Lock</keycap> 會跳回登入提示字串。</para>
+
+      <para>整個開機訊息可能沒辦法全部顯示出來（受限於緩衝區大小），但是您可以
+  在登入後在命列下 <command>dmesg</command> 指令來查閱。</para>
+
+      <para>請用安裝時建立的帳號∕密碼登入（範例中用的是 rpratt）。除非必要，請
+  避免直接使用 root 登入。</para>
+
+      <para>典型的開機過程訊息：</para>
+
+<screen>Copyright (c) 1992-2002 The FreeBSD Project. 
+Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
+        The Regents of the University of California. All rights reserved. 
+FreeBSD 4.5-RC2 #0: Thu Jan 17 21:24:52 GMT 2002
+    murray@builder.freebsdmall.com:/usr/src/sys/compile/GENERIC
+Timecounter "i8254"  frequency 1193182 Hz
+CPU: AMD-K6(tm) 3D processor (300.68-MHz 586-class CPU)
+  Origin = "AuthenticAMD"  Id = 0x580  Stepping = 0
+  Features=0x8001bf&lt;FPU,VME,DE,PSE,TSC,MSR,MCE,CX8,MMX&gt; 
+  AMD Features=0x80000800&lt;SYSCALL,3DNow!&gt; 
+real memory  = 268435456 (262144K bytes) 
+config&gt; di sn0 
+config&gt; di lnc0 
+config&gt; di le0 
+config&gt; di ie0 
+config&gt; di fe0 
+config&gt; di cs0 
+config&gt; di bt0  
+config&gt; di aic0 
+config&gt; di aha0 
+config&gt; di adv0 
+config&gt; q 
+avail memory = 256311296 (250304K bytes)
+Preloaded elf kernel "kernel" at 0xc0491000. 
+Preloaded userconfig_script "/boot/kernel.conf" at 0xc049109c. 
+md0: Malloc disk 
+Using $PIR table, 4 entries at 0xc00fde60
+npx0: &lt;math processor&gt; on motherboard 
+npx0: INT 16 interface 
+pcib0: &lt;Host to PCI bridge&gt; on motherboard 
+pci0: &lt;PCI bus&gt; on pcib0 
+pcib1: &lt;VIA 82C598MVP (Apollo MVP3) PCI-PCI (AGP) bridge&gt; at device 1.0 on pci0 
+pci1: &lt;PCI bus&gt; on pcib1 
+pci1: &lt;Matrox MGA G200 AGP graphics accelerator&gt; at 0.0 irq 11 
+isab0: &lt;VIA 82C586 PCI-ISA bridge&gt; at device 7.0 on pci0 
+isa0: &lt;ISA bus&gt; on isab0 
+atapci0: &lt;VIA 82C586 ATA33 controller&gt; port 0xe000-0xe00f at device 7.1 on pci0 
+ata0: at 0x1f0 irq 14 on atapci0 
+ata1: at 0x170 irq 15 on atapci0 
+uhci0: &lt;VIA 83C572 USB controller&gt; port 0xe400-0xe41f irq 10 at device 7.2 on pci0 
+usb0: &lt;VIA 83C572 USB controller&gt; on uhci0 
+usb0: USB revision 1.0 
+uhub0: VIA UHCI root hub, class 9/0, rev 1.00/1.00, addr 1 
+uhub0: 2 ports with 2 removable, self powered 
+chip1: &lt;VIA 82C586B ACPI interface&gt; at device 7.3 on pci0 
+ed0: &lt;NE2000 PCI Ethernet (RealTek 8029)&gt; port 0xe800-0xe81f irq 9 at
+device 10.0 on pci0 
+ed0: address 52:54:05:de:73:1b, type NE2000 (16 bit) 
+isa0: too many dependant configs (8) 
+isa0: unexpected small tag 14 
+fdc0: &lt;NEC 72065B or clone&gt; at port 0x3f0-0x3f5,0x3f7 irq 6 drq 2 on isa0
+fdc0: FIFO enabled, 8 bytes threshold 
+fd0: &lt;1440-KB 3.5" drive&gt; on fdc0 drive 0 
+atkbdc0: &lt;keyboard controller (i8042)&gt; at port 0x60-0x64 on isa0 
+atkbd0: &lt;AT Keyboard&gt; flags 0x1 irq 1 on atkbdc0 
+kbd0 at atkbd0 
+psm0: &lt;PS/2 Mouse&gt; irq 12 on atkbdc0 
+psm0: model Generic PS/2 mouse, device ID 0 
+vga0: &lt;Generic ISA VGA&gt; at port 0x3c0-0x3df iomem 0xa0000-0xbffff on isa0
+sc0: &lt;System console&gt; at flags 0x1 on isa0 
+sc0: VGA &lt;16 virtual consoles, flags=0x300&gt; 
+sio0 at port 0x3f8-0x3ff irq 4 flags 0x10 on isa0 
+sio0: type 16550A 
+sio1 at port 0x2f8-0x2ff irq 3 on isa0 
+sio1: type 16550A 
+ppc0: &lt;Parallel port&gt; at port 0x378-0x37f irq 7 on isa0 
+ppc0: SMC-like chipset (ECP/EPP/PS2/NIBBLE) in COMPATIBLE mode 
+ppc0: FIFO with 16/16/15 bytes threshold 
+ppbus0: IEEE1284 device found /NIBBLE
+Probing for PnP devices on ppbus0: 
+plip0: &lt;PLIP network interface&gt; on ppbus0 
+lpt0: &lt;Printer&gt; on ppbus0 
+lpt0: Interrupt-driven port 
+ppi0: &lt;Parallel I/O&gt; on ppbus0
+ad0: 8063MB &lt;IBM-DHEA-38451&gt; [16383/16/63] at ata0-master using UDMA33 
+ad2: 8063MB &lt;IBM-DHEA-38451&gt; [16383/16/63] at ata1-master using UDMA33 
+acd0: CDROM &lt;DELTA OTC-H101/ST3 F/W by OIPD&gt; at ata0-slave using PIO4 
+Mounting root from ufs:/dev/ad0s1a 
+swapon: adding /dev/ad0s1b as swap device 
+Automatic boot in progress... 
+/dev/ad0s1a: FILESYSTEM CLEAN; SKIPPING CHECKS 
+/dev/ad0s1a: clean, 48752 free (552 frags, 6025 blocks, 0.9% fragmentation)
+/dev/ad0s1f: FILESYSTEM CLEAN; SKIPPING CHECKS 
+/dev/ad0s1f: clean, 128997 free (21 frags, 16122 blocks, 0.0% fragmentation)
+/dev/ad0s1g: FILESYSTEM CLEAN; SKIPPING CHECKS
+/dev/ad0s1g: clean, 3036299 free (43175 frags, 374073 blocks, 1.3% fragmentation)
+/dev/ad0s1e: filesystem CLEAN; SKIPPING CHECKS 
+/dev/ad0s1e: clean, 128193 free (17 frags, 16022 blocks, 0.0% fragmentation)
+Doing initial network setup: hostname. 
+ed0: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+        inet 192.168.0.1 netmask 0xffffff00 broadcast 192.168.0.255
+        inet6 fe80::5054::5ff::fede:731b%ed0 prefixlen 64 tentative scopeid 0x1
+        ether 52:54:05:de:73:1b
+lo0: flags=8049&lt;UP,LOOPBACK,RUNNING,MULTICAST&gt; mtu 16384 
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x8 
+        inet6 ::1 prefixlen 128 
+        inet 127.0.0.1 netmask 0xff000000 
+Additional routing options: IP gateway=YES TCP keepalive=YES
+routing daemons:. 
+additional daemons: syslogd. 
+Doing additional network setup:. 
+Starting final network daemons: creating ssh RSA host key 
+Generating public/private rsa1 key pair.
+Your identification has been saved in /etc/ssh/ssh_host_key. 
+Your public key has been saved in /etc/ssh/ssh_host_key.pub. 
+The key fingerprint is: 
+cd:76:89:16:69:0e:d0:6e:f8:66:d0:07:26:3c:7e:2d root@k6-2.example.com
+ creating ssh DSA host key 
+Generating public/private dsa key pair.
+Your identification has been saved in /etc/ssh/ssh_host_dsa_key. 
+Your public key has been saved in /etc/ssh/ssh_host_dsa_key.pub. 
+The key fingerprint is: 
+f9:a1:a9:47:c4:ad:f9:8d:52:b8:b8:ff:8c:ad:2d:e6 root@k6-2.example.com.
+setting ELF ldconfig path: /usr/lib /usr/lib/compat /usr/X11R6/lib
+/usr/local/lib 
+a.out ldconfig path: /usr/lib/aout /usr/lib/compat/aout /usr/X11R6/lib/aout 
+starting standard daemons: inetd cron sshd usbd sendmail.
+Initial rc.i386 initialization:. 
+rc.i386 configuring syscons: blank_time screensaver moused. 
+Additional ABI support: linux. 
+Local package initilization:. 
+Additional TCP options:. 
+
+FreeBSD/i386 (k6-2.example.com) (ttyv0)
+
+login: rpratt 
+Password:</screen>
+
+      <para>產生 RSA 及 DSA （譯註：加密演算法）鍵值在比較慢的機器可能會花一些
+  時間。這僅在新安裝的第一次登入會發生，以後的開機就會比較快了。</para>
+
+      <para>如果您已經設定過 X server 並且選擇了預設的桌面管理程式，您可以在命令
+  提示字元後輸入 <command>startx</command> 指令啟動它。</para>
+
+      </sect3>
+
+      <sect3>
+        <title>Alpha 機器上面的 FreeBSD 啟動過程</title>
+
+	<indexterm><primary>Alpha</primary></indexterm>
+
+        <para>一旦您完成了安裝程序，您可以在 SRM 提示下輸入類似下面的指令來啟動
+        FreeBSD：</para>
+
+	<screen>&gt;&gt;&gt;<userinput>BOOT DKC0</userinput></screen>
+
+	<para>This instructs the firmware to boot the specified
+	  disk.  To make FreeBSD boot automatically in the future, use
+	  these commands:</para>
+
+	<screen><prompt>&gt;&gt;&gt;</prompt> <userinput>SET BOOT_OSFLAGS A</userinput>
+<prompt>&gt;&gt;&gt;</prompt> <userinput>SET BOOT_FILE ''</userinput>
+<prompt>&gt;&gt;&gt;</prompt> <userinput>SET BOOTDEF_DEV DKC0</userinput>
+<prompt>&gt;&gt;&gt;</prompt> <userinput>SET AUTO_ACTION BOOT</userinput></screen>
+
+	<para>啟動時顯示的訊息跟 i386 機器差不多（但不完全相同）。</para>
+      </sect3>
+    </sect2>
+
+    <sect2 id="shutdown">
+      <title>FreeBSD 關機</title>
+
+      <para>正常關閉作業系統是非常重要的。請勿直接將電源關掉。首先，用
+  <command>su</command> 指令切換成系統管理者，輸入 root 的密碼。只有屬於 wheel
+  族群的使用者才可以使用 su 切換成 root；否則，請用 root 登入。然後使用
+	<command>shutdown -h now</command> 指令關機。</para>
+
+      <screen>The operating system has halted. 
+Please press any key to reboot.</screen>
+
+      <para>當您下了 shutdown 指令並看到
+	<quote>Please press any key to reboot</quote> 這段文字後您就可以放心將電源關
+	掉了。如果您在此時按下任一鍵（而不是將電源關掉），系統會重新開機。</para>
+
+      <para>您也可以用 <keycap>CTRL+ALT+DEL</keycap> 組合鍵來重新開機，但是一般
+      來說我們並不建議這樣做。</para>
+
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>支援的硬體</title>
+
+    <indexterm><primary>hardware</primary></indexterm>
+    <para>FreeBSD 目前可以在使用 ISA, VLB, EISA 以及 PCI 等匯流排為主，配備
+      Intel, AMD, Cyrix, 或 NexGen 等 <quote>x86</quote> 處理器的 PC 上執行；
+      在以 Compaq Alpha 處理器為主的機器上也可以執行。支援一般的 IDE 或
+      ESDI 磁碟組態、許多 SCSI 控制卡、PCMCIA 卡、USB 裝置、網路卡以及序列卡。
+      FreeBSD 也支援 IBM 的 microchannel (MCA) 匯流排。</para>
+
+    <para>在每個釋出的 FreeBSD 版本中都會有一份硬體支援說明文件，此文件的檔名通
+    常是 <filename>HARDWARE.TXT</filename>，位於安裝光碟或是 FTP 站台的最上層目
+    錄中；或是在 sysinstall 的說明文件選單也可以找到。這份文間中使用一定的架構
+    列出每個發行版本中所支援的硬體。</para>
+  </sect1>
+
+  <sect1 id="install-trouble">
+    <title>疑難解決</title>
+
+    <indexterm>
+      <primary>installation</primary>
+      <secondary>troubleshooting</secondary>
+    </indexterm>
+    <para>下面的小節包含了一些在安裝的時候常見的問題，通常這些問題是大家安裝時
+    所共同碰到的問題。也有一些是有關 FreeBSD 跟 MS-DOS 雙重開機的問題。</para>
+
+    <sect2>
+      <title>發生問題時該怎麼辦...</title>
+
+      <para>因為 PC 種類太多，所以在硬體搜尋的時候不可能 100% 成功；但是，當發
+      生問題的時候您可以嘗試檢查下列的項目。</para>
+
+      <para>檢查硬體支援清單，確定您的硬體有被支援。</para>
+
+      <para>如果您的硬體有支援，但在搜尋裝置的時候還是會卡住或是有其他的問題，
+      請重新開機，並在視覺化核心組態中選用您的裝置。這樣可以讓您對您系統中的硬
+      體狀態做一個總覽，並且做適當的調整。安裝用的核心組態是假設您所有的裝置都
+      是出廠預設值，如 IRQ、IO 位址、DMA 通道等。如果您曾經更改過這些裝置的設
+      定，那麼您就要在這邊做設定，這樣 FreeBSD 才能順利搜尋到這些裝置。</para>
+
+      <para>有時候，當一個裝置無法被搜尋到會造成另外一個裝置也無法找到。當這種
+      情形發生時，您應該停用搜尋裝置時檢查是否有衝突的功能。</para>
+
+      <note>
+        <para>有些安裝的問題可以藉由更新硬體的韌體來解決，特別是主機板的
+        <acronym>BIOS</acronym>。大部分的主機板製造商都會提供網站給用戶下載新的
+        BIOS 以及提供如何更新的說明。</para>
+
+        <para>也有許多製造商強烈建議，除非必要（例如有嚴重的錯誤必須更新），否
+        則不要輕易更新 <acronym>BIOS</acronym>。因為更新的過程
+        <emphasis>可能</emphasis>會發生問題，進而損害 <acronym>BIOS</acronym> 晶片。</para>
+        </note>
+
+      <warning>
+        <para>不要停用任何在安裝時會用到的裝置，比如螢幕畫面（<devicename>sc0</devicename>）。
+	  如果在離開核心組態設定後安裝過程卡住或是莫名其妙失敗，那麼您可能要移除或是
+	  改變一些您不該有的裝置或設定。請重新開機進入核心組態設定再試試看。</para>
+      </warning>
+
+      <para>在組態設定畫面，您可以：</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>列出所有已安裝在核心中的裝置。</para>
+        </listitem>
+
+        <listitem>
+          <para>更改沒有出現在系統中的裝置驅動程式。</para>
+        </listitem>
+
+        <listitem>
+          <para>更改裝置驅動程式所使用的 IRQ、DRQ、IO 位址。</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>當您針對您系統中的硬體狀態做好調整後，按 <command>Q</command> 即可
+      使用新的設定開機。一旦安裝完成，任何您在核心組態設定中所做的變更都會儲存
+      起來，因此您不用每次開機都設定一次。最好您能為您的系統量身製作一個
+      <link linkend="kernelconfig">自訂核心</link>。</para>
+    </sect2>
+    
+    <sect2>
+      <title>MS-DOS 問答集</title>
+
+      <indexterm><primary>DOS</primary></indexterm>
+      <para>Many users wish to install FreeBSD on PCs inhabited by MS-DOS.
+        Here are some commonly asked questions about installing FreeBSD on
+        such systems.</para>
+
+      <qandaset>
+        <qandaentry>
+	  <question>
+	    <para>救命啊，我沒有空間了！我需要先刪除所有的東西嗎？</para>
+	  </question>
+
+	  <answer>
+	    <para>如果您的機器正在跑 MS-DOS 並且還有一些，或是沒有多餘的空間來安裝
+	    FreeBSD，那並不是沒有希望了！您會發現在 FreeBSD 安裝光碟或是 FreeBSD FTP
+	    站台的 <filename>tools</filename> 目錄中有一個叫做
+	    <application>FIPS</application> 的工具非常有用。</para>
+
+	    <indexterm>
+        <primary><command>FIPS</command></primary>
+      </indexterm>
+	    <para><application>FIPS</application> 可以讓您將現有的 MS-DOS 分割區切割
+	    成兩塊，保留原來的分割並且讓您可以將 FreeBSD 安裝在第二個塊沒用到的分割
+	    上面。首先，您可以用 Windows 的 <application>DEFRAG</application> 工具程
+	    式來重組您的 MS-DOS 分割區（開啟檔案總管，按滑鼠右鍵點選您要重組的磁碟，
+	    然後選擇磁碟重組）；或是使用 Norton 的磁碟工具。之後您必須執行
+	    <application>FIPS</application>；它將會提示您接下來該怎麼做。好了以後，
+	    您就可以重新開機並將 FreeBSD 安裝在新的切割上。請參考
+	    <emphasis>Distributions（安裝套件）</emphasis>選單來估計您所需要的安裝大
+	    概需要用到多少磁碟空間。</para>
+
+	    <indexterm>
+        <primary><application>Partition Magic</application></primary>
+      </indexterm>
+	    <para>另外，<ulink url="http://www.powerquest.com/">PowerQuest</ulink>
+	    公司也有出一個<emphasis>非常</emphasis>有用的產品，叫做
+	    <application>Partition Magic</application>。此軟體擁有比
+	    <application>FIPS</application> 更多的功能；當您有常常需要新增或移除作業
+	    系統的需求（像我一樣）時，強烈建議您使用這個軟體。然而，這個軟體是要花錢
+	    買的。如果您只是要體驗一下安裝 FreeBSD，那麼
+	    <application>FIPS</application> 應該就夠用了。</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>我可以在 FreeBSD 中使用壓縮的 MS-DOS 檔案系統嗎？</para>
+	  </question>
+
+	  <answer>
+	    <para>不行。如果您用 Stacker(tm) 或是 DoubleSpace(tm)，FreeBSD 只能使用硬
+	    碟上沒有壓縮過的部分。有壓縮的部分會顯示成一個大檔案（壓縮檔！）
+	    <emphasis>不要刪除這個檔案，否則您可能會報憾終身！（譯註：^_^）</emphasis></para>
+
+	    <para>建議您建立一個沒有壓縮的 MS-DOS 主分割作為 MS-DOS 跟 FreeBSD 溝通的
+	    管道。</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>我可以將 MS-DOS 的延伸分割區掛在 FreeBSD 上嗎？</para>
+	  </question>
+
+	  <answer>
+	    <indexterm><primary>partitions</primary></indexterm>
+	    <indexterm><primary>slices</primary></indexterm>
+	    <para>可以。DOS 的延伸分割區在 FreeBSD 中會對應到其它
+	      <quote>slices（切割區）</quote>的最後面，例如，您的
+	      <devicename>D:</devicename> 磁碟可能是 <filename>/dev/da0s5</filename>、
+	      <devicename>E:</devicename> 磁碟為 <filename>/dev/da0s6</filename>等等。
+	      上面的範例假設您的延伸分割區在 0 號的 SCSI 磁碟上。如果是 IDE 磁碟機，
+	      並且您安裝的 FreeBSD 是 4.0-RELEASE 以上，那麼您可以將上面的
+	      <filename>da</filename> 換成 <filename>ad</filename>。如果您安裝的是 4.0
+	      之前的版本，那麼請用 <filename>wd</filename> 取代 <filename>da</filename>。
+	      掛上 DOS 延伸分割區跟掛任何其它 DOS 磁碟一樣，例如：</para>
+
+	    <screen>&prompt.root; <userinput>mount -t msdos /dev/ad0s5 /dos_d</userinput></screen>
+	  </answer>
+	</qandaentry>
+      </qandaset>
+    </sect2>
+
+    <sect2>
+      <title>Alpha 使用者問答集</title>
+
+      <indexterm><primary>Alpha</primary></indexterm>
+
+      <para>此節回答一些在 Alpha 機器上安裝 FreeBSD 常見的問題。</para>
+
+      <qandaset>
+	<qandaentry>
+	  <question>
+	    <para>我可以從 ARC 或 Alpha BIOS Console 開機嗎？</para>
+	  </question>
+
+	  <indexterm><primary>ARC</primary></indexterm>
+	  <indexterm><primary>Alpha BIOS</primary></indexterm>
+	  <indexterm><primary>SRM</primary></indexterm>
+
+	  <answer>
+	    <para>不行。os; 跟 Compaq Tru64 以及 VMS 一樣，只能從 SRM console 開機。</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+        <para>救命啊，我沒有空間了！我需要先刪除所有的東西嗎？</para>
+	  </question>
+
+	  <answer>
+	    <para>很不幸地，是。</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>我可以將 Compaq Tru64 或 VMS 檔案系統掛在 FreeBSD 上嗎？</para>
+	  </question>
+
+	  <answer>
+	    <para>不行，目前還沒有支援。</para>
+	  </answer>
+	</qandaentry>
+      </qandaset>
+    </sect2>
+  </sect1>
+
+  <sect1 id="install-advanced">
+    <sect1info>
+      <authorgroup>
+	<author>
+	  <firstname>Valentino</firstname>
+	  <surname>Vaschetto</surname>
+	  <contrib>Contributed by </contrib>
+	</author>
+	<!-- May 2001 -->
+      </authorgroup>
+    </sect1info>
+
+    <title>進階安裝指南</title>
+
+    <para>此節說明如何在一些例外的狀況下安裝 FreeBSD。</para>
+
+    <sect2 id="headless-install">
+      <title>在沒有顯示器或鍵盤的機器安裝 FreeBSD</title>
+
+      <indexterm>
+        <primary>installation</primary>
+        <secondary>headless (serial console)</secondary>
+      </indexterm>
+      <indexterm><primary>serial console</primary></indexterm>
+      <para>此種安裝方式稱為 <quote>headless install</quote>，因為您要安裝
+      FreeBSD 的機器並沒有連接顯示器或是根本沒有 VGA 輸出的能力。您或許會問，這
+      怎麼可能？答看是肯定的，我們可以利用序列終端的方式。序列終端基本上是借用
+      其它機器的顯示器或鍵盤，就好像是在用自己的一樣。要這樣做，請依照下面的步驟：</para>
+
+      <procedure>
+        <step>
+          <title>取得正確的開機軟碟映像檔</title>
+
+          <para>首先，您必須取得正確的軟碟開機映像檔以便能進入安裝程式。使用序
+          列終端的秘訣在於，您告訴開機啟動程式將 I/O 透過序列埠傳輸，而不直接從
+          嘗試讀取鍵盤輸入的 VGA 裝置輸出。現在，讓我們先來取得這些安裝軟碟映像檔。</para>
+
+	  <para>您將需要從
+            <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/floppies/">
+            floppies 目錄</ulink>取得 <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/floppies/kern.flp">kern.flp</ulink> 以及
+            <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/floppies/mfsroot.flp">
+            mfsroot.flp</ulink> 兩個映像檔。</para>
+
+        </step>
+        <step>
+	  <title>將映像檔的內容寫到軟碟片上</title>
+
+          <para>像 <filename>kern.flp</filename> 這種映像檔並<emphasis>不是</emphasis>
+      普通直接將檔案複製到磁片上就可以了。這些檔是整個磁片內容的映像。</para>
+
+	  <para>這表示您<emphasis>無法</emphasis>直接使用像是 DOS 的
+	    <command>copy</command> 指令將檔案寫到磁片中。取而代之的是，您必須使用特
+	    定的工具來將映像檔直接寫到磁片上。</para>
+	  
+	  <indexterm>
+      <primary><command>fdimage</command></primary>
+    </indexterm>
+	  <para>如果您是在 DOS 環境製作這些開機磁片，我們提供了一個叫做
+	  <command>fdimage</command> 的工具程式。</para>
+	  
+	  <para>假設您要職街將光碟中的映像檔寫到磁片，並且您的光碟機代號是
+	    <devicename>E:</devicename>，那麼您可以執行下面的指令：</para>
+
+	  <screen><prompt>E:\&gt;</prompt> <userinput>tools\fdimage floppies\kern.flp A:</userinput></screen> 
+
+	  <para>重複上面的指令製作每個 <filename>.flp</filename> 映像檔的磁片，每換一
+	  個檔就要換一張磁片。請依照您實際存放 <filename>.flp</filename> 檔的位置，適
+	  當地修改上面的指令。如果您沒有 FreeBSD 光碟，那麼您可以在 FreeBSD FTP 站台的
+    <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/tools/"><filename>tools</filename>
+	  目錄</ulink>下載 <command>fdimage</command>。</para>
+
+	  <para>如果您是在 Unix 系統（如別台 FreeBSD 機器）上製作這些磁片，您可以使用
+	    &man.dd.1; 指令將映像檔寫到磁片上。如果您用的是 FreeBSD，可以用下列指令：</para>
+
+	  <screen>&prompt.root; <userinput>dd if=kern.flp of=/dev/fd0</userinput></screen>
+
+	  <para>在 FreeBSD 中，<filename>/dev/fd0</filename> 表示第一台軟碟機（即
+	    <devicename>A:</devicename>）。<filename>/dev/fd1</filename> 為
+	    <devicename>B:</devicename> 磁碟機，餘類推。其它的 Unix 平台所使用的名稱
+	    可能會不一樣，必要時請參考您所使用的 Unix 系統的說明文件。</para>
+
+	  </step>
+
+	  <step>
+	    <title>使開機磁片在序列終端 Console 上開機</title>
+
+            <warning>
+              <para>如果磁片是防寫保護，請不要嘗試將其掛到系統上</para>
+            </warning>
+
+  	    <indexterm>
+          <primary><command>mount</command></primary>
+        </indexterm>
+	    <para>如果您直接從剛剛做好的開機片開機，FreeBSD 會使用一般的正常模式開機。
+	      可是我們希望 FreeBSD 的開機過程顯示在序列終端 console 上，因此，我們必須
+	      將 <filename>kern.flp</filename> 磁片利用 &man.mount.8; 指令掛到 FreeBSD
+	      系統上（譯註：在別台機器做）。</para>
+
+            <screen>&prompt.root; <userinput>mount /dev/fd0 /mnt</userinput></screen>
+
+	    <para>現在我們已經將磁片掛上了，您必須切換目錄到磁片中：</para>
+
+	    <screen>&prompt.root; <userinput>cd /mnt</userinput></screen>
+
+	    <para>現在我們就要設定讓這張磁片可以在序列終端 console 上開機。您必須建立
+	    叫做 <filename>boot.config</filename> 的檔，其內容為
+	    <literal>/boot/loader -h</literal>。此行的作用就是告訴開機啟動程式直接在
+	    序列終端上開機。</para>
+
+	    <screen>&prompt.root; <userinput>echo "/boot/loader -h" > boot.config</userinput></screen>
+
+	    <para>設定好磁片後，我們必須使用 &man.umount.8; 指令先將磁片從系統中移除：</para>
+
+            <screen>&prompt.root; <userinput>cd /</userinput>
+&prompt.root; <userinput>umount /mnt</userinput></screen>
+
+	    <para>現在您可以將磁片取出了。</para>
+	  </step>
+
+	  <step>
+	    <title>使用 Null 數據機電纜連線</title>
+
+  	    <indexterm><primary>null-modem cable</primary></indexterm>
+	    <para>您現在需用 null 數據機電纜線連接這兩台機器。直接連接兩台機器的序列
+	    埠就可以了。<emphasis>一般的序列電纜在這裡無法使用</emphasis>，您需要的是
+	    null 數據電纜，因為它裡面的電線有些有跳線。</para>
+	  </step>
+
+	  <step>
+	    <title>準備開機進入安裝程式</title>
+
+	    <para>是時候開始我們的安裝程序了。將 <filename>kern.flp</filename> 開機片
+	    放到您要透過序列終端安裝 FreeBSD 機器的軟碟中，然後打開機器的電源。</para>
+	  </step>
+
+	  <step>
+	    <title>連接到無顯示器的機器</title>
+	    <indexterm>
+        <primary><command>cu</command></primary>
+      </indexterm>
+	    <para>現在您必須使用 &man.cu.1; 指令來連接到這台機器：</para> 
+
+	    <screen>&prompt.root; <userinput>cu -l /dev/cuaa0</userinput></screen>
+	  </step>
+      </procedure>
+
+      <para>完成了！您現在應該可以透過 <command>cu</command> 來控制這台沒有顯示
+      器的機器了。它會請您放入 <filename>mfsroot.flp</filename> 磁片然後會請您選
+      擇要用哪種終端模式。請選擇 FreeBSD color console 然後繼續安裝即可！</para>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="install-diff-media">
+    <title>準備您自己的安裝媒介</title>
+
+    <note>
+      <para>為避免重複，在文中所提到的<quote>「FreeBSD 磁碟」</quote>表示
+	您所購買或自行製作的 FreeBSD 光碟或是 DVD。</para>
+    </note>
+
+    <para>有些時候您可能需要建立自己的 FreeBSD 安裝媒介或是來源。可能是實體的
+    媒介，如磁帶；或是在 <application>Sysinstall</application> 中可以用來取得
+    檔案的來源，如本地 FTP 站台或是 MS-DOS 分割。舉個例子：</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>在您的區網中有很多台機器，然後您有一張 FreeBSD 磁碟。您想用這張 FreeBSD
+	磁碟的內容作為本地的 FTP 站台，因此在區網中的機器就可以直接連到本地的 FTP 站
+	而不用連上外部的網際網路。</para>
+      </listitem>
+
+      <listitem>
+	<para>您有一張 FreeBSD 磁碟；FreeBSD 不認得您的光碟或 DVD 機器，可是
+	  DOS/Windows 卻認得。您想將 FreeBSD 安裝檔案複製到同一台電腦上的 DOS 分割，
+	  然後用這些檔案來安裝 FreeBSD。</para>
+      </listitem>
+
+      <listitem>
+	<para>您要安裝 FreeBSD 的機器上沒有光碟機或是網路卡，但是您可以利用
+	  <quote>Laplink-style</quote> 序列或平行電纜連接到一台有光碟機的機器。</para>
+      </listitem>
+
+      <listitem>
+	<para>您想要建立一個可以用來安裝 FreeBSD 的磁帶。</para>
+      </listitem>
+    </itemizedlist>
+    
+    <sect2 id="install-ftp">
+      <title>使用 FreeBSD 磁碟作為本地端 FTP 站台</title>
+	
+      <indexterm>
+	<primary>installation</primary>
+	<secondary>network</secondary>
+	<tertiary>FTP</tertiary>
+      </indexterm>
+
+      <para>FreeBSD 磁碟內容的配置跟 FreeBSD FTP 站台的配置是一樣的。這讓您很簡
+  單地建立一個本地的 FTP 站台以便給區網中其它機器安裝 FreeBSD 用。</para>
+
+      <procedure>
+	<step>
+	  <para>在要作為 FTP 站台的那台 FreeBSD 機器上，確定 FreeBSD 磁碟有放入光碟機
+	  中並將之掛在 <filename>/cdrom</filename> 目錄。</para>
+
+	  <screen>&prompt.root; <userinput>mount /cdrom</userinput></screen>
+	</step>
+
+	<step>
+	  <para>在 <filename>/etc/passwd</filename> 中建立一個匿名存取 FTP 服務的帳號。
+	  您可以利用 &man.vipw.8; 指令編輯 <filename>/etc/passwd</filename> 檔，加
+	  入下面這一行敘述：</para>
+
+	  <programlisting>ftp:*:99:99::0:0:FTP:/cdrom:/nonexistent</programlisting>
+	</step>
+
+	<step>
+	  <para>確定 <filename>/etc/inetd.conf</filename> 中有開啟 FTP 服務。</para>
+	</step>
+      </procedure>
+
+      <para>任何區網中的機器在安裝 FreeBSD 選擇安裝媒介時就可以選擇透過 FTP 站，
+  然後選取 <quote>Other</quote> 後輸入
+  <userinput>ftp://<replaceable>本地 FTP 站台</replaceable></userinput> 即可以
+  透過本地 FTP 站來安裝 FreeBSD。</para>
+
+      <warning>
+	<para>此方式最好使用在有防火牆保護的內部網路。如果要將此 FTP 服務公開給外面的
+	網際網路（非區網），您的電腦必須承擔被侵入或其它的風險。我們強烈建議您要有完
+	善的安全機制才這樣做。</para>
+      </warning>
+    </sect2>
+
+      <sect2>
+        <title>建立安裝磁片</title>
+
+      <indexterm>
+	<primary>installation</primary>
+	<secondary>floppies</secondary>
+      </indexterm>
+
+      <para>如果您必須從軟碟安裝（<emphasis>不</emphasis>建議），不管是因為硬體
+  不支援或是您本身堅持要用這麼困難的方式，您都必須先準備一些磁片供安裝用。</para>
+
+	<para>最少，您需要可以裝下 <filename>bin</filename>（binary 套件）目錄下面所有
+	檔案的磁片。如果您是在 DOS 環境下準備這些磁片，請注意您<emphasis>必須</emphasis>
+	用 MS-DOS 的 <command>FORMAT</command> 指令來格式化這些磁片。如果您的環境是
+	Windows，您可以開啟我的電腦或是檔案總管，在 <devicename>A:</devicename> 磁碟機
+	上按滑鼠右鍵然後選擇 &quot;製作格式&quot; 來格式化您的軟碟片。</para>
+
+	<para><emphasis>不要</emphasis>相信所謂的出廠已經預先格式化過的磁片，請自行再
+	格式化一遍。因為我們發現很多使用者回報的問題都是因為使用不當的格式化媒介所造
+	成的；這也是我們在這裡強調這一點的原因。</para>
+
+	<para>如果您是在其它的 FreeBSD 機器上製作這些安裝片，您仍然可以對磁片進行格式
+	化，不一定要每張磁片都是 DOS 檔案格式。您可以使用
+	<command>disklabel</command> 及 <command>newfs</command> 指令將磁片格式化為
+	UFS 檔案系統，如下列指令所示（以 3.5" 1.44MB 軟碟為例）：</para>
+
+	<screen>&prompt.root; <userinput>fdformat -f 1440 fd0.1440</userinput>
+&prompt.root; <userinput>disklabel -w -r fd0.1440 floppy3</userinput>
+&prompt.root; <userinput>newfs -t 2 -u 18 -l 1 -i 65536 /dev/fd0</userinput></screen>
+
+	<note>
+	  <para>使用 <literal>fd0.1200</literal> 及
+	    <literal>floppy5</literal> 可用來製作 5.25" 1.2MB 磁片。</para>
+	</note>
+
+	<para>之後您就可以將這些磁片掛在系統上並寫入資料，就像使用其它檔案系統一樣。</para>
+
+	<para>在您格式化這些磁片後，您必須將安裝要用的檔案複製到磁片上。這些檔案都做
+	過切割，五個檔案剛好是一張 1.44MB 磁片的大小。依序將這些檔案複製到磁片上，儘
+	量用完磁片上的空間（有些檔案比較小，那一張磁片就可以放比較多）直到將所有您要
+	安裝的套件都複製完。每個不同的套件要放到相對應的目錄，例如：
+	<filename>a:\bin\bin.aa</filename>、<filename>a:\bin\bin.ab</filename> 等等。</para>
+
+	<para>當安裝過程中請您選擇安裝媒介的時候，請選擇 <quote>Floppy</quote>，之後
+	依照螢幕指示操作即可。</para>
+      </sect2>
+
+      <sect2 id="install-msdos">
+        <title>從 MS-DOS 分割區安裝</title>
+
+	<indexterm>
+    <primary>installation</primary>
+    <secondary>from MS-DOS</secondary>
+  </indexterm>
+	<para>如果準備從 MS-DOS 分割安裝，請將所有的檔案複製到該分割的一個目錄中，例
+	如 <filename>c:\freebsd</filename>。此目錄中的結構必須跟安裝光碟或是 FTP 站
+	的結構相同，因此，如果您是從光碟機複製檔案過來，我們建議您用 DOS 的
+	<command>xcopy</command> 指令。例如，要複製 FreeBSD 最小安裝所需的檔案：</para>
+
+	<screen><prompt>C:\&gt;</prompt> <userinput>md c:\freebsd</userinput>
+<prompt>C:\&gt;</prompt> <userinput>xcopy e:\bin c:\freebsd\bin\ /s</userinput>
+<prompt>C:\&gt;</prompt> <userinput>xcopy e:\manpages c:\freebsd\manpages\ /s</userinput></screen>
+
+	<para>假設 <devicename>C:</devicename> 是您的 DOS 分割，
+	<devicename>E:</devicename> 是您的光碟機。</para>
+	
+	<para>如果您沒有光碟機，您可以到
+	<ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/">
+	ftp.FreeBSD.org</ulink> 下載安裝套件。每個安裝套件都有其相對應的目錄，例如
+	<emphasis>bin</emphasis> 套件可以在 <ulink
+	url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/bin/">&rel.current;/bin/</ulink> 目錄找到。</para>
+    
+	<para>請將您要安裝的套件（要有足夠的空間）放到 MS-DOS 分割的
+  <filename>c:\freebsd</filename> 下面。<literal>BIN</literal> 套件僅為 FreeBSD
+  最小安裝用。</para>
+      </sect2>
+
+      <sect2>
+        <title>建立安裝磁帶</title>
+
+	<indexterm>
+    <primary>installation</primary>
+    <secondary>from QIC/SCSI Tape</secondary>
+  </indexterm>
+	<para>當沒辦法連上網路或是沒有安裝光碟的時候，從磁帶安裝可能是最簡單的一種方
+	式。安裝程式假設所有的安裝檔都用 tar 壓縮存放在磁帶中；當您取得所有想安裝的套
+	件後，您可以用下面的指令將它們壓縮並存放到磁帶上：</para>
+
+	<screen>&prompt.root; <userinput>cd /freebsd/distdir</userinput>
+&prompt.root; <userinput>tar cvf /dev/rwt0 dist1 ... dist2</userinput></screen>
+
+	<para>當您要安裝的時候，您應該先確定磁帶中有足夠的空間存放安裝過程中會用到的暫
+	存檔案空間（您可以自行選擇要用什麼目錄來存放），以便能有效利用您的磁帶容量。
+	因為磁帶部是隨機存取，因此用磁帶安裝需要很大的暫存空間。一般來說，如果您有愈多
+	東西要放在磁帶上，您要預期的暫存空間就愈大。</para>
+
+	<note>
+	  <para>當用安裝磁片開機<emphasis>之前</emphasis>，磁帶一定要先放入磁帶機，否則
+	  在搜尋硬體的時候可能會失敗。</para>
+	</note>
+      </sect2>
+
+      <sect2>
+        <title>透過網路安裝前</title>
+
+	<indexterm>
+    <primary>installation</primary>
+    <secondary>network</secondary>
+    <tertiary>serial (SLIP or PPP)</tertiary>
+  </indexterm>
+	<indexterm>
+    <primary>installation</primary>
+    <secondary>network</secondary>
+    <tertiary>parallel (PLIP)</tertiary>
+  </indexterm>
+	<indexterm>
+    <primary>installation</primary>
+    <secondary>network</secondary>
+    <tertiary>Ethernet</tertiary>
+  </indexterm>
+	<para>您可以透過三種網路方式安裝：序列埠（SLIP 或 PPP）、平行埠（PLIP（laplink
+	連線））、或是網際網路（網路卡或一些 PCMCIA 裝置）。</para>
+
+	<para>SLIP 的支援非常基本，並且受制於硬接（電腦之間直接透過纜線連接）線路，例
+	如連接一台筆記型電腦跟其他電腦的序列電纜。連線必須硬接起來，因為 SLIP 安裝目
+	前並不支援撥接的能力。撥接的功能由 PPP 提供，如果可能，您應該優先選擇 PPP 而非
+	SLIP。</para>
+
+	<para>如果您透過數據機安裝，那 PPP 幾乎是您唯一的選擇。請先準備好您的網路提供
+	者的相關資料，因為在安裝的初期就會需要這些資訊。</para>  
+	  <para>如果您用 PAP 或 CHAP 連接到您的 ISP（換句話說，如果您在 Windows 中可以
+	  不用透過腳本程序連線到 ISP），那麼您唯一要做的就是在 <application>ppp</application> 
+	  提示下輸入 <command>dial</command> 撥號指令。否則，您必須知道如何用符合您數
+	  據機的 <quote>AT 指令</quote>來連接到您的 ISP，因為 PPP 撥號程式僅提供一個非
+	  常陽春的終端機模擬器。請參考 user-ppp <link linkend="userppp">手冊</link>以及 <ulink
+	  url="../faq/ppp.html">FAQ</ulink> 問答集以獲得更多資訊。如果您有問題，登入
+	  可以直接指到螢幕上，請下指令：<command>set log local ...</command>。</para>
+
+	<para>如果您可以硬接到跑其它版本 FreeBSD（2.0-R 或以上），那麼您可以考慮透過
+	<quote>laplink</quote> 平行電纜來安裝。平行埠的傳輸速率比序列埠高很多（最高
+	可達每秒 50kbytes），所以安裝速度會比較快。</para>
+
+	<para>最後，也是最快速的網路安裝方式，就是透過網路卡連上網際網路囉！FreeBSD
+	支援大部分常見的 PC 網路卡；所有支援的網路卡（及其所需的設定）都可以在每個版
+	本的 FreeBSD 的硬體說明文件中找到。如果您用的是 PCMCIA 網路卡，並且 FreeBSD
+	有支援，那麼在開啟筆記型電腦的電源<emphasis>之前</emphasis>，請先將您的網路
+	卡插上。因為 FreeBSD 在安裝過程並不支援 PCMCIA 卡的熱插拔。</para>
+
+	<para>您也必須知道您的 IP 位址以及相對應於您網路位址等級的網路遮罩（netmask）
+	值，還有您的電腦名稱。如果您用的是 PPP 連線，而且沒有固定的 IP，別怕，因為您的
+	ISP 會自動分配一個 IP 給您。對於這些網路細部的設定，可以請教您的網路管理者。
+	如果您需要以名稱對應到其它的機器，那麼您可能需要一個名稱伺服器（name
+	server）以及網路閘道器（gateway）的位址（如果您用的是 PPP，閘道器位址就是您
+	ISP 提供的 IP 位址）。如果您想使用 FTP 透過 HTTP proxy（見下文）來安裝，您也
+	必須知道此 proxy 伺服器的網址。如果您對於上面所需要的資訊不了解，請在安裝
+	<emphasis>之前</emphasis>詢問您的網管人員或是您的 ISP。</para>
+
+	<sect3>
+	  <title>使用 NFS 安裝前</title>
+
+    <indexterm>
+      <primary>installation</primary>
+      <secondary>network</secondary>
+      <tertiary>NFS</tertiary>
+    </indexterm>
+	  <para>NFS 安裝方式十分直接，只要將 FreeBSD 散佈的檔案放到一台伺服器上，然後
+	    在安裝媒體設定的地方指到這台伺服器就可以了。</para>
+
+	  <para>如果這台伺服器只允許<quote>授權的 port</quote> 連接（通常這是 Sun 工
+	    作站的預設值），您在安裝之前必須到 Options 選單設定。</para>
+
+	  <para>如果您的網路卡品質不佳，只能在非常低的速度運作，您也可能需要調整一下
+	  Options 選單裡面的設定。</para>
+
+	  <para>為了讓 NFS 安裝能順利進行，伺服器必須可以支援子目錄的 mount，例如您的
+	  FreeBSD 3.4 散佈目錄在 <filename>ziggy:/usr/archive/stuff/FreeBSD</filename>，
+	  那麼 <hostid>ziggy</hostid> 必須允許直接 mount <filename>/usr/archive/stuff/FreeBSD</filename> 
+	  而非僅 <filename>/usr</filename> 或 <filename>/usr/archive/stuff</filename>。</para>
+
+	  <para>在 FreeBSD 的 <filename>/etc/exports</filename> 檔案中，此功能由選項
+	    <option>-alldirs</option> 所控制。其他的 NFS 伺服器可能會有不同的設定方
+	    式。如果伺服器告訴您 <quote>permission denied</quote>，可能就是因為沒有打
+	    開這個選項。</para>
+	</sect3>
+
+      </sect2>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

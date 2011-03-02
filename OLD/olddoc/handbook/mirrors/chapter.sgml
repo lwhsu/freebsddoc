@@ -1,0 +1,1438 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $Id: chapter.sgml,v 1.5 2003/02/06 03:44:38 statue Exp $
+
+     Translate into Chinese by
+
+     English Version:
+-->
+
+<appendix id="mirrors">
+  <title>取得 FreeBSD</title>
+  
+  <sect1>
+    <title>光碟出版商</title>
+    
+    <para>可以在 Walnut Creek CDROM 購買 FreeBSD 的光碟片：
+      
+      <address>
+	<otheraddr>Walnut Creek CDROM</otheraddr>
+	<street>4041 Pike Lane, Suite F</street>
+	<city>Concord</city>
+	<state>CA</state>, <postcode>94520</postcode>
+	<country>USA</country>
+	Phone: <phone>+1 925 674-0783</phone>
+	Fax: <fax>+1 925 674-0821</fax>
+	Email: <email>info@cdrom.com</email>
+	WWW: <otheraddr>http://www.cdrom.com/</otheraddr>
+      </address></para>
+  </sect1>
+  
+  <sect1 id="mirrors-ftp">
+    <title>FTP 站臺</title>
+    
+    <para>透過 anonymous FTP 在 FreeBSD 官方來源取得：
+      
+      <blockquote>
+	<para><ulink
+	  URL="ftp://ftp.FreeBSD.org/pub/FreeBSD">ftp://ftp.FreeBSD.org/pub/FreeBSD</ulink>。</para>
+      </blockquote></para>
+    
+    <para><ulink
+	url="http://www.itworks.com.au/~gavin/FBSDsites.php3">FreeBSD mirror
+	站臺資料庫</ulink> 比在 handbook 的 mirror 列表更精確，
+      如同從 DNS 而非依靠靜態站臺列表得到它的資訊。</para>
+    
+    <para>此外，你也可以利用 Anonymous FTP 自以下的 mirror 站取得 FreeBSD。
+      請利用距離你較近的站。</para>
+    
+    <para><link linkend="mirrors-ar">阿根廷</link>、 
+      <link linkend="mirrors-au">澳洲</link>、 
+      <link linkend="mirrors-br">巴西</link>、 
+      <link linkend="mirrors-ca">加拿大</link>、
+      <link linkend="mirrors-cz">捷克共和國</link>、
+      <link linkend="mirrors-dk">丹麥</link>、
+      <link linkend="mirrors-ee">愛沙尼亞</link>、
+      <link linkend="mirrors-fi">芬蘭</link>、
+      <link linkend="mirrors-fr">法國</link>、
+      <link linkend="mirrors-de">德國</link>、
+      <link linkend="mirrors-hk">香港</link>、
+      <link linkend="mirrors-ie">愛爾蘭</link>、
+      <link linkend="mirrors-il">以色列</link>、
+      <link linkend="mirrors-jp">日本</link>、
+      <link linkend="mirrors-kr">韓國</link>、
+      <link linkend="mirrors-nl">荷蘭</link>、
+      <link linkend="mirrors-nz">紐西蘭</link>、
+      <link linkend="mirrors-pl">波蘭</link>、
+      <link linkend="mirrors-pt">葡萄牙</link>、
+      <link linkend="mirrors-ru">俄國</link>、
+      <link linkend="mirrors-za">南非</link>、
+      <link linkend="mirrors-es">西班牙</link>、
+      <link linkend="mirrors-sk">斯洛伐克</link>、
+      <link linkend="mirrors-si">斯洛維尼亞</link>、
+      <link linkend="mirrors-se">瑞典</link>、
+      <link linkend="mirrors-tw">台灣</link>、
+      <link linkend="mirrors-th">泰國</link>、
+      <link linkend="mirrors-uk">英國</link>、
+      <link linkend="mirrors-ua">烏克蘭</link>、
+      <link linkend="mirrors-us">美國</link>。</para>
+    
+    <variablelist>
+      <varlistentry>
+	<term><anchor id="mirrors-ar">阿根廷</term>
+
+	<listitem>
+	  <para>如果對阿根廷的站有問題時，請寄信給： 
+	    <email>hostmaster@ar.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.ar.FreeBSD.org/pub/FreeBSD">ftp://ftp.ar.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-au">澳洲</term>
+	
+	<listitem>
+	  <para>如果對澳洲的站有問題時，請寄信給： 
+	    <email>hostmaster@au.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.au.FreeBSD.org/pub/FreeBSD">ftp://ftp.au.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.au.FreeBSD.org/pub/FreeBSD">ftp://ftp2.au.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.au.FreeBSD.org/pub/FreeBSD">ftp://ftp3.au.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp4.au.FreeBSD.org/pub/FreeBSD">ftp://ftp4.au.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-br">巴西</term>
+	
+	<listitem>
+	  <para>如果對巴西的站有問題時，請寄信給： 
+	    <email>hostmaster@br.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.br.FreeBSD.org/pub/FreeBSD">ftp://ftp.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.br.FreeBSD.org/pub/FreeBSD">ftp://ftp2.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.br.FreeBSD.org/pub/FreeBSD">ftp://ftp3.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp4.br.FreeBSD.org/pub/FreeBSD">ftp://ftp4.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp5.br.FreeBSD.org/pub/FreeBSD">ftp://ftp5.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp6.br.FreeBSD.org/pub/FreeBSD">ftp://ftp6.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp7.br.FreeBSD.org/pub/FreeBSD">ftp://ftp7.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-ca">加拿大</term>
+	
+	<listitem>
+	  <para>如果對加拿大的站有問題時，請寄信給： 
+	    <email>hostmaster@ca.FreeBSD.org</email>。</para>
+		
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.ca.FreeBSD.org/pub/FreeBSD">ftp://ftp.ca.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-cz">捷克</term>
+
+        <listitem>
+          <para>如果對捷克的站有問題時，請寄信給： 
+            <email>hostmaster@cz.FreeBSD.org</email>。</para>
+	
+	  <itemizedlist>
+            <listitem>
+              <para><ulink
+                  URL="ftp://ftp.cz.FreeBSD.org/pub/FreeBSD">ftp://ftp.cz.FreeBSD.org</ulink> 聯絡人：<email>calda@dzungle.ms.mff.cuni.cz</email></para>
+            </listitem>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://sunsite.mff.cuni.cz/OS/FreeBSD">ftp://sunsite.mff.cuni.cz/OS/FreeBSD</ulink> 聯絡人：<email>jj@sunsite.mff.cuni.cz</email>.</para>
+	    </listitem>
+	  </itemizedlist>
+        </listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-dk">丹麥</term>
+	
+	<listitem>
+	  <para>如果對丹麥的站有問題時，請寄信給： 
+	    <email>hostmaster@dk.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.dk.freeBSD.ORG/pub/FreeBSD">ftp://ftp.dk.freeBSD.ORG/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-ee">愛沙尼亞</term>
+	
+	<listitem>
+	  <para>如果對愛沙尼亞的站有問題時，請寄信給： 
+	    <email>hostmaster@ee.FreeBSD.org</email>。</para>
+		
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.ee.FreeBSD.org/pub/FreeBSD">ftp://ftp.ee.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-fi">芬蘭
+	</term>
+	
+	<listitem>
+	  <para>如果對芬蘭的站有問題時，請寄信給： 
+	    <email>hostmaster@fi.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.fi.FreeBSD.org/pub/FreeBSD">ftp://ftp.fi.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-fr">法國</term>
+	
+	<listitem>
+	  <para>如果對法國的站有問題時，請寄信給： 
+	    <email>hostmaster@fr.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.fr.FreeBSD.org/pub/FreeBSD">ftp://ftp.fr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.fr.FreeBSD.org/pub/FreeBSD">ftp://ftp2.fr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.fr.FreeBSD.org/pub/FreeBSD">ftp://ftp3.fr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>		
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-de">德國</term>
+	
+	<listitem>
+	  <para>如果對德國的站有問題時，請寄信給： 
+	    <email>hostmaster@de.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.de.FreeBSD.org/pub/FreeBSD">ftp://ftp.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.de.FreeBSD.org/pub/FreeBSD">ftp://ftp2.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.de.FreeBSD.org/pub/FreeBSD">ftp://ftp3.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp4.de.FreeBSD.org/pub/FreeBSD">ftp://ftp4.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp5.de.FreeBSD.org/pub/FreeBSD">ftp://ftp5.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp6.de.FreeBSD.org/pub/FreeBSD">ftp://ftp6.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp7.de.FreeBSD.org/pub/FreeBSD">ftp://ftp7.de.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-hk">香港</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.hk.super.net/pub/FreeBSD">ftp://ftp.hk.super.net/pub/FreeBSD</ulink> 聯絡人：<email>ftp-admin@HK.Super.NET</email>.</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-ie">愛爾蘭</term>
+	
+	<listitem>
+	  <para>如果對愛爾蘭的站有問題時，請寄信給： 
+	    <email>hostmaster@ie.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.ie.FreeBSD.org/pub/FreeBSD">ftp://ftp.ie.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-il">以色列</term>
+	
+	<listitem>
+	  <para>如果對以色列的站有問題時，請寄信給： 
+	    <email>hostmaster@il.FreeBSD.org</email>。</para>
+		
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.il.FreeBSD.org/pub/FreeBSD">ftp://ftp.il.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.il.FreeBSD.org/pub/FreeBSD">ftp://ftp2.il.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-jp">日本</term>
+	
+	<listitem>
+	  <para>如果對日本的站有問題時，請寄信給： 
+	    <email>hostmaster@jp.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.jp.FreeBSD.org/pub/FreeBSD">ftp://ftp.jp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.jp.FreeBSD.org/pub/FreeBSD">ftp://ftp2.jp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.jp.FreeBSD.org/pub/FreeBSD">ftp://ftp3.jp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp4.jp.FreeBSD.org/pub/FreeBSD">ftp://ftp4.jp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp5.jp.FreeBSD.org/pub/FreeBSD">ftp://ftp5.jp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp6.jp.FreeBSD.org/pub/FreeBSD">ftp://ftp6.jp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-kr">韓國</term>
+	
+	<listitem>
+	  <para>如果對韓國的站有問題時，請寄信給： 
+	    <email>hostmaster@kr.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.kr.FreeBSD.org/pub/FreeBSD">ftp://ftp.kr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.kr.FreeBSD.org/pub/FreeBSD">ftp://ftp2.kr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink url="ftp://ftp3.kr.FreeBSD.org/pub/FreeBSD">ftp://ftp3.kr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink url="ftp://ftp4.kr.FreeBSD.org/pub/FreeBSD">ftp://ftp4.kr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink url="ftp://ftp5.kr.FreeBSD.org/pub/FreeBSD">ftp://ftp5.kr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  url="ftp://ftp6.kr.FreeBSD.org/pub/FreeBSD">ftp://ftp6.kr.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-nl">荷蘭</term>
+	
+	<listitem>
+	  <para>如果對荷蘭的站有問題時，請寄信給： 
+	    <email>hostmaster@nl.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.nl.FreeBSD.org/pub/FreeBSD">ftp://ftp.nl.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><anchor id="mirrors-nz">紐西蘭</term>
+	
+	<listitem>
+	  <para>如果對紐西蘭的站有問題時，請寄信給： 
+	    <email>hostmaster@nz.FreeBSD.org</email>。</para>
+
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink url="ftp://ftp.nz.FreeBSD.org/pub/FreeBSD">ftp://ftp.nz.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+	    
+      <varlistentry>
+	<term><anchor id="mirrors-pl">波蘭
+	</term>
+	
+	<listitem>
+	  <para>如果對波蘭的站有問題時，請寄信給： 
+	    <email>hostmaster@pl.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.pl.FreeBSD.org/pub/FreeBSD">ftp://ftp.pl.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-pt">葡萄牙</term>
+	
+	<listitem>
+	  <para>如果對葡萄牙的站有問題時，請寄信給： 
+	    <email>hostmaster@pt.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.pt.FreeBSD.org/pub/FreeBSD">ftp://ftp.pt.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.pt.FreeBSD.org/pub/FreeBSD">ftp://ftp2.pt.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><anchor id="mirrors-ru">俄國
+	</term>
+	
+	<listitem>
+	  <para>如果對俄國的站有問題時，請寄信給： 
+	    <email>hostmaster@ru.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.ru.FreeBSD.org/pub/FreeBSD">ftp://ftp.ru.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.ru.FreeBSD.org/pub/FreeBSD">ftp://ftp2.ru.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+		    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.ru.FreeBSD.org/pub/FreeBSD">ftp://ftp3.ru.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+
+	    <listitem>
+	      <para><ulink url="ftp://ftp4.ru.FreeBSD.org/pub/FreeBSD">ftp://ftp4.ru.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-za">南非</term>
+	
+	<listitem>
+	  <para>如果對南非的站有問題時，請寄信給： 
+	    <email>hostmaster@za.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.za.FreeBSD.org/pub/FreeBSD">ftp://ftp.za.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.za.FreeBSD.org/pub/FreeBSD">ftp://ftp2.za.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.za.FreeBSD.org/FreeBSD">ftp://ftp3.za.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-sk">斯洛伐克</term>
+	
+	<listitem>
+	  <para>如果對斯洛伐克的站有問題時，請寄信給： 
+	    <email>hostmaster@sk.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink url="ftp://ftp.sk.FreeBSD.org/pub/FreeBSD">ftp://ftp.sk.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry><term><anchor id="mirrors-si">斯洛維尼亞</term>
+	
+	<listitem>
+	  <para>如果對斯洛維尼亞的站有問題時，請寄信給： 
+	    <email>hostmaster@si.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.si.FreeBSD.org/pub/FreeBSD">ftp://ftp.si.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-es">西班牙
+	</term>
+	
+	<listitem>
+	  <para>如果對西班牙的站有問題時，請寄信給： 
+	    <email>hostmaster@es.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink url="ftp://ftp.es.FreeBSD.org/pub/FreeBSD">ftp://ftp.es.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-se">瑞典</term>
+	
+	<listitem>
+	  <para>如果對瑞典的站有問題時，請寄信給： 
+	    <email>hostmaster@se.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.se.FreeBSD.org/pub/FreeBSD">ftp://ftp.se.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.se.FreeBSD.org/pub/FreeBSD">ftp://ftp2.se.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.se.FreeBSD.org/pub/FreeBSD">ftp://ftp3.se.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-tw">台灣</term>
+
+	<listitem>
+	  <para>如果對台灣的站有問題時，請寄信給： 
+	    <email>hostmaster@tw.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.tw.FreeBSD.org/pub/FreeBSD">ftp://ftp.tw.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.tw.FreeBSD.org/pub/FreeBSD">ftp://ftp2.tw.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.tw.FreeBSD.org/pub/FreeBSD">ftp://ftp3.tw.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-th">泰國</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.nectec.or.th/pub/FreeBSD">ftp://ftp.nectec.or.th/pub/FreeBSD</ulink> 聯絡人：<email>ftpadmin@ftp.nectec.or.th</email>.</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-ua">烏克蘭</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.ua.FreeBSD.org/pub/FreeBSD">ftp://ftp.ua.FreeBSD.org/pub/FreeBSD</ulink> 聯絡人：<email>freebsd-mnt@lucky.net</email>.</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-uk">英國
+	</term>
+	
+	<listitem>
+	  <para>如果對英國的站有問題時，請寄信給： 
+	    <email>hostmaster@uk.FreeBSD.org</email>。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.uk.FreeBSD.org/pub/FreeBSD">ftp://ftp.uk.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.uk.FreeBSD.org/pub/FreeBSD">ftp://ftp2.uk.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.uk.FreeBSD.org/pub/FreeBSD">ftp://ftp3.uk.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp4.uk.FreeBSD.org/pub/FreeBSD">ftp://ftp4.uk.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term><anchor id="mirrors-us">美國</term>
+	
+	<listitem>
+	  <para>如果對美國的站有問題時，請寄信給： 
+	    <email>hostmaster@FreeBSD.org</email>。</para>
+		
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.FreeBSD.org/pub/FreeBSD">ftp://ftp.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.FreeBSD.org/pub/FreeBSD">ftp://ftp2.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp3.FreeBSD.org/pub/FreeBSD">ftp://ftp3.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp4.FreeBSD.org/pub/FreeBSD">ftp://ftp4.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp5.FreeBSD.org/pub/FreeBSD">ftp://ftp5.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp6.FreeBSD.org/pub/FreeBSD">ftp://ftp6.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    
+    <para>FreeBSD 上最新版禁止輸出美國以外地區的國際版程式碼(eBones 跟
+      secure) 可以從以下的地方取得。如果您是在美國或是加拿大以外的地區，
+      請使用這些站臺來獲得禁止輸出美國以外地區的程式碼。</para>
+    
+    <variablelist>
+      <varlistentry>
+	<term>南非</term>
+	
+	<listitem>
+	  <para>南非站臺的管理員 <email>hostmaster@internat.FreeBSD.org</email>
+	    。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.internat.FreeBSD.org/pub/FreeBSD">ftp://ftp.internat.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp2.internat.FreeBSD.org/pub/FreeBSD">ftp://ftp2.internat.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>巴西</term>
+	
+	<listitem>
+	  <para>巴西站臺的管理員 <email>hostmaster@br.FreeBSD.org</email>
+	    。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.br.FreeBSD.org/pub/FreeBSD">ftp://ftp.br.FreeBSD.org/pub/FreeBSD</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>芬蘭</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://nic.funet.fi/pub/unix/FreeBSD/eurocrypt">ftp://nic.funet.fi/pub/unix/FreeBSD/eurocrypt</ulink> 聯絡人：<email>count@nic.funet.fi</email>.</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+  
+  <sect1 id="mirrors-ctm">
+    <title>CTM 站臺</title>
+    
+    <para><link linkend="ctm">CTM</link>/FreeBSD 可以從下列的站臺利用 
+      anonymous FTP 取得。如果您選擇利用 anonymous FTP 取得 CTM，
+      請利用距離您較近的站。</para>
+	
+    <para>如果有問題時，請寄信給： &a.phk;。</para>
+    
+    <variablelist>
+      <varlistentry>
+	<term>美國加州, Bay Area, 官方的來源</term>
+
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CTM">ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CTM</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>德國, Trier</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.uni-trier.de/pub/unix/systems/BSD/FreeBSD/CTM">ftp://ftp.uni-trier.de/pub/unix/systems/BSD/FreeBSD/CTM</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>南非，對舊的 deltas 有備份的伺服器</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ftp.internat.FreeBSD.org/pub/FreeBSD/CTM">ftp://ftp.internat.FreeBSD.org/pub/FreeBSD/CTM</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>台灣/R.O.C, Chiayi</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ctm.tw.FreeBSD.org/pub/FreeBSD/CTM">ftp://ctm.tw.FreeBSD.org/pub/FreeBSD/CTM</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ctm2.tw.FreeBSD.org/pub/FreeBSD/CTM">ftp://ctm2.tw.FreeBSD.org/pub/FreeBSD/CTM</ulink></para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para><ulink
+		  URL="ftp://ctm3.tw.FreeBSD.org/pub/FreeBSD/CTM">ftp://ctm3.tw.FreeBSD.org/pub/freebsd/CTM</ulink></para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    
+    <para>如果沒有靠近您的站臺或是 mirror 不完全，試著使用在 <ulink
+	URL="http://ftpsearch.ntnu.no/ftpsearch/">http://ftpsearch.ntnu.no/ftpsearch</ulink>
+      的 <ulink URL="http://ftpsearch.ntnu.no/">FTP search</ulink>。
+      在特隆赫姆、挪威，FTP search 是一個很大的免費檔案檢索伺服器。</para>
+  </sect1>
+  
+  <sect1 id="mirrors-cvsup">
+    <title>CVSup 站臺</title>
+    
+    <para>FreeBSD 的 <link linkend="cvsup">CVSup</link>
+      伺服器在下列的站臺運作著；</para>
+    
+    <variablelist>
+      <varlistentry>
+	<term>阿根廷</term>
+
+	<listitem>
+	  <itemizedlist>
+	    
+	    <listitem>
+	      <para>cvsup.ar.FreeBSD.org (維護者
+		<email>msagre@cactus.fi.uba.ar</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>澳洲</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.au.FreeBSD.org (維護者
+		<email>dawes@physics.usyd.edu.au</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>巴西</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.br.FreeBSD.org (維護者
+		<email>cvsup@cvsup.br.FreeBSD.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>加拿大</term>
+	      
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.ca.FreeBSD.org (維護者
+		<email>dan@jaded.net</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>捷克</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>cvsup.cz.FreeBSD.org (維護者
+              <email>cejkar@dcse.fee.vutbr.cz</email>)</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>丹麥</term>
+	
+	<listitem>
+          <itemizedlist>
+            <listitem>
+	      <para>cvsup.dk.FreeBSD.org (維護者
+	      <email>jesper@skriver.dk</email>)</para>
+            </listitem>
+          </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>愛沙尼亞</term>
+	      
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.ee.FreeBSD.org (維護者
+		<email>taavi@uninet.ee</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>芬蘭</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.fi.FreeBSD.org (維護者
+		<email>count@key.sms.fi</email>)</para>
+	    </listitem>
+
+            <listitem>
+              <para>cvsip2.fi.FreeBSD.org (維護者
+                <email>count@key.sms.fi</email>)</para>
+            </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>法國</term>
+
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.fr.FreeBSD.org (維護者
+		<email>hostmaster@fr.FreeBSD.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>德國</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.de.FreeBSD.org (維護者
+		<email>wosch@FreeBSD.org</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup2.de.FreeBSD.org (維護者
+		<email>petzi@FreeBSD.org</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup3.de.FreeBSD.org (維護者
+		<email>ag@leo.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>冰島</term>
+	
+	<listitem>
+          <itemizedlist>
+            <listitem>
+	      <para>cvsup.is.FreeBSD.org (維護者
+	      <email>adam@veda.is</email>)</para>
+            </listitem>
+          </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>日本</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    
+	    <listitem>
+	      <para>cvsup.jp.FreeBSD.org (維護者
+		<email>simokawa@sat.t.u-tokyo.ac.jp</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup2.jp.FreeBSD.org (維護者
+		<email>max@FreeBSD.org</email>)</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>cvsup3.jp.FreeBSD.org (維護者
+		<email>shige@cin.nihon-u.ac.jp</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup4.jp.FreeBSD.org (維護者
+		<email>cvsup-admin@ftp.media.kyoto-u.ac.jp</email>)</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>cvsup5.jp.FreeBSD.org (維護者
+		<email>cvsup@imasy.or.jp</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>韓國</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    
+	    <listitem>
+	      <para>cvsup.kr.FreeBSD.org (維護者
+		<email>cjh@kr.freebsd.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>荷蘭</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    
+	    <listitem>
+	      <para>cvsup.nl.FreeBSD.org (維護者
+		<email>xaa@xaa.iae.nl</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>挪威</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.no.FreeBSD.org (維護者
+		<email>Tor.Egge@idt.ntnu.no</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>波蘭</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.pl.FreeBSD.org (維護者
+		<email>Mariusz@kam.pl</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>俄國</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.ru.FreeBSD.org (維護者
+		<email>mishania@demos.su</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup2.ru.FreeBSD.org (維護者
+		<email>dv@dv.ru</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>西班牙</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>cvsup.es.FreeBSD.org (維護者
+              <email>jesusr@FreeBSD.org</email>)</para>
+            </listitem>
+           </itemizedlist>
+        </listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>瑞典</term>
+	
+	<listitem>
+          <itemizedlist>
+            <listitem>
+	      <para>cvsup.se.FreeBSD.org (維護者
+	      <email>pantzer@ludd.luth.se</email>)</para>
+            </listitem>
+          </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>斯洛伐克</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.sk.FreeBSD.org (維護者
+		<email>tps@tps.sk</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup2.sk.FreeBSD.org (維護者
+		<email>tps@tps.sk</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>南非</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.za.FreeBSD.org (維護者
+		<email>markm@FreeBSD.org</email>)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup2.za.FreeBSD.org (維護者
+		<email>markm@FreeBSD.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>台灣</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.tw.FreeBSD.org (維護者
+		<email>jdli@freebsd.csie.nctu.edu.tw</email>)</para>
+	    </listitem>
+	    
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>烏克蘭</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    
+	    <listitem>
+	      <para>cvsup2.ua.FreeBSD.org (維護者
+		<email>freebsd-mnt@lucky.net</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>英國</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.uk.FreeBSD.org (維護者
+		<email>joe@pavilion.net</email>)</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>cvsup2.uk.FreeBSD.org (維護者
+		<email>brian@FreeBSD.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>美國</term>
+	
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup1.FreeBSD.org (維護者
+		<email>skynyrd@opus.cts.cwu.edu</email>), Washington
+		state</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup2.FreeBSD.org (維護者
+		<email>jdp@FreeBSD.org</email>), California</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup3.FreeBSD.org (維護者
+		<email>wollman@FreeBSD.org</email>), Massachusetts</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup5.FreeBSD.org (維護者
+		<email>ck@adsu.bellsouth.com</email>), Georgia</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>cvsup6.FreeBSD.org (維護者
+		<email>jdp@FreeBSD.org</email>), Florida</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    
+    <para>FreeBSD 上最新版禁止輸出美國以外地區的國際版程式碼 (eBones 跟
+      secure) 可以從以下的地方取得：如果您是在美國或是加拿大以外的地區，
+      請使用這些站臺來獲得禁止輸出美國以外地區的程式碼。</para>
+    
+    <variablelist>
+      <varlistentry>
+	<term>南非</term>
+
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>cvsup.internat.FreeBSD.org (維護者
+		<email>markm@FreeBSD.org</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+	
+    <para>下列的 <application>CVSup</application> 是特別為 
+      <link linkend="ctm">CTM</link> 使用者所設計的。
+      不同於其他 CVSup mirrors，它用 <application>CTM</application> 
+      來保留最新的程式碼。這代表著如果您從這個站
+      <application>CVSup</application> <literal>cvs-all</literal> 並且使用
+      <literal>release=cvs</literal> 的話，您將會取得一個 repositiry 的版本
+      (包含這個必然的 <filename>.ctm_status</filename> 檔案)，
+      適合使用 <application>CTM</application> <literal>cvs-cur</literal>
+      deltas 更新的人。讓留下整個 <literal>cvs-all</literal> tree 的使用者
+      可以從 <application>CVSup</application> 要轉變成
+      <application>CTM</application>，而不需要透過新的
+      <application>CTM</application> base delta 重新建立 repository。</para>
+
+    <note>
+      <para>這個特別的特性只有在使用 <command>cvs</command> 當作是 release
+        標籤，並使用 <literal>cvs-all</literal> 套件的時候才有用。
+        用 CVSup 更新任何其他的套件或 release 將讓您得到特定的套件，
+        但是將不適合 <application>CTM</application> 的更新。</para>
+    </note>
+    
+    <note>
+      <para>因為目前的 <application>CTM</application> 
+        版本不保存檔案的時間戳記，時間戳記在不同的 mirror 站中也都不會相同。
+        建議不要在不同的站切換。它將會正常運作，但是效能會有一點差。</para>
+    </note>
+    
+    <variablelist>
+      <varlistentry>
+	<term>德國</term>
+
+	<listitem>
+	  <itemizedlist>
+	    <listitem>
+	      <para>ctm.FreeBSD.org (維護者
+		<email>blank@fox.uni-trier.de</email>)</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+  
+  <sect1 id="mirrors-afs">
+    <title>AFS 站臺</title>
+    
+    <para>FreeBSD 的 AFS 伺服器在下列的站臺運作著；</para> 
+    
+    <variablelist>
+      <varlistentry>
+	<term>瑞典</term>
+	
+	<listitem>
+	  <para>檔案的路徑在：
+  	    <filename>/afs/stacken.kth.se/ftp/pub/FreeBSD</filename></para>
+
+	  <programlisting>
+stacken.kth.se         # Stacken Computer Club, KTH, Sweden                    
+130.237.234.43         #hot.stacken.kth.se
+130.237.237.230        #fishburger.stacken.kth.se
+130.237.234.3          #milko.stacken.kth.se</programlisting>
+	  
+	  <para>維護者 <email>ftp@stacken.kth.se</email></para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+</appendix>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../appendix.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../handbook.sgml" "part" "appendix")
+     End:
+-->
+

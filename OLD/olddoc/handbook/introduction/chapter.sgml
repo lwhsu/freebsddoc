@@ -1,0 +1,852 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/introduction/chapter.sgml,v 1.11 2003/02/19 05:55:34 statue Exp $
+
+     Translate into Chinese by allenk@mail.hsnuer.net
+                               ycheng@sinica.edu.tw
+                               kcwu@csie.org
+     English Version: 1.81
+-->
+
+<chapter id="introduction">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+        <firstname>Jim</firstname>
+	<surname>Mock</surname>
+	<contrib>Restructured, reorganized, and parts
+	  rewritten by </contrib>
+      </author>
+    </authorgroup>
+  </chapterinfo>
+
+  <title>介紹</title>
+
+  <sect1 id="introduction-synopsis">
+    <title>Synopsis</title>
+
+    <para>感謝你對 FreeBSD 感到興趣！接下來的章節包含了許多有關 FreeBSD
+      計劃的種種，例如它的歷史、目標、開發模式等等。</para>
+
+    <para>讀完本章，將了解：</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>FreeBSD 與其他作業系統的關係。</para>
+      </listitem>
+      <listitem>
+        <para>FreeBSD 計劃的歷史。</para>
+      </listitem>
+      <listitem>
+        <para>FreeBSD 計劃的目標。</para>
+      </listitem>
+      <listitem>
+        <para>FreeBSD 開放源碼開發模式的基礎。</para>
+      </listitem>
+      <listitem>
+        <para>當然也有 <quote>FreeBSD</quote> 名字的由來。</para>
+      </listitem>
+    </itemizedlist>
+
+  </sect1>
+
+  <sect1 id="nutshell">
+    <title>Welcome to FreeBSD!</title>
+    <indexterm><primary>4.4BSD-Lite</primary></indexterm> 
+
+    <para>FreeBSD 是一個從 4.4BSD-Lite 衍生出而能在以 Intel x86
+      以及 DEC Alpha 為基礎的電腦上執行的作業系統。
+      移植到其他平台的工作也在進行中。
+      對於 FreeBSD 的概觀, 請看
+      <link linkend="os-overview">下一節</link>。
+      對於本計劃歷史的介紹, 請看
+      <link linkend="history">FreeBSD 的簡短歷史</link>。
+      對於 FreeBSD 的最新版本的介紹, 請看 <link
+        linkend="relnotes">關於現行版本</link>。
+      如果你打算對於 FreeBSD 計劃有所貢獻，(程式碼，
+      硬體設備，資金)，請看 <ulink
+        url="../../articles/contributing/index.html">如何對 FreeBSD 有貢獻</ulink>。</para>
+
+    <sect2 id="os-overview">
+      <title>FreeBSD能做什麼？</title>
+
+      <para>FreeBSD 提供給你許多先進功能。這些功能包括：</para>
+
+      <itemizedlist>
+        <indexterm><primary>先佔式多工</primary></indexterm>
+	<listitem>
+	  <para>動態優先權調整的<emphasis>先佔式多工</emphasis>
+            能確保即使在系統負擔很重的情況下，
+            程式執行平順並且應用程式與使用者公平地共享資源。</para>
+	</listitem>
+
+	<indexterm><primary>多使用者支援</primary></indexterm>
+	<listitem>
+	  <para><emphasis>多使用者(Multi-user)</emphasis>
+            代表著許多人可以同時使用一個 FreeBSD 系統來處理各自的事務。
+            系統的硬體周邊(如印表機及磁帶機)也可以讓所有的使用者適當地分享。
+            也可以對於各別使用者或一群使用者使用重要系統資源予以設限，
+            以保護系統不致被過度使用。</para>
+	</listitem>
+      
+	<indexterm><primary>TCP/IP 網路功能</primary></indexterm>
+	<listitem>
+	  <para>強大的 <emphasis>TCP/IP 網路功能</emphasis>
+            包含許多工業標準如 SLIP、PPP、NFS、DHCP 和 NIS 的支援。
+            表示 FreeBSD 可以容易地跟其他作業系統透過網路共同運作，
+            或是充當企業上的伺服器，例如提供遠端檔案共享(NFS)
+            及電子郵件 (e-mail) 等服務，或是讓你的企業連上網際網路(Internet)
+            並提供 WWW、FTP、路由(routing)、及防火牆(firewall、security)
+            等必備服務。</para>
+	</listitem>
+      
+	<indexterm><primary>記憶體保護</primary></indexterm>      
+	<listitem>
+	  <para><emphasis>記憶體保護(Memory protection)</emphasis>
+            能確保程式(或是使用者)不會互相干擾。
+            任何程式有不正常的運作並不會影響其他程式的執行。</para>
+	</listitem>
+      
+	<listitem>
+	  <para>FreeBSD 是一個 <emphasis>32 位元</emphasis> 的作業系統
+            (<emphasis>在 Alpha 上是 64 位元</emphasis>)
+            -- 從一開始便是這樣設計的。</para>
+	</listitem>
+
+	<indexterm>
+    <primary>X 視窗系統</primary>
+    <seealso>XFree86</seealso>
+  </indexterm>
+      
+	<listitem>
+	  <para>業界標準的 <emphasis>X 視窗系統</emphasis>
+            (X11R6) 提供了圖形使用者介面 (GUI)
+            得以在一般的 VGA 顯示卡以及螢幕上使用，
+            且包括了完整的原始程式碼。</para>
+	</listitem>
+
+	<indexterm>
+	  <primary>binary compatibility</primary>
+	  <secondary>Linux</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>binary compatibility</primary>
+	  <secondary>SCO</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>binary compatibility</primary>
+	  <secondary>SVR4</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>binary compatibility</primary>
+	  <secondary>BSD/OS</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>binary compatibility</primary>
+	  <secondary>NetBSD</secondary>
+	</indexterm>
+	<listitem>
+	  <para>能<emphasis>直接執行</emphasis>屬於許多其他作業系統
+            (如 Linux、SCO、SVR4、BSDI 和 NetBSD) 的可執行檔。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>數千個 <emphasis>立即可以執行</emphasis> 的程式，
+            你可以以由 FreeBSD <emphasis>ports</emphasis> 以及
+            <emphasis>packages</emphasis> 取得。
+            你將不需要再費心到網路上到處搜尋所需要的軟體。</para>
+	</listitem>
+      
+	<listitem>
+	  <para>網路上尚有數以千計相當 <emphasis>容易植移</emphasis>
+	    的應用程式。
+            FreeBSD 的原始程式碼與許多常見的商業版 Unix 系統相容，
+            所以大部分的程式都只需要很少的修改(或根本不用修改)
+            就可以編譯執行。</para>
+	</listitem>
+      
+	<indexterm><primary>虛擬記憶體</primary></indexterm>
+	<listitem>
+	  <para>需要時才置換的 (demand paged) <emphasis>虛擬記憶體</emphasis> 
+	    以及 <quote>合併的虛擬記憶體及檔案緩衝區之快取功能 (merged 
+	    VM/buffer cache)</quote>
+            的設計有效的使得當系統中有用去大量記憶體的程式執行時，
+            那些需要快速反應的交談式程式仍然有不錯的表現。</para>
+	</listitem>
+      
+        <indexterm>
+	  <primary>Symmetric Multi-Processing (SMP)</primary>
+	</indexterm>
+	<listitem>
+	  <para><emphasis>對稱式多處理器(SMP)</emphasis>
+            支援多 CPU 的電腦系統。</para>
+	</listitem>
+
+	<indexterm>
+	  <primary>compilers</primary>
+	  <secondary>C</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>compilers</primary>
+	  <secondary>C++</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>compilers</primary>
+	  <secondary>Fortran</secondary>
+	</indexterm>
+	<listitem>
+	  <para>完全相容的 <emphasis>C</emphasis>、
+            <emphasis>C++</emphasis>、<emphasis>Fortran</emphasis>和
+            <emphasis>Perl</emphasis>
+            開發工具及環境。
+            以及其他許多可供進一步運用的程式語言也收集在 ports 和 packages。
+	    </para>
+	</listitem>
+      
+	<indexterm><primary>原始程式碼</primary></indexterm>
+	<listitem>
+          <para>整個系統都有<emphasis>原始程式碼</emphasis>，
+            這讓你對作業環境擁有最完全的掌握度。
+            既然能擁有完全開放的系統，何苦被專有軟體控制，任廠商擺布呢？
+            </para>
+	</listitem>
+
+	<listitem>
+	  <para>廣泛且豐富的 <emphasis>線上文件</emphasis>。</para>
+	</listitem>
+      
+	<listitem>
+	  <para><emphasis>還不止如此！</emphasis></para>
+	</listitem>
+      </itemizedlist>
+    
+      <indexterm><primary>4.4BSD-Lite</primary></indexterm>
+      <indexterm>
+        <primary>Computer Systems Research Group (CSRG)</primary>
+      </indexterm>
+      <indexterm><primary>U.C. Berkeley</primary></indexterm>
+      <para>FreeBSD 系統乃是基於美國加州大學柏克萊分校的電腦系統研究群
+        (Computer Systems Research Group 也就是 CSRG) 所發行的
+        4.4BSD-Lite，以及基於 BSD 系統開發的優良傳統。
+        除了由 CSRG 所提供的高品質的成果，
+        為了提供可處理真正具負荷的工作，
+        FreeBSD 計畫也投入了數千小時以上的細部調整，
+        以能獲得最好的執行效率以及系統的穩定度。
+        正當許多商業上的巨人正努力地希望能提供效能及穩定時，
+        FreeBSD 已經具備這樣的特質 -- <emphasis>就是現在</emphasis>！
+	</para>
+
+      <para>FreeBSD 的運用範圍無限，其實完全限制在你的想像力上。
+        從軟體的開發到工廠自動化，或是人造衛星上面的天線的方位角度的遠端控制；
+        這些功能若可以用商用的 Unix 產品來達成，
+        那麼極有可能使用 FreeBSD 也能辦到！
+        FreeBSD 也受益於來自於全球各研究中心及大學所開發的數千個高品質的軟體
+        ，這些通常只需要花費很少的費用或根本就是免費的。
+        當然也有商業軟體，而且出現的數目是與日俱增。</para>
+
+      <para>由於每個人都可以取得 FreeBSD 的原始程式碼，
+        這個系統可以被調整而能執行任何原本完全無法想像的功能或計畫，
+        而對於從各廠商取得的作業系統通常沒有辦法這樣地被修改。
+        以下提供一些人們使用 FreeBSD 的例子：</para>
+    
+      <itemizedlist>
+	<listitem>
+	  <para><emphasis>網路服務：</emphasis> FreeBSD
+            內建強勁的網路功能使它成為網路服務(如下例)的理想平台：</para>
+
+	  <itemizedlist>
+	    <indexterm><primary>FTP servers</primary></indexterm>
+	    <listitem>
+	      <para>檔案伺服器(FTP servers)</para>
+	    </listitem>
+	  
+	    <indexterm><primary>web servers</primary></indexterm>
+	    <listitem>
+	      <para>全球資訊網伺服器(WWW servers)
+	        (標準的或是加強安全的[SSL])</para>
+	    </listitem>
+	  
+	    <indexterm><primary>firewall</primary></indexterm>
+	    <indexterm><primary>IP masquerading</primary></indexterm>
+	    <listitem>
+	      <para>防火牆以及 NAT (<quote>IP masquerading</quote>) 
+		gateways。</para>
+	    </listitem>
+	  
+	    <indexterm><primary>electronic mail</primary></indexterm>
+	    <listitem>
+	      <para>電子郵件伺服器(Electronic Mail servers)</para>
+	    </listitem>
+	  
+	    <indexterm><primary>USENET</primary></indexterm>
+	    <listitem>
+	      <para>網路新聞伺服器(USENET News)
+		或是電子佈告欄系統(BBS)</para>
+	    </listitem>
+	  
+	    <listitem>
+	      <para>還有更多...</para>
+	    </listitem>
+	  </itemizedlist>
+
+	  <para>有了 FreeBSD，您可以容易地先用便宜的 386 PC，
+            再逐步升級您的機器到四個 CPU 的 Xeon
+            並使用磁碟陣列(RAID)來滿足您企業運用上的需求。</para>
+	</listitem>
+      
+	<listitem>
+	  <para><emphasis>教育：</emphasis>
+            如果你是資訊或相關工程領域的學生，再也沒有比使用 FreeBSD
+            能學到更多作業系統、計算機結構、及網路的方法了。
+            另外如果你想利用電腦來處理一些<emphasis>其他的</emphasis>
+            工作，還有一些如 CAD、
+            數學運算以及圖形處理軟體等可以免費地取得使用。</para>
+	</listitem>
+      
+	<listitem>
+	  <para><emphasis>研究：</emphasis>有了完整的原始程式碼，FreeBSD
+            是研究作業系統及電腦科學的極佳環境。
+            具有免費且自由取得特性的 FreeBSD
+            也使得一個分置兩地的合作計畫不必擔心版權及系統開放性的問題，
+            而能自在的交流。</para>
+	</listitem>
+      
+	<indexterm><primary>router</primary></indexterm>
+	<indexterm><primary>DNS Server</primary></indexterm>
+	<listitem>
+	  <para><emphasis>網路：</emphasis>
+            你如果需要 router、Name Server (DNS) 或安全的防火牆(Firewall)，
+            FreeBSD 可以輕易的將你沒有用到的 386 或 486 PC
+            變身成為絕佳的伺服器，甚至具有過濾封包(packet-filter) 的功能。
+	    </para>
+	</listitem>
+      
+	<indexterm>
+	  <primary>X Window System</primary>
+	  <secondary>XFree86</secondary>
+	</indexterm>
+	<indexterm>
+	  <primary>X Window System</primary>
+	  <secondary>Accelerated-X</secondary>
+	</indexterm>
+	<listitem>
+	  <para><emphasis>X 視窗工作站：</emphasis> FreeBSD 是便宜 X
+            終端機的良策，你可以使用免費的 XFree86 或是由
+            X-Inside 提供的商業版的 X Server。
+            FreeBSD 不但可以充當遠端 X 程式終端機，
+            也可以執行本地的 X 程式而減輕大型工作站的負荷。
+            如果有一台中央伺服器的話，FreeBSD 甚至可以經由網路開機
+            (不需本地硬碟)，而變成更便宜且易於管理的工作站。</para>
+	</listitem>
+      
+	<indexterm><primary>GNU Compiler Collection</primary></indexterm>
+	<listitem>
+	  <para><emphasis>軟體開發：</emphasis>
+            基本安裝的 FreeBSD 就包含了完整的程式開發工具，如 GNU C/C++ 
+            編譯器及除錯器。</para>
+	</listitem>
+      </itemizedlist>
+    
+      <para>你可以經由購買 CDROM 或是從 FTP 站上抓到 FreeBSD --
+        包括立即可執行的系統以及系統的完整程式碼。
+        詳情請參閱 <xref linkend="mirrors"> 取得 FreeBSD。</para>
+    </sect2>
+
+    <sect2>
+      <title>誰在用 FreeBSD？</title>
+
+      <indexterm>
+	<primary>Users</primary>
+	<secondary>Large sites running FreeBSD</secondary>
+      </indexterm>
+ 
+      <para>許多 Internet 上的大型網站都是以 FreeBSD 作為它的作業系統，例如：</para>
+
+      <itemizedlist>
+        <indexterm><primary>Yahoo!</primary></indexterm>
+        <listitem>
+	  <para><ulink url="http://www.yahoo.com/">Yahoo!</ulink></para>
+	</listitem>
+
+	<indexterm><primary>Apache</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.apache.org/">Apache</ulink></para>
+	</listitem>
+
+	<indexterm><primary>Blue Mountain Arts</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.bluemountain.com/">Blue Mountain
+	    Arts</ulink></para>
+	</listitem>
+
+	<indexterm><primary>Pair Networks</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.pair.com/">Pair
+	    Networks</ulink></para>
+	</listitem>
+
+	<indexterm><primary>Sony Japan</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.sony.co.jp/">Sony
+	    Japan</ulink></para>
+	</listitem>
+
+	<indexterm><primary>Netcraft</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.netcraft.com/">Netcraft</ulink>
+	    </para>
+	</listitem>
+
+	<indexterm><primary>Weathernews</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.wni.com/">Weathernews</ulink>
+	</para></listitem>
+
+	<indexterm><primary>Supervalu</primary></indexterm>
+	<listitem>
+	  <para><ulink
+	    url="http://www.supervalu.com/">Supervalu</ulink></para>
+	</listitem>
+
+	<indexterm><primary>TELEHOUSE America</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.telehouse.com/">TELEHOUSE
+	    America</ulink></para>
+	</listitem>
+
+	<indexterm><primary>Sophos Anti-Virus</primary></indexterm>
+	<listitem>
+	  <para><ulink url="http://www.sophos.com/">Sophos
+	    Anti-Virus</ulink></para>
+	</listitem>
+
+	<indexterm><primary>JMA Wired</primary></indexterm>
+	<listitem>
+	  <para><ulink
+	    url="http://www.jmawired.com/">JMA Wired</ulink></para>
+	</listitem>
+      </itemizedlist>
+
+      <para>以及許多其他的網站。</para>
+    </sect2>
+
+  </sect1>
+
+  <sect1 id="history">
+    <title>有關 FreeBSD 計劃</title>
+
+    <para>接下來我們告訴你 FreeBSD 計劃的背景，包含簡單的歷史，計劃的目標，以及
+      開發的模式。</para>
+
+    <sect2 id="intro-history">
+      <sect2info>
+	<authorgroup>
+	  <author>
+	    <firstname>Jordan</firstname>
+	    <surname>Hubbard</surname>
+	    <contrib>Contributed by </contrib>
+	  </author>
+	</authorgroup>
+      </sect2info>
+
+      <title>FreeBSD 的簡短歷史</title>
+
+      <indexterm><primary>386BSD Patchkit</primary></indexterm>
+      <indexterm><primary>Hubbard, Jordan</primary></indexterm>
+      <indexterm><primary>Williams, Nate</primary></indexterm>
+      <indexterm><primary>Grimes, Rod</primary></indexterm>
+      <indexterm>
+        <primary>FreeBSD Project</primary>
+        <secondary>History</secondary>
+      </indexterm>
+      <para>FreeBSD 計畫的想法是在 1993 年初所形成的，
+        那是源自於維護一組 <quote>非官方的 386BSD 修正工具</quote>
+        計畫的三個協調維護人 Nate Williams，Rod Grimes 和我。</para>
+
+      <indexterm><primary>386BSD</primary></indexterm>
+      <para>起先的目標是做出一份適足以修正 386BSD
+        許多當時的修正工具（patchkit) 不容易修正的問題的暫時性版本。
+        或許有人記得當時本計畫的名稱是 <quote>386BSD 0.5</quote> 或是
+        <quote>386BSD Interim</quote> 便是這個原因。</para>
+    
+      <indexterm><primary>Jolitz, Bill</primary></indexterm>
+      <para>386BSD 是 Bill Jolitz 的作業系統，
+        在當時就已經有約一年的分裂討論。
+        當該修正工具 (patchkit) 日漸變大得令人不舒服，
+        我們無異議的同意要作一些事了，
+        並決定以提供一份暫時性的 <quote>清理過</quote> 的版本來幫助 Bill。
+        由於 Bill Jolitz 忽然決定取消其對該計畫的認可，
+        且沒有明確指出未來的打算，所以該計畫便忽然地中斷了。</para>
+
+      <indexterm><primary>Greenman, David</primary></indexterm>
+      <indexterm><primary>Walnut Creek CDROM</primary></indexterm>
+      <para>我們並沒有花去多少時間，便決定在沒有 Bill 的支持下，
+        該計畫仍然要走下去，最後我們採用 David Greenman
+        丟銅板決定的名字 <quote>FreeBSD</quote>。
+        我們在詢問了當時的若干使用者之後，決定了最初的目標，
+        當該計畫開始實施一切就要成真時，一切就變得更清楚了。
+        我跟 Walnut Creek CDROM 討論發行 CDROM 
+	以讓那些並沒有辦法很容易上網路的人可以經由比較容易的管道取得 
+	FreeBSD。
+        Walnut Creek CDROM 不只贊成以 CDROM 發行 FreeBSD 的想法，同時提供
+        了一台機器以及快速的網際網路的連接。
+        如果不是 Walnut Creek CDROM
+        幾乎是毫無前例的信任這個剛開始還是完全不知名計畫，
+        那麼很可能 FreeBSD 不會如此快速的有如今天這樣的規模。</para>
+
+      <indexterm><primary>4.3BSD-Lite</primary></indexterm>
+      <indexterm><primary>Net/2</primary></indexterm>
+      <indexterm><primary>U.C. Berkeley</primary></indexterm>
+      <indexterm><primary>386BSD</primary></indexterm>
+      <indexterm><primary>Free Software Foundation</primary></indexterm>
+      <para>第一次以 CDROM 以及透過網路發行的 FreeBSD&nbsp;1.0 是在 1993 年十二月。
+        該版本是基於由 U.C. Berkeley 以磁帶方式發行的
+        4.3BSD-Lite (<quote>Net/2</quote>)以及許多來自於 386BSD
+        和自由軟體基金會的軟體。對於第一次發行而言還算成功，
+        我們又接著於 1994 年 5 月發行了相當成功的 FreeBSD 1.1。</para>
+
+      <indexterm><primary>Novell</primary></indexterm>
+      <indexterm><primary>U.C. Berkeley</primary></indexterm>
+      <indexterm><primary>Net/2</primary></indexterm>
+      <indexterm><primary>AT&amp;amp;T</primary></indexterm>
+      <para>大約就是那時，另一個意外的風暴在 Novell 和 U.C. Berkeley 關於
+        Berkeley Net/2 磁帶之法律地位的訴訟確定之後形成。
+        U.C. Berkeley 接受大部份的 Net/2 的程式碼都是
+        <quote>侵佔來的</quote> 且是屬於 Novell 的財產 -- 事實上是當時不久前從
+        AT&amp;T 取得的。
+        Berkeley 得到的是 Novell 對於 4.4BSD-Lite 的 <quote>祝福</quote>
+        ，當最後 4.4BSD-Lite 終於發行之後，便不再是侵佔行為。
+        而所有現有 Net/2 使用者都被強烈建議更換新版本。
+        這包括了 FreeBSD，我們被要求於 1994 年 6 月底前停止散佈基於 Net/2 
+	的產品。在此前提之下，本計畫被允許在期限以前作最後一次發行，
+        也就是 FreeBSD&nbsp;1.1.5.1。</para>
+
+      <para>FreeBSD 便開始了這宛如從新發明一次的艱鉅工作 -- 從一個相對來說
+        是新的且較不完整的 4.4BSD-Lite。
+        這個 <quote>Lite</quote> 真的是比較鬆散，因為
+        Berkeley 之 CSRG 移去了許多在建立一個可以開機執行的系統所需要的程式碼
+        (基於若干法律上的要求)，
+        同時該版本到 Intel 平台的移植是相對來說較為不完整的。
+        直到 1994 年 11 月本計畫才完成了這個轉移，
+        同時在該年 12 月底以 CDROM 以及網路的形式發行了 FreeBSD&nbsp;2.0。
+        雖然該份版本在當時有點匆促，但仍是富有意義的成功。
+        隨之於 1995 年 6 月發行了更容易安裝，更好的 FreeBSD&nbsp;2.0.5。</para>
+
+      <para>我們在 1996 年八月發行了 FreeBSD&nbsp;2.1.5，
+        且似乎已有若干的 ISP 以及商業團體都有使用，很快地 2.1
+        這個分支就有了新的版本，也就是在 1997 年 2 月發行的 FreeBSD&nbsp;2.1.7.1 --
+        也作為 2.1 穩定分支的結束。
+        之後此分支便進入了維護模式，
+        亦即在此分支中只有系統安全方面的加強及若干關鍵性的錯誤修正。</para>
+
+      <para>1996 年 11 月 FreeBSD&nbsp;2.2 從發展的主軸 (<quote>-CURRENT</quote>)
+        分支出來成為 RELENG_2_2 分支。
+        進一步的版本是在 97 年夏秋之間發行的，最新的版本是在 1998 
+	年十一月發行的 2.2.8 版。
+        第一個正式的 3.0 版本是於 1998 年十月發行，
+        亦即宣告 2.2 分支的結束。</para>
+
+      <para>1999 年 1 月 20 日再度分支。這產生了 4.0-CURRENT
+        以及 3.x-STABLE 兩個分支。
+        1999 年 2 月 15 日 3.1 版發行，同年 5 月 15 日 3.2 版發行。
+        目前這個分支的最新版本是在 1999 年 9 月 16 日發行的 3.3 版。</para>
+
+      <para>在 2000 年 3 月 13 日又有另外一個分支，產生了 4.X-STABLE 分支，
+        現在被認為是「current -stable branch」，已經有許多版本從這個分支衍生出來：
+        4.0-RELEASE 在 2000 年 5 月發行，4.1 在 2000 年 7 月，4.2 在 2000 年 11 月，
+        4.3 在 2001 年 4 月，4.4 在 2001 年 9 月。
+        在 2002 年，4.x-stable（RELENG_4）這個分支下，將會有更多版本的發行。</para>
+
+      <para>長期的發展計劃將在 5.0-CURRENT 這個分支繼續，
+        5.0 SNAPshot 光碟（當然網路上也有）將能持續的在
+        <ulink url="ftp://current.FreeBSD.org/pub/FreeBSD/snapshots/">
+	the snapshot server</ulink>取得</para>
+    </sect2>
+      
+    <sect2 id="goals">
+      <sect2info>
+        <authorgroup>
+          <author>
+            <firstname>Jordan</firstname>
+	    <surname>Hubbard</surname>
+   	    <contrib>Contributed by </contrib>
+	  </author>
+        </authorgroup>
+      </sect2info>
+
+      <title>FreeBSD 計劃目標</title>
+    
+      <indexterm>
+        <primary>FreeBSD Project</primary>
+        <secondary>Goals</secondary>
+      </indexterm>
+      <para>FreeBSD 計畫的目標在於提供可作任意用途的軟體而不附帶任何限制條文。
+	我們之中許多人都對於本計畫或其中的軟體有相當深入的付出或研究。
+	我們並不在意些微的經濟上的補償，
+	但這並不意味著我們已經準備好長久堅持下去。
+        我們相信我們的 <quote>任務</quote>
+        是提供程式碼給任何一位或說全部的後來者，
+        無論為了任何理由，
+        能讓這程式碼得到最廣泛可能性的使用以及提供最廣泛可能性的利益。
+        我相信這就是我們熱情支持的自由軟體最根本的目標。</para>
+
+      <indexterm>
+        <primary>GNU General Public License (GPL)</primary>
+      </indexterm>
+      <indexterm>
+        <primary>GNU Lesser General Public License (LGPL)</primary>
+      </indexterm>
+      <indexterm><primary>BSD Copyright</primary></indexterm>
+      <para>在我們整個程式碼中有若干是使用 GNU 公用軟體執照 (GPL)
+        或是 LGPL 的版權宣告的。
+        他們附帶有稍多的限制性文字於其中，但還好只是強迫人們可以取得該軟體，
+        而非一般限制性的版權宣告。由於使用 GPL
+	軟體在商業用途上會增加若干複雜性，
+        我們在適當的時機會讓這些軟體改用更寬鬆的 BSD 版權聲明。</para>
+    </sect2>
+  
+    <sect2 id="development">
+      <sect2info>
+        <authorgroup>
+          <author>
+            <firstname>Satoshi</firstname>
+	    <surname>Asami</surname>
+   	    <contrib>Contributed by </contrib>
+	  </author>
+        </authorgroup>
+      </sect2info>
+
+      <title>FreeBSD 系統開發模式</title>
+    
+      <indexterm>
+        <primary>FreeBSD Project</primary>
+        <secondary>Development Model</secondary>
+      </indexterm>
+      <para>FreeBSD 系統開發是一個非常開放且具彈性的過程，
+        FreeBSD 是由全世界上千人的供獻的軟體所建構而成的，
+        請看 <ulink url="../../articles/contributors/article.html">list of contributors</ulink>。
+        我們經常注意新的系統開發者及新的想法，
+        那些希望更進一步參與本計畫的人可以經由 &a.hackers;
+        與我們接觸。你也可以使用 &a.announce; 來讓其他的 FreeBSD 
+	使用者知道你的工作。</para>
+
+      <para>關於 FreeBSD 計劃發展的相關事項(無論你是獨立工作者或是
+        比較密切的合作發展者)：</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>CVS 倉庫<anchor
+	    id="development-cvs-repository"></term>
+
+	  <indexterm>
+      <primary>CVS</primary>
+      <secondary>repository</secondary>
+    </indexterm>
+	  <indexterm>
+	    <primary>Concurrent Versions System</primary>
+      <see>CVS</see>
+	  </indexterm>
+	  <listitem>
+	    <para>FreeBSD 程式碼是用 
+	      <ulink url="http://www.cvshome.org/">CVS</ulink>
+              (Concurrent Version System)，
+              一個 FreeBSD 預設安裝，可以免費取得程式碼管制工具軟體。主要的 
+	      <ulink url="http://www.FreeBSD.org/cgi/cvsweb.cgi">CVS
+              倉庫</ulink> 是放在一台位於 Santa Clara CA, USA 的電腦上。
+              其內容被複製到世界上相當數量的映射站台。
+              你可以由這些站台取得整個 CVS 的內容以及 <link
+              linkend="current">-CURRENT</link> 和 <link
+              linkend="stable">-STABLE</link> 程式碼並將之複製到你的機器上。
+              在 <link linkend="synching">將你的程式原始碼同步</link>
+              可以找到實做的方法。</para>
+	  </listitem>
+	</varlistentry>
+      
+	<varlistentry>
+	  <term>Committers 列表<anchor
+	    id="development-committers"></term>
+	      
+	  <indexterm><primary>committers</primary></indexterm>
+	  <listitem>
+	    <para><firstterm>committers</firstterm>
+              指的是那些對於 CVS 內容有 <emphasis>寫入</emphasis> 權限的人，
+              以及那些被授權可以修改 FreeBSD 原始程式碼的人。
+              (<quote>committer</quote> 這個詞來自於
+              &man.cvs.1; <command>commit</command> 指令，
+              這個指令是用來對於 CVS 內容的改變寫入 CVS 倉庫中的)
+              提供意見給 committer 們最直接且簡單的方法便是使用指令
+              &man.send-pr.1;，如果系統看起來有什麼不對勁的話，
+              你也可以直接寫信到 &a.committers;。
+	      </para>
+	  </listitem>
+	</varlistentry>
+      
+	<varlistentry>
+	  <term>FreeBSD 核心小組<anchor id="development-core"></term>
+
+	  <indexterm><primary>core team</primary></indexterm>
+	  <listitem>
+	    <para><firstterm>FreeBSD 核心小組</firstterm>
+              就等於董事會 -- 如果把 FreeBSD 看成是一家公司的話。
+	      核心小組的主要職責在於確保此計畫有良好的架構，
+	      並朝著正確的方向發展。
+              並邀請投入且負責的軟體開發者加入 committers 行列，
+              以在若干成員離去時得以補充新血。
+              目前的核心小組是在 2002 年 6 月 committers 候選人中選出來的，
+              這個選舉每兩年會舉辦一次。
+	      </para>
+
+	    <para>若干核心小組的成員還負責特定的責任範圍，
+              意思是說他們必須盡力確保某個子系統如文件說明一般工作正常。
+              完整的 FreeBSD 開發人員列表及責任範圍列表，請見 <ulink
+	      url="../../articles/contributors/article.html">貢獻者列表
+	      </ulink></para>
+
+	    <note>
+	      <para>許多核心小組的成員都是自願加入 FreeBSD
+                開發行列，而且沒有從本計劃獲得任何經濟上得資助，
+                因此 <quote>承諾</quote> 不應該被解讀為
+                <quote>支援保證。</quote>
+                前面所述 <quote>董事會</quote> 之類比並非十分精確，
+                或許說他們是一群願意放棄他們的生活，
+                投注於 FreeBSD 計畫而非其個人其他領域成就的人！
+                </para>
+	    </note>
+	  </listitem>
+	</varlistentry>
+      
+	<varlistentry>
+	  <term>其他的貢獻者</term>
+
+	  <indexterm><primary>contributors</primary></indexterm>
+	  <listitem>
+	    <para>最後，但絕非最不重要的，
+              最大開發者族群便是那些持續提供回饋以及錯誤修正的系統使用者。
+              與 FreeBSD 非核心開發者互動的主要方式便是透過訂閱
+              討論此類事務的 &a.hackers; 通信論壇。(請見 <link
+                linkend="eresources-mail">通信論壇資訊</link>)</para>
+	  
+	    <para><citetitle><ulink
+              url="../../articles/contributors/article.html">
+              FreeBSD 貢獻者列表</ulink></citetitle>
+              相當長且不斷成長，
+              你何不也立即給予 FreeBSD 一些回饋呢？</para>
+
+	    <para>提供軟體碼並非唯一的回饋方式，對於
+              需要投入的工作之完整說明，請見<ulink
+	      url="../../../../index.html">FreeBSD Project web
+	      site</ulink>。</para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    
+      <para>簡言之，我們的系統開發模式好像是一組沒有拘束的同心圓。
+        這個集中式的開發模式是著眼於 <emphasis>使用者</emphasis>
+        的方便，同時讓他們能很容易地維護同一份軟體，
+        而非將潛在的貢獻分散開來！
+        我們的目標是提供一個包含有大量具一致性的 <link
+          linkend="ports">應用軟體</link>，
+        使用者可以簡單的安裝並且使用且穩定的作業系統，
+        這個開發模式相當符合這個目標。</para>
+    
+      <para>我們對於那些要加入我們的 FreeBSD 開發者的期待是，
+        具有如同其他人們一樣的投入，來確保其過去的成功！</para>
+    </sect2>
+
+    <sect2 id="relnotes">
+      <title>關於最新的版本的 FreeBSD</title>
+
+      <indexterm><primary>NetBSD</primary></indexterm>
+      <indexterm><primary>OpenBSD</primary></indexterm>
+      <indexterm><primary>386BSD</primary></indexterm>
+      <indexterm><primary>Free Software Foundation</primary></indexterm>
+      <indexterm><primary>U.C. Berkeley</primary></indexterm>
+      <indexterm>
+        <primary>Computer Systems Research Group (CSRG)</primary>
+      </indexterm>
+      <para>FreeBSD 是一個可以幾乎免費取得，基於 4.4BSD-Lite，
+        包含完整的原始程式碼, 在 Intel i386/i486/Pentium/Pentium Pro/
+	Celeron/Pentium&nbsp;II/Pentium&nbsp;III/Pentium&nbsp;IV (或相容電腦)，
+        Xeon、DEC Alpha、SPARC64 為基礎的電腦上執行的作業系統。
+        它主要是根基於由 U.C. Berkeley's CSRG group, 以及來自於
+        NetBSD、OpenBSD、386BSD、以及自由軟體基金會的軟體。</para>
+
+      <para>自從 1994 年末，我們發佈了 FreeBSD&nbsp;2.0 之後，系統的執行效率，
+        功能，和穩定性便有了戲劇性的改善。
+	<!-- XXX is the rest of this paragraph still true ? -->
+        最大的改變就是我們將記憶體與檔案系統的 cache 機制結合在一起。
+        這不只使得系統的表現變得更好, 並且使得 FreeBSD
+        系統最少的記憶體須求減少到 5&nbsp;MB。
+        其它的改進包括完整的 NIS cilent and server 功能支援，
+        transaction TCP support、dial-on-demand PPP、整合的 DHCP 支援、
+        SCSI 子系統的改進、
+        ISDN 的支援，ATM、FDDI 以及乙太網路 (Ethernet、包括
+        100Mbit 和 Gigabit) 的支援，最新版本的 Adaptec 控制卡
+        驅動程式的改善以及數以百計的程式錯誤的更正。</para>
+
+      <para>我們也採用了來自於我們貼心的使用者所提供的看法和建議,
+        以及嘗試著提供更加合理且容易了解的安裝過程。
+        我們歡迎你對於這個逐漸演化的過程的任何建議！</para>
+
+      <para>除了最基本的系統軟體，
+        我們提供了一組上千個已經移植到 FreeBSD 的一般用途軟體。
+        至今，已經有超過 &os.numports; 個移植軟體了！
+        這些移植軟體中包括了從 http (WWW) 到電腦遊戲，程式語言，編輯軟體
+        等幾乎所有種類的軟體。
+        全部的移植軟體需要大約 &ports.size; 的硬碟空間，
+        都只儲存與其原始程式碼有<quote>變更</quote>的部份。
+        這使的我們可以更容易的跟新這些移植軟體，
+        也大量的減少如舊的 1.0 版的移植軟體對於硬碟空間的需求。
+        要編譯一個移植軟體，你只需要進入該軟體的目錄，
+        輸入 <command>make all</command>，系統成功的完成編譯。之後再輸入
+        <command>make install</command> 這樣系統就會把軟體裝好。
+        完整的 port 原始碼可以在 FreeBSD 光碟片或是 ftp 站上找到，
+        你所需要的只是足夠的硬碟空間來編譯你要的 port 軟體。
+        幾乎每一個 port 都已事先被編譯成 <quote>package</quote>，
+        如果你不想自己編譯這些軟你，
+        你可以用指令 <command>pkg_add</command> 來安裝這些軟體。</para>
+
+      <para>在你安裝以及始用 FreeBSD 的過程中，有許多有用的文件可以參考。
+        如果你安裝的是 FreeBSD&nbsp;2.1 或更新的版本，你可以在
+        <filename>/usr/share/doc</filename> 找到許多文件。
+        你可以閱讀儲存在安裝好的 FreeBSD 上的 HTML
+        文件或是到下列網址：</para>
+
+      <variablelist>
+        <varlistentry>
+	  <term>FreeBSD 使用手冊</term>
+
+	  <listitem>
+	    <para><ulink
+	      url="file://localhost/usr/share/doc/handbook/index.html">/usr/share/doc/handbook/index.html</ulink></para>
+	  </listitem>
+        </varlistentry>
+      
+        <varlistentry>
+	  <term>FreeBSD 常見問題集</term>
+
+	  <listitem>
+	    <para><ulink
+	      url="file://localhost/usr/share/doc/faq/index.html">/usr/share/doc/faq/index.html</ulink></para>
+	  </listitem>
+        </varlistentry>
+      </variablelist>
+    
+      <para>你可以在下列網址找到其最新的版本 (也是更新最頻繁的版本)
+        <ulink
+	url="../../../../index.html">http://www.FreeBSD.org/</ulink>.</para>
+    </sect2>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

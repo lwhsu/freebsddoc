@@ -1,0 +1,2356 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $Id: chapter.sgml,v 1.3 2001/04/20 19:34:19 statue Exp $
+-->
+
+<chapter id="cutting-edge">
+  <title>The Cutting Edge: FreeBSD-current and FreeBSD-stable</title>
+  
+  <para>FreeBSD 是個持續發展中的作業系統。
+    對於喜歡追求刺激的使用者而言，
+    有很多方法可以使您的系統和最新的發展中版本保持同步。
+    注意：並非每個人都適合這麼做！
+    本章的內容可以幫助您決定到底應該要追隨著發展中版本，
+    或是要使用穩定版。</para>
+  
+  <sect1 id="current">
+    <title>使用 FreeBSD Current</title>
+    
+    <para><emphasis>Contributed by &a.jkh;.</emphasis></para>
+    
+    <sect2>
+      <title>什麼是 FreeBSD-current？</title>
+      
+      <para>就像它字面上的意思一樣，FreeBSD-current 就是 FreeBSD
+	的每日工作版。內容包括正在發展中、實驗中、還有一些過渡時期的程式，
+	這些程式都有可能被放進下一個正式發行版中。
+	通常我們每天都會去編譯 FreeBSD-current 的程式，
+	但是有時候程式還是有可能會出問題。通常這些問題都會儘快解決，
+	但是有時候這些問題可能會帶來麻煩，
+	在新功能加入的 24 小時之內也都有可能出狀況。</para>
+    </sect2>
+    
+    <sect2>
+      <title>誰需要 FreeBSD-current？</title>
+      
+      <para>FreeBSD-current 的使用者主要是下面這三類人：</para>
+	  
+      <orderedlist>
+	<listitem>
+	  <para>正在發展程式的人員，對他們來說，保持 
+	    &ldquo;current&rdquo; 是絕對必要的。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>FreeBSD 的測試人員，他們花時間去檢查各種問題，
+	    以確保 FreeBSD-current 能夠儘可能地維持在最穩定的狀態。
+	    同時這些測試人員也能夠對 FreeBSD 的變革和未來的方向提出建言。
+	    </para>
+	</listitem>
+	
+	<listitem>
+	  <para>FreeBSD 的一般使用者，他們很少去注意系統的變化，
+	    FreeBSD 的一般使用者，他們很少去注意系統的變化，
+	    <emphasis>看</emphasis>而非拿來執行) 。
+	    這些人有時候也會提出建議或是貢獻他們所寫的程式碼。</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+    
+    <sect2>
+      <title>FreeBSD-current <emphasis>not</emphasis>什麼？</title>
+      
+      <orderedlist>
+	<listitem>
+	  <para>您為了想成為您附近夥伴中第一個使用某新功能的人，
+	    所以您把 FreeBSD-current 試為取得搶鮮版的捷徑。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>修補漏洞的便捷方法。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>我們會負責提供 &ldquo;官方支援&rdquo;。
+	    我們會儘力幫助那三類 &ldquo;正當的&rdquo; FreeBSD-current
+	    使用者，但是我們 <emphasis>沒時間</emphasis>
+	    為他們提供技術支援。我們會這麼做不是因為我們很惡劣，
+	    或是因為我們不想幫助大家(如果我們是這樣的人，
+	    我們也不會為 FreeBSD 努力了) ，實在是因為我們無法每天回答 
+	    400 個問題，<emphasis>同時</emphasis> 為 FreeBSD 而努力！
+	    我可以確定的一點就是，如果給各位選擇到底是要回答問題或是增進 
+	    FreeBSD 的能力，大多數人都會選擇增進 FreeBSD 的能力。</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+    
+    <sect2>
+      <title>使用 FreeBSD-current </title>
+      
+      <orderedlist>
+	<listitem>
+	  <para>加入 &a.current; 和 &a.cvsall; 這兩個通信論壇。
+	    這不止是一個建議而已，而是 <emphasis>您必需要做到的</emphasis>。
+	    如果您沒有加入 <emphasis>FreeBSD-current</emphasis> 通信論壇，
+	    您就無法知道其他人對現在的系統有什麼意見，也可能因此而陷入困境，
+	    而這個問題是其他人早就發現的，甚至已經解決的了。
+	    更重要的是，您可能會錯過一些能令您的系統保持穩定的重要公告。
+	    </para>
+
+	  <para>而 <email>cvs-all</email>
+	    則讓您知道其他人對系統做變更時所寫下來的記錄，
+	    同時也會附上關於可能產生問題的適當資訊，這是一個值得去訂閱的通信論壇。
+	    </para>
+
+	  <para>如果您想要加入這些論壇的話，只要寫一封信給 
+	      &a.majordomo; ，把下面這些放在您信件的 body： 
+
+	    <programlisting>
+subscribe freebsd-current
+subscribe cvs-all</programlisting>
+
+	    您也可以寫上 <literal>help</literal>，則 Majordomo 
+	    就會送一篇關於如何訂閱所有我們所提供的通信論壇，
+	    以及如何取消訂閱的完整說明給您。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>從 <hostid role="fqdn">ftp.FreeBSD.ORG</hostid> 取得原始程式。
+	    您可以從下面三種方法選一種來用：</para>
+	  
+	  <orderedlist>
+	    <listitem>
+	      <para>使用 <application><link
+		    linkend="ctm">CTM</link></application>。
+		除非您的 TCP/IP 連線很順暢, 不然這是最好的方法。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>使用 <link linkend="cvsup">cvsup</link> 程式，
+		<ulink
+		  URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/FreeBSD-current/src/share/examples/cvsup/standard-supfile">這個
+		  supfile 設定檔</ulink>。
+		這是我們第二推薦的方法，它可以讓您只抓一次完整的程式，
+		以後都只抓改變過的部份而已。很多人都把 cvsup 放在 cron 
+		裡定期執行，這樣能夠確保程式會自動更新。
+		如果您想使用這個方法，只要： </para>
+    
+	      <blockquote><screen>&prompt.root; <userinput>pkg_add -f \
+ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsupit.tgz</userinput></screen></blockquote>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>使用 <command>ftp</command>。
+		FreeBSD-current 的 source tree 通常都會放在： 
+		<ulink URL="ftp://ftp.FreeBSD.ORG/pub/FreeBSD/FreeBSD-current">
+		ftp://ftp.FreeBSD.ORG/pub/FreeBSD/FreeBSD-current</ulink>
+		我們使用的是 <command>wu-ftpd</command> ，
+		它能讓您在抓整個 source tree 時使用 compress/tar 。
+		例如您想抓： </para>
+	      
+	      <screen>usr.bin/lex</screen>
+	      
+	      <para>您可以：
+					
+		<screen><prompt>ftp&gt;</prompt> <userinput>cd usr.bin</userinput>
+<prompt>ftp&gt;</prompt> <userinput>get lex.tar.Z</userinput></screen>
+		
+		則它會自動把整個目錄做成一個 compressed tar file 給您。</para>
+	    </listitem>
+	  </orderedlist>
+	</listitem>
+	
+	<listitem>
+	  <para>基本上來說，如果您想要快速且立即取得整個原始程式碼，
+	    而且不考慮佔用頻寬的話，您可以使用 <command>cvsup</command> 
+	    或是 <command>ftp</command>。其他人就應該使用
+	    <application>CTM</application>。</para>
+
+	  <para>如果您拿這些程式是為了要拿來跑而不是拿來看的話，我們建議您 
+	    <emphasis>整個</emphasis> current 都抓回去，不要只抓一部份。
+	    這是因為這些程式互相都有關聯性，如果您只想編譯其中的部份程式的話，
+	    我保證您一定會遇到困難。</para>
+
+	  <para>在您編譯 current 之前，請先仔細閱讀 
+	    <filename>/usr/src</filename> 下的 Makefile 。
+	    您在昇級的過程中，至少要執行過一次 <link linkend="makeworld">
+	    make world</link> 。當我們在進行下一個 release 的時候，
+	    閱讀 &a.current; 可以讓您在這方面跟上大家的腳步。</para>
+	</listitem>
+	      
+	<listitem>
+	  <para>有話要說出來！如果您正在執行 FreeBSD-current，
+	    我們希望知道您對它有什麼意見，
+	    特別是您對增強能力方面的建議或是錯誤的修正。
+	    如果您在建議時能附上相關程式碼的話那真是太棒了！</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="stable">
+    <title>使用 FreeBSD 的穩定版</title>
+    
+    <para><emphasis>Contributed by &a.jkh;.</emphasis></para>
+    
+    <sect2>
+      <title>什麼是 FreeBSD-stable？</title>
+      
+      <para>FreeBSD-stable 是我們的一個發展分支，在我們推出下一個主流的 
+	release 之前，它的改變並不大。
+	實驗性或是未測試過的功能並不會出現在這個分支上 
+	(請看 <link linkend="current">FreeBSD-current</link>)。</para>
+    </sect2>
+    
+    <sect2>
+      <title>誰需要 FreeBSD-stable？</title>
+      
+      <para>如果您是商業用途，或是您認為系統的穩定比什麼都還要重要的話，
+	那麼您就應該使用 <emphasis>stable</emphasis>。
+	因為 <emphasis>stable</emphasis> 是對前一個 release 
+	版本最有效的錯誤修正版，所以如果您才剛安裝了最新版的 release
+	(在本文寫作時是 <ulink
+	  URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/&rel.current;-RELEASE">&rel.current;-RELEASE</ulink>
+	) ，您更應該試試 <emphasis>stable</emphasis>。</para>
+      
+      <warning>
+	<para>有一點需要注意的地方是，雖然 <emphasis>stable</emphasis>
+	  已經盡全力維持在可編譯而且穩定的狀態下，仍然有可能發生失誤 
+	  (畢竟這些東西還是在變動中) 。我們也儘可能在 <emphasis>
+	  current</emphasis> 做完完整的測試後才把程式放進
+	  <emphasis>stable</emphasis> ，但是有時候我們可能忽略了某些可能性。
+	  如果 <emphasis>stable</emphasis> 中有任何問題，請 
+	  <emphasis>馬上</emphasis> 通知我們！ (請看下一節。)</para>
+      </warning>
+    </sect2>
+    
+    <sect2>
+      <title>FreeBSD-stable 的取得</title>
+      
+      <orderedlist>
+	
+	<listitem>
+	  <para>加入 &a.stable;。
+	    這個通信論壇會提供您有關 <emphasis>stable</emphasis> 
+	    的必要資訊，或是其他特別需要注意的事項。
+	    當程式開發人員想要進行一些比較具有爭議性的修改或升級時，
+	    他們也會在這個通信論壇面公告，給使用者一個表達意見的機會，
+	    或是可以藉此而提高大家的注意力。</para>
+	  
+	  <para><email>cvs-all</email> 
+	    這個通信論壇可以在程式發生任何變更的時候讓您看到 commit log 
+	    ，其中包括了許多中肯的資訊，例如一些可能發生的邊際效應等等。
+	    這也是一個值得訂閱的通信論壇。</para>
+
+	  <para>想要加入這些通信論壇的話，只要寄一封電子郵件到 
+	    &a.majordomo; ，並在內容中註明：
+
+	    <programlisting>
+subscribe freebsd-stable
+subscribe cvs-all</programlisting>
+
+	    您也可以寫 <literal>help</literal> ，Majordomo 
+	    就會寄給您一篇有關如何訂閱以及取消訂閱我們所有通信論壇的完整說明。
+	    </para>
+	</listitem>
+	
+	<listitem>
+	  <para>如果您打算要安裝一個全新的系統，並且希望能夠盡量地 
+	    stable 的話，您可以從 <ulink
+	      url="ftp://releng3.FreeBSD.org/pub/FreeBSD/">ftp://releng3.FreeBSD.org/pub/FreeBSD/</ulink>
+	    取得最新的 snapshot，安裝的方法跟安裝其他 relase 的方法差不多。 
+	    </para>
+
+	  <para>如果您現在正在使用 2.2 分支的先前版本，而且您想經由 
+	    source 來升級的話，您也可以透過 <hostid
+	      role="fqdn">ftp.FreeBSD.ORG</hostid>。
+	    有三種方法可以用： </para>
+		  
+	  <orderedlist>
+	    <listitem>
+	      <para>使用 <application><link
+		    linkend="ctm">CTM</link></application>。
+		除非您的 TCP/IP 網路連線速度十分穩定，
+		要不然這就是您最好的選擇了。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>使用 <link linkend="cvsup">cvsup</link> ，並配合 
+		<ulink
+		  URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/FreeBSD-current/src/share/examples/cvsup/stable-supfile">這個
+		  supfile 設定檔</ulink>。
+		這是我們第二推薦使用的方法，因為這個方法讓您只抓一次完整的 
+		source，接下來就只要抓取改變的部份。很多人都用 cron 
+		來自動執行 cvsup 來讓他們手上的 source 是最新版的。
+		有一個很簡單的方法可以安裝這個程式，您只要鍵入： </para>
+	      
+<blockquote><screen>&prompt.root; <userinput>pkg_add -f \
+ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsupit.tgz</userinput></screen></blockquote>
+	    </listitem>
+		    
+	    <listitem>
+	      <para>使用 <command>ftp</command>。FreeBSD-stable 的 source 
+		tree 可以在 <ulink
+		  URL="ftp://ftp.FreeBSD.ORG/pub/FreeBSD/FreeBSD-stable">ftp://ftp.FreeBSD.ORG/pub/FreeBSD/FreeBSD-stable</ulink>
+		取得。</para>
+		      
+	      <para>我們使用的是 <command>wu-ftpd</command> ，它可以允許您利用
+		commpressed/tar'd 的方式把整個目錄抓回去。例如您看到： </para>
+
+	      <screen>usr.bin/lex</screen>
+	      
+	      <para>那麼您就可以：
+		
+		<screen><prompt>ftp&gt;</prompt> <userinput>cd usr.bin</userinput>
+<prompt>ftp&gt;</prompt> <userinput>get lex.tar.Z</userinput></screen>
+			
+		然後您就可以得到一個 compressed 而且 tar 起來的檔案，
+		裡面放的就是那整個目錄。</para>
+	    </listitem>
+	  </orderedlist>
+	</listitem>
+	
+	<listitem>
+	  <para>基本上，如果您想要馬上得到 source，
+	    而且所使用的網路頻寬也不是您考慮的重點的話，
+	    您可以使用 <command>cvsup</command> 或是 <command>ftp</command>
+	    。要不然就使用 <application>CTM</application>。</para>
+	</listitem>
+	
+	<listitem>
+	  <para>在您編譯 stable 之前，先仔細閱讀 
+	    <filename>/usr/src</filename> 下的 Makefile 吧。
+	    在您第一次昇級的過程中，您至少要執行過一次
+	    <link linkend="makeworld">make world</link>。
+	    閱讀 &a.stable; 可以讓您在其他開機相關的程序上的知識跟上潮流，
+	    這些在我們昇級到下一個 release 版時是必需的。</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="synching">
+    <title>透過網路來對 Source Trees 進行同步化</title>
+    
+    <para><emphasis>Contributed by &a.jkh;.</emphasis></para>
+	
+    <para>有很多方法可以透過網路 (或是 email) 來讓 FreeBSD 的 
+      source 保持最新版本，無論是一部份或是整個 source，
+      全看您對那些部份有興趣。我們主要提供 
+      <link linkend="anoncvs">Anonymous CVS</link>、
+      <link linkend="cvsup">CVSup</link>、以及
+      <link linkend="ctm">CTM</link>。</para>
+	
+    <para><application>Anonymous CVS</application> 和
+      <application>CVSup</application> 是採用 <emphasis>pull</emphasis> 
+      的方式來更新 source。以 <application>CVSup</application> 來說，當使用者 
+      (或是 cron) 執行 <command>cvsup</command> ，它會和遠端的 
+      <command>cvsupd</command> 伺服器取得連繫，然後就會更新您的檔案。
+      您取回的更新檔是最新的，而且只有當您想要的時候，您才會拿到這些檔案。
+      您可以很輕易地限制您的更新動作只更新您感興趣的某個檔案或是某個目錄。
+      更新的動作是由伺服端根據您有什麼以及您要什麼來即時完成的。
+      <application>Anonymous CVS</application> 比起 <application>CVSup
+      </application> 來說是簡單很多了，它只是一個 <application>CVS
+      </application> 的擴充版，允許您可以直接從遠端的
+      CVS repository 中取得改變的部份。<application>CVSup</application> 
+      也可以做到這一點，而且更有效率，但是 <application>Anonymous CVS
+      </application> 使用上則容易得多。</para>
+	
+    <para>在另一方面，<application>CTM</application> 
+      並不是以交談式介面來比對您所擁有的 sources 和伺服器上的 sources 
+      或是您取得的更新部份。相反的，會有一個 script 
+      檔專門用來辨識變更過的檔案，這個程式是由 CTM 伺服器來執行，
+      每天會比對數次，並把兩次執行期間內變更過的檔案加以壓縮，
+      給它們一個序號，然後就加以編碼 (以可列印的 ASCII 字元為主) 
+      並以 email 的方式寄出。當您收到它的時候，這些 &ldquo;CTM deltas&rdquo;
+      就可以由 &man.ctm.rmail.1; 這個程式來處理，它可以自動解碼，
+      確認並在使用者的 sources 上使用這些變更。這個程序比
+      <application>CVSup</application> 或是 <application>Anonymous CVS
+      </application> 來說是快得多了，
+      而且這個動作對我們的伺服器來說是比較輕鬆的，因為這是一個 
+      <emphasis>push</emphasis> 的動作而不是 <emphasis>pull</emphasis>
+      的動作。</para>
+
+    <para>當然這還有很多方法可以使用。如果您不小心把您部份的程式清除掉了，
+      <application>CVSup</application> 會偵測出來，
+      並自動為您把不足的部份補齊。<application>CTM</application> 
+      並不會為您做這些動作，而 <application>Anonymous CVS</application> 
+      則會覺得十分困惑。如果您清掉了您的部份 source (而且您沒有備份)，
+      您可以從頭開始 (從最新的 CVS &ldquo;base delta&rdquo;)
+      並用 CTM 來重建它們，或是用 anoncvs 來完成，
+      只要把不正確的地方刪掉再重新做同步的動作即可。</para>
+
+    <para>想要得到更多有關 <application>Anonymous CVS</application>、
+      <application>CTM</application>、以及 
+      <application>CVSup</application> 的資訊的話，請參閱下列各節：
+      </para>
+
+    <sect2 id="anoncvs">
+      <title>Anonymous CVS</title>
+      
+      <para><emphasis>Contributed by &a.jkh;</emphasis></para>
+      
+      <sect3>
+	<title><anchor id="anoncvs-intro">介紹</title>
+	
+	<para>Anonymous CVS (另稱 <emphasis>anoncvs</emphasis>)
+	  是一個 FreeBSD 內附 CVS 程式所提供的功能，能夠和遠端的 CVS 
+	  repository 的資料做同步更新。尤其是它可以讓 FreeBSD
+	  的使用者能夠在沒有任何特殊權限的情況下以唯讀的方式將 
+	  FreeBSD 官方 anoncvs 伺服器中的資料以 CVS 取出來。
+	  要使用它只要設定 <envar>CVSROOT</envar> 這個環境變數，
+	  將它指向適當的 anoncvs 伺服器，然後就可以用 &man.cvs.1; 
+	  這個指令來存取資料，就好像您在使用本地端的 repository 一樣。</para>
+
+	<para>雖然基本上來說 <link linkend="cvsup">CVSup</link> 和
+	  <emphasis>anoncvs</emphasis> 做的事情很類似，
+	  它們之間仍然有很多不一樣的地方，進而影響了使用者的選擇。
+	  簡單地來說，<application>CVSup</application> 
+	  在使用網路資源方面是比較有效率的，而且在技術上來說是比較複雜的，
+	  但是要使用它就要付出一點代價。在使用 <application>CVSup
+	  </application> 之前，您必須先安裝並設定一個程式，
+	  而且它所存取的是一個 <application>CVSup</application>
+	  稱為 <emphasis>collections</emphasis> 的巨大單位。</para>
+
+	<para>對照起來，<application>Anoncvs</application> 
+	  可以用來檢驗任何東西，包括某個程式 (例如 <command>ls</command> 
+	  或是 <command>grep</command>) 的某個單獨檔案。
+	  當然，<application>anoncvs</application> 只能對 CVS repository
+	  進行唯讀的動作，所以如果您想要自己開發並和 FreeBSD 共享一個 
+	  repository 的話，<application>CVSup</application> 
+	  就是您的唯一選擇了。</para>
+      </sect3>
+      
+      <sect3>
+	<title><anchor id="anoncvs-usage">使用 Anonymous CVS</title>
+	
+	<para>設定 &man.cvs.1; 來使用 Anonymous CVS repository 是很簡單的，
+	  只要把 <envar>CVSROOT</envar> 環境變數指向 FreeBSD 的其中一個 
+	  <emphasis>anoncvs</emphasis> 伺服器即可。
+	  在本文寫作的時候，您可以使用下面這個伺服器：</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para><emphasis>USA</emphasis>:
+	      anoncvs@anoncvs.FreeBSD.org:/cvs</para>
+	  </listitem>
+	</itemizedlist>
+	
+	<para>儘管 CVS 實際上能讓使用者 "取出" 任何曾經存在過 
+	  (或者在某些情況下，將要存在 :) 的 FreeBSD 版本的程式，您仍然要熟悉 
+	  &man.cvs.1; 的版本 (revision) (<option>-r</option>) 選項以及它在 
+	  FreeBSD 計畫中可能的值。</para>
+
+	<para>有兩種標籤 (tag) 可以使用，版本標籤 (revision tag) 
+	  以及分支標籤(branch tag)。版本標籤可以用來指定某個特定的版本。
+	  版本標籤所代表的意義不管在什麼時候都是相同的。在另一方面，
+	  分支標籤指的是任何時候某個發展線的最新版。
+	  因為分支標籤並非指定某個特定版本，
+	  明天它所代表的意義和今天就是不一樣的。</para>
+	
+	<para>下面這些就是使用者可能感興趣的分支標籤：</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>HEAD</term>
+	    
+	    <listitem>
+	      <para>主發展線 (FreeBSD-current) 的一個代名。
+		如果您沒有指定版本時，它就是預設值。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_3</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-3.x (FreeBSD-stable) 的發展線。對 ports 
+		collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_2</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.x (2.2-stable) 的發展線。對 ports 
+		collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_1_0</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.1.x 的發展線 - 這個分支已經不再使用了。
+		對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+	<para>下面這些就是使用者可能感興趣的版本標籤：</para>
+	
+	<variablelist>
+	  <varlistentry>
+
+            <term>RELENG_3_2_0_RELEASE</term>
+                  
+            <listitem>
+              <para>FreeBSD-3.2. 對 ports collection 而言這是不合法的。</para>
+            </listitem>
+          </varlistentry>
+        
+          <varlistentry>
+
+	    <term>RELENG_3_1_0_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-3.1. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RELENG_3_0_0_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-3.0. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RELENG_2_2_8_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.8. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RELENG_2_2_7_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.7. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RELENG_2_2_6_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.6. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_2_5_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.5. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_2_2_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.2. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_2_1_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.1. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_2_0_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.2.0. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_1_7_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.1.7. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_1_6_1_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.1.6.1.  對 ports collection 
+		而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_1_6_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.1.6. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_1_5_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.1.5. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RELENG_2_1_0_RELEASE</term>
+	    
+	    <listitem>
+	      <para>FreeBSD-2.1.0. 對 ports collection 而言這是不合法的。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+	<para>當您指定了分支標籤以後，通常您會取得這條發展線最新版的檔案。
+	  如果您想要舊版的檔案，您可以藉由利用 <option>-D date</option> 
+	  指定日期來達到這個目的。請參閱 &man.cvs.1; 的 man page 
+	  以獲得更多資訊。</para>
+      </sect3>
+      
+      <sect3>
+	<title>範例</title>
+	
+	<para>雖然說我們強烈建議在您做任何事之前先把 &man.cvs.1; 的 
+	  man page 看過一篇，我們還是在這裡提供了一些範例來示範 
+	  Anonymous CVS 的用法：</para>
+
+	<example>
+	  <title>取出 -current (&man.ls.1;) 的東西然後再把它刪除掉：</title>
+
+	  <screen>
+&prompt.user; <userinput>setenv CVSROOT anoncvs@anoncvs.FreeBSD.org:/cvs</userinput>
+&prompt.user; <userinput>cvs co ls</userinput>
+&prompt.user; <userinput>cvs release -d ls</userinput></screen>
+	</example>
+	
+	<example>
+	  <title>取出 2.2-stable 分支的 ls(1) ：</title>
+	    
+	  <screen>
+&prompt.user; <userinput>setenv CVSROOT anoncvs@anoncvs.FreeBSD.org:/cvs</userinput>
+&prompt.user; <userinput>cvs co -rRELENG_2_2 ls</userinput>
+&prompt.user; <userinput>cvs release -d ls</userinput></screen>
+	</example>
+	
+	<example>
+	  <title>製作一份 FreeBSD 2.2.2 和 FreeBSD 2.2.6 對於 &man.ls.1;
+		差異的列表 (以 unidiffs 的格式呈現)：</title>
+
+	  <screen>
+&prompt.user; <userinput>setenv CVSROOT anoncvs@anoncvs.FreeBSD.org:/cvs</userinput>
+&prompt.user; <userinput>cvs rdiff -u -rRELENG_2_2_2_RELEASE -rRELENG_2_2_6_RELEASE ls</userinput></screen>
+	</example>
+
+	<example>
+	  <title>找出其他可用的模組名稱：</title>
+	  
+	  <screen>
+&prompt.user; <userinput>setenv CVSROOT anoncvs@anoncvs.FreeBSD.org:/cvs</userinput>
+&prompt.user; <userinput>cvs co modules</userinput>
+&prompt.user; <userinput>more modules/modules</userinput>
+&prompt.user; <userinput>cvs release -d modules</userinput></screen>
+	</example>
+      </sect3>
+      
+      <sect3>
+	<title>其他資源</title>
+	
+	<para>下面這些資源可以幫您學習使用 CVS：</para>
+	
+	<itemizedlist>
+	  <listitem>
+	    <para><ulink
+		url="http://www.csc.calpoly.edu/~dbutler/tutorials/winter96/cvs/">CVS 入門指南</ulink> from Cal Poly.</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink url="http://www.cyclic.com">Cyclic Software</ulink>，
+	      CVS 的商業維護者。 </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink
+		url="http://www.FreeBSD.org/cgi/cvsweb.cgi">CVSWeb</ulink> 
+	      是 FreeBSD 計畫為 CVS 所做的網頁介面。</para>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="ctm">
+      <title><application>CTM</application></title>
+      
+      <para><emphasis>Contributed by &a.phk;.  Updated
+	  19-October-1997.</emphasis></para>
+      
+      <para><application>CTM</application> 
+	是一種可以讓遠端機器的目錄樹和主要機器的目錄樹保持同步的一種方法。
+	它是為了要在 FreeBSD 的 source tree 上使用而發展出來的，
+	但是隨著時間過去，其他人發現到把這個技術應用在其他方面也是很有用的。
+	目前關於如何製作 deltas 的文件就算有也不多，
+	所以如果您想在其他地方應用 CTM 的話，您可以連絡 &a.phk; 
+	以得到更多資訊。</para>
+	  
+      <sect3>
+	<title>為什麼我要用 <application>CTM</application>？</title>
+	
+	<para><application>CTM</application> 可以讓您在本地端保留一份 
+	  FreeBSD 的 source trees。有很多 &ldquo;種類&rdquo; 的 tree
+	  可供選擇。不管您是想要整棵 cvs tree 或是只想要其中的一個分支，
+	  <application>CTM</application> 都可以提供您必需的資訊。
+	  如果您是一個活躍的 FreeBSD 發展者，但是您的 TCP/IP
+	  連線品質很差，甚至沒有，
+	  或是您只是單純地希望所有的變動能夠自動地送到您手上， 
+	  <application>CTM</application> 是您最好的選擇。在最活躍的分支上，
+	  您最多需要一天取得三份 deltas。無論如何，
+	  您最好考慮讓它們自動送到您手上。
+	  這些更新部份的大小會盡可能地縮小，通常小於 5K，偶爾 
+	  (十分之一的機會) 會到 10-50K，很少的情況下才會出現 100K+
+	  或是以上的大怪物。</para>
+
+	<para>您也必須讓自己習慣於面對各種問題，
+	  這些問題通常會發生在發展中的程式，而非包裝好的 release 版。
+	  如果您選擇的是 &ldquo;current&rdquo; 的 source 的話，這更重要。
+	  建議您先讀過 <link linkend="current">使用 FreeBSD Current</link>
+	  。</para>
+      </sect3>
+      
+      <sect3>
+	<title>我需要那些東西才能使用 <application>CTM</application>？</title>
+	
+	<para>您需要兩個東西：<application>CTM</application> 
+	  程式以及要餵給它的 initial deltas (為了要達到
+	  &ldquo;current&rdquo; 的層次)。</para>
+	    
+	<para><application>CTM</application> 程式在 FreeBSD 2.0
+	  版以後就屬於系統的一部份了，如果您有 source 的話，它就位於
+	  <filename>/usr/src/usr.sbin/CTM</filename>。</para>
+	    
+	<para>如果您用的是 FreeBSD 2.0
+	  以前的版本，您可以直接從這裡取得最新的
+	  <application>CTM</application> 程式：</para>
+	    
+	<para><ulink
+	    URL="ftp://ftp.FreeBSD.ORG/pub/FreeBSD/FreeBSD-current/src/usr.sbin/ctm">ftp://ftp.FreeBSD.ORG/pub/FreeBSD/FreeBSD-current/src/usr.sbin/ctm</ulink></para>
+	    
+	<para>您要餵給 <application>CTM</application> 的
+	  &ldquo;deltas&rdquo; 可以經由 FTP 或是 e-mail 來取得。
+	  如果您可以在 Internet 上使用 FTP 的話，您可以在下面這個 FTP 站取得
+	  <application>CTM</application>：</para>
+	    
+	<para><ulink
+	    URL="ftp://ftp.FreeBSD.ORG/pub/FreeBSD/CTM">ftp://ftp.FreeBSD.ORG/pub/FreeBSD/CTM</ulink></para>
+	    
+	<para>或是您也可以參考  <link
+	  linkend="mirrors-ctm">mirrors</link>這一節。</para>
+	
+	<para>把相關的目錄用 FTP 取回並取得 
+	  <filename>README</filename> 檔，先讀這個檔。</para>
+	    
+	<para>或是您想經由 email 來取得 deltas：</para>
+	    
+	<para>寄 email 給 &a.majordomo; 來訂閱其中一個 
+	  <application>CTM</application> 套件。 
+	  &ldquo;ctm-cvs-cur&rdquo; 是整個 cvs tree 的。
+	  &ldquo;ctm-src-cur&rdquo; 是發展中分支的。 
+	  &ldquo;ctm-src-2_2&rdquo; 是 2.2 分支，諸如此類。 
+	  (如果您不知道如何用 majordomo 來訂閱通信論壇
+	  的話，請先寄一封內容為 <literal>help</literal> 這個字的信過去 -
+	  它會把使用說明寄回來給您。)</para>
+	    
+	<para>當您開始收到您的 <application>CTM</application> 
+	  更新檔時，您可以用 <command>ctm_rmail</command> 來解開並使用它們。
+	  事實上如果您想讓自動進行 <command>ctm_rmail</command>
+	  這個程式的話，您也可以在 <filename>/etc/aliases</filename> 
+	  裡安排。請參考 <command>ctm_rmail</command> 的 man page
+	  以取得更多資訊。</para>
+
+	<note>
+	  <para>無論您是透過什麼方式取得 <application>CTM</application>
+	    deltas 的，您都應該訂閱 <email>ctm-announce@FreeBSD.ORG</email> 
+	    通信論壇。未來任何有關 <application>CTM</application> 
+	    系統的公告都只會公布在這裡。要加入這個論壇只要寄一封內容只有一行 
+	    <literal>subscribe ctm-announce</literal> 的信到 
+	    &a.majordomo; 即可。</para>
+	</note>
+      </sect3>
+      
+      <sect3>
+	<title>第一次使用 <application>CTM</application></title>
+	    
+	<para>在您使用 <application>CTM</application> 
+	  deltas 之前，您要先取得一個 deltas 的基準點。</para>
+	    
+	<para>首先您要先決定到底您有什麼。每個人都要從 
+	  &ldquo;empty&rdquo; 目錄開始。您必須用一個啟始的 
+	  &ldquo;Empty&rdquo delta 初始化您的 <application>CTM</application>
+	  tree。為了使用者方便，將來這些  &ldquo;started&rdquo; deltas 
+	  會以出現在 CD 上的方式來散佈，雖然目前並不是這樣做。</para>
+
+	<para>However, since the trees are many tens of megabytes, you should
+	  prefer to start from something already at hand.  If you have a
+	  RELEASE CD, you can copy or extract an initial source from it.  This
+	  will save a significant transfer of data.</para>
+	    
+	<para>您可以輕易地認出這些 &ldquo;starter&rdquo; deltas
+	  ，它們都在號碼後面接了一個 <literal>X</literal> (例如 
+	  <filename>src-cur.3210XEmpty.gz</filename>)。
+	  <filename>X</filename> 後面的名稱符合您啟始 &ldquo;seed&rdquo;
+	  的起點。<filename>Empty</filename> 是一個空目錄。通常來說， 
+	  <filename>Empty</filename> 是每一百個 deltas 就產生一次的。
+	  除此以外，它還是個龐然巨物！通常一個 <filename>XEmpty</filename>
+	  deltas 包括了好幾十 Megabytes 的 <command>gzip</command>'ed 
+	  壓縮資料。</para>
+	    
+	<para>一旦您選定了一個基礎的 delta 之後，您也要把所有大於這個號碼的
+	  deltas 都取回。</para>
+      </sect3>
+      
+      <sect3>
+	<title>在日常工作裡使用 <application>CTM</application></title>
+	
+	<para>要使用 deltas，只要：</para>
+	
+	<screen>&prompt.root; <userinput>cd /where/ever/you/want/the/stuff</userinput>
+&prompt.root; <userinput>ctm -v -v /where/you/store/your/deltas/src-xxx.*</userinput></screen>
+	      
+	<para><application>CTM</application> 能辨認被
+	  <command>gzip</command> 起來的 deltas，所以您不必先把它們給 
+	  gunzip，這樣能夠節省一點磁碟空間。</para>
+	    
+	<para><application>CTM</application> 不會動到您的 source tree
+	  除非它覺得整個過程都很安全。如果想要驗證 delta 的話您可以使用 
+	  <option>-c</option> 選項，則 <application>CTM</application> 
+	  不會真的去改變您的 source tree；它只會檢查是否這個 delta
+	  可以毫無錯誤地用在您目前的 source tree 上面。</para>
+	    
+	<para><application>CTM</application>
+	  還有很多選項可以使用，看看使用手冊或是閱讀其他資源可以得到更多資訊。
+	  </para>
+	    
+	<para>如果有人能幫忙建立一個 &ldquo;使用者界面&rdquo; 的話，
+	  我也會覺得十分高興，
+	  因為我知道我無法決定什麼時候該怎麼使用那個選項。</para>
+	    
+	<para>就是這麼單純。每當您拿到一個新的 delta，只要把它丟給
+	  <application>CTM</application> 就可以使您的 source 保持在最新版。
+	  </para>
+	    
+	<para>如果重新下載很困難的話，千萬不要把那個 deltas 刪除掉。
+	  您最好保留那些檔案以防有什麼意外發生。即使您只有軟碟可以用，
+	  您也要考慮用 <command>fdwrite</command> 來把它們備份下來。
+	  </para>
+      </sect3>
+      
+      <sect3>
+	<title>保留自己變動的部份</title>
+	
+	<para>身為一個開發人員，人們往往喜歡對 soruce tree
+	  進行一些實驗或是改變。 <application>CTM</application> 
+	  允許您做變更，只是有點限制：在檢查 <filename>foo</filename> 
+	  這個檔案之前，它會先檢查 <filename>foo.ctm</filename>。
+	  如果這個檔存在的話，CTM 就不會作用在 <filename>foo</filename>
+	  上而會作用在該檔上。</para>
+	    
+	<para>這個行為可以讓我們進行檔案的修改：
+	  只要把您想修改的檔案拷貝一份並加上 <filename>.ctm</filename> 
+	  的檔尾即可。之後您就可以快樂地進行程式碼的研究，同時
+	  CTM 也會保持 <filename>.ctm</filename> 的最新版本。</para>
+      </sect3>
+      
+      <sect3>
+	<title>其他有趣的 <application>CTM</application> 選項</title>
+	
+	<sect4>
+	  <title>找出有那些檔案會被更新</title>
+	      
+	  <para>您可以藉由 <option>-l</option> 選項來得知 
+	    <application>CTM</application> 會對您的 source repository
+	    的那些檔案進行變更。</para>
+	      
+	<para>如果您想要對有那些檔案進行變更做記錄的話，
+	    不管是在變更前或變更後，或是您只是覺得這有很趣，
+	    這個選項都是很有用的 :-)。</para>
+	</sect4>
+	
+	<sect4>
+	  <title>在更新前先備份</title>
+	  
+	  <para>有時候您可能會想要把所有會被 
+	    <application>CTM</application>
+	    更新動作所改變的檔案都給備份起來。</para>
+	      
+	  <para>指定 <option>-B backup-file</option> 可以令
+	    <application>CTM</application> 把所有改過的檔案都備份在 
+	    <filename>backup-file</filename> 裡。</para>
+	</sect4>
+	
+	<sect4>
+	  <title>限制昇級所能影響到的檔案</title>
+	  
+	  <para>有時候您可能只想要使用某些 <application>CTM</application> 
+	    的昇級檔，或是只想要解開一系列 deltas 所變更的某些檔案。</para>
+	      
+	  <para>您可以用 <option>-e</option> 和 <option>-x</option> 選項指定
+	    regular expression 來控制到底要改變那些檔案。</para>
+	      
+	  <para>例如說，如果您想要根據您的 CTM deltas 來更新您的 
+	    <filename>lib/libc/Makefile</filename> 的話，就要執行下列指令： 
+	    </para>
+		
+	  <screen>&prompt.root; <userinput>cd /where/ever/you/want/to/extract/it/</userinput>
+&prompt.root; <userinput>ctm -e '^lib/libc/Makefile' ~ctm/src-xxx.*</userinput></screen>
+		
+	  <para>對於每個 <application>CTM</application>
+	    delta 所指定的檔案而言，<option>-e</option> 和
+	    <option>-x</option> 選項是照命令列所指定的順序來引用的。
+	    <application>CTM</application> 只會對符合所有 
+	    <option>-e</option> 和 <option>-x</option> 選項的檔案起作用。
+	    </para>
+	</sect4>
+      </sect3>
+      
+      <sect3>
+	<title><application>CTM</application> 的未來</title>
+	
+	<para>有很多計畫：</para>
+	
+	<itemizedlist>
+	  <listitem>
+	    <para>在 CTM 系統中加入一些認證資訊，以防被人偽造 CTM 昇級檔。 
+	      </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>簡化 <application>CTM</application> 的選項，
+	      它們現在是太令人困惑而又不直覺了。</para>
+	  </listitem>
+	</itemizedlist>
+	
+	<para>但是有一個壞消息，那就是我太忙了，
+	  所以如果有任何人想要幫我做到這些工作都是十分歡迎的。
+	  而且也請不要忘了告訴我您還想要什麼...</para>
+      </sect3>
+      
+      <sect3>
+	<title>雜項</title>
+	
+	<para>所有被 &ldquo;DES 出口限制&rdquo; 所影響的程式都不在 CTM
+	  的範圍之內。您只可能得到 &ldquo;國際版&rdquo; 的程式而已。
+	  很多使用者都對這個感興趣的話，我們可能會考慮設一個 
+	  <literal>sec-cur</literal> 系列。
+	  另外也有一個系列是關於 <literal>ports</literal> 的，
+	  但是似乎沒什麼人感興趣。如果您認為應該要有一個 email list
+	  是專門放這個的，請通知我一聲，我們會考慮的。</para>
+      </sect3>
+      
+      <sect3>
+	<title>Thanks!</title>
+	
+	<variablelist>
+	  <varlistentry>
+	    <term>&a.bde;</term>
+
+	    <listitem>
+	      <para>感謝他的生花妙筆和無價的批評。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>&a.sos;</term>
+	    
+	    <listitem>
+	      <para>感謝他的耐心。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Stephen McKay</term>
+	    
+	    <listitem>
+	      <para>十分感謝他寫了 <command>ctm_[rs]mail</command>。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>&a.jkh;</term>
+	    
+	    <listitem>
+	      <para>感謝他的堅持，所以我才能做得更好。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>All the users</term>
+	    
+	    <listitem>
+	      <para>希望你們都會喜歡這篇文章...</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="cvsup">
+      <title><application>CVSup</application></title>
+      
+      <para><emphasis>Contributed by &a.jdp;</emphasis>.</para>
+      
+      <sect3 id="cvsup-intro">
+	<title>Introduction</title>
+	
+	<para><application>CVSup</application> 是一套可以從遠端伺服器的主 
+	  CVS repository 中散佈和昇級 source tree 的軟體。
+	  FreeBSD 的 sources 就是存在一臺位於加州的中央發展機器的 CVS
+	  repository 上。FreeBSD 的使用者可以利用
+	  <application>CVSup</application> 很輕易地使他們自己的 source trees
+	  保持在最新版本。</para>
+
+	<para><application>CVSup</application> 用的是一種叫做 
+	  <emphasis>pull</emphasis> 的昇級模型。在這個模型裡，
+	  當使用者需要的時候，就向伺服器發出要求昇級的訊息。
+	  伺服端被動地等待使用者提出昇級要求。
+	  如此一來所有的昇級動作都是由使用者來發動。
+	  伺服器從不主動提出昇級。使用者必須手動執行 
+	  <application>CVSup</application> 程式來昇級或是利用
+	  <command>cron</command> 來讓它定時自動執行。</para>
+	    
+	<para><application>CVSup</application> 這個字代表的是整個軟體套件。
+	  它的主要成份是一支執行在使用者機器上叫做 <command>cvsup</command>
+	  的程式，另一支是執行在 FreeBSD mirror 站臺上的 
+	  <command>cvsupd</command> 伺服器程式。</para>
+	    
+	<para>當您在看 FreeBSD 文件以及 mailing lists
+	  的時候，您可能會常常看到 <application>sup</application>。
+	  <application>Sup</application> 是
+	  <application>CVSup</application> 的前身，訴求也很類似。
+	  凡是 <application>Sup</application> 能夠用到的場合都可以使用 
+	  <application>CVSup</application> ，而且 
+	  <application>CVSup</application> 的設定檔還向前相容 
+	  <application>Sup</application> 的設定。FreeBSD 計畫已經不再使用
+	  <application>Sup</application> 了，因為 
+	  <application>CVSup</application> 不管在速度或是彈性上都更勝一籌。
+	  </para>
+      </sect3>
+      
+      <sect3 id="cvsup-install">
+	<title>安裝</title>
+	
+	<para>如果您用的是 FreeBSD 2.2 或是以後的系統，要安裝 
+	  <application>CVSup</application> 最簡單的方法就是用 FreeBSD 
+	  <link linkend="ports">ports collection</link> 裡的 
+	  <ulink
+	    URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/ports-current/net/cvsup.tar">the
+	    port</ulink>，或是對應的 <ulink
+	    URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/packages-current/net/cvsup-16.0.tgz">
+	    可執行檔 packages</ulink>，全靠您自己決定。</para>
+	    
+	<para>如果您用的是 FreeBSD-2.1.6 或是
+	  2.1.7，很不幸地您不能直接使用可執行檔 packages，因為它用到的 C
+	  函式庫版本在 FreeBSD 2.1.{6,7} 時尚未出現。
+	  您可以使用 <ulink
+	    URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/ports-current/net/cvsup.tar">the
+	    port</ulink>，就像在 FreeBSD 2.2 一樣。只要把 tar 檔給 unpack
+	  開，切換到 cvsup 的子目錄裡然後鍵入 <command>make
+	  install</command>。</para>
+	    
+	<para>因為 <application>CVSup</application> 是用 <ulink
+	    URL="http://www.research.digital.com/SRC/modula-3/html/home.html">Modula-3</ulink>
+	  寫的，不管您是用 port 或是用 package 來安裝，
+	  都必須安裝 Modula-3 的執行時期函式庫。
+	  您可以在 <ulink
+	    URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/ports-current/lang/modula-3-lib.tar">lang/modula-3-lib</ulink> port and the <ulink URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/packages-current/lang/modula-3-lib-3.6.tgz">lang/modula-3-lib-3.6</ulink>
+	  找到 package。如果您照著上面的步驟安裝 <command>cvsup</command>，
+	  這些函式庫將會在您安裝 <application>CVSup</application>
+	  時自動安裝好。</para>
+	    
+	<para>Modula-3 的函式庫很大，
+	  不管是要取得或是要編譯都不是件簡單的工作。
+	  因為如此，所以我們提供了第三個選擇。
+	  您可以在美國的站臺上取得 <emphasis>靜態連結</emphasis> 好的
+	  FreeBSD 可執行檔：</para>
+	    
+	<itemizedlist>
+	  <listitem>
+	    <para><ulink
+		URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsup-bin-16.0.tar.gz">ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsup-bin-16.0.tar.gz</ulink> (client including GUI).</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink
+		URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsup.nogui-bin-16.0.tar.gz">ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsup.nogui-bin-16.0.tar.gz</ulink> (client without GUI).</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><ulink
+		URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsupd-bin-16.0.tar.gz">ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/cvsupd-bin-16.0.tar.gz</ulink> (server).</para>
+	  </listitem>
+	</itemizedlist>
+	
+	<para>您也可以在世界各地的 FreeBSD <link linkend="mirrors-ftp">FTP
+	    mirror 站臺</link> 找到它們。</para>
+	
+	<para>大多數的使用者只會用到客戶端程式。這些執行檔都是可以獨立運作的，
+	  可以在 FreeBSD-2.1.0 到 FreeBSD-current 的任何一個版本的機器上執行。
+	  </para>
+	    
+	<para>總結來說，您有下列方法來安裝 CVSup：</para>
+	
+	<itemizedlist>
+	  <listitem>
+	    <para>FreeBSD-2.2 or later:		靜態連結的可執行檔, port,
+	      或是 package</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>FreeBSD-2.1.6, 2.1.7:		靜態連結的可執行檔或是 port</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>FreeBSD-2.1.5 or earlier:	靜態連結的可執行檔</para>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+      
+      <sect3 id="cvsup-config">
+	<title>CVSup 設定</title>
+	
+	<para><application>CVSup</application> 的操作是靠設定一種叫做 
+	  <filename>supfile</filename> 的檔案來達成的。
+	  從 FreeBSD-2.2 開始，在 <ulink 
+	    URL="file:/usr/share/examples/cvsup">/usr/share/examples/cvsup</ulink>
+	  目錄下就有很多 supfile 的範例了。如果您使用的是 2.2 以前的系統，
+	  您也可以在 <ulink
+	    URL="ftp://ftp.FreeBSD.org/pub/FreeBSD/FreeBSD-current/src/share/examples/cvsup/">ftp://ftp.FreeBSD.org/pub/FreeBSD/FreeBSD-current/src/share/examples/cvsup/</ulink>
+	  下找到這些範例。</para>
+	
+	<para><filename>supfile</filename> 檔裡有關 cvsup
+	  的資訊包括了：</para>
+		    
+	<itemizedlist>
+	  <listitem>
+	    <para><link linkend="cvsup-config-files">您想取得那些檔案？ 
+		</link></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><link linkend="cvsup-config-vers">您想取得什麼版本？
+		</link></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><link linkend="cvsup-config-where">
+		您想從什麼地方取得這些東西？ </link></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><link linkend="cvsup-config-dest">
+		您想把這些東西放在您自己機器上的什麼地方？ </link></para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><link linkend="cvsup-config-status">
+		您想把您的狀態檔放在那裡？ </link></para>
+	  </listitem>
+	</itemizedlist>
+	
+	<para>在下面的幾節裡，我們將會藉著回答這些問題來建立一個典型的 
+	  <filename>supfile</filename> 。首先，我們先來看看 
+	  <filename>supfile</filename> 的整體架構。</para>
+	    
+	<para><filename>supfile</filename> 是一個文字檔。
+	  從 <literal>#</literal> 一直到該行末都會被視為是註解。
+	  空行或者是只有註解的那幾行將會跳過。</para>
+	    
+	<para>剩下來的每一行都描述了一組使用者想得到的檔案。
+	  這幾行都是用 &ldquo;collection&rdquo; 為開頭，
+	  是伺服器為一組邏輯上相關的檔案所作的定義。
+	  collection 的名字就是告訴伺服器到底您要的是那些檔案。
+	  在 collection 名之後可能會出現一個以上以空白隔開的欄位。
+	  這些欄位就回答了上面所述的問題。欄位可以分成兩類：
+	  旗標欄位以及值欄位。旗標欄位的內容是一個獨立存在的關鍵字，
+	  例如 <literal>delete</literal> 或是 <literal>compress</literal>。
+	  值欄位的內容是由一個關鍵字帶頭，後接不以空白隔開的
+	  <literal>=</literal> 以及其值。例如 <literal>release=cvs</literal>
+	  就是一個值欄位。</para>
+	    
+	<para>通常一個 <filename>supfile</filename> 會指定接收不止一個
+	  collection。一個作法是明確地指出每個 collection 的相關欄位。
+	  但是這麼一來會讓每一行變得太長，而且很不方便，
+	  因為所有 collection 相對應欄位的值都差不多。
+	  <application>CVSup</application> 
+	  因此提供了一個預設值的機制來避免這個問題。以特殊虛擬 
+	  <literal>*default</literal> 為開頭的每一行都會被視為是為後面的
+	  collection 設定旗標和預設值。它也允許您為了某個 collection
+	  來改變預設值，只要您在該 collection 中自行設定即可。
+	  您也可以靠著在 <filename>supfile</filename> 的中間設定 
+	  <literal>*default</literal> 來改變或增加預設值。</para>
+	    
+	<para>有了這樣的背景認識之後，我們現在就要開始為了接收以及更新
+	  <link linkend="current">FreeBSD-current</link>
+	  的主 source tree 來建立一個 supfile 了。</para>
+	
+	<itemizedlist>
+	  <listitem>
+	    <para>您想取得那些檔案？<anchor
+		id="cvsup-config-files"></para>
+		  
+	    <para>所有可以透過 <application>CVSup</application> 
+	      取得的檔案都被分成幾個有名字的 &ldquo;collections&rdquo;。
+	      <link linkend="cvsup-collec">這裡</link> 描述了所有可以取得的
+	      collections。在這個例子中，我們想要取得 FreeBSD 系統的主
+	      source tree。有一個叫做 <literal>src-all</literal> 的巨大
+	      collection 包含了除了有出口限制的編碼程式以外的所有東西。
+	      在這個例子中我們假設我們處在美國或加拿大。因此，我們可以用
+	      <literal>cvs-crypto</literal> 這個額外的 collection
+	      來取得這些編碼程式。建立這個 <filename>supfile</filename>
+	      的第一步就是把我們想要的 collections 一行一行地列出來：
+	      </para>
+		  
+	    <programlisting>
+src-all
+cvs-crypto</programlisting>
+	  </listitem>
+		
+	  <listitem>
+	    <para>您想取得什麼版本？ <anchor id="cvsup-config-vers"></para>
+		  
+	    <para>基本上您可以藉著 <application>CVSup</application> 
+	      取得任何一個曾經存在過的版本的程式。這是因為 
+	      cvsupd 的伺服器是直接和 CVS repository 做溝通，而 CVS
+	      repository 又保存有所有版本的程式的關係。
+	      您可以藉由設定 <literal>tag=</literal> 以及 
+	      <option>date=</option> 這兩個值欄位來指定您要的版本。</para>
+
+	    <warning>
+	      <para>您要仔細地檢查 <literal>tag=</literal>
+		欄位是不是設對了。有的標籤只對某些 collection 來說是正確的。
+		如果您指定錯標籤或是拼錯字了，CVSup
+		可能會把一些您不想刪掉的檔案給刪除。特別注意的是，對於 
+		<literal>ports-*</literal> collections 您 <emphasis>只能
+		</emphasis> 使用 <literal>tag=.</literal>。</para>
+	    </warning>
+		
+	    <para><literal>tag=</literal> 欄位是在 repository
+	      裡建立一個符號標籤。事實上有兩種標籤，版本標籤以及分支標籤。
+	      版本標籤指的是某個特定的版本。
+	      它所代表的意義不管什麼時候都是相同的。在另一方面，
+	      支標籤不管在什麼時候指的都是某個發展線的最新版。
+	      因為分支標籤並沒有指定某個特定版本，
+	      它在明天所代表的意義和今天可能不同。</para>
+
+	    <para>下面是一些使用者可能感興趣的分支標籤：</para>
+
+	    <variablelist>
+	      <varlistentry>
+		<term>tag=.</term>
+
+		<listitem>
+		  <para>主發展線，也叫 FreeBSD-current。</para>
+
+		  <note>
+		    <para><literal>.</literal> 並不是一個標點符號；
+		      它是標籤的名字。對任何 collection 都是合法。</para>
+		  </note>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>RELENG_3</term>
+
+		<listitem>
+		  <para>FreeBSD-3.x 發展線，也叫 FreeBSD-stable。
+		    對 ports-* collections 而言是不合法的。</para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>RELENG_2_2</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.2.x 發展線，也叫 2.2-stable。
+		    對 ports-* collections 而言是不合法的。</para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_1_0</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.1.x 發展線 - 這個分支已經不再使用了。
+		    對 ports-* collections 而言是不合法的。</para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	    
+	    <para>下面是一些使用者可能感興趣的版本標籤：</para>
+		  
+	    <variablelist>
+	      <varlistentry>
+
+              <term>tag=RELENG_3_2_0_RELEASE</term>
+                      
+                <listitem>
+                  <para>FreeBSD-3.2. 對 ports-* collections 而言是不合法的。
+                  </para>
+                </listitem>
+              </varlistentry>
+        
+              <varlistentry>
+		<term>tag=RELENG_3_1_0_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-3.1. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_3_0_0_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-3.0. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_8_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.2.8. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_7_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.2.7. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_6_RELEASE</term>
+
+		<listitem>
+		  <para>FreeBSD-2.2.6. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_5_RELEASE</term>
+			
+		<listitem>
+		  <para>FreeBSD-2.2.5. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_2_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.2.2. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_1_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.2.1. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_2_0_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.2.0. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_1_7_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.1.7. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_1_6_1_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.1.6.1. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_1_6_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.1.6. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_1_5_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.1.5. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	      
+	      <varlistentry>
+		<term>tag=RELENG_2_1_0_RELEASE</term>
+		
+		<listitem>
+		  <para>FreeBSD-2.1.0. 對 ports-* collections 而言是不合法的。
+		    </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	    
+	    <warning>
+	      <para>在鍵入標籤名的時候要特別小心一定要跟上面的一樣。
+		<application>CVSup</application>
+		無法分辨一個標籤是合法或是不合法。如果您把標籤名給拼錯了，
+		<application>CVSup</application>
+		會認為您指定了一個沒有任何檔案的標籤。
+		因此它就會把您所有已存在的 source 給刪掉。</para>
+	    </warning>
+	    
+
+	    <para>當您指定了一個分支標籤後，
+	      通常您會收到該發展線最新版的檔案。如果您想拿舊版的，
+	      可以藉由指定 <option>date=</option> 這個值欄位來達成。
+	      &man.cvsup.1; 的使用手冊裡有提到該如何做。</para>
+
+	    <para>對我們的範例而言，我們希望取得 FreeBSD-current。
+	      我們把下面這一行加在 <filename>supfile</filename> 的最前面：
+	      </para>
+		  
+	    <programlisting>
+*default tag=.</programlisting>
+
+	    <para>如果您又沒指定 <literal>tag=</literal> 又沒指定 
+	      <literal>date=</literal> ，則會產生一個很重要的特例。
+	      在這個情況之下，您將會從伺服器的 CVS repository 取得真正的 
+	      RCS 檔而非某個特定版本。開發人員一般而言比較喜歡這種操作模式。
+	      藉由在他們自己的機器上維護一份 repository，
+	      他們可以瀏覽整個版本歷史，也可以檢視檔案過去的版本。
+	      但是要做到這個所要付出的龐大代價就是磁碟空間。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>您想從什麼地方取得這些東西？<anchor
+		id="cvsup-config-where"></para>
+		  
+	    <para>我們用 <literal>host=</literal> 欄位來通知 
+	      <command>cvsup</command> 程式要去那裡取得這些昇級檔。
+	      這個欄位可以填上任何一個 <link linkend="mirrors-cvsup">CVSup
+	      mirror 站臺</link> 的位址，您可以選一個離您最近的。
+	      在這個範例裡，我們使用 FreeBSD 的主站臺 <hostid
+		role="fqdn">cvsup666.FreeBSD.org</hostid>：</para>
+		  
+	    <programlisting>
+*default host=cvsup666.FreeBSD.org</programlisting>
+
+	    <para>您也可以在執行 <command>cvsup</command> 時用命令列參數 
+	      <option>-h <replaceable>hostname</replaceable></option>
+	      來覆蓋這個設定。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>您想把這些東西放在您自己機器上的什麼地方？<anchor
+		id="cvsup-config-dest"></para>
+		  
+	    <para><literal>prefix=</literal> 欄位告訴 <command>cvsup</command>
+	      要把它收到的檔案存放在那裡。在這個範例裡面，
+	      我們將會把 source 檔直接放在我們的主 source tree 
+	      <filename>/usr/src</filename> 下面。<filename>src</filename> 
+	      這個目錄是在 collections 定義中隱含的，所以正確的宣告應該是：
+	      </para>
+		  
+	    <programlisting>
+*default prefix=/usr</programlisting>
+	  </listitem>
+		
+	  <listitem>
+	    <para>您想把您的狀態檔放在那裡？ 
+	      <anchor id="cvsup-config-status"></para>
+		  
+	    <para>cvsup 客戶端程式會在 &ldquo;base&rdquo;
+	      目錄下維護一份狀態檔。
+	      這個檔可以藉由記錄到底您已經做了那些昇級動作來加速 
+	      <application>CVSup</application> 的效率。
+	      我們使用標準 base 目錄
+	      <filename>/usr/local/etc/cvsup</filename>：</para>
+
+	    <programlisting>
+*default base=/usr/local/etc/cvsup</programlisting>
+
+	    <para>如果沒有在 <filename>supfile</filename> 中特別指定的話，
+	      這個設定是預設值，所以事實上我們並不需要寫上面那行。</para>
+
+	    <para>如果您的 base 目錄不存在的話，現在就是建立的好時機。
+	      <command>cvsup</command> 程式在 base
+	      目錄不存在的情況下是不會動作的。</para>
+	  </listitem>
+		
+	  <listitem>
+	    <para><filename>supfile</filename> 雜項設定：</para>
+	    
+	    <para>通常我們還會在 <filename>supfile</filename> 中多加一行：
+	      </para>
+		  
+	    <programlisting>
+*default release=cvs delete use-rel-suffix compress</programlisting>
+
+	    <para><literal>release=cvs</literal> 命令伺服器從 FreeBSD 的主
+	      CVS repository 取得資訊。通常的情況都是如此，
+	      但是除了我們討論的這些範圍之外還是有其他的選擇。</para>
+
+	    <para><literal>delete</literal> 給了 
+	      <application>CVSup</application> 可以刪檔的權限。
+	      您最好每次都這麼指定，這樣 <application>CVSup</application> 
+	      才能保證您的 source tree 能夠完整昇級。
+	      <application>CVSup</application> 會非常小心地只刪除必要的檔案。
+	      您自己加進的任何檔案都不會被動到。</para>
+
+	    <para><literal>use-rel-suffix</literal> 是一個 ... 神祕的選項。
+	      如果您真的想要知道它是做什麼用的，請看 &man.cvsup.1; 
+	      的使用手冊。不然的話，就直接設定下去，不要管他。</para>
+
+	    <para><literal>compress</literal> 可以啟動傳輸時的 gzip
+	      壓縮模式。如果您的網路連線是 T1 或是以上的高速，
+	      或許您不必用到壓縮功能。它對傳輸的幫助是很大的。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>把這些設定全放在一起： </para>
+	    
+	    <para>下面就是我們這個範例的完整 <filename>supfile</filename>：
+	      </para>
+		  
+	    <programlisting>
+*default tag=.
+*default host=cvsup666.FreeBSD.org
+*default prefix=/usr
+*default base=/usr/local/etc/cvsup
+*default release=cvs delete use-rel-suffix compress
+
+src-all
+cvs-crypto</programlisting>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+      
+      <sect3>
+	<title>執行 <application>CVSup</application></title>
+	
+	<para>現在您可以試著開始昇級了。執行的指令十分簡單：</para>
+	    
+	<screen>&prompt.root; <userinput>cvsup <replaceable>supfile</replaceable></userinput></screen>
+	    
+	<para>此處 <filename><replaceable>supfile</replaceable></filename> 
+	  指的當然就是您剛建立的 supfile。假設您正在 X11 下，
+	  <command>cvsup</command> 會開啟一個 GUI
+	  視窗，上面有一些日常工作的按鍵。按下 &ldquo;go&rdquo;
+	  按鍵，然後看它執行。</para>
+	    
+	<para>因為在這個範例裡面您必須昇級您的 <filename>/usr/src</filename>
+	  目錄，所以您必須用 <username>root</username> 的身份來執行這個程式，
+	  不然 <command>cvsup</command> 就沒有足夠的權限。
+	  在您剛把設定檔寫好，而且之前又沒有執行過這支程式的時候，
+	  第一次執行可能會讓您有點緊張。有一個可以不修改您檔案的簡單測試法。
+	  在別的地方建一個空目錄，把它當成命令列的額外參數：</para>
+	
+	<screen>&prompt.root; <userinput>mkdir /var/tmp/dest</userinput>
+&prompt.root; <userinput>cvsup supfile /var/tmp/dest</userinput></screen>
+	    
+	<para>您所指定的目錄就會變成這次昇級的目的目錄。
+	  <application>CVSup</application> 會檢查您 
+	  <filename>/usr/src</filename> 裡的檔案，
+	  但是並不會修改會是刪除它們。任何該被修改的檔案都會轉而放在 
+	  <filename>/var/tmp/dest/usr/src</filename>。
+	  <application>CVSup</application> 也不會去動到 base
+	  目錄裡的狀態檔。新版的檔案都會被寫在您所指定的目錄中。
+	  只要您有 <filename>/usr/src</filename> 的讀取權限，
+	  在執行這個操作時就不須要變成 root。</para>
+	    
+	<para>如果您不是在 X11 下，或是您不想使用 GUIs，您必須在使用 
+	  cvsup 時在命令列加入下列選項：</para>
+	    
+	<screen>&prompt.root; <userinput>cvsup -g -L 2 supfile</userinput></screen>
+	    
+	<para><option>-g</option> 選項是叫 cvsup 不要使用 GUI。
+	  如果您不是使用 X11 的話這個選項會自動執行，
+	  不然的話您必須指定它。</para>
+	    
+	<para><option>-L 2</option> 叫 cvsup
+	  詳細地印出昇級時更動到了那些檔案。
+	  有三個層次可以選擇，從 <option>-L 0</option> 到
+	  <option>-L 2</option>"。預設值是
+	  0，表示除了錯誤訊息以外不印出任何東西。</para>
+	    
+	<para>還有很多選項可以指定。只要輸入 <command>cvsup -H</command>
+	  就可以看到簡單的列表。如果想要了解更詳細的內容，請看使用手冊。
+	  </para>
+	
+	<para>一旦您對這個執行模式感到滿意，您可以安排使用 &man.cron.8;
+	  來讓 cvsup 自動執行。顯然在用 cron 跑 cvsup 時您不能讓它使用它的
+	  GUI。</para>
+      </sect3>
+      
+      <sect3 id="cvsup-collec">
+	<title><application>CVSup</application> File Collections</title>
+	    
+	<para>透過 <application>CVSup</application> 可以取得的檔案
+	  collections 是階層式管理的。有一些大的 collections，
+	  它們也會分成小一點的 sub-collections。取得大 collection
+	  跟取得它的每一個 sub-collections 是一樣的。collections
+	  之間的階層關係可以從下表的縮排中看出來。</para>
+	    
+	<para>最常用的 collections 是 <literal>src-all</literal>、
+	  <literal>cvs-crypto</literal>、還有 <literal>ports-all</literal>。
+	  其他的 collections 通常只有某些小團體為了某些特殊原因才會去使用，
+	  有一些 mirror 站臺可能也沒有這些 collections。</para>
+	
+	<variablelist>
+	  <varlistentry>
+	    <term><literal>cvs-all release=cvs</literal></term>
+
+	    <listitem>
+	      <para>FreeBSD 的主 CVS repository，
+	      	除了出口限制的編碼程式以外。</para>
+		    
+	      <variablelist>
+		<varlistentry>
+		  <term><literal>distrib release=cvs</literal></term>
+		  
+		  <listitem>
+		    <para>有關 FreeBSD 散佈和 mirror 的檔案。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><literal>doc-all release=cvs</literal></term>
+		  
+		  <listitem>
+		    <para>FreeBSD 使用手冊和其他文件的原始檔。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><literal>ports-all release=cvs</literal></term>
+			  
+		  <listitem>
+		    <para>FreeBSD 的 ports collection.</para>
+		    
+		    <variablelist>
+		      <varlistentry>
+			<term><literal>ports-archivers
+			    release=cvs</literal></term>
+
+			<listitem>
+			  <para>壓縮相關的程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-astro
+			    release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>天文相關的程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-audio
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>聲音相關的程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-base release=cvs</literal></term>
+			
+			<listitem>
+			  <para>/usr/ports 目錄下無法分類的檔案。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-benchmarks
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>測試用程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-biology
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>生物相關的程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-cad release=cvs</literal></term>
+			
+			<listitem>
+			  <para>電腦輔助設計。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-chinese
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>中文支援。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-comms
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>通訊軟體。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-converters
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>字碼轉換相關的程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-databases
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>資料庫。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal></literal>ports-deskutils
+			  release=cvs</term>
+			
+			<listitem>
+			  <para>在電腦發明前常放在桌面上的工具。</para>
+			  </listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-devel
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>發展工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-editors
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>編輯器。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-emulators
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>其他作業系統的模擬器。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-games
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>遊戲。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-german
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>德文支援。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-graphics
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>繪圖工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-japanese
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>日文支援。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-korean
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>韓文支援。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-lang release=cvs</literal></term>
+			
+			<listitem>
+			  <para>程式語言。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-mail release=cvs</literal></term>
+			
+			<listitem>
+			  <para>郵件軟體。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-math release=cvs</literal></term>
+			
+			<listitem>
+			  <para>數學計算軟體。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-mbone
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>MBone 應用程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-misc release=cvs</literal></term>
+			
+			<listitem>
+			  <para>無法分類的工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-net release=cvs</literal></term>
+			
+			<listitem>
+			  <para>網路軟體。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-news release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>USENET 新聞軟體。</para>
+			</listitem>
+		      </varlistentry>
+
+                      <varlistentry>
+                        <term><literal>ports-palm
+                          release=cvs</literal></term>
+                              
+                        <listitem>
+                          <para>3Com Palm(tm) 系列的軟體支援。</para>
+                        </listitem>
+                      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-plan9
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>Plan9 來的程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-print
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>列印軟體。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-russian
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>俄文支援。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-security
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>系統安全工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-shells
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>命令列 shell。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-sysutils
+			    release=cvs</literal></term>
+
+			<listitem>
+			  <para>系統工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-textproc
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>文字處理工具 (不包括桌上排版系統)。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-vietnamese
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>越南文支援。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-www release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>WWW 相關軟體。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-x11 release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>支援 X 視窗的 ports。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-x11-clocks
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>X11 上的時鐘。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-x11-fm
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>X11 上的檔案管理程式。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-x11-fonts
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>X11 上的字型和字型工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-x11-toolkits
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>X11 發展工具。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>ports-x11-wm</literal></term>
+			
+			<listitem>
+			  <para>X11 視窗管理程式。</para>
+			</listitem>
+		      </varlistentry>
+		    </variablelist>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><literal>src-all release=cvs</literal></term>
+		  
+		  <listitem>
+		    <para>FreeBSD
+		      的主程式，除了出口限制的編碼程式以外。</para>
+			    
+		    <variablelist>
+		      <varlistentry>
+			<term><literal>src-base release=cvs</literal></term>
+			
+			<listitem>
+			  <para><filename>/usr/src</filename> 
+			    裡無法分類的檔案。</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-bin release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>單使用者模式下可能會用到的使用者工具程式。
+			    (<filename>/usr/src/bin</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-contrib
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>FreeBSD 計畫之外的工具程式和函式庫，
+			    幾乎未加更動就拿來使用。
+			    (<filename>/usr/src/contrib</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-etc release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>系統設定檔。
+			    (<filename>/usr/src/etc</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-games release=cvs</literal></term>
+			
+			<listitem>
+			  <para>遊戲。
+			    (<filename>/usr/src/games</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-gnu release=cvs</literal></term>
+			
+			<listitem>
+			  <para>GNU Public License 下的工具程式。 
+			    (<filename>/usr/src/gnu</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-include
+			    release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>標頭檔。
+			    (<filename>/usr/src/include</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-kerberosIV
+			    release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>KerberosIV 系統安全套件。
+			    (<filename>/usr/src/kerberosIV</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-lib release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>函式庫。
+			    (<filename>/usr/src/lib</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-libexec
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>通常由其他程式來執行的系統程式。
+			    (<filename>/usr/src/libexec</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-release
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>製作 FreeBSD release 的相關檔案。
+			    (<filename>/usr/src/release</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-sbin release=cvs</literal></term>
+			
+			<listitem>
+			  <para>單使用者模式下的系統工具。
+			    (<filename>/usr/src/sbin</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-share release=cvs</literal></term>
+			
+			<listitem>
+			  <para>可以跨系統分享的檔案。
+			    (<filename>/usr/src/share</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-sys release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>kernel 程式。
+			    (<filename>/usr/src/sys</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-tools release=cvs</literal></term>
+				  
+			<listitem>
+			  <para>維護 FreeBSD 的工具程式。
+			    (<filename>/usr/src/tools</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-usrbin release=cvs</literal></term>
+			
+			<listitem>
+			  <para>使用者工具程式。
+			    (<filename>/usr/src/usr.bin</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		      
+		      <varlistentry>
+			<term><literal>src-usrsbin
+			    release=cvs</literal></term>
+			
+			<listitem>
+			  <para>系統工具程式。
+			    (<filename>/usr/src/usr.sbin</filename>)</para>
+			</listitem>
+		      </varlistentry>
+		    </variablelist>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><literal>www release=cvs</literal></term>
+			  
+		  <listitem>
+		    <para>WWW 資料的原始檔。</para>
+		  </listitem>
+		</varlistentry>
+	      </variablelist>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><literal>cvs-crypto release=cvs</literal></term>
+	    
+	    <listitem>
+	      <para>出口限制的編碼程式。</para>
+	      
+	      <variablelist>
+		<varlistentry>
+		  <term><literal>src-crypto release=cvs</literal></term>
+
+		  <listitem>
+		    <para>FreeBSD 計畫之外的出口限制工具程式和函式庫，
+		      幾乎未加更動就拿來使用。
+		      (<filename>/usr/src/crypto</filename>)</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><literal>src-eBones release=cvs</literal></term>
+			  
+		  <listitem>
+		    <para>Kerberos 和 DES。
+		      (<filename>/usr/src/eBones</filename>)</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><literal>src-secure release=cvs</literal></term>
+			  
+		  <listitem>
+		    <para>DES。 (<filename>/usr/src/secure</filename>)</para>
+		  </listitem>
+		</varlistentry>
+	      </variablelist>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><literal>distrib release=self</literal></term>
+		  
+	    <listitem>
+	      <para>CVSup 伺服器的設定檔。CVSup mirror 站臺可以使用。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><literal>gnats release=current</literal></term>
+		  
+	    <listitem>
+	      <para>GNATS 問題追蹤系統資料庫。</para>
+	    </listitem>
+	  </varlistentry>
+		
+	  <varlistentry>
+	    <term><literal>mail-archive release=current</literal></term>
+		  
+	    <listitem>
+	      <para>FreeBSD mailing list 存檔。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><literal>www release=current</literal></term>
+		  
+	    <listitem>
+	      <para>安裝好的 WWW 資料。WWW mirror 站臺可以使用。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+      
+      <sect3>
+	<title>公告，問題，以及錯誤回報</title>
+	
+	<para>For the CVSup FAQ and other information about CVSup, see <ulink
+	    url="http://www.polstra.com/projects/freeware/CVSup/">The CVSup
+	    Home Page</ulink>.</para>
+
+	<para>大多數 FreeBSD 相關的 <application>CVSup</application> 
+	  討論都在 &a.hackers; 上進行。新版軟體會在那邊公告，同時也會在 
+	  &a.announce; 公告。</para>
+	    
+	<para>任何問題和錯誤回報請給程式作者
+	  <email>cvsup-bugs@polstra.com</email>。</para>
+      </sect3>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="makeworld">
+    <title>利用 <command>make world</command> 來重建整個系統</title>
+	
+    <para><emphasis>Contributed by &a.nik;.</emphasis></para>
+	
+    <para>一旦您讓您本地端的 source tree 和某個版本的 FreeBSD 
+      (<literal>stable</literal>、<literal>current</literal> 等等) 
+      同步了以後，您就必須利用這個 source tree 來重建整個系統。</para>
+	
+    <para>目前關於這個工作的最佳資訊來源是一份可以從 
+      <ulink
+	URL="http://www.nothing-going-on.demon.co.uk/FreeBSD/make-world/make-world.html">http://www.nothing-going-on.demon.co.uk/FreeBSD/make-world/make-world.html</ulink>
+      取得的使用手冊。</para>
+	
+    <para>這份使用手冊將來會整合進 handbook 中。</para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../handbook.sgml" "part" "chapter")
+     End:
+-->
+

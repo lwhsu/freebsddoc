@@ -1,0 +1,8 @@
+// $FreeBSD: doc/zh_TW.Big5/books/handbook/basics/example-dir2.dot,v 1.1 2006/01/06 09:15:35 vanilla Exp $
+
+digraph directory {
+	root [label="Root\n/"];
+	root -> "A1/" -> "B1/";
+	"A1/" -> "B2/";
+	root -> "A2/";
+}

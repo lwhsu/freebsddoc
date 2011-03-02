@@ -1,0 +1,4324 @@
+<!--
+     The FreeBSD Documentation Project
+     Translate into Chinese by huangant@ms10.hinet.net <Chun-ying Huang>
+     $FreeBSD: doc/zh/big5/handbook/printing/chapter.sgml,v 1.4 2003/01/29 06:47:58 statue Exp $
+     English Version: 1.22
+-->
+
+<chapter id="printing">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+        <firstname>Sean</firstname>
+        <surname>Kelly</surname>
+        <contrib>Contributed by </contrib>
+      </author>
+      <!-- 30 Sept 1995 -->
+    </authorgroup>
+    <authorgroup>
+      <author>
+        <firstname>Jim</firstname>
+        <surname>Mock</surname>
+        <contrib>Restructured and updated by </contrib>
+        <!-- Mar 2000 -->
+      </author>
+    </authorgroup>
+  </chapterinfo>
+
+
+  <title>列印</title>
+  
+  <para>要在 FreeBSD 下使用印表機，你需要設定 Berkeley line print spooling
+    系統，也叫做 LPD spooling 系統。這是 FreeBSD
+    下控制印表機的標準。這一節將介紹 LPD spooling 系統，以下將只簡稱為
+    LPD。</para>
+      
+  <para>如果你已經熟悉 LPD 或是其他的印表機 spooling
+    系統，你可以先跳到<link linkend="printing-intro-setup">設定 spooling
+    系統</link>那一節。
+    </para>
+      
+  <sect1 id="printing-intro-spooler">
+    <title>Spooler 做了什麼事</title>
+
+    <para>LPD 控制任何有關連接在本機上的印表機的事情，包括：</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>控制對於本機印表機及網路上其他印表機的存取權限設定。</para>
+      </listitem>
+      
+      <listitem>
+	<para>接受使用者傳送檔案來列印；這些要列印的要求稱為
+	<emphasis>工作</emphasis>。</para>
+      </listitem>
+	    
+      <listitem>
+	<para>利用<emphasis>佇列</emphasis>
+	來防止多個使用者同時存取同一台印表機。</para>
+      </listitem>
+	    
+      <listitem>
+	<para>在輸出時印出 <emphasis>header pages</emphasis>(也稱做
+	  <emphasis>banner</emphasis> 或 <emphasis>burst</emphasis>)如此，
+	  使用者們可以在厚厚一疊紙張中找出他們所印的東西。</para>
+      </listitem>
+	    
+      <listitem>
+	<para>為連接在序列埠上的印表機設定適當的通訊參數。</para>
+      </listitem>
+	    
+      <listitem>
+	<para>透過網路將工作送給另一台機器上的 LPD spooler。</para>
+      </listitem>
+	    
+      <listitem>
+	<para>執行特定的過濾程式，
+	讓你的工作可以相容於使用不同印表機語言的印表機。</para>
+      </listitem>
+	    
+      <listitem>
+	<para>統計印表機的使用情形。</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>透過適當的設定並提供特別的過濾程式程式，你可以使 LPD
+      系統在不同的印表機上擁有上述全部或部份的功能。</para>
+  </sect1>
+      
+  <sect1 id="printing-intro-why">
+    <title>為什麼要使用 Spooler</title>
+    
+    <para>如果你的系統只有自己一個人在用，那麼你可能會覺得既不需要權限控制、
+      header pages、或是統計印表機使用情形，為什麼還要用 spooler？如果可以
+      直接存取印表機，那麼你仍然得使用 spooler，因為……</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>LPD 在背景執行列印的工作，
+	  你不需要花時間等待資料傳送到印表機。</para>
+      </listitem>
+      
+      <listitem>
+	<para>LPD 可以透過過濾程式，在你的文件上加上日期/時間等資訊，
+	  或是轉換特別的檔案格式(如 Tex、DVI 的檔案)使印表機能處理。
+	  你不需要手動轉換。</para>
+      </listitem>
+      
+      <listitem>
+	<para>很多免費及商業軟體所提供的列印功能通常會需要用到你系統上的
+	  spooler。你只要設定好 spooling
+	  系統，將來可以很容易的讓其他的程式使用印表機。</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+  
+  <sect1 id="printing-intro-setup">
+    <title>設定 Spooling 系統</title>
+    
+    <para>讓 LPD 可以配合印表機工作，你需要同時設定好你的印表機以及 LPD。
+      設定分為兩大部份：</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para><link linkend="printing-simple">簡單的印表機設定</link>
+	  這一節將告訴你如何連接印表機，並設定 LPD 列印純文字的檔案。</para>
+      </listitem>
+	    
+      <listitem>
+	<para><link linkend="printing-advanced">進階印表機設定</link>
+	  這一節將告訴你如何讓印表機可以印出各種不同格式的檔案、header
+	  pages、透過網路列印、設定存取權限以及統計印表機用情形。</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+      
+  <sect1 id="printing-simple">
+    <title>簡單的印表機設定</title>
+    
+    <para>這一節將說明如何連接印表機及設定 LPD。包括：</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para><link linkend="printing-hardware">硬體設定</link>
+	  這一節說明如何將印表機接到電腦上的連接埠。</para>
+      </listitem>
+      
+      <listitem>
+	<para><link linkend="printing-software">軟體設定</link>
+	  這一節說明如何撰寫 LPD spooler 的設定檔
+	  <filename>/etc/printcap</filename> 。</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>如果你要設定的是網路印表機，請參考
+      <link
+       linkend="printing-advanced-network-net-if">使用網路資料傳輸界面的印表機</link>
+      這一節。</para>
+
+    <para>雖然這一節叫做 &ldquo;簡單的印表機設定&rdquo;，但其實是蠻複雜的。
+      讓你的印表機可以配合 LPD spooler 是設定工作中最難的一部份。
+      一但你的印表機可以正常工作了，較進階的功能如列印 header pages
+      和印表機使用情形統計反而較容易設定。</para>
+
+    <sect2 id="printing-hardware">
+      <title>硬體設定</title>
+      
+      <para>這一節說明有哪些方法可以將印表機連到我們的個人電腦上；
+        有哪些通訊埠、連接線以及 kernel 的設定在 FreeBSD 下是必需設定的。</para>
+	  
+      <para>如果你的印表機在你使用的電腦上可以透過其他作業系統來印列，
+        你也許可以跳過這一節直接到
+        <link linkend="printing-software">軟體設定</link>那一節。</para>
+	  
+      <sect3 id="printing-ports">
+	<title>通訊埠及連接線</title>
+
+	<para>幾乎所有可以和 PC 連接的印表機能支援下列兩種或是其中一種界面：</para>
+	    
+	<itemizedlist>
+	  <listitem>
+	    <para><emphasis>序列</emphasis>
+	      界面的印表機透過序列埠和電腦之間傳送資料。
+	      序列界面的配備及連接線可以容易的取得及裝設，
+	      但是序列界面有時需要較特別的連接線及較複雜的設定。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><emphasis>並列</emphasis>
+	      界面的印表機透過並列埠和電腦之間傳送資料。
+	      並列界面在市場上很普遍，連接線也很容易取得，
+	      但是不容易自己製做。利用並列埠連接印表機十分的容易，
+	      通常不需要設定額外的通訊參數。</para>
+	    
+	    <para>並列界面有時也稱做 &ldquo;Centronics&rdquo; 界面，
+	      這是根據印表機上面的接頭而命名的。</para>
+	  </listitem>
+	</itemizedlist>
+	    
+	<para>一般而言，序列埠的速度比並列埠慢。
+	  並列埠通常只有單向傳輸(從電腦到印表機)，而序列埠通常都是用雙向傳輸。
+	  較新的並列埠也可以從印表機那邊取得資料，
+	  不過很少有印表機需要將資料送回電腦。FreeBSD
+	  目前並不支援並列埠雙向傳輸。</para>
+	    
+	<para>通常，只有使用 PostScript 的印表機才需要用到雙向傳輸。
+	  PostScript 印表機可以說是十分的複雜。事實上，PostScript
+	  的列印工作常常是由程式將工作送到印表機處理後，並不列印出來，
+	  而是將結果再傳回電腦。PostScript 也使用雙向傳輸將錯誤傳回電腦，
+	  比如說 PostScript 程序有問題或是印表機卡紙。
+	  機器上的使用者可能會需要這些資訊。更進一步的，PostScript
+	  印表機統計列印情形最好的方式就是使用雙向傳輸，比如說：
+	  你可先詢問印表機自開機以來一共印過了幾張，然後送出使用者要印的東西，
+	  印完後再詢問一共印了幾張，由此就可得知得向使用者收多少紙張的錢。
+	  </para>
+	    
+	<para>那麼，你該選擇哪一種界面呢？</para>
+	    
+	<itemizedlist>
+	  <listitem>
+	    <para>如果你需要雙向傳輸，那麼就選擇使用序列埠。FreeBSD
+	      目前並不支援並列埠上的雙向傳輸。</para>
+	  </listitem>
+		
+	  <listitem>
+	    <para>如果你不需要雙向傳輸，那麼，
+	      你只要選擇你的印表機支援的界面即可，當然最好是可以用並列埠，
+	      而將序列埠留給其他的用途
+	      &mdash;比如連接終端機或數據機&mdash;通常並列埠傳輸比較快，
+	      設定起來也較容易。</para>
+	  </listitem>
+		
+	  <listitem>
+	    <para>最後，還是不曉得怎麼選的話，就看哪個能用就接哪個吧。</para>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+	  
+      <sect3 id="printing-parallel">
+	<title>並列埠</title>
+
+	<para>用 Centronics 連接線透過並列埠連接印表機和電腦。印表機的手冊、
+	  電腦的手冊這兩者都可以給你足夠的安裝說明。</para>
+	    
+	<para>記住你所使用的並列埠。在 FreeBSD 裡，第一個並列埠是
+	  <filename>/dev/lpt0</filename>；第二個則是
+	  <filename>/dev/lpt1</filename>，依此類推。</para>
+      </sect3>
+	  
+      <sect3 id="printing-serial">
+	<title>序列埠</title>
+
+	<para>用適當的連接線透過序列埠連接印表機和電腦。印表機的手冊、
+	  電腦的手冊這兩者都可以給你足夠的安裝說明。</para>
+
+	<para>如果你不確定你的連接線是否為&ldquo;合適的序列埠連接線&rdquo;，
+	  你可以試試下面幾種不同用途的線：</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>連接<emphasis>數據機</emphasis>的線。
+	      這種線是一個接腳對一根接腳直接對接的。
+	      這種線也叫做 &ldquo;DTE-to-DCE&rdquo; 連接線。</para>
+	  </listitem>
+		
+	  <listitem>
+	    <para><emphasis>Null-modem</emphasis>
+	      連接線大部份是一個接腳對一個接腳直接對接，
+	      而有少部份接腳相互交換(如 send data 和
+	      receive data)；有少部份接腳則是兩端皆是短路。
+	      這種線也叫做 &ldquo;DTE-to-DTE&rdquo; 連接線。</para>
+	  </listitem>
+		
+	  <listitem>
+	    <para><emphasis>序列印表機</emphasis>連接線，
+	      某些不常見的印表機需要這種線。這種線類似 null-modem
+	      連接線，但是有些訊號是送到相對應的接腳而不是兩端短路。</para>
+	  </listitem>
+	</itemizedlist>
+	    
+	<para>你也得為印表機設定通訊參數，通常可以利用印表機上的控制面板或是
+	  DIP 開關設定。選擇你的電腦和印表機同時支援的最高傳輸速率
+	  (單位為 bps，bits per second，也稱做 <emphasis>baud rate</emphasis>)。
+	  選擇 7 或 8 的資料位元；無、奇數或偶數的同位元檢查；
+	  1 或 2 停止位元。同時也選擇流量控制的方式：無、XON/XOFF (也稱做
+	  &ldquo;in-band&rdquo; 或 &ldquo;軟體&rdquo;) 流量控制。
+	  記得你的軟體設定也要使用同樣的值。</para>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="printing-software">
+      <title>軟體設定</title>
+	  
+      <para>這一節說明如何設定 FreeBSD 下的 LPD spooling 系統，使其能列印。
+        </para>
+      
+      <para>下列是所需的步驟：</para>
+      
+      <procedure>
+	<step>
+	  <para>如果需要的話，設定你的 kernel，使該連接埠可被印表機使用。
+	    <link linkend="printing-kernel">設定 Kernel</link>
+	    這一節將告訴你需要做些什麼。</para>
+	</step>
+	      
+	<step>
+	  <para>如果你使用的是並列埠，那麼你得設定並列埠的通訊模式。
+	      <link linkend="printing-parallel-port-mode">設定並列埠的通訊模式</link>
+	      這一節有詳細的說明。</para>
+	</step>
+	      
+	<step>
+	  <para>測試作業系統是否可以將資料送給印表機。
+	    <link linkend="printing-testing">檢查印表機連線狀況</link>
+	    這節將給你一些關於這一方面的建議。</para>
+	</step>
+
+	<step>
+	  <para>修改 <filename>/etc/printcap</filename> 以正確設定 LPD。
+	    <link linkend="printing-printcap">/etc/printcap 設定檔</link>
+	    將告訴你如何做。</para>
+	</step>
+      </procedure>
+	  
+      <sect3 id="printing-kernel">
+	<title>設定 Kernel</title>
+
+	<para>作業系統的 kernel 為了能配合某些裝置而需要重新編譯。
+	  而序列埠和並列埠就是這些裝置之一。如果你的 kernel
+	  目前並不支援你想用的序列埠或並列埠，那麼你可能需要將他們加入你的
+	  kernel 設定並重新編譯。</para>
+	    
+	<para>若要檢查你的 kernel 目前是否支援序列埠，你可以用這個命令：
+	  </para>
+	      
+	<screen>&prompt.root; <userinput>dmesg | grep sio<replaceable>N</replaceable></userinput></screen>
+	      
+	<para>其中<replaceable>N</replaceable>是序列埠的編號，從 0 開始計算。
+	  如果你得到的結果類似下面這個樣子：</para>
+
+	<screen>sio2 at 0x3e8-0x3ef irq 5 on isa
+sio2: type 16550A</screen>
+	      
+	<para>表示你的 kernel 支援這個通訊埠。</para>
+
+	<para>若要檢查你的 kernel 目前是否支援並列埠，你可以用這個命令：
+	  </para>
+
+	<screen>&prompt.root; <userinput>dmesg | grep lpt<replaceable>N</replaceable></userinput></screen>
+	      
+	<para>其中<replaceable>N</replaceable>是並列埠的編號，從 0 開始計算。
+	  如果你得到的結果類似<screen>lpt0 at 0x378-0x37f on isa</screen>
+	  表示你的 kernel 支援這個通訊埠。</para>
+
+	<para>你可能會需要重新設定你的 kernel
+	  使得作業系統可以辨認並使用你連接印表機的並列埠或序列埠。</para>
+	    
+	<para>若要讓你的 kernel 支援序列埠，請參考關於重新編譯 kernel
+	  的那一節。若要讓你的 kernel 支援並列埠，請參考關於重新編譯 kernel
+	  的那一節<emphasis>以及</emphasis>下一節。</para>
+	    
+	<sect4 id="printing-dev-ports">
+	  <title>為通訊埠新增 <filename>/dev</filename> 下的設備檔案</title>
+	      
+	  <para>即使 kernel 已經支援你所需的並列埠或序列埠了，你仍然需要一支
+	    程式界面在系統裡協助傳送及接收資料。
+	    這也是 <filename>/dev</filename> 裡設備檔案存在的目的。</para>
+	      
+	  <para><emphasis>若要在 <filename>/dev</filename>
+	    目錄下為你的通訊埠建立相對應的裝置檔案：</emphasis></para>
+	      
+	  <procedure>
+	    <step>
+	      <para>用 &man.su.1; 命令切換成 root。</para>
+	    </step>
+		  
+	    <step>
+	      <para>更改目前的目錄到 <filename>/dev</filename> 下：</para>
+		    
+	      <screen>&prompt.root; cd /dev</screen>
+		      
+	    </step>
+	    
+	    <step>
+	      <para>輸入：</para>
+	      
+	      <screen>&prompt.root; <userinput>./MAKEDEV <replaceable>port</replaceable></userinput></screen>
+		      
+	      <para>其中 <replaceable>port</replaceable>
+	        是你想要建立的裝置檔案名稱。若是第一個並列埠，你可以用
+	        <literal>lpt0</literal>，若是第二個並列埠，你可以用
+	        <literal>lpt1</literal>，依此類推。如果是第一個序列埠，
+	        你可以用<literal>ttyd0</literal> 而用
+	        <literal>ttyd1</literal> 如果是第二的序列埠。依此類推。</para>
+	    </step>
+	    
+	    <step>
+	      <para>輸入：</para>
+		    
+	      <screen>&prompt.root; <userinput>ls -l <replaceable>port</replaceable></userinput></screen>
+		      
+	      <para>以確定你剛剛是否有建立成功。</para>
+	    </step>
+	  </procedure>
+	</sect4>
+
+	<sect4 id="printing-parallel-port-mode">
+	  <title>設定並列埠的通訊模式</title>
+	  
+	  <para>當你決定要用並列埠時，在 FreeBSD 下你可以決定要用中斷驅動
+	    (interrupt-driven)或是輸詢(polled)的方式與印表機溝通。</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para><emphasis>中斷驅動</emphasis>是 GENERIC kernel
+	        裡預設的方式。若選擇這個方式，作業系統將利用 IRQ
+	        來判斷印表機是否已經準好接收資料。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>而<emphasis>輪詢</emphasis>
+	        的方式則是由
+	        作業系統一直重覆的去詢問印表機是否已經準備好可以接受資料。
+	        如果印表機已經準備好了，那麼 kernel
+	        再將要列印的資料送過去。</para>
+	    </listitem>
+	  </itemizedlist>
+	      
+	  <para>中斷驅動的方式較快但是要佔用一個 IRQ。
+	    你可以從上述兩者任選一個可以正常工作的來使用。</para>
+	      
+	  <para>設定通訊模有兩種方式：設定 kernel 或是使用
+	    &man.lptcontrol.8; 這個程式。</para>
+	  
+	  <para><emphasis>若要從 kernel 裡設定：</emphasis></para>
+	  
+	  <procedure>
+	    <step>
+	      <para>編輯你的 kernel 設定檔。找出或是自行加入
+		<literal>lpt0</literal> 這一項。如果你要設定使用第二個並列埠，
+		那就加入 <literal>lpt1</literal> 這一項。
+		若是第三並列埠就用 <literal>lpt2</literal>，依此類推。</para>
+	      
+	      <itemizedlist>
+		<listitem>
+		  <para>如果你要設定使用中斷驅動模式，那麼要指定
+		    <literal>irq</literal>：</para>
+			  
+		  <programlisting>
+device lpt0 at isa? port? tty irq <replaceable>N</replaceable> vector lptintr</programlisting>
+
+		  <para>其中 <replaceable>N</replaceable> 是你並列埠所使用的
+		    IRQ 編號。</para>
+		</listitem>
+			
+		<listitem>
+		  <para>如果你要用輪詢模式，那麼就不要指定
+		    <literal>irq</literal>：</para>
+			  
+		  <programlisting>
+device lpt0 at isa? port? tty vector lptintr</programlisting>
+		</listitem>
+	      </itemizedlist>
+	    </step>
+	    
+	    <step>
+	      <para>將設定檔儲存好後，重新編譯、安裝 kernel 並重新開機。
+	          你可以參考 <link linkend="kernelconfig">kernel
+	          configration</link>那一節裡更詳細的說明。</para>
+	    </step>
+	  </procedure>
+	      
+	  <para><emphasis>若你想用</emphasis> &man.lptcontrol.8;
+	    <emphasis>來設定通訊模式</emphasis>：</para>
+	      
+	  <procedure>
+	    <step>
+	      <para>輸入：</para>
+		    
+	      <screen>&prompt.root; <userinput>lptcontrol -i -u <replaceable>N</replaceable></userinput></screen>
+		      
+	      <para>將 <literal>lpt<replaceable>N</replaceable></literal>
+		設定為中斷驅動模式。</para>
+	    </step>
+	    
+	    <step>
+	      <para>輸入：</para>
+	      
+	      <screen>&prompt.root; <userinput>lptcontrol -p -u <replaceable>N</replaceable></userinput></screen>
+	      
+	      <para>將 <literal>lpt<replaceable>N</replaceable></literal>
+	        設定為輪詢模式。</para>
+	    </step>
+	  </procedure>
+	  
+	  <para>你可以把上述的命令加到你的 <filename>/etc/rc.local</filename>
+	    檔裡使得每次開機時都可以自動設定。你可以查看 &man.lptcontrol.8; 
+	    以得到更多有關的資訊。</para>
+	</sect4>
+
+	<sect4 id="printing-testing">
+	  <title>檢查印表機連線狀況</title>
+	  
+	  <para>在設定 spooling 系統之前，你應該先確定你的作業系統可以成功的
+	    將資料送到你的印表機。將印表機的連線和 spooling 系統分開來測試
+	    會較容易。</para>
+	      
+	  <para>你可以送一些文字來測試你的印表機。印表機應該會馬上將他們收到
+	    的資料印出來。&man.lptest.1; 這個程式會送 96 行每行 96 個 ASCII
+	    文字的資料給你的印表機以協助測試。</para>
+	  
+	  <para>使用 PostScript (或是其他語言) 的印表機測試起來較複雜。
+	    我們得先寫一個較小的測試程式，像下面這樣：</para>
+
+	  <programlisting>
+%!PS
+100 100 moveto 300 300 lineto stroke
+310 310 moveto /Helvetica findfont 12 scalefont setfont
+(Is this thing working?) show
+showpage</programlisting>
+	      
+	  <note>
+	    <para>注意：上面這個小程式是給使用 PostScript 的印表機用的，
+	      不能給比如說 Hewlett Packard 公司的 PCL 語言使用。PCL
+	      語言可以讓你可以列印純文字同時裡面夾雜 PCL 特別的命令。
+	      PostScript 不能直接印純文字，因此對於這樣的印表機，
+	      我們必需做一些特別的設定。</para>
+	      </note>
+	      
+	  <sect5 id="printing-checking-parallel">
+	    <title>檢查並列埠印表機</title>
+	    
+	    <para>這一節將告訴你如何檢查 FreeBSD
+	      是否可以使用接在並列埠的印表機。</para>
+		
+	    <para><emphasis>測試並列埠上的印表機：</emphasis></para>
+		
+	    <procedure>
+	      <step>
+		<para>用 &man.su.1; 命令切換成 root。</para>
+	      </step>
+	      
+	      <step>
+		<para>將資料傳送給印表機。</para>
+
+		<itemizedlist>
+		  <listitem>
+		    <para>如果這個印表機可以直接列印純文字，請使用
+			&man.lptest.1;。輸入：</para>
+			      
+		    <screen>&prompt.root; <userinput>lptest &gt; /dev/lpt<replaceable>N</replaceable></userinput></screen>
+			      
+		    <para>其中 <replaceable>N</replaceable>
+		      是你印表機所連接的並列埠。從 0 開始計算。</para>
+		  </listitem>
+		  
+		  <listitem>
+		    <para>如果這個印表機使用 PostScript
+		      或其他的印表機語言，那麼送一個小小的測試程式給印表機。
+		      輸入：</para>
+		    
+		    <screen>&prompt.root; <userinput>cat &gt; /dev/lpt<replaceable>N</replaceable></userinput></screen>
+			      
+		    <para>然後，一行接著一行，<emphasis>小心的</emphasis>
+		      把你的命令打進去，因為你按下 ENTER 後，就無法再修改了。
+		      當你輸入完畢後，按 CONTROL+D
+		      或是其他產生檔案結尾字元的按鍵。</para>
+			    
+		    <para>或者是你可以將你的測試測程放在一個檔案裡並輸入：
+		      </para>
+			    
+		    <screen>&prompt.root; <userinput>cat <replaceable>file</replaceable> &gt; /dev/lpt<replaceable>N</replaceable></userinput></screen>
+			      
+		    <para>其中 <replaceable>file</replaceable>
+		      就是儲存你測試程式的檔名。</para>
+		  </listitem>
+		</itemizedlist>
+	      </step>
+	    </procedure>
+	    
+	    <para>你應該可以看到有一些東西印出來了。
+	      如果印出來的資料看起不大正確，別擔心，
+	      我們稍待一會就修正他們。</para>
+	  </sect5>
+	      
+	  <sect5 id="printing-checking-serial">
+	    <title>檢查序列埠印表機</title>
+	    
+	    <para>這一節將告訴你如何檢查 FreeBSD
+	      是否可以使用接在序列埠的印表機。</para>
+		
+	    <para><emphasis>測試序列埠上的印表機：</emphasis></para>
+		
+	    <procedure>
+	      <step>
+		<para>用 &man.su.1; 命令切換成 root。</para>
+	      </step>
+	      
+	      <step>
+		<para>編輯 <filename>/etc/remote</filename>
+		  這個檔，並加入下列幾行：</para>
+		      
+		<programlisting>
+printer:dv=/dev/<replaceable>port</replaceable>:br#<replaceable>bps-rate</replaceable>:pa=<replaceable>parity</replaceable></programlisting>
+
+		<para>其中 <replaceable>port</replaceable> 指的是哪一個序列埠
+		  (<literal>ttyd0</literal>、<literal>ttyd1</literal>、等等。)
+		  ，<replaceable>bps-rate</replaceable>
+		  指的是該序列埠的傳輸速度，而
+		  <replaceable>parity</replaceable>
+		  是設定印表機是否需要同位元檢查(這個值可以是
+		  <literal>even</literal>、<literal>odd</literal>、
+		  <literal>none</literal> 或 <literal>zero</literal>)。</para>
+		      
+		<para>下面這個例子是一台連接在序列埠上以 19200 bps
+		  傳輸同時不使用同位元檢查的印表機設定方式：</para>
+		      
+		<programlisting>
+printer:dv=/dev/ttyd2:br#19200:pa=none</programlisting>
+	      </step>
+		    
+	      <step>
+		<para>用 &man.tip.1; 命令連上印表機。輸入：</para>
+		
+		<screen>&prompt.root; <userinput>tip printer</userinput></screen>
+		
+		<para>如果失敗的話，再次編輯 <filename>/etc/remote</filename>
+		  這個檔同時以 <filename>/dev/cuaa<replaceable>N</replaceable></filename>
+		  取代 <filename>/dev/ttyd<replaceable>N</replaceable></filename>。</para>
+	      </step>
+		    
+	      <step>
+		<para>將資料傳送給印表機。</para>
+
+		<itemizedlist>
+		  <listitem>
+		    <para>如果這個印表機可以直接列印純文字，請使用
+			&man.lptest.1;。輸入：</para>
+			    			      
+		    <screen><prompt>~</prompt><userinput>$lptest</userinput></screen>
+		  </listitem>
+		  
+		  <listitem>
+		    <para>如果這個印表機使用 PostScript 或其他的印表機語言，
+		      那麼送一個小小的測試程式給印表機。一行接著一行，
+		      <emphasis>非常小心的</emphasis>將程式輸入，
+		      因為倒退鍵或是其他的編輯時常用的按鍵，
+		      對印表機可能有特殊的意義。
+		      最後你可能要打一個給印表機的檔案結尾字元，讓他知道
+		      程式結束了。對 PostScript 的印表機來說，是用 CONTROL+D
+		      鍵。</para>
+			    
+		    <para>或者是你可以將你的測試測程放在一個檔案裡並輸入：</para>
+		    
+		    <screen><prompt>~</prompt><userinput>&gt;<replaceable>file</replaceable></userinput></screen>
+			      
+		    <para>其中 <replaceable>file</replaceable>
+		      就是儲存你測試程式的檔名。用 &man.tip.1;
+		      將這個檔送給印表機後，而按檔案結尾字元。</para>
+		  </listitem>
+		</itemizedlist>
+	      </step>
+	    </procedure>
+		
+	    <para>你應該可以看到有一些東西印出來了。
+	      如果印出來的資料看起不大正確，別擔心，我們稍待一會就修正他們。</para>
+	  </sect5>
+	</sect4>
+      </sect3>
+      
+      <sect3 id="printing-printcap">
+	<title>啟用 Spooler: 編輯 <filename>/etc/printcap</filename> 設定檔</title>
+
+	<para>到此為止，你的印表機應該已經連接好了，你的 kernel
+	  應該也設定無誤了，而且你也可以傳送資料給印表機了。現在，
+	  我們應該可以開始設定 LPD 來控制印表機了。</para>
+	    
+	<para>LPD 的設定檔是 <filename>/etc/printcap</filename>。每當
+	  spooler 被使用時，LPD spooling 系統就會來讀這個檔，
+	  所以只要這個檔一被修改，馬上就會生效。</para>
+	    
+	<para>編輯 &man.printcap.5; 這個設定檔是很簡單的。
+	  用你喜歡的編輯器對 <filename>/etc/printcap</filename>
+	  這個設定檔做修改就可以了。這個檔的格式寫法和其他的設定檔如
+	  <filename>/usr/share/misc/termcap</filename> 和
+	  <filename>/etc/remote</filename> 是相同的。
+	  關於這些設定檔的格式，請參考 &man.cgetent.3;。</para>
+	    
+	<para>要建立一個簡單的 spooler 設定，請按照下列步驟：</para>
+
+	<procedure>
+	  <step>
+	    <para>為你的印表機選擇一個名字 (以及一些方便的別名)，並把他們放在
+	      <filename>/etc/printcap</filename> 這個檔裡。請參見
+	      <link linkend="printing-naming">為印表機取名</link>這一節。
+	      </para>
+	  </step>
+	  
+	  <step>
+	    <para>用 <literal>sh</literal> 關鍵字關閉列印 header pages 的功能
+	      (預設是打開此功能)。請參見
+	      <link linkend="printing-no-header-pages">不列印 Header Pages
+	      </link>這一節。</para>
+	  </step>
+	  
+	  <step>
+	    <para>用 <literal>sd</literal> 關鍵字指定一個目錄給 spooler 用。
+	      請參見
+	      <link linkend="printing-spooldir">建立 Spooling 目錄</link>
+	      這一節。</para>
+	  </step>
+	  
+	  <step>
+	    <para>在 <filename>/etc/printcap</filename> 設定檔裡用
+	      <literal>lp</literal> 關鍵字指定印機連接埠在
+	      <filename>/dev</filename> 下使用的裝置檔案。請參見
+	      <link linkend="printing-device">辨認印表機裝置</link>這一節。
+	      如果你的印表機是接在序列埠，那麼你可以用 <literal>fs</literal>、
+	      <literal>fc</literal>、<literal>xs</literal> 以及
+	      <literal>xc</literal> 等關鍵字來設定通訊參數。請參見
+	      <link linkend="printing-commparam">設定 Spooler 的通訊參數</link>
+	      。</para>
+	  </step>
+	  
+	  <step>
+	    <para>安裝輸入文字過濾程式；請參考
+	      <link linkend="printing-textfilter">安裝文字過濾程式</link>
+	      這一節。</para>
+	  </step>
+	  
+	  <step>
+	    <para>利用 &man.lpr.1; 命令列印以測試設定是否正確；請參見
+	      <link linkend="printing-trying">測試</link> 及
+	      <link linkend="printing-troubleshooting">疑難排解</link>
+		這兩節。</para>
+	  </step>
+	</procedure>
+
+	<note>
+	  <para>使用特定語言的印表機，比如說 PostScrit 印表機，無法直接列印
+	    純文字。上述以及接下來要介紹的方法將假設你所要列印的檔案都是
+	    不需要轉換就能讓印表機直接了解的。</para>
+	</note>
+
+	<para>使用者通常會期望他們可以直接將純文字的資料直接由印表機輸出，
+	  而使用 LPD 列印的程式通常也是這麼假設。
+	  如果你的印表機使用某個特定的印表機語言，
+	  且你希望可以同時處理特定印表機語言的資料
+	  <emphasis>以及</emphasis>純文字的資料，
+	  那麼你應該要另外再多安裝一項之前未提到的東西：純文字轉成
+	  PostScript(或其他印表機語言)的自動轉換程式。 <link
+	  linkend="printing-advanced-if-conversion">在 PostScript 印表機上列印純文字</link>
+	  這一節將告訴你要怎麼做。</para>
+	    
+	<sect4 id="printing-naming">
+	  <title>為印表機取名</title>
+	  
+	  <para>第一就是為你的印表機取一個名字。此外，
+	    你也可為你的印表機取很多別名，因此，
+	    你要取符合功能的名字或是古怪的名字都可以。</para>
+	      
+	  <para>在 <filename>/etc/printcap</filename> 裡定義的印表機，
+	    至少要有一部取 <literal>lp</literal> 別名。這是預設的印表機名稱。
+	    如果使用者沒有環境變數 <envar>PRINTER</envar> 設定印表機的名稱且在
+	    LPD 的命令也沒有指定任何印表機的話，那麼別名為
+	    <literal>lp</literal> 的印表機就會被視為預設的印表機。</para>
+	      
+	  <para>通常，我們會將一台印表機的最後一別名取為他的全名，
+	    包括製造商以及型號。</para>
+	  
+	  <para>當你將印表機的名稱及別名設定在
+	    <filename>/etc/printcap</filename> 檔裡時，
+	    印表機的名稱一定要放在最左邊的欄位。其他的別名則以垂直的線(|)分開，
+	    而在最後一個別名之後加一個冒號(:)。</para>
+	      
+	  <para>在下面的例子裡，我們大略描述一下
+	    <filename>/etc/printcap</filename> 的骨幹。
+	    這個範例裡定義了兩台印表機。(Diablo 630 以及 Panasonic KX-P4455
+	    PostScript 雷射印表機。)：</para>
+
+	  <programlisting>
+#
+#  /etc/printcap for host rose
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:</programlisting>
+	  
+	  <para>在這個例子裡，第一台印表機取名為
+	    <literal>rattan</literal> 而他的別名有
+	    <literal>line</literal>、<literal>diablo</literal>、
+	    <literal>lp</literal> 以及 <literal>Diablo 630 Line
+	      Printer</literal>。這台印表機有
+	    <literal>lp</literal> 這個別名，因此他也是設預的印表機。
+	    第二台取名為 <literal>bamboo</literal>，而他的別名有
+	    <literal>ps</literal>、<literal>PS</literal>、
+	    <literal>S</literal>、<literal>panasonic</literal> 以及
+	    <literal>Panasonic KX-P4455 PostScript v51.4</literal>。</para>
+	</sect4>
+
+	<sect4 id="printing-no-header-pages">
+	  <title>不列印 Header Pages</title>
+	  
+	  <para>LPD spooling 系統預設是為每個列印工作列印
+	    <emphasis>header page</emphasis> 的。Header page
+	    包括了送出列印工作的使用者名稱、送出工作的機器名稱以及工作的名稱。
+	    不幸的是，這些額外的訊息可能會妨礙我們做簡單的印表機設定測試，
+	    因此我們想要不列印 header pager。</para>
+	      
+	  <para>在 <filename>/etc/printcap</filename> 用
+	    <literal>sh</literal> 關鍵字為特定的印表機設定不列印 header pages。
+	    這裡有一個在 <filename>/etc/printcap</filename> 裡使用
+	    <literal>sh</literal> 的範例：</para>
+		
+	  <programlisting>
+#
+#  /etc/printcap for host rose - no header pages anywhere
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:</programlisting>
+
+	  <para>注意我們使用的正確格式：印表機定義的第一行得從第一個字開始寫，
+	    而其後的每一行用 TAB 鍵往內縮一格。
+	    而一行若寫不完需要接到下一行時，則以反斜線字元結尾。</para>
+	</sect4>
+
+	<sect4 id="printing-spooldir">
+	  <title>建立 Spooling 目錄</title>
+	  
+	  <para>下一步就是建立一個<emphasis>spooling 目錄</emphasis>，
+	    一個在列印時會需要用到以及存放一些 spooler 需要的檔案的地方。</para>
+	  
+	  <para>通常我們會將 spooling 目錄指定在 
+	    <filename>/var/spool</filename> 目錄之下。你不需要備份
+	    spooling 目錄，而建立他也只要以 &man.mkdir.1; 命令即可。</para>
+	  
+	  <para>通常我們會將 spooling 目錄以印表機的名稱建立，如下所示：</para>
+		
+	  <screen>&prompt.root; <userinput>mkdir /var/spool/<replaceable>printer-name</replaceable></userinput></screen>
+		
+	  <para>然而，如果在你的網路之中有很多印表機的話，
+	    你也許會希望將所有的 spooling 目錄放在一個 LPD 專用的目錄之下的話。
+	    我們以我們的範例印表機為 <literal>rattan</literal> 和
+	    <literal>bamboo</literal> 為例：</para>
+		
+	  <screen>&prompt.root; <userinput>mkdir /var/spool/lpd</userinput>
+&prompt.root; <userinput>mkdir /var/spool/lpd/rattan</userinput>
+&prompt.root; <userinput>mkdir /var/spool/lpd/bamboo</userinput></screen>
+		
+	  <note>
+	    <para>如果你關心的是使用者列印資料的隱私，那麼你應該要將
+	      spooling 目錄的權限做適當的設定。Spooling 目錄應該要屬於 daemon
+	      這個使用者同時並允許他讀、寫及搜尋，而其他人都無法存取此目錄。
+	      因此，我們應該要這樣設定：</para>
+		
+	    <screen>&prompt.root; <userinput>chown daemon.daemon /var/spool/lpd/rattan</userinput>
+&prompt.root; <userinput>chown daemon.daemon /var/spool/lpd/bamboo</userinput>
+&prompt.root; <userinput>chmod 770 /var/spool/lpd/rattan</userinput>
+&prompt.root; <userinput>chmod 770 /var/spool/lpd/bamboo</userinput></screen>
+	  </note>
+	      
+	  <para>最後，在 <filename>/etc/printcap</filename> 檔裡，
+	    你可以用 <literal>sd</literal> 關鍵字來指定 spooling 的目錄：</para>
+
+	  <programlisting>
+#
+#  /etc/printcap for host rose - added spooling directories
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:</programlisting>
+
+	  <para>注意印表機的名字一定是在定義第一行的第一個字，
+	    而其他行皆要以 TAB 縮排。若需要換行則需要在行末加上反斜線字元。
+	    </para>
+	      
+	  <para>如果你沒有用 <literal>sd</literal> 指定 spooling 目錄，那麼
+	    系統預設的 spooling 目錄將會是 <filename>/var/spool/lpd</filename>
+	    。</para>
+	</sect4>
+	    
+	<sect4 id="printing-device">
+	  <title>辨認印表機裝置</title>
+	  
+	  <para>在 <link linkend="printing-dev-ports">為通訊埠新增 /dev
+	      目錄下的設備檔案</link>這一節裡，我們在
+	      <filename>/dev</filename> 目錄下選定了要給 FreeBSD
+	      使用與印表機溝通的連接埠。現在我們要告訴 LPD 這項資訊。當
+	      spooling 系統有工作要列印時，
+	      他將會告訴過濾程式程式(負責送資料給印表機)使用指定的裝置。</para>
+	      
+	  <para>在 <filename>/etc/printcap</filename> 用
+	    <literal>lp</literal> 關鍵字指定使用 <filename>/dev</filename>
+	    下的裝置名稱。</para>
+	      
+	  <para>在我們的範例裡，我們設定 <hostid>rattan</hostid>
+	    使用第一個並列埠，而 <hostid>bamboo</hostid> 使用第六個序例埠。
+	    因此在 <filename>/etc/printcap</filename> 我們設定：</para>
+		
+	  <programlisting>
+#
+#  /etc/printcap for host rose - identified what devices to use
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:\
+        :lp=/dev/lpt0:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:\
+        :lp=/dev/ttyd5:</programlisting>
+	      
+	  <para>如果你在 <filename>/etc/printcap</filename> 裡沒有用
+	    <literal>lp</literal> 關鍵字指定要使用哪個通訊埠，LPD 將會使用
+	    <filename>/dev/lp</filename> 為預設的通訊埠。
+	    <filename>/dev/lp</filename> 目前在 FreeBSD 中並不存在。</para>
+	      
+	  <para>如果你現在安裝的印表機是連接在並列埠上，那麼請跳至
+	    <link linkend="printing-textfilter">安裝文字過濾程式</link>
+	    這一節，否則，請按照下面這一節繼續設定。</para>
+	</sect4>
+	    
+	<sect4 id="printing-commparam">
+	  <title>設定 Spooler 的通訊參數</title>
+	  
+	  <para>對於連接在序列埠上的印表機，LPD 得設定傳輸速率、同位元檢查、
+	    以及其他的通訊參數使得過濾程式能送資料到印表機上。
+	    這是較有利的因為：</para>
+		
+	  <itemizedlist>
+	    <listitem>
+	      <para>你只要編輯 <filename>/etc/printcap</filename>
+	        就可以使用不同的通訊參數。不需要去重新編譯你的過濾程式程式。
+	        </para>
+	    </listitem>
+		  
+	    <listitem>
+	      <para>允許 spooling 系統在多台印表機、
+	        多種不同通訊參數設定的情況下用同一個過濾程式程式。</para>
+	    </listitem>
+	  </itemizedlist>
+
+	  <para>在 <filename>/etc/printcap</filename> 設定檔裡，下列關鍵字控制
+	    <literal>lp</literal> 關鍵字所指定的通訊埠：</para>
+
+	  <variablelist>
+	    <varlistentry>
+	      <term><literal>br#<replaceable>bps-rate</replaceable></literal></term>
+
+	      <listitem>
+		<para>設定通訊埠傳輸速度為<replaceable>bps-rate</replaceable>
+		  其中 <replaceable>bps-rate</replaceable> 可以是 50、75、110
+		  、134、150、200、300、600、1200、1800、2400、4800、9600、
+		  19200 或是 38400 bit-per-second。</para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term><literal>fc#<replaceable>clear-bits</replaceable></literal></term>
+	      
+	      <listitem>
+		<para>開啟通訊埠後，清除 <replaceable>sgttyb</replaceable>
+		  結構裡的旗標位元 <replaceable>clear-bits</replaceable>。
+		  </para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term><literal>fs#<replaceable>set-bits</replaceable></literal></term>
+	      
+	      <listitem>
+		<para>設定 <replaceable>sgttyb</replaceable> 結構裡的旗標位元
+		  <replaceable>set-bits</replaceable>。</para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term><literal>xc#<replaceable>clear-bits</replaceable></literal></term>
+	      
+	      <listitem>
+		<para>開啟通埠後，清除 local 模式位元
+		  <replaceable>clear-bits</replaceable>。</para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term><literal>xs#<replaceable>set-bits</replaceable></literal></term>
+	      
+	      <listitem>
+		<para>設定 local 模式位元
+		<replaceable>set-bits</replaceable>。</para>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
+	  
+	  <para>關於
+	    <literal>fc</literal>、<literal>fs</literal>、
+	    <literal>xc</literal> 以及 <literal>xs</literal> 關鍵字各個 bit
+	    的說明，請參考
+	    <filename>/usr/include/sys/ioctl_compat.h</filename>。</para>
+	      
+	  <para>當 LPD 開啟由 <literal>lp</literal> 所指定的通訊埠時，會先讀取
+	    <literal>sgttyb</literal> 這個結構，然後清掉
+	    <literal>fc</literal> 關鍵字所指定的位元再設定由
+	    <literal>fs</literal> 關鍵字所指定的位元。設定完成後，
+	    才開始使用這個結構。同樣的，對 local
+	    模式位元設定也是以一樣方式處理。</para>
+	      
+	  <para>讓我們在我們的例子裡為第六個序列埠設定這些位元。
+	    我們將會將傳輸速率設定成 38400 bps。而在旗標位元方面，我們會設定
+	    TANDEM、ANYP、LITOUT、FLUSHO 以及 PASS8 這些位元。而 local
+	    模式位元，我們將設定 LITOUT 以及 PASS8 位元：</para>
+
+	  <programlisting>
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:\
+        :lp=/dev/ttyd5:fs#0x82000c1:xs#0x820:</programlisting>
+	</sect4>
+
+	<sect4 id="printing-textfilter">
+	  <title>安裝文字過濾程式</title>
+	      
+	  <para>我們現在可以開始設定 LPD 用什麼文字過濾程式送工作給印表機。
+	    一個<emphasis>文字過濾程式</emphasis>也稱做
+	    <emphasis>輸入用過濾程式</emphasis>，當 LPD
+	    有東西要列印時，他就會執行這個程式。當 LPD
+	    執行這個程式時，他會將過濾程式的標準輸入設為欲列印工作的標準輸入，
+	    而過濾程式的標準輸出則送給以 <literal>lp</literal>
+	    關鍵字指定的通訊埠。
+	    因此過濾程式程式必需要能從標準輸入讀進要列印的東西，
+	    做適當的處理後，將結果從標準輸出送出。
+	    而這些輸出就會被印出來。請參考<link
+	      linkend="printing-advanced-filters">過濾程式的運作方式</link>
+	    這一節以更進一步的了解過濾程式。</para>
+	      
+	  <para>在我們的印表機設定裡，文字過濾程式可能只是一個執行
+	    <command>/bin/cat</command> 命令的 shell script 將工作送給印表機。
+	    FreeBSD 裡有一個叫做 <filename>lpf</filename>
+	    的過濾程式能處理倒退、底線等印表機可能無法正確處理的資料。
+	    當然，你也可以任何你想用的過濾程式。關於 <command>lpf</command>
+	    這個過濾程式在
+	    <link linkend="printing-advanced-lpf">文字過濾程式：lpf</link>
+	    這一節裡有更詳細的說明。</para>
+	      
+	  <para>首先，讓我們做一個簡單的 shell script 文字過濾程式，
+	    <filename>/usr/local/libexec/if-simple</filename>。
+	    用你熟悉的編輯器編輯這個檔：</para>
+		
+	  <programlisting>
+#!/bin/sh
+#
+# if-simple - Simple text input filter for lpd
+# Installed in /usr/local/libexec/if-simple
+#
+# Simply copies stdin to stdout.  Ignores all filter arguments.
+
+/bin/cat &amp;&amp; exit 0
+exit 2</programlisting>
+	  
+	  <para>然後要讓這個檔可執行：</para>
+	  
+	  <screen>&prompt.root; <userinput>chmod 555 /usr/local/libexec/if-simple</userinput></screen>
+	      
+	  <para>同時，在 <filename>/etc/printcap</filename> 設定檔裡用
+	    <literal>if</literal> 關鍵字告訴 LPD 來使用這個過濾程式。
+	    在下面的例子裡，我們在 <filename>/etc/printcap</filename> 
+	    為兩台印表機都指定了過濾程式：</para>
+		
+	  <programlisting>
+#
+#  /etc/printcap for host rose - added text filter
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:\ :lp=/dev/lpt0:\
+        :if=/usr/local/libexec/if-simple:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:\
+        :lp=/dev/ttyd5:fs#0x82000e1:xs#0x820:\
+        :if=/usr/local/libexec/if-simple:</programlisting>
+	</sect4>
+
+	<sect4 id="printing-trying">
+	  <title>測試</title>
+	  
+	  <para>你已經把 LDP 需要的設定都完成了。不過，
+	    我們需要測試看看這些設定是否可以正確的工作。
+	    測試的方法就是印出一些東西。如果要用 LPD 系統來列印，我們可以使用
+	    &man.lpr.1; 這個命令來送出一些列印工作。</para>
+	  
+	  <para>你可以使用
+	    <link linkend="printing-testing">檢查印表機連線狀況</link>
+	    這一節裡介紹的 &man.lpr.1; 及 &man.lptest.1; 來產生一些測試文字。
+	    </para>
+
+	  <para><emphasis>測試 LPD 設定：</emphasis></para>
+	  
+	  <para>輸入：</para>
+				
+	  <screen>&prompt.root; <userinput>lptest 20 5 | lpr -P<replaceable>printer-name</replaceable></userinput></screen>
+	  
+	  <para>其中 <replaceable>printer-name</replaceable> 是
+	    <filename>/etc/printcap</filename> 裡的某一台印表機名稱或別名。
+	    如果要測試預設的印表機，那麼在執行 &man.lpr.1; 命令時不要指定
+	    <option>-P</option> 這個參數。再一次的提醒，如果你要測試的是
+	    PostScript 印表機，那麼請傳送 PostScript 程式給印表機，而不要用
+	    &man.lptest.1;。你可以將程式放在一個檔案裡然後輸入
+	    <command>lpr <replaceable>file</replaceable></command>。</para>
+
+	  <para>如果是 PostScript 印表機，你應該會得到程式輸出的結果。
+	    如果你是用 &man.lptest.1; 的話，
+	    那麼你的結果看起來應該是下面這個樣子：</para>
+
+	      <programlisting>
+!"#$%&amp;'()*+,-./01234
+"#$%&amp;'()*+,-./012345
+#$%&amp;'()*+,-./0123456
+$%&amp;'()*+,-./01234567
+%&amp;'()*+,-./012345678</programlisting>
+	      
+	  <para>若要做更進一步的測試，你可以下載更大的程式
+	    (給某個特定印表機語言的印表機使用)或是在執行 &man.lptest.1;
+	    時加一些額外的參數。例如 <command>lptest 80 60</command> 將會產生
+	    60 行每行 80 個字元的測試資料。</para>
+	  
+	  <para>如果印表機並沒有反應，請參考 <link
+	      linkend="printing-troubleshooting">疑難排解</link>這一節。</para>
+	</sect4>
+
+	<sect4 id="printing-troubleshooting">
+	  <title>疑難排解</title>
+	  
+	  <para>用 &man.lptest.1; 做過簡單的測試後，
+	    你可能會遇到下列的問題，而不是正確的輸出：</para>
+	  
+	  <variablelist>
+	    <varlistentry>
+	      <term>印表機印了一下子，但是並沒有輸出任何結果。</term>
+	      
+	      <listitem>
+		<para>印表機印出上面所列的東西，但是沒多久就停住了。這時，
+		  你可能需要按印表機上的 PRINT REMAINING 或 FORM FEED
+		  鈕才看得到輸出的結果。</para>
+		      
+		<para>如果是這種情況的話，
+		  印表機在列印前可能在等待是否還有更多的資料要列印。
+		  要解決這個問題，你可以讓你的文字過濾程式送出 FORM FEED
+		  字元(或是其他需要的字元)給印表機。
+		  這個動作讓印表機印出目前印表機內暫存區裡的資料。
+		  同時也確定每個工作的最後一頁可以完整的輸出，
+		  使得下個工作不會從前一個工作的最後一頁中間輸出。</para>
+		      
+		<para>下面這個 shell script 取代
+		  <filename>/usr/local/libexec/if-simple</filename>。
+		  將工作送給印表機後，會再送出一個 form feed 字元：</para>
+
+		<programlisting>
+#!/bin/sh
+#
+# if-simple - Simple text input filter for lpd
+# Installed in /usr/local/libexec/if-simple
+#
+# Simply copies stdin to stdout.  Ignores all filter arguments.
+# Writes a form feed character (\f) after printing job.
+
+/bin/cat &amp;&amp; printf "\f" &amp;&amp; exit 0
+exit 2</programlisting>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term>印出了 &ldquo;階梯效應&rdquo;。</term>
+	      
+	      <listitem>
+		<para>你的結果可能是這個樣子：</para>
+		
+		<programlisting>
+!"#$%&amp;'()*+,-./01234
+                            "#$%&amp;'()*+,-./012345
+                                                         #$%&amp;'()*+,-./0123456</programlisting>
+
+		<para>這時你已經成為因為換行字元衝突而產生的
+		  <emphasis>階梯效應</emphasis>犧牲者。UNIX
+		  風格的作業系統只使用 ASCII 碼 10，line feed (LF)
+		  做為換行字元。MS-DOS、OS/2 以及其他的作業系統使用兩個字元
+		  ASCII 碼 10 <emphasis>以及</emphasis> ASCII 碼 13 (稱做
+		  carriage return 或 CR)。很多印表機使用 MS-DOS
+		  的表示法來代表換行字元。</para>
+		      
+		<para>當你用 FreeBSD 列印時，你的文件只用 line feed 字元換行。
+		  當印表機看到一個 line feed 字元時，將紙捲了一行，
+		  仍然從同一個位置繼續往後印。這就是為什麼要用 carriage return
+		  字元的原因：將下一個字的列印位置移到紙張的最左邊。</para>
+
+		<para>FreeBSD 希望你的印表機可以：</para>
+		    
+		<informaltable frame="none">
+		  <tgroup cols="2">
+		    <tbody>
+		      <row>
+			<entry>印表機收到 CR</entry>
+			<entry>印表機列印 CR</entry>
+		      </row>
+		      
+		      <row>
+			<entry>印表機收到 LF</entry>
+			<entry>印表機列印 CR + LF</entry>
+		      </row>
+		    </tbody>
+		  </tgroup>
+		</informaltable>
+		
+		<para>有一些方法可以達到這個目地：</para>
+
+		<itemizedlist>
+		  <listitem>
+		    <para>用印表機上的開關或控制面板設定這些字元的處理方式。
+		      請查閱你的印表機手冊並做正確的設定。</para>
+
+		    <note>
+		      <para>如果你的電腦安裝了除了 FreeBSD 之外的作業系統，
+		        你也許得常常<emphasis>重新設定</emphasis>印表機處理
+		        CR 和 LF 的設定。
+		        因此，你可能會較希望使用下面其中之一的方法：</para>
+		    </note>
+		  </listitem>
+		  
+		  <listitem>
+		    <para>讓 FreeBSD 的序列埠驅動程式自動將 LF 轉換成 CR+LF。
+		      當然，你的印表機<emphasis>只能</emphasis>將在序列埠上。
+		      若要開啟這個功能，只要在
+		      <filename>/etc/printcap</filename> 設定檔裡為你的印表機用
+		      <literal>fs</literal> 關鍵字設定 CRMOD 這個位元即可。
+		      </para>
+		  </listitem>
+			  
+		  <listitem>
+		    <para>送一個 <emphasis>控制碼</emphasis>
+		      給印表機告訴他暫時把 LF 字元做額外的處理。
+		      請參閱你的印表機手冊以了解你的印表機是否支援此功能。
+		      如果你找到適用的控制碼，
+		      修改你的文字過濾程式先送出這些控制碼，
+		      再送出要列印的工作。</para>
+			    
+		    <para>下面這個文字過濾程式的範例是使用 Hewlett-Packard
+		      PCL 控制碼。先讓印表機將 LF 視為 LF 和 CR 處理，
+		      再送出工作。最後，再送出將整頁送出的控制碼。
+		      這個過濾程式應該可以應付大部份 Hewlett-Packard
+		      的印表機。</para>
+			    
+		    <programlisting>
+#!/bin/sh
+#
+# hpif - Simple text input filter for lpd for HP-PCL based printers
+# Installed in /usr/local/libexec/hpif
+#
+# Simply copies stdin to stdout.  Ignores all filter arguments.
+# Tells printer to treat LF as CR+LF.  Ejects the page when done.
+
+printf "\033&amp;k2G" &amp;&amp; cat &amp;&amp; printf "\033&amp;l0H" &amp;&amp; exit 0
+exit 2</programlisting>
+			    
+		    <para>而下面這個 <filename>/etc/printcap</filename>
+		      的範例是設定一台叫做 orchid 電腦。
+		      他在第一個並列埠連接了一台叫做 <hostid>teak</hostid> 的
+		      Hewlett-Packard LaserJet 3Si 印表機。
+		      同時，他使用了上述的 script 做為他的文字過濾程式：</para>
+
+		    <programlisting>
+#
+#  /etc/printcap for host orchid
+#
+teak|hp|laserjet|Hewlett Packard LaserJet 3Si:\
+        :lp=/dev/lpt0:sh:sd=/var/spool/lpd/teak:mx#0:\
+        :if=/usr/local/libexec/hpif:</programlisting>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term>每一行都重疊在一起</term>
+		    
+	      <listitem>
+		<para>印表機從不換行，把每一行都印在同一行上。</para>
+		      
+		<para>這個問題和上述的階梯效應&ldquo;相反&rdquo;。
+		  而且也較罕見。FreeBSD 用來換行的 LF 字元被當成 CR
+		  字元使得印表機一直回到紙張的最左邊開始列印但卻不換行。</para>
+
+		<para>使用印表機上的設定開關或是控制面板設定使 LF 和 CR
+		  字元這樣被處理：</para>
+
+		<informaltable frame="none">
+		  <tgroup cols="2">
+		    <thead>
+		      <row>
+			<entry>印表機收到</entry>
+			<entry>印表機列印</entry>
+		      </row>
+		    </thead>
+		    
+		    <tbody>
+		      <row>
+			<entry>CR</entry>
+			<entry>CR</entry>
+		      </row>
+		      
+		      <row>
+			<entry>LF</entry>
+			<entry>CR + LF</entry>
+		      </row>
+		    </tbody>
+		  </tgroup>
+		</informaltable>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry><term>印表機會少印某些字</term>
+	      
+	      <listitem>
+		<para>列印時，印表機在一行之中會少印某些字。
+		  這個情況在列印時可能會變得愈來愈嚴重，
+		  有愈來愈多的字印不出來。</para>
+		      
+		<para>這是因為
+		  印表機收資料的速度無法跟上電腦透過序列埠送資料的速度
+		  (這個問題在並列埠印表機上應該不會發生)。
+		  有兩種方式可以解決這個問題：</para>
+
+		<itemizedlist>
+		  <listitem>
+		    <para>如果印表機支援 XON/XOFF 流量控制，在 FreeBSD
+		      裡可以用 <literal>fs</literal> 關鍵字來設定 TANDEM
+		      位元。</para>
+		  </listitem>
+			  
+		  <listitem>
+		    <para>如果印表機支援 carrier 流量控制，用
+		      <literal>fs</literal> 關鍵字來設定 MDMBUF 位元。
+		      確定連接印表機及電腦的連接線可以配合 carrier
+		      流量控制使用。</para>
+		  </listitem>
+		  
+		  <listitem>
+		    <para>如果印表機不支援任何一種流量控制，那麼在
+		      <literal>fs</literal> 關鍵字裡試著設定 NLDELAY、
+		      TBDELAY、CRDELAY、VTDELAY 以及 BSDELAY
+		      等位元的組合以適當的延遲資料送到印表機。</para>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term>印出亂碼</term>
+	      
+	      <listitem>
+		<para>印表機印出看不懂的符號，而不是我們期望中的資料。</para>
+		      
+		<para>這通常是因為序列印表機的通訊參數設定不正確而造成的。
+		  再檢查一次 <literal>br</literal> 關鍵字所設定的傳輸速率、
+		  <literal>fs</literal> 及 <literal>fc</literal>
+		  關鍵字所設定的同位元檢查。同時也檢查印表機是否也使用與
+		  <filename>/etc/printcap</filename> 檔裡相同的設定。</para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term>沒有任何動作發生</term>
+	      
+	      <listitem>
+		<para>如果沒有任何反應，那麼可能是 FreeBSD
+		  的問題而不是硬體的問題。為你的印表機在
+		  <filename>/etc/printcap</filename> 設定檔裡設定紀錄檔
+		  (使用 <literal>lf</literal> 關鍵字)。
+		  下面的例子是用 <literal>lf</literal> 為
+		  <literal>rattan</literal> 這台印表機設定紀錄檔：</para>
+
+		<programlisting>
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:\
+        :lp=/dev/lpt0:\
+        :if=/usr/local/libexec/if-simple:\
+        :lf=/var/log/rattan.log</programlisting>
+		
+		<para>然後試著再列印一次，並檢查紀錄檔(在我們的例子裡，是
+		  <filename>/var/log/rattan.log</filename>
+		  這個檔)裡是否有出現錯誤訊息。
+		  然後根據錯誤訊息來解決你的問題。</para>
+		      
+		<para>如果你沒有用 <literal>lf</literal> 指定紀錄檔，LPD
+		  預設是 <filename>/dev/console</filename> 將錯誤訊息輸出。
+		  </para>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
+	</sect4>
+      </sect3>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="printing-using">
+    <title>使用印表機</title>
+    
+    <para>這一節將告訴你如果使用你在 FreeBSD
+      下設定的印表機。這裡有一份使用者等級命令的概述。</para>
+
+    <variablelist>
+      <varlistentry>
+	<term>&man.lpr.1;</term>
+
+	<listitem>
+	  <para>列印工作</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>&man.lpq.1;</term>
+
+	<listitem>
+	  <para>檢查印表機佇列</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>&man.lprm.1;</term>
+
+	<listitem>
+	  <para>將工作從印表機佇列中移除</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    
+    <para>也有系統維護使用的命令， &man.lpc.8;，用來控制印表機及其佇列。在
+        <link linkend="printing-lpc">管理印表機</link>
+        這一節裡有更詳細的說明。</para>
+
+    <para>&man.lpr.1;，&man.lprm.1; 和 &man.lpq.1; 這三個命令都接受 
+      <option>-P <replaceable>printer-name</replaceable></option>
+      這個指定在 <filename>/etc/printcap</filename>
+      檔裡設定的印表機/佇列的參數。允許你對不同的印表機做要求、移除，
+      以及檢查工作。如果你沒有使用 <option>-P</option>
+      參數，那麼這些命令將使用 <envar>PRINTER</envar>
+      環境變數所指定的印表機。若你也沒有 <envar>PRINTER</envar> 環境變數，
+      那麼這些命令則會對別名為 <literal>lp</literal> 的印表機動作。</para>
+
+    <para>此後，<emphasis>預設印表機</emphasis>這個指的就是以
+      <envar>PRINTER</envar> 環境變數設定的印表機或是當 <literal>lp</literal>
+      環境變數不存在時，別名為 <literal>lp</literal> 的印表機。</para>
+    
+    <sect2 id="printing-lpr">
+      <title>列印工作</title>
+      
+      <para>若要列印檔案，輸入：</para>
+      
+      <screen>&prompt.user; <userinput>lpr <replaceable>filename</replaceable> <replaceable>...</replaceable></userinput></screen>
+	    
+      <para>這將把所有列出的檔案以預設印表機列印。如果你沒有指定任何檔案，那麼
+        &man.lpr.1; 將會從標準輸入讀入資料。下面這個例子將會印出一些重要的
+        系統檔：</para>
+
+      <screen>&prompt.user; <userinput>lpr /etc/host.conf /etc/hosts.equiv</userinput></screen>
+	    
+      <para>若要指定以特定的印表機輸出，輸入：</para>
+		    
+      <screen>&prompt.user; <userinput>lpr -P <replaceable>printer-name</replaceable> <replaceable>filename</replaceable> <replaceable>...</replaceable></userinput></screen>
+
+      <para>下面這個例子會將目前目錄下的檔案列表從名為
+        <literal>rattan</literal> 印表機輸出：</para>
+	    
+      <screen>&prompt.user; <userinput>ls -l | lpr -P rattan</userinput></screen>
+	    
+      <para>因為 &man.lpr.1; 命令之後沒有指定任何一個檔案，
+        <command>lpr</command> 將會從標準輸入讀入資料以印出，即由
+	<command>ls -l</command> 命令所產生的輸出。</para>
+      
+      <para>&man.lpr.1; 命令有許多參數如控制輸出格式、套用檔案轉換、
+        一次印出多份，等等。請參見 <link
+	  linkend="printing-lpr-options">列印參數</link>
+	  這一節裡有更詳細的說明。</para>
+    </sect2>
+    
+    <sect2 id="printing-lpq">
+      <title>檢查列印工作</title>
+      
+      <para>當你使用 &man.lpr.1; 列印時，一起送到 LPD spooling
+        系統的資料稱為一個 &ldquo;列印工作&rdquo;。
+        每一台印表機都有一個列印工作佇例，
+        而你的列印工作和其他的列印工作一樣在佇列裡等待列印。
+        印表機會將先列印先送達的工作。</para>
+
+      <para>要顯示預設印表機的佇例，輸入 &man.lpq.1; 即可。
+        若要指定印表機，請指定 <option>-P</option> 參數。例如
+
+	<screen>&prompt.user; <userinput>lpq -P bamboo</userinput></screen>
+
+	這個命令會顯示叫做 <hostid>bamboo</hostid> 的印表機佇列。這裡有一份
+	<command>lpq</command> 命令的輸出範例：</para>
+	    
+      <screen>bamboo is ready and printing
+Rank   Owner    Job  Files                              Total Size
+active kelly    9    /etc/host.conf, /etc/hosts.equiv   88 bytes
+2nd    kelly    10   (standard input)                   1635 bytes
+3rd    mary     11   ...                                78519 bytes</screen>
+	    
+      <para>上面顯示一共有三個工作在 <literal>bamboo</literal> 的佇列裡。
+        第一個工作由使用者 kelly 送出，&ldquo;工作代碼&rdquo;為 9。
+        每一個工作都會有個唯一的工作代碼。通常你可以忽略工作代碼，
+        但是如果你要取消某個工作時，你就會需用知道工作代碼。詳情請參見 <link
+	  linkend="printing-lprm">移除印列工作</link>這一節。</para>
+	  
+      <para>工作代碼 9 裡包含了兩個檔案。用 &man.lpr.1;
+        送多個檔案將會被視為同一個工作。這是目前正在處理的工作(注意
+        &ldquo;Rank&rdquo; 欄標示的 <literal>active</literal>)，
+        即印表機現在應該就在列印這個工作。第二個工作的資料是用 &man.lpr.1;
+        從標準輸入接收資料的。而第三個工作是由使用者 <username>mary</username>
+        送出的。這是一個較大的工作。而她要列印的檔案因為太長而放不下，所以
+        &man.lpq.1; 命令只顯示三個點。</para>
+
+      <para>&man.lpq.1; 最前面的輸出通常可以看出印表機現在在做什麼(至少是
+        LPD 覺得印表機現在應該是在做什麼)。</para>
+
+      <para>&man.lpq.1; 命令可以使用 <option>-l</option> 參數以得到更詳細的
+        列表。這裡有一個 <command>lpq -l</command> 的輸出範例：</para>
+	    
+      <screen>waiting for bamboo to become ready (offline ?)
+kelly: 1st				 [job 009rose]
+       /etc/host.conf                    73 bytes
+       /etc/hosts.equiv                  15 bytes
+
+kelly: 2nd				 [job 010rose]
+       (standard input)                  1635 bytes
+
+mary: 3rd                                [job 011rose]
+      /home/orchid/mary/research/venus/alpha-regio/mapping 78519 bytes</screen>
+    </sect2>
+
+    <sect2 id="printing-lprm">
+      <title>移除列印工作</title>
+      
+      <para>如果你改變心意不想列印你的工作了，你可以用 &man.lprm.1;
+        這個命令把他們從列印佇列串移除。通常你也可以用 &man.lprm.1;
+        把一個正在處理的工作移除，不過可能還是會印出部份或是全部的文件。</para>
+	  
+      <para>要從預設印表機裡移除工作，首先，用 &man.lpq.1; 找出工作代碼，
+        然後輸入：</para>
+	  
+      <screen>&prompt.user; <userinput>lprm <replaceable>job-number</replaceable></userinput></screen>
+	    
+      <para>如果要從指定的印表機移除工作，那麼用 <option>-P</option> 參數。
+        下列的命令從印表機 <hostid>bamboo</hostid> 的佇列中移除工作代碼為 10
+        的工作：</para>
+	    
+      <screen>&prompt.user; <userinput>lprm -P bamboo 10</userinput></screen>
+      
+      <para>&man.lprm.1; 命令有一些常用的用法：</para>
+      
+      <variablelist>
+	<varlistentry>
+	  <term>lprm -</term>
+
+	  <listitem>
+	    <para>將(預設印表機)裡所有屬於你的工作都移除。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>lprm <replaceable>user</replaceable></term>
+	  
+	  <listitem>
+	    <para>將(預設印表機)裡所有屬於使用者
+	      <replaceable>user</replaceable> 的工作皆移除。
+	      只有超級使用者可以移除其他人的工作，你只能移除你自己的工作。
+	      </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>lprm</term>
+	  
+	  <listitem>
+	    <para>若不指定工作代碼、使用者名稱或是 <option>-</option>
+	     ，&man.lprm.1; 將移除目前預設印表機正在處理的工作，
+	     但前提是這個工作必需是屬於你的。
+	     超級使用者可以移除任何目前正在處理的工作。
+	     </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <para>若使用 <option>-P</option> 參數配合上述的常用用法，
+        則上述的動作將對指定的印表機動作而不是對預設印表機。
+        下列的命令將會移除目前使用者在印表機 <literal>rattan</literal>
+        佇列中的所有工作：</para>
+	  
+      <screen>&prompt.user; <userinput>lprm -P rattan -</userinput></screen>
+	  
+      <note>
+	<para>如果你使用的是網路印表機，&man.lprm.1;
+	  將只允許你從送出工作的機器移除該工作。
+	  下面這些命令可以說明這個概念：</para>
+	      
+	<screen>&prompt.user; <userinput>lpr -P rattan myfile</userinput>
+&prompt.user; <userinput>rlogin orchid</userinput>
+&prompt.user; <userinput>lpq -P rattan</userinput>
+Rank   Owner	  Job  Files                          Total Size
+active seeyan	  12	...                           49123 bytes
+2nd    kelly      13   myfile                         12 bytes
+&prompt.user; <userinput>lprm -P rattan 13</userinput>
+rose: Permission denied
+&prompt.user; <userinput>logout</userinput>
+&prompt.user; <userinput>lprm -P rattan 13</userinput>
+dfA013rose dequeued
+cfA013rose dequeued
+	</screen>
+      </note>
+    </sect2>
+    
+    <sect2 id="printing-lpr-options">
+      <title>在純文字之外：列印參數</title>
+      
+      <para>&man.lpr.1; 命令提供控制格式輸出、轉換圖形及其他檔案格式、
+        一次印出多份、工作處理方式等參數。這一節將一一介紹。</para>
+	  
+      <sect3 id="printing-lpr-options-format">
+	<title>格式輸出及轉換的參數</title>
+
+	<para>下列的 &man.lpr.1; 命令控制檔案輸出的格式。
+	  如果你的列印工作裡沒有純文字或是你希望純文字透過 &man.pr.1;
+	  處理後以特定的格式輸出時，你可以使用這些參數。</para>
+	    
+	<para>舉例來說，下面的命令從叫做 <literal>bamboo</literal> 的印表機將
+	  DVI 檔 (由 TeX 排版系統產生) <filename>fish-report.dvi</filename>
+	  印出：</para>
+	      
+	<screen>&prompt.user; <userinput>lpr -P bamboo -d fish-report.dvi</userinput></screen>
+	      
+	<para>這些參數將套用於這個工作裡的每個檔案，所以你不能把 DVI 和
+	  ditroff 檔案在同一個工作裡一起處理，
+	  而要分兩次工作用不同的轉換參數。</para>
+
+	<note>
+	  <para>這些參數除了 <option>-p</option> 和 <option>-T</option>
+	    需要為指定的印表機安裝轉換的過濾程式外，其他的都不用。
+	    舉例來說，參數 <option>-d</option> 需要安裝 DVI 轉換過濾程式。
+	    <link 
+	    linkend="printing-advanced-convfilters">轉換用的過濾程式</link>
+	    這一節有較詳細的說明。</para>
+	</note>
+
+	<variablelist>
+	  <varlistentry>
+	    <term><option>-c</option></term>
+
+	    <listitem>
+	      <para>列印 cifplot 檔案。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-d</option></term>
+	    
+	    <listitem>
+	      <para>列印 DVI 檔案。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-f</option></term>
+	    
+	    <listitem>
+	      <para>列印 FORTRAN 文字檔。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-g</option></term>
+	    
+	    <listitem>
+	      <para>列印 plot 資料。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-i <replaceable>number</replaceable></option></term>
+		  
+	    <listitem>
+	      <para>將輸出縮排 <replaceable>number</replaceable> 個字元。
+	        如果你省略 <replaceable>number</replaceable>，則縮排 8 個字元。
+	        這個參數只有在某些轉換用的過濾程式上有效。</para>
+
+	      <note>
+		<para>請不要在 <option>-i</option> 和數字之間加上空白。</para>
+	      </note>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-l</option></term>
+	    
+	    <listitem>
+	      <para>原封不動的印出文字資料，包括控制字元。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-n</option></term>
+	    
+	    <listitem>
+	      <para>列印 ditroff (device independent troff) 資料。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-p</term>
+	    
+	    <listitem>
+	      <para>在列印之前以 &man.pr.1; 格式化輸出。請參見 &man.pr.1; 
+	      以取得更的資訊。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-T <replaceable>title</replaceable></option></term>
+	    
+	    <listitem>
+	      <para>以 <replaceable>title</replaceable> 取代
+		  &man.pr.1; header 中的檔名。這個參數只有在配合
+		  <option>-p</option> 參數使用時才有效。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-t</option></term>
+	    
+	    <listitem>
+	      <para>列印 troff 資料。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-v</option></term>
+	    
+	    <listitem>
+	      <para>列印 raster 資料。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+		    
+	<para>下面是一個以預設印表機列印格式化過的 &man.ls.1; manual page
+	  的範例：</para>
+	    
+	<screen>&prompt.user; <userinput>zcat /usr/share/man/man1/ls.1.gz | troff -t -man | lpr -t</userinput></screen>
+	      
+	<para>&man.zcat.1; 命令將</para>
+	    
+	<para>&man.ls.1; 原始資料解壓縮並傳送給 &man.troff.1;
+	  命令將該資料格式化後以 GNU troff 格式輸出給 &man.lpr.1; 送給 LPD
+	  spooler 處理。因為我們在使用</para>
+	  
+	<para>&man.lpr.1; 命令時使用了 <option>-t</option> 參數，所以 spooler
+	  在印列時會把 GNU troff 轉換成預設印表機所能了解的格式。</para>
+      </sect3>
+      
+      <sect3 id="printing-lpr-options-job-handling">
+	<title>工作處理方式參數</title>
+
+	<para>下列的參數將會讓 &man.lpr.1; 告訴 LPD 以特別的方式處理工作：
+	  </para>
+      
+	<variablelist>
+	  <varlistentry>
+	    <term>-# <replaceable>copies</replaceable></term>
+
+	    <listitem>
+	      <para>將同一工作裡的每個檔案都印出
+	        <replaceable>copies</replaceable> 份。
+	        系統管理者可以將這個參數關閉，
+	        以減低印表機的負擔並鼓勵使用影印機。請參見 <link
+		  linkend="printing-advanced-restricting-copies">限制列印多份
+		  </link>這一節的說明。</para>
+
+	      <para>這個範例將會從預設印表機印出三份
+	        <filename>parser.c</filename>，然後印出三份
+	        <filename>parser.h</filename>：</para>
+		      
+	      <screen>&prompt.user; <userinput>lpr -#3 parser.c parser.h</userinput></screen>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-m</term>
+	    
+	    <listitem>
+	      <para>完成列印工作後，寄信通知使用者。若使用這個參數，
+	        當列印工作完成後，LPD 系統將會寄信給你。
+	        在這封信中將會告訴你你的工作是否成功的印出或是有錯誤以及
+	        (通常會)告訴你錯誤的原因。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-s</term>
+	    
+	    <listitem>
+	      <para>不要將要列印的檔案拷貝到 spooling 目錄，而只要以
+	        symbolic links 的方式取代。</para>
+		    
+	      <para>如果你要列印大的案，你可考慮用這個參數。這可以節省你
+	        spooling 目錄的空間(否則 spooling
+	        目錄所在的檔案系統可能會空間不足)。同時他也可以省下 LPD
+	        將檔案拷貝到 spooling 目錄所需的時間。</para>
+		    
+	      <para>這麼做有一個缺點就是當列印還沒結束時，
+	        你不能修改或刪除列印中的檔案，因為 LPD
+	        在列印時還會用到原始的檔案。</para>
+	      
+	      <note>
+		<para>如果你是用網路印表機列印，那麼 LPD
+		  還是會把你的檔案拷貝到遠端的機器，所以參數
+		  <option>-s</option> 只有在本機上列印時才有用。</para>
+	      </note>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-r</term>
+	    
+	    <listitem>
+	      <para>當你的檔案已經拷貝到 spooling 目錄時，或是用
+	        <option>-s</option> 參數且列印完成時，就將原本的檔案移除。
+	        請小心使用這個參數！</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+	  
+      <sect3 id="printing-lpr-options-misc">
+	<title>Header Page 參數</title>
+
+	<para>有一些參數是設定 &man.lpr.1; 列印在 header pages 上的文字。
+	  如果列印 header pages 的話，那麼這些參數就沒有作用了。請參見
+	  <link linkend="printing-advanced-header-pages">Header Pages</link>
+	  這一節以獲知如何設定 header pages。</para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>-C <replaceable>text</replaceable></term>
+
+	    <listitem>
+	      <para>將 header page 上的機器名稱以 <replaceable>text</replaceable>
+	        取代。機器名稱通常是印出送出工作的機器名稱。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-J <replaceable>text</replaceable></term>
+	    
+	    <listitem>
+	      <para>將 header 上的工作名稱以 <replaceable>text</replaceable>
+	        取代。工作名稱通常是一份列印工作裡的第一個檔案名稱，
+	        如果你是從標準輸入輸入列印資料的話，那麼將會是
+	        <filename>stdin</filename>。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>-h</term>
+	    
+	    <listitem>
+	      <para>不要列印 header page。</para>
+	      
+	      <note>
+		<para>在某些機器上，由於 header pages 產生的方式不同，
+		  這個選項可能會無效。請參見<link
+		    linkend="printing-advanced-header-pages">Header
+		    Pages</link>這一節裡更詳細的說明。</para>
+	      </note>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="printing-lpc">
+      <title>管理印表機</title>
+      
+      <para>做為印表機管理員，你必需安裝、設定以及測試他們。你可以用 &man.lpc.8;
+        這個命令：</para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para>讓印表機開始工作或停止工作。</para>
+	</listitem>
+
+	<listitem>
+	  <para>開啟或關閉他們的佇例。</para>
+	</listitem>
+
+	<listitem>
+	  <para>重新安排佇列裡工作的順序。</para>
+	</listitem>
+      </itemizedlist>
+      
+      <para>我們得先知道的一個觀念是：如果一個印表機已經
+        <emphasis>停止工作</emphasis>了，他將不會將佇列裡的任何東西印出。
+        使用者仍然可以將工作送過來，但是這些工作將會在佇列裡等待直到印表機
+	<emphasis>開始工作</emphasis>或是佇例被清空了。</para>
+	  
+      <para>如果佇列被<emphasis>關閉</emphasis>了，那麼沒有使用者(除了
+	root 之外)可以將工作送給印表機。只有已經<emphasis>開啟</emphasis>
+	佇列的印表機可以接受其他人將工作送過來。
+	一個印表機可以為一個已經關閉的佇列<emphasis>開始工作</emphasis>。
+	在這個情況下，原本存在佇列中的工作將會一一的被列印直到沒有工作為止。
+	</para>
+	  
+      <para>通常，擁有 root 權限的使用者才可以用 &man.lpc.8; 下命令。
+        一般的使用者只能用 &man.lpc.8;
+        命令來查詢印表機工作以及重新啟動當掉的印表機。</para>
+
+      <para>以下是一份 &man.lpc.8; 的命令列表。大部份的命令都需要指定
+        <replaceable>printer-name</replaceable>以指定要對哪一台印表機下命令。
+        <replaceable>printer-name</replaceable> 也可以用 <literal>all</literal>
+        表示所有列在 <filename>/etc/printcap</filename> 裡的印表機。</para>
+      
+      <variablelist>
+	<varlistentry>
+	  <term><command>abort
+	      <replaceable>printer-name</replaceable></command></term>
+
+	  <listitem>
+	    <para>取消目前的工作同時也停止印表機工作。如果佇列為被關閉，
+	      使用者仍然可以送工作給印表機。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>clean
+	      <replaceable>printer-name</replaceable></command></term>
+	  
+	  <listitem>
+	    <para>將印表機 spooling 目錄中的舊檔案移除。有時候 LPD
+	      可能沒有把列印完的工作自 spooling 目錄中移除，
+	      尤其是當列印的工作發生錯誤時或是有其他命令將其中止時。
+	      這個命令將會找出這些不該存在於 spooling
+	      目錄中的檔案並將他們移除。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>disable
+	      <replaceable>printer-name</replaceable></command></term>
+	  
+	  <listitem>
+	    <para>關閉佇列以停止接收新工作。如果印表機並未停止工作，
+	      那麼佇列中剩餘的工作將會繼續列印直到佇列中沒有工作為止。
+	      關閉佇列後，root 仍然可以繼續送工作給印表機。</para>
+		  
+	    <para>這個命令在你測試一台新印表機或是新的過濾程式程式時特別有用：
+	      你可以將佇列關起來然後以 root 送測試列印的工作。
+	      其他使用者則無法將工作送過來，除非你測試完畢後將佇列以
+	      <command>enable</command> 命令開啟。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>down <replaceable>printer-name</replaceable>
+	      <replaceable>message</replaceable></command></term>
+		
+	  <listitem>
+	    <para>這個命令等於是<command>disable</command> 後再接著
+	      <command>stop</command> 命令。其中
+	      <replaceable>message</replaceable> 是當有使用者以
+	      &man.lpq.1; 檢查印表機佇列或是以 <command>lpc status</command>
+	      命令檢查印表機狀態時所顯示的訊息。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>enable
+	      <replaceable>printer-name</replaceable></command></term>
+		
+	  <listitem>
+	    <para>將印表機佇列開啟。如此使用者就可以將工作送給印表機，
+	      但是只有在印表機已經開始工作後，佇列裡的工作才會被印出來。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>help
+	      <replaceable>command-name</replaceable></command></term>
+		
+	  <listitem>
+	    <para>將 <replaceable>command-name</replaceable> 命令的說明印出。
+	      如果沒有指定 <replaceable>command-name</replaceable>，
+	      那麼將會印出所有可用的命令。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>restart
+	      <replaceable>printer-name</replaceable></command></term>
+	  
+	  <listitem>
+	    <para>動新啟動印表機。如果因為某些情況使得 LPD 當掉了，
+	      一般的使用者可以用這個命令將印表機重新開始工作。
+	      但是他們無法用這個命令讓由 <command>stop</command> 或
+	      <command>down</command> 命令所停止的印表機開始工作。
+	      <command>restart</command> 命令等於 <command>abort</command>
+	      再接著 <command>start</command> 命令。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>start
+	      <replaceable>printer-name</replaceable></command></term>
+		
+	  <listitem>
+	    <para>讓印表機開始工作。印表機將會將佇列裡的工作印出。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>stop
+	      <replaceable>printer-name</replaceable></command></term>
+	  
+	  <listitem>
+	    <para>停止印表機工作。
+	      印表機將會先完成目前的工作然後停止印佇列中的任何工作。
+	      印表機停止工作後，使用者仍然可以把工作送給一個未關閉的佇列中。
+	      </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>topq <replaceable>printer-name</replaceable>
+	      <replaceable>job-or-username</replaceable></command></term>
+		
+	  <listitem>
+	    <para>將印表機 <replaceable>printer-name</replaceable>
+	      佇列中工作代號為 <replaceable>job</replaceable>
+	      或是屬於使用者 <replaceable>username</replaceable>
+	      的工作移到佇列的最前端。在這個命令裡，你不可以將
+	      <literal>all</literal> 填在
+	      <replaceable>printer-name</replaceable> 指定所有的印表機。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><command>up
+	      <replaceable>printer-name</replaceable></command></term>
+		
+	  <listitem>
+	    <para>這是和 <command>down</command> 命令相對的指命。等於是
+	      <command>start</command> 後再接著 <command>enable</command>
+	      命令。</para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <para>&man.lpc.8; 能以參數的方式接受上述的命令。如果你不輸入任何命令，
+        &man.lpc.8; 將會進入交談模試，在這裡你可以一直輸入命令直到你以
+        <command>exit</command>命令、<command>quit</command>
+        命令或是輸入檔案結尾字元為止。</para>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="printing-advanced">
+    <title>進階印表機設定</title>
+    
+    <para>這一節我們要討論的是處理特定檔案格式的過濾程式、header pages、
+      用網路印表機列印以及印表機存取權限及列印情形統計的設定方式。</para>
+
+    <sect2 id="printing-advanced-filter-intro">
+      <title>過濾程式</title>
+      
+      <para>雖然 LPD 負責處理網路通訊定、佇列、存取權限控制、
+        以及其他許多列印相關的工作，但，最<emphasis>重要</emphasis>
+        的工作還是由過濾程式來做。過濾程式是負責與印表機溝通、處理裝置依存關係、
+        以及一些其他特殊的需求。我們在之前設定印表機時安裝了一個
+        &mdash;最簡單但是可以和配合大部份印表機工作的文字過濾程式(請參見<link
+	  linkend="printing-textfilter">安裝文字過濾程式</link> 這一節).</para>
+	  
+      <para>然而，若我們想要更方便的轉換格式、統計印表機使用情形、
+        列印特別的印表機字體等等，我們應該先了解過濾程式是如何運作的。
+        這些事情都是由過濾程式處理的。不幸的是，通常<emphasis>你</emphasis>
+        得自己提供特定的過濾程式。不過值得慶幸的是，
+        有很多一般用途的過濾程式可以用，如果沒有的話，
+        要自己做應該也很容易。</para>
+	  
+      <para>FreeBSD 提供了一個過濾程式
+        <filename>/usr/libexec/lpr/lpf</filename>。
+        這個過濾程式可以讓大部份的印表機可以列印純文字
+        (他只處理檔案中的倒退字元以及 TAB 字元，並不做統計等工作)。在
+        FreeBSD 的 ports 裡亦搜集了許多種不同的過濾程式。</para>
+	  
+      <para>在這一節裡，我們將要討論下面這些東西：</para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para><link linkend="printing-advanced-filters">過濾程式的運作方式</link>
+	    這一節將告訴你過濾程式在列印過程中所扮演的角色。你可以了解在 LPD
+	    使用過濾程式時做了哪些動作。
+	    這些知識也能讓你將來遇到過濾程式相關的問題時能找出問題的微結。
+	    </para>
+	</listitem>
+	      
+	<listitem>
+	  <para>LPD 將所有的印表機都視為可以直接列印純文字。因此使用
+	    PostScript (以及使用其他語言) 的印表機就無法直接印出純文字。
+	    <link
+	      linkend="printing-advanced-if-conversion">在 PostScript
+	    印表機上列印純文字</link>這一節將告訴你該怎麼做才能解決這個問題。
+	    如果你有 PostScript 印表機，那麼我建議你看看這一節。</para>
+	</listitem>
+
+	<listitem>
+	  <para>PostScript 是一種受歡迎的輸出格式。有些人(包括我)直接撰寫
+	    PostScript 的程式碼。但是 PostScript 印表機很貴。 <link
+	      linkend="printing-advanced-ps">用非 PostScript 印表機模擬
+	      PostScript 印表機</link>這一節告訴你如何進一步修改印表機的
+	    文字過濾程式使得<emphasis>非 PostScript</emphasis>
+	    印表機也能列印 PostScript 的資料。如果你沒有 PostScript
+	    印表機，我建議你看看這一節。</para>
+	</listitem>
+	      
+	<listitem>
+	  <para><link
+	      linkend="printing-advanced-convfilters">轉換用的過濾程式</link>
+	    這一節說明如何讓特殊的檔案格式轉換自動化，
+	    比如將圖形或排版的資料轉換成你的印表機所能了解的。讀完這一節後，
+	    你應該可以用 <command>lpr -t</command> 命令列印 troff
+	    資料，或是用 <command>lpr -d</command> 命令列印 TeX DVI
+	    資料，或是用 <command>lpr -v</command> 命令列印 raster
+	    影像資料，等等。我建議閱讀這一節。</para>
+	</listitem>
+	      
+	<listitem>
+	  <para><link linkend="printing-advanced-of">輸出用的過濾程式</link>
+	    這一節說明一個 LPD 不常用的功能：輸出用的過濾程式。除非你要列印
+	    header pages(請參見 <link
+	      linkend="printing-advanced-header-pages">Header Pages</link>)，
+	    不然你可以略過這一節。</para>
+	</listitem>
+
+	<listitem>
+	  <para><link linkend="printing-advanced-lpf">文字過濾程式：lpf</link>
+	    這一節介紹 <command>lpf</command>　命令。這是由 FreeBSD 提供給一般
+	    的行式印表機(或類似行式印表機的雷射印表機)使用的簡單文字過濾程式。
+	    如果你希望可以快速的設定印表機對列印純文字的使用情形統計，或是你
+	    想要消除印表機對倒退字元的誤印，那麼你應該考慮使用
+	    <command>lpf</command>命令。</para>
+	</listitem>
+      </itemizedlist>
+      
+      <sect3 id="printing-advanced-filters">
+	<title>過濾程式的運作方式</title>
+
+	<para>上面曾經提到，過濾程式是一個由 LPD 執行處理印表機與通訊埠之間溝通
+	  的程式。</para>
+	    
+	<para>當 LPD 要列印檔案時，他會執行過濾程式，
+	  同時從過濾程式的標準輸入要列印的檔案，
+	  而將過濾程式的標準輸出給印表機列印，
+	  並將過濾程式的錯誤導向至紀錄裡(在 <filename>/etc/printcap</filename>
+	  以 <literal>lf</literal> 關鍵字設定，或是使用預設的
+	  <filename>/dev/console</filename>)。</para>
+	    
+	<para>LPD 要使用哪個過濾程式或是要給過濾程式哪些參數是由
+	  <filename>/etc/printcap</filename> 檔案以及使用者給 &man.lpr.1;
+	  命令的參數決定。舉例來說，如果使用者輸入 <command>lpr -t</command>，
+	  那麼 LPD 將會使用由 <literal>tf</literal>
+	  關鍵字為特定印表機所指定的 troff 過濾程式。
+	  如果使用者想列印的是純文字，那麼 LPD 將會使用由
+	  <literal>if</literal> 所指定的(大部份的時候是這樣子的，詳情請參見
+	   <link
+	    linkend="printing-advanced-of">輸出用的過濾程式</link>這一節。</para>
+
+	<para>在 <filename>/etc/printcap</filename>
+	  檔裡你可以設定三種不同種類的過濾程式：</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para><emphasis>文字過濾程式</emphasis>，在 LPD
+	      的文件中常混稱為<emphasis>輸入用過濾程式</emphasis>。
+	      通常將他做為預設的過濾程式，負責處理一般的文字列印。LPD
+	      將所有印表機都視為可以直接列印純文字，
+	      所以這個過濾程式的任務就是將印表機無法處理的字元及格式，
+	      轉換為印表機所能處理的。如果你需要做列印情形的統計，
+	      那麼過濾程式必需要負責根據總行數及每頁行數來統計頁數。
+	      使用文字過濾程式的方式為：
+
+	      <cmdsynopsis>
+		<command>filter-name</command>
+		<arg>-c</arg>
+		<arg choice="plain">-w<replaceable>width</replaceable></arg>
+		<arg choice="plain">-l<replaceable>length</replaceable></arg>
+		<arg choice="plain">-i<replaceable>indent</replaceable></arg>
+		<arg choice="plain">-n <replaceable>login</replaceable></arg>
+		<arg choice="plain">-h <replaceable>host</replaceable></arg>
+		<arg choice="plain"><replaceable>acct-file</replaceable></arg>
+	      </cmdsynopsis>
+
+	      其中
+	      
+	      <variablelist>
+		<varlistentry>
+		  <term><option>-c</option></term>
+
+		  <listitem>
+		    <para>如果工作以 <command>lpr -l</command> 命令送出，
+		      那麼就會有這個參數</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><replaceable>width</replaceable></term>
+		  
+		  <listitem>
+		    <para>的值是由 <filename>/etc/printcap</filename> 檔中的
+		      <literal>pw</literal> (每頁的字元寬度)關鍵字所指定。
+		      預設為 132。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><replaceable>length</replaceable></term>
+		  
+		  <listitem>
+		    <para>是由 <literal>pl</literal>
+		    (每頁的行數)關鍵字所指定，預設為 66。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><replaceable>indent</replaceable></term>
+		  
+		  <listitem>
+		    <para>是由 <command>lpr -i</command>
+		    命令所指定的縮排字數，預設是 0。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><replaceable>login</replaceable></term>
+		  
+		  <listitem>
+		    <para>是列印該檔案的使用者帳號名稱。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><replaceable>host</replaceable></term>
+		  
+		  <listitem>
+		    <para>是送出工作的機器名稱。</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
+		  <term><replaceable>acct-file</replaceable></term>
+		  
+		  <listitem>
+		    <para>是由 <literal>af</literal>
+		    關鍵字所指定的統計資料檔檔案名稱。</para>
+		  </listitem>
+		</varlistentry>
+	      </variablelist>
+	    </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><emphasis>轉換用的過濾程式</emphasis>
+	      負責將指定檔案格式轉換成印表機可以印出的格式。舉例來說 ditroff
+	      排版資料無法直接交由印表機列印，不過你可以安裝負責轉換 ditroff
+	      檔案的過濾程式將 ditroff 資料轉換會印表機可以列印及處理的格式。
+	      <link linkend="printing-advanced-convfilters">轉換用的過濾程式</link>
+	      這一節將會更詳細的說明。如果你需要做列印情形的統計，
+	      那麼轉換用的過濾程式也需要做統計的工作。
+	      使用轉換用的過濾程式的方式為：
+
+	      <cmdsynopsis>
+		<command>filter-name</command>
+		<arg
+		  choice="plain">-x<replaceable>pixel-width</replaceable></arg>
+		<arg choice="plain">-y<replaceable>pixel-height</replaceable></arg>
+		<arg choice="plain">-n <replaceable>login</replaceable></arg>
+		<arg choice="plain">-h <replaceable>host</replaceable></arg>
+		<arg choice="plain"><replaceable>acct-file</replaceable></arg>
+	      </cmdsynopsis>
+
+	      其中 <replaceable>pixel-width</replaceable> 是由
+	      <literal>px</literal> 關鍵字所指定(預設為 0) 而
+	      <replaceable>pixel-height</replaceable> 是由
+	      <literal>py</literal> 關鍵字所指定(預設為 0)。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para><emphasis>輸出用過濾程式</emphasis> 是當你沒有文字過濾程式，
+	      或是要列印 header pages 時才使用。
+	      在我的經驗裡，輸出用過濾程式是很少用到的。<link
+		linkend="printing-advanced-of">輸出用的過濾程式</link> 這一節
+	      將介紹這些過濾程式。輸出用過濾程式只接受兩個參數，如下所示：
+
+	      <cmdsynopsis>
+		<command>filter-name</command>
+		<arg choice="plain">-w<replaceable>width</replaceable></arg>
+		<arg choice="plain">-l<replaceable>length</replaceable></arg>
+	      </cmdsynopsis>
+
+	      參數 <option>-w</option> 和 <option>-l</option>
+	      的意思和文字過濾程式中的意思是一樣的。</para>
+	  </listitem>
+	</itemizedlist>
+
+	<para>而過濾程式也應該要以下列的結束碼<emphasis>結束程式</emphasis>：
+	  </para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>exit 0</term>
+
+	    <listitem>
+	      <para>如果過濾程式成功的把檔案印出。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>exit 1</term>
+	    
+	    <listitem>
+	      <para>如果過濾程式列印失敗了而想要讓 LPD
+	        再呼叫一次過濾程式重新列印，那麼就以這做值結束。LPD
+	        收到這個值之後，就會再重試列印。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>exit 2</term>
+	    
+	    <listitem>
+	      <para>如果過濾程式列印失敗且不想再嘗試了，那麼就以這個值結束。
+	        LPD 收到這個值將不會再重試同時放棄列印這個檔。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+	<para>FreeBSD 裡提供的過濾程式：
+	  <filename>/usr/libexec/lpr/lpf</filename>
+	  利用每頁字元寬度及每頁行數來判斷什麼時候要送出 form feed
+	  字元以及統計印表機列印情形。
+	  而以使用者帳號、機器以統計資料檔來紀錄列印的情形。</para>
+
+	<para>如果你想要購買過濾程式，得先了解他們是否相容於 LPD。
+	  如果要相容的話，他們必需要能處理上面所列的參數。
+	  如果你想要自己寫過濾程式來用，
+	  那麼他們一樣得要處理上面所列的參數以及程式結束碼。</para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-if-conversion">
+	<title>在 PostScript 印表機上列印純文字</title>
+
+	<para>如果你的電腦只有你一個人在用而且你使用的是 PostScript
+	  (或是其他的印表機語言)印表機，
+	  你也確定你決不會將純文字的資料交給你的印表機列印，
+	  且你不會使用其他會將純文字送給你的印表機的程式，
+	  那麼你就不需要閱讀這一節。</para>
+	    
+	<para>但是，如果你需要能處理 PostScript 及純文字的資料，
+	  那麼你就得對你的印表機再做一翻設定。
+	  我們首先要有一個文字過濾程式可以偵測出送過來的資料是純文字還是
+	  PostScript。所有的 PostScript 文件都是 <literal>%!</literal>
+	  (對於其他的印表機語言，請參考你的印表機手冊)
+	  如果一份工作的最前面兩個字元是這樣的話，我們收到的就是 PostScript
+	  的工作，而我們可以直接把這份工作交給印表機處理。如果不是的話，
+	  那麼過濾程式就得把這些文字轉換成 PostScript 然後再列印這些結果。
+	  </para>
+	    
+	<para>那我們要怎麼設定呢？</para>
+
+	<para>如果你是用序列埠上的印表機，有一個好方法就是安裝
+	  <command>lprps</command>。<command>lprps</command> 是給 PoscScript
+	  印表機用的過濾程式，他負責做印表機的雙向溝通。
+	  他會將印表機的狀態詳細的更新到紀錄檔裡，
+	  如此使用者及管理者都可以清楚的看到印表機的狀態。
+	  (如如說<errorname>toner low</errorname>或是<errorname>卡紙</errorname>)。
+	  更重要的是，他還包括了一個叫做<command>psif</command>的程式，
+	  若偵測出輸入的工作是純文字，則呼叫 <command>textps</command>
+	  這支程式(這是由 <command>lprps</command> 所提供的)將純文字轉換成
+	  PostScript。最後，他會呼叫 <command>lprps</command>
+	  將工作送給印表機列印。</para>
+	    
+	<para>你可以在 FreeBSD ports 裡找到 <command>lprps</command>(請參見
+	  <link linkend="ports">The Ports Collection</link>這一節)。當然，
+	  你可以自己取得、編譯及安裝。安裝 <command>lprps</command> 之後，
+	  只要指定 <command>psif</command> (<command>lprps</command> 的程式之一)
+	  之路徑即可。如果你從 ports 裡安裝了 <command>lprps</command>，那麼在
+	  <filename>/etc/printcap</filename> 檔案裡為序列埠的 PostScript
+	  印表機設定：</para>
+	      
+	<programlisting>
+:if=/usr/local/libexec/psif:</programlisting>
+
+	<para>你應該要使用 <literal>rw</literal> 關鍵字以告訴 LPD
+	  將印表機開啟為讀寫模式。</para>
+	    
+	<para>如果你是使用接在並列埠的 PostScript 印表機(因此無法使用
+	  <command>lprps</command> 和印表機雙向溝通)，那麼你可以使用下列的
+	  shell script 做為文字過濾程式：</para>
+
+	<programlisting>
+#!/bin/sh
+#
+#  psif - Print PostScript or plain text on a PostScript printer
+#  Script version; NOT the version that comes with lprps
+#  Installed in /usr/local/libexec/psif
+#
+
+read first_line
+first_two_chars=`expr "$first_line" : '\(..\)'`
+
+if [ "$first_two_chars" = "%!" ]; then
+    #
+    #  PostScript job, print it.
+    #
+    echo "$first_line" &amp;&amp; cat &amp;&amp; printf "\004" &amp;&amp; exit 0
+    exit 2
+else
+    #
+    #  Plain text, convert it, then print it.
+    #
+    ( echo "$first_line"; cat ) | /usr/local/bin/textps &amp;&amp; printf "\004" &amp;&amp; exit 0
+    exit 2
+fi</programlisting>
+	    
+	<para>在上面的 script 裡，<command>textps</command>
+	  這個命令是我們個別安裝來將純文字轉成 PostScript 的程式。
+	  你可以使用任何將文字轉換成 PostScript 程式。FreeBSD ports
+	  裡(請參見<link linkend="ports">The Ports Collection</link>)
+	  有一個叫做<literal>a2ps</literal>的程式能做文字轉成 PostScript
+	  的工作，你也許可以試試看。</para>
+      </sect3>
+	  
+      <sect3 id="printing-advanced-ps">
+	<title>用非 PostScript 印表機模擬 PostScript 印表機</title>
+
+	<para>PostScript 是高列印品質的<emphasis>de facto</emphasis>標準。
+	  然而，PostScript 也是一個<emphasis>昂貴</emphasis>的標準。
+	  值得慶幸的是，在 FreeBSD 下有個叫做
+	  <application>Ghostscript</application> 的程式能模擬 PostScript
+	  工作，這是由 Alladin Enterprises 所發展的免費程式。Ghostscript
+	  可以讀取大部份 PostScript 檔案並且將其結果輸出至許多不同的裝置上，
+	  包括許多非 PostScript 的印表機。只要安裝 Ghostscript
+	  並為印表機設定一個特殊的文字過濾程式，你可以讓你的非 PostScript
+	  印表機接受 PostScript 的命令。</para>
+	    
+	<para>如果你從 FreeBSD ports 裡安裝 Ghostscript，
+	  那麼你一樣也可以很快的取得、編譯並安裝他。</para>
+	    
+	<para>要模擬 PostScript，我們要有一個過濾程式來判斷我們要列印的是不是
+	  PostScript 檔案。如果不是，那麼這個檔案就直接交由印表機處理；否則，
+	  我們得先用 Ghostscript 將檔案轉換成印表機可以處理的。</para>
+	    
+	<para>這裡有一個例子：下面的 script 是給 Hewlett Packard DeskJet 500
+	  印表機用的文字過濾程式。如果是其他的印表機，將 <command>gs</command>
+	  (Ghostscript) 命令的 <option>-sDEVICE</option>
+	  參數換成你能使用的裝置即可。(你可以用 <command>gs -h</command>
+	  這個命令得到到目前系統安裝的 Ghostscript 支援哪些裝置)。</para>
+
+	<programlisting>
+#!/bin/sh
+#
+#  ifhp - Print Ghostscript-simulated PostScript on a DeskJet 500
+#  Installed in /usr/local/libexec/hpif
+
+#
+#  Treat LF as CR+LF:
+#
+printf "\033&amp;k2G" || exit 2
+
+#
+#  Read first two characters of the file
+#
+read first_line
+first_two_chars=`expr "$first_line" : '\(..\)'`
+
+if [ "$first_two_chars" = "%!" ]; then
+    #
+    #  It is PostScript; use Ghostscript to scan-convert and print it.
+    #
+    #  Note that PostScript files are actually interpreted programs,
+    #  and those programs are allowed to write to stdout, which will
+    #  mess up the printed output.  So, we redirect stdout to stderr
+    #  and then make descriptor 3 go to stdout, and have Ghostscript
+    #  write its output there.  Exercise for the clever reader:
+    #  capture the stderr output from Ghostscript and mail it back to
+    #  the user originating the print job.
+    #
+    exec 3&gt;&amp;1 1&gt;&amp;2
+    /usr/local/bin/gs -dSAFER -dNOPAUSE -q -sDEVICE=djet500 \
+        -sOutputFile=/dev/fd/3 - &amp;&amp; exit 0
+
+    #
+    /usr/local/bin/gs -dSAFER -dNOPAUSE -q -sDEVICE=djet500 -sOutputFile=- - \
+        &amp;&amp; exit 0
+else
+    #
+    #  Plain text or HP/PCL, so just print it directly; print a form
+    #  at the end to eject the last page.
+    #
+    echo $first_line &amp;&amp; cat &amp;&amp; printf "\033&amp;l0H" &amp;&amp; exit 0
+fi
+
+exit 2</programlisting>
+
+	<para>最後，你需要用 <literal>if</literal> 關鍵字指定這個過濾程式：</para>
+	    
+	<programlisting>
+:if=/usr/local/libexec/hpif:</programlisting>
+
+	<para>這麼一來，你可以輸入 <command>lpr plain.text</command> 和
+	  <filename>lpr whatever.ps</filename> 而這兩者應該都要可以正確列印。
+	  </para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-convfilters">
+	<title>轉換用的過濾程式</title>
+
+	<para>在完成上面 <link
+	    linkend="printing-simple">簡單的印表機設定</link>
+	  這一節所介紹的設定後，接下來要做的就是為我們還想要使用的檔案格式
+	  (除了 ASCII 純文字外)安裝轉換用的過濾程式。</para>
+	    
+	<sect4>
+	  <title>為什麼要安裝轉換用的過濾程式？</title>
+	  
+	  <para>轉換用的過濾程式讓印列不同格式的檔案變得很簡單。舉例來說，如果
+	    我們常常用 TeX 來產生文件，但是我們的印表機是 PostScript
+	    的。因此我們不能直接將由 TeX 產生的 DVI
+	    檔由印表機印出，而要先轉換成 PostScript
+	    的格式才能輸出。這些轉換的命令如下：</para>
+		
+	  <screen>&prompt.user; <userinput>dvips seaweed-analysis.dvi</userinput>
+&prompt.user; <userinput>lpr seaweed-analysis.ps</userinput></screen>
+		
+	  <para>若我們安裝了 DVI 檔案的轉換程式，
+	    那麼我們每次要列印時就可以省去自己轉換格式的動作，而交由 LPD
+	    自己轉。因此，我們要列印 DVI 檔時只要這一步就可以了：</para>
+	      
+	  <screen>&prompt.user; <userinput>lpr -d seaweed-analysis.dvi</userinput></screen>
+		
+	  <para>只要在使用 LPD 時加上 <option>-d</option> 參數，LPD 就會將 DVI
+	    檔轉換後再正確的印出。<link
+	      linkend="printing-lpr-options-format">輸出格式及轉換的參數</link>
+	    這一節裡有詳細的列出轉換用的參數。</para>
+	      
+	  <para>對於每一個轉換用的參數，我們必需為印表機安裝合適的
+	    <emphasis>轉換用過濾程式</emphasis>，同時在
+	    <filename>/etc/printcap</filename> 檔裡指定該過濾程式。轉換用
+	    的過濾程式和文字過濾程式很相似(請參見<link linkend="printing-textfilter">
+	      安裝文字過濾程式</link>這一節)，除了他不是列印純文字而是將檔案轉換成
+	    印表機可以處理的格式。</para>
+	</sect4>
+
+	<sect4>
+	  <title>我應該安裝哪一種轉換用過濾程式？</title>
+	  
+	  <para>你應該安裝你想使用的轉換用過濾程式。如果你要印 DVI
+	    資料，那麼你應該要安裝 DVI 過濾程式。如果你要列印 troff
+	    資料，那麼你應該要安裝 troff 過濾程式。</para>
+	      
+	  <para>下面這張表整理出可以配合 LPD 工作的過濾程式和他們在要設定在
+	    <filename>/etc/printcap</filename> 裡的關鍵字為何，
+	    以及要使用這些過濾程式時在使用 <command>lpr</command>
+	    時要加什麼參數：</para>
+
+	  <informaltable frame="none">
+	    <tgroup cols="3">
+	      <thead>
+		<row>
+		  <entry>檔案格式</entry>
+		  <entry><filename>/etc/printcap</filename> 裡的關鍵字</entry>
+		  <entry><command>lpr</command> 下的參數</entry>
+		</row>
+	      </thead>
+	      
+	      <tbody>
+		<row>
+		  <entry>cifplot</entry>
+		  <entry><literal>cf</literal></entry>
+		  <entry><option>-c</option></entry>
+		</row>
+		
+		<row>
+		  <entry>DVI</entry>
+		  <entry><literal>df</literal></entry>
+		  <entry><option>-d</option></entry>
+		</row>
+		
+		<row>
+		  <entry>plot</entry>
+		  <entry><literal>gf</literal></entry>
+		  <entry><option>-g</option></entry>
+		</row>
+		
+		<row>
+		  <entry>ditroff</entry>
+		  <entry><literal>nf</literal></entry>
+		  <entry><option>-n</option></entry>
+		</row>
+		
+		<row>
+		  <entry>FORTRAN text</entry>
+		  <entry><literal>rf</literal></entry>
+		  <entry><option>-f</option></entry>
+		</row>
+		
+		<row>
+		  <entry>troff</entry>
+		  <entry><literal>rf</literal></entry>
+		  <entry><option>-f</option></entry>
+		</row>
+		
+		<row>
+		  <entry>raster</entry>
+		  <entry><literal>vf</literal></entry>
+		  <entry><option>-v</option></entry>
+		</row>
+		
+		<row>
+		  <entry>純文字</entry>
+		  <entry><literal>if</literal></entry>
+		  <entry>none, <option>-p</option> 或是
+		    <option>-l</option></entry>
+		</row>
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	  
+	  <para>在我們的例子裡，使用 <command>lpr -d</command>
+	    意思就是說印表機會需要用到 <filename>/etc/printcap</filename>
+	    檔裡由 <literal>df</literal> 關鍵字所指定的過濾程式。</para>
+	      
+	  <para>不管別人怎麼說，像 FORTRAN 或是 plot 的資料可能都已經用不到了。
+	    在你的機器上，你可以安裝其他格式的過濾程式，
+	    如此一來你就可以將那些轉換用的參數用來轉換其他的格式。
+	    舉例來說，你希望可以直接列印 Printerleaf 檔案(由 Interleaf desktop
+	    publishing program 產生的)，而你用不到 plot 檔案。那麼你可以用
+	    <literal>gf</literal> 關鍵字指定 Printerleaf 的轉換用過濾程式。
+	    同時告訴你的使用者 <command>lpr -g</command> 命令就是&ldquo;列印
+	    Printerleaf 檔案&rdquo;。</para>
+	</sect4>
+
+	<sect4>
+	  <title>安裝轉換用過濾程式</title>
+	  
+	  <para>轉換用過濾程式不屬於 FreeBSD 本身的程式，因此他們可能被放在
+	    <filename>/usr/local</filename> 目錄下。通常我們可以將他們放在
+	    <filename>/usr/local/libexec</filename>
+	    目錄下，因為這些程式是專門給 LPD
+	    執行的，一般使用者並不會需要去直接執行他們。</para>
+	      
+	  <para>要使用轉換用過濾程式，只要將過濾程式的路徑在
+	    <filename>/etc/printcap</filename>
+	    設定檔裡用合適的關鍵字指定即可。</para>
+	      
+	  <para>在我們的範例裡，我們將為名為 <literal>bamboo</literal>
+	    的印表機設定一個 DVI 轉換過濾程式。以下是
+	    <filename>/etc/printcap</filename> 這個檔，其中印表機
+	    <literal>bamboo</literal> 使用了 <literal>df</literal>
+	    關鍵字。</para>
+
+	  <programlisting>
+#
+#  /etc/printcap for host rose - added df filter for bamboo
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:\
+        :lp=/dev/lpt0:\
+        :if=/usr/local/libexec/if-simple:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:\
+        :lp=/dev/ttyd5:fs#0x82000e1:xs#0x820:rw:\
+        :if=/usr/local/libexec/psif:\
+        :df=/usr/local/libexec/psdf:</programlisting>
+
+	  <para>而 DVI 過濾程式是一個 shell script：
+	    <filename>/usr/local/libexec/psdf</filename>。以下是他的原始碼：
+	    </para>
+
+	  <programlisting>
+#!bin/sh
+#
+#  psdf - DVI to PostScript printer filter
+#  Installed in /usr/local/libexec/psdf
+#
+# Invoked by lpd when user runs lpr -d
+#
+exec /usr/local/bin/dvips -f | /usr/local/libexec/lprps "$@"</programlisting>
+
+	  <para>這個 script 以過濾模式執行 <command>dvips</command>
+	    (參數 <option>-f</option>) 在標準輸入讀入要列印的工作以處理。
+	    然後啟動 PostScrpt 印表機文字過濾程式 <command>lprps</command>
+	    同時也將 LPD 傳給這個 script 的參數傳給該過濾程式(請參見
+	    <link
+	      linkend="printing-advanced-if-conversion">在 PostScript
+	    印表機上列印純文字</link>)這一節。<command>lprps</command>
+	    將根據這些參數來統列印的頁數統計。</para>
+	</sect4>
+	    
+	<sect4>
+	  <title>更多轉換用過濾程式的範例</title>
+	      
+	  <para>因為安裝過濾程式沒有特別固定的方式，
+	    所以我們將舉多一點例子來說明。
+	    這些例子也許可以做為日後你自己做過濾程式時的參考，
+	    或是如果合適的話，你也可以直接拿來用。</para>
+	      
+	  <para>下面這個例子是一個將 raster 資料(嗯，其實只能給 GIF
+	    檔使用)轉成 Hewlett Packard LaserJet III-Si
+	    印表機所能處理的過濾程式：</para>
+
+	  <programlisting>
+#!/bin/sh
+#
+#  hpvf - Convert GIF files into HP/PCL, then print
+#  Installed in /usr/local/libexec/hpvf
+		  
+PATH=/usr/X11R6/bin:$PATH; export PATH
+giftopnm | ppmtopgm | pgmtopbm | pbmtolj -resolution 300 \
+    &amp;&amp; exit 0 \
+    || exit 2</programlisting>
+
+	  <para>他先將 GIF 格式轉成 portable anymap，然後再轉成 portable graymap，
+	    接著再轉成 portable bitmap，最後再轉成與 LaserJet/PCL 相容的資料。
+	    </para>
+	      
+	  <para>下面是使用這個過濾程式的 <filename>/etc/printcap</filename>
+	    範例：</para>
+
+	  <programlisting>
+#
+#  /etc/printcap for host orchid
+#
+teak|hp|laserjet|Hewlett Packard LaserJet 3Si:\
+        :lp=/dev/lpt0:sh:sd=/var/spool/lpd/teak:mx#0:\
+        :if=/usr/local/libexec/hpif:\
+        :vf=/usr/local/libexec/hpvf:</programlisting>
+	      
+	  <para>下面的轉換用過濾程式是將由 grpff 排版系統所產生的 troff
+	    資料轉成讓 PostScript 印表機 <literal>bamboo</literal>
+	    所能列印的格式：</para>
+
+	  <programlisting>
+#!/bin/sh
+#
+#  pstf - Convert groff's troff data into PS, then print.
+#  Installed in /usr/local/libexec/pstf
+#
+exec grops | /usr/local/libexec/lprps "$@"</programlisting>
+	      
+	  <para>上面的 script 再一次的使用 <command>lprps</command>
+	    與印表機溝通。如果我們的印表機接在並列埠上，
+	    那麼我們可以用下面這個 script 取代上面的 script：</para>
+
+	  <programlisting>
+#!/bin/sh
+#
+#  pstf - Convert groff's troff data into PS, then print.
+#  Installed in /usr/local/libexec/pstf
+#
+exec grops</programlisting>
+	  
+	  <para>而若要使這個過濾程式，我們在
+	    <filename>/etc/printcap</filename> 裡得設定：</para>
+		
+	  <programlisting>
+:tf=/usr/local/libexec/pstf:</programlisting>
+	      
+	  <para>這裡有一個讓熟悉 FORTRAN 的老手慚愧的例子。
+	    這是一個讓所有可以列印純文字的印表機印出 FORTRAN-text 的過濾程式。
+	    我們將在 <literal>teak</literal> 這台印表機上安裝：</para>
+
+	  <programlisting>
+#!/bin/sh
+#
+# hprf - FORTRAN text filter for LaserJet 3si:
+# Installed in /usr/local/libexec/hprf
+#
+
+printf "\033&amp;k2G" &amp;&amp; fpr &amp;&amp; printf "\033&amp;l0H" &amp;&amp; exit 0
+exit 2</programlisting>
+	      
+	  <para>我們只要將這個過濾程式在 <filename>/etc/printcap</filename>
+	    檔案裡指定給 <literal>teak</literal> 這台印表機即可：</para>
+	      
+	  <programlisting>
+:rf=/usr/local/libexec/hprf:</programlisting>
+	      
+	  <para>最後一個有點複雜的例子。我們要為先前提到的
+	    <literal>teak</literal> 這台印表機新增一個可以將 DVI
+	    轉成雷射印表機能處理的格式。首先，先修改
+	    <filename>/etc/printcap</filename> 檔案中關於 DVI
+	    過濾程式的位置：</para>
+	      
+	  <programlisting>
+:df=/usr/local/libexec/hpdf:</programlisting>
+	      
+	  <para>然後，我們要做出這個過濾程式。我們需要一個能將 DVI
+	    轉成雷射印表機 PCL 格式的程式。FreeBSD port 裡(請參考
+	    <link linkend="ports">The Ports Collection</link>這一節)有一個
+	    ：<command>dvi2xx</command> 是這個程式的名稱。
+	    安裝這個程式能提供我們 <command>dvilj2p</command> 這個能將 DVI
+	    轉成 LaserJet IIp、LaserJet III 以及 LaserJet 2000 相容的格式。
+	    </para>
+	      
+	  <para><command>dvilj2p</command> 這個程式使得
+	    <command>hpdf</command> 這個過濾程式變得十分的複雜，因為
+	    <command>dvilj2p</command> 無法從標準輸入取得資料。
+	    他得從檔案中讀資料。最糟糕的是，這個檔案還必需以
+	    <filename>.dvi</filename> 結尾，所以用
+	    <filename>/dev/fd/0</filename> 做為標準輸入是不行的。
+	    我們可以用 symblic link 產生一個暫時的檔名(以
+	    <filename>.dvi</filename>結尾)指向 <filename>/dev/fd/0</filename>
+	    ，然後強迫 <command>dvilj2p</command> 從標準輸入讀取資料。</para>
+	      
+	  <para>另一個問題就是我們無法用 <filename>/tmp</filename>
+	    來存放我們暫時的連結。Symbolic links 的使用者及群組為
+	    <username>bin</username>。而過濾程式是以使用者
+	    <username>daemon</username> 的身份在執行。又
+	    <filename>/tmp</filename> 目錄設定了 sticky bit。
+	    因此雖然過濾程式建立了連結，
+	    但是因為這個連結屬於其他的使用者而無法刪除。</para>
+	      
+	  <para>因此，過濾程式將會把 symbolic link 建立在目前的目錄下，也就是
+	    spooling 目錄(由 <filename>/etc/printcap</filename> 檔中的
+	    <literal>sd</literal> 關鍵字所指定)。
+	    這是讓過濾程式來做這件事最好的地方，因為(通常)這裡的可用空間會比
+	    <filename>/tmp</filename> 下來得多。</para>
+	      
+	  <para>所以，這個過濾程式應該要這麼寫：</para>
+
+	  <programlisting>
+#!/bin/sh
+#
+#  hpdf - Print DVI data on HP/PCL printer
+#  Installed in /usr/local/libexec/hpdf
+
+PATH=/usr/local/bin:$PATH; export PATH
+
+#
+#  Define a function to clean up our temporary files.  These exist
+#  in the current directory, which will be the spooling directory
+#  for the printer.
+#
+cleanup() {
+   rm -f hpdf$$.dvi
+}
+
+#
+#  Define a function to handle fatal errors: print the given message
+#  and exit 2.  Exiting with 2 tells LPD to do not try to reprint the
+#  job.
+#
+fatal() {
+    echo "$@" 1&gt;&amp;2
+    cleanup
+    exit 2
+}
+
+#
+#  If user removes the job, LPD will send SIGINT, so trap SIGINT
+#  (and a few other signals) to clean up after ourselves.
+#
+trap cleanup 1 2 15 
+
+#
+#  Make sure we are not colliding with any existing files.
+#
+cleanup
+
+#
+#  Link the DVI input file to standard input (the file to print).
+#
+ln -s /dev/fd/0 hpdf$$.dvi || fatal "Cannot symlink /dev/fd/0"
+
+#
+#  Make LF = CR+LF
+#
+printf "\033&amp;k2G" || fatal "Cannot initialize printer"
+
+# 
+#  Convert and print.  Return value from dvilj2p does not seem to be
+#  reliable, so we ignore it.
+#
+dvilj2p -M1 -q -e- dfhp$$.dvi
+
+#
+#  Clean up and exit
+#
+cleanup
+exit 0</programlisting>
+	</sect4>
+
+	<sect4 id="printing-advanced-autoconv">
+	  <title>自動轉換：轉換用過濾程式外的另一種選擇</title>
+	      
+	  <para>上面這些過濾程式完整的建立了你的列印環境，
+	    但是使用者們必需自己決定要使用哪一個過濾程式(對 &man.lpr.1;
+	    命令下參數)。如果你的使用者們並不擅長於使用電腦，
+	    要他們自己選擇適當的過濾程式來使用可能會造成他們的困擾。
+	    更嚴重的是，萬一使用到不正確的過濾程式來轉換格式，
+	    那麼可能會讓你的印表機浪費許多不必要紙。</para>
+	      
+	  <para>除了安裝所有的轉換用過濾程式外，
+	    你也許會想要試試文字過濾程式(預設的過濾程式)自動偵測要列印的檔案格式，
+	    同時自動呼叫其他的轉換用過濾程式做適當的轉換。像
+	    <command>file</command> 這樣的工具對於這方面可能對這會有些幫助。
+	    然而，要區分出<emphasis>某些</emphasis>檔案格式可能會有點困難
+	    &mdash;當然，你也可以提供專門轉換這些格式的過濾程式。</para>
+	      
+	  <para>FreeBSD ports 裡有一個叫做 <command>apsfilter</command>
+	    的文字過濾程式可以做檔案類型的自動偵測及轉換。他可以分辨出純文字、
+	    PostScript 以及 DVI 檔案，然後做適當的格式轉換後再印出。</para>
+	</sect4>
+      </sect3>
+      
+      <sect3 id="printing-advanced-of">
+	<title>輸出用的過濾程式</title>
+
+	<para>LPD spooling 系統還支援一種我們還未介紹的過濾程式：
+	  輸出用過濾程式。輸出用過濾程式和文字過濾程式一樣，
+	  只有列印純文字才使用的，但是他簡單多了。
+	  如果你用了輸出用過濾程式但是沒有用文字過濾程式，那麼：</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>LPD 在一份工作裡將只執行一次輸出用過濾程式，
+	      而不是為每一個檔案都執行一次。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>LPD 不會提供任何辨認檔案開始或結束的資訊給輸出用的過濾程式
+	      。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>LPD 不會將使用者的帳號及機器名稱傳給過濾程式，
+	      因此他不能做統計的動作。事實上，他只有得到兩個參數：</para>
+		    
+	    <cmdsynopsis>
+	      <command>filter-name</command>
+	      <arg choice="plain">-w<replaceable>width</replaceable></arg>
+	      <arg choice="plain">-l<replaceable>length</replaceable></arg>
+	    </cmdsynopsis>
+	    
+	    <para>其中 <replaceable>width</replaceable> 是由印表機設定裡的
+	      <literal>pw</literal> 關鍵字所設定，而
+	      <replaceable>length</replaceable> 是由
+	      <literal>pl</literal> 關鍵字所設定。</para>
+	  </listitem>
+	</itemizedlist>
+
+	<para>請不要被輸出用過濾程式簡單的特性誤導了。
+	  如果你想要用輸出用過濾程式讓一份工作裡每個檔都從新的一頁開始印，
+	  那是<emphasis>行不通的</emphasis>。
+	  你應該用的是文字過濾程式(也稱為輸入用過濾程式)，請參考 <link
+	    linkend="printing-textfilter">安裝文字過濾程式</link>這一節。
+	  嚴格的說，輸出用過濾程式實際上是<emphasis>較複雜</emphasis>的，
+	  因為他必需檢查送給他的資料是否含有特殊的字元，並代替 LPD
+	  送訊號給自己。</para>
+	    
+	<para>如果你需要列印 header pages
+	  或是需要送控制字元等其他的初始化字串使得可以列印 header page，
+	  那麼一個輸出用過濾程式是<emphasis>必要</emphasis>的。
+	  (但是如果你是為了要向使用者收取列印 header page
+	  的費用的話，那麼這是<emphasis>沒有用</emphasis>的。因為
+	  LPD 不會將任何使用者及機器的資訊傳給輸出用過濾程式。)</para>
+	    
+	<para>LPD 允許一台印表機上同時擁有輸出用過濾程式和文字過濾程式。
+	  在這個情況之下，LPD 會執行輸出用過濾程式列印 header page(請參見
+	  <link
+	    linkend="printing-advanced-header-pages">Header Pages</link>
+	  這一節)，然後 LPD 會送 2 個位元組給這個過濾程式：ASCII 031 以及
+	  ASCII 001 時期望輸出用過濾程式<emphasis>將自己停下來</emphasis>。
+	  當輸出用過濾程式看到這兩個位元組(031，001)時，他應該要送 SIGSTOP 
+	  這個訊號給自己。當 LPD 執行完其他的過濾程式後，會送 SIGCONT
+	  這個訊號將輸出用過濾程式重新啟動。</para>
+	    
+	<para>如果只有輸出用過濾程式但 <emphasis>沒有</emphasis>文字過濾程式，
+	  且 LPD 是要列印純文字，那麼 LPD 將會用輸出用過濾程式來做這些工作。
+	  輸出用過濾程式將會直將的將列印工作中的檔案序輸出到印表機而不會送出
+	  form feed 或是其他控制紙張移動的命令。因此這些潔果可能
+	  <emphasis>不是</emphasis>你想要的。幾手在所有的情況之下，
+	  你都需要一個文字過濾程式。</para>
+	    
+	<para>我們之前介給的 <command>lpf</command> 程式，
+	  不但可以做為文字過濾程式，也可以當做輸出用過濾程式使用。
+	  如果你需要快速的設定好輸出用過濾程式，
+	  但你不想自己寫偵測資料字元及發送訊號的程式碼，那麼你可以試試
+	  <command>lpf</command>。你也可以在 shell script 中使用
+	  <command>lpf</command> 將必要的初始化控制碼送給印表機。</para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-lpf">
+	<title>文字過濾程式：<command>lpf</command></title>
+
+	<para>FreeBSD 裡附的 <filename>/usr/libexec/lpr/lpf</filename>
+	  是一個文字過濾程式(輸入用過濾程式)。他可以處理縮排(命令
+	  <command>lpr -i</command>)、原封不動的印出資料(以
+	  <command>lpr -l</command> 命令送出的工作)、根據倒退字元及 TAB
+	  字元調整列印的位置，以及統計列印張數。
+	  他也可以拿來當做輸出用過濾程式。</para>
+	    
+	<para><command>lpf</command> 適合在許多列印環境下使用。
+	  雖然他無法送初始化控制碼給印表機，但是我們可以很容易的寫一個 shell
+	  script 送出需要的初始化控制碼後再執行 <command>lpf</command>。</para>
+	    
+	<para>為了讓 <command>lpf</command> 可以正確的做列印張數統計，
+	  我們需要在 <filename>/etc/printcap</filename> 檔裡為
+	  <literal>pw</literal> 及 <literal>pl</literal> 關鍵字填入適當的值。
+	  他根據這些值來計算一張紙上可以印多少字，
+	  以及列印使用者的工作需要用幾張紙。關於印表機的統計問題，請參見 <link
+	    linkend="printing-advanced-acct">統計印表機使用情形</link>
+	  裡更詳細的說明。</para>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="printing-advanced-header-pages">
+      <title>Header Pages</title>
+      
+      <para>如果你有<emphasis>很多</emphasis>使用者使用不同的印表機，
+        那麼你也許會覺得需要列印 <emphasis>header pages</emphasis>。</para>
+	  
+      <para>Header pages，也稱做 <emphasis>banner</emphasis> 或
+	<emphasis>burst pages</emphasis>，是用來辨認印出來的工作是屬於誰的。
+	通常 header pages 以粗體的大字，可能再加上外框印出來的，如此，
+	使用者才能快速的在一堆印出的結果找到屬於自己的部份。不過 header page
+	的缺點就是每個工作都會多使用一張紙來列印 header page。
+	他的功用可能不會超過一分鐘，而最後的下場都是丟進資源回收箱或是垃圾筒。
+	(不過 header pages 是一份工作一張，而不是一個檔案一張，
+	所以紙張的浪費可能沒有你想像的那麼嚴重)。</para>
+	  
+      <para><emphasis>如果</emphasis>你的印表機可以直接列印純文字的話，那麼
+        LPD 可以自動為你的輸出加上 header pages。如果你的印表機是 PostScript
+        的，那麼你將會需要額外的程式來產生 header page；請參見 <link
+	  linkend="printing-advanced-header-pages-ps">在 PostScript
+	印表機上列印 Header Pages</link> 這一節。</para>
+      
+	  <sect3 id="printing-advanced-header-pages-enabling">
+	<title>要求列印 Header Pages</title>
+
+	<para>在 <link linkend="printing-simple">簡單的印表機設定</link>
+	  這一節裡，我們在 <filename>/etc/printcap</filename>
+	  檔裡利用設定 <literal>sh</literal> 以不列印 header page (sh 即
+	  &ldquo;suppress header&rdquo; 的意思)。如果某一台印表機要列印
+	  header pages 的話，那麼只要將 <literal>sh</literal>
+	  關鍵字移除就行了。</para>
+
+	<para>看起來是不是很簡單？</para>
+
+	<para>沒錯。你<emphasis>也許</emphasis>
+	  必需要供一個輸出用過濾程式將初始化控制碼送給印表機。
+	  下面是一個適用於 Hewlett Packard PCL
+	  相容印表機使用的輸出用過濾程式：</para>
+
+	<programlisting>
+#!/bin/sh
+#
+#  hpof - Output filter for Hewlett Packard PCL-compatible printers
+#  Installed in /usr/local/libexec/hpof
+
+printf "\033&amp;k2G" || exit 2
+exec /usr/libexec/lpr/lpf</programlisting>
+	    
+	<para>我們用 <literal>of</literal> 關鍵字來指定輸出用過濾程式的路徑。
+	  請參見 <link
+	    linkend="printing-advanced-of">輸出用的過濾程式</link>
+	  這一節以取得更多的資訊。</para>
+	    
+	<para>下面是一個為我們先前提到的印表機 <literal>teak</literal> 在
+	  <literal>teak</literal> 檔裡設定要列印 header pages
+	  及輸出用過濾程式的範例：</para>
+
+	<programlisting>
+#
+#  /etc/printcap for host orchid
+#
+teak|hp|laserjet|Hewlett Packard LaserJet 3Si:\
+        :lp=/dev/lpt0:sd=/var/spool/lpd/teak:mx#0:\
+        :if=/usr/local/libexec/hpif:\
+        :vf=/usr/local/libexec/hpvf:\
+        :of=/usr/local/libexec/hpof:</programlisting>
+	    
+	<para>現在，當使用者用 <literal>teak</literal> 列印時，
+	  他們每個工作都會有一張 header page。
+	  如果使用者們願意花時間自己找出自己列印出的東西，
+	  那麼他們可以用 <command>lpr -h</command> 命令設定不印出 header
+	  pages；請參見 <link
+	    linkend="printing-lpr-options-misc">Header Page 參數</link>
+	  以得知更多 &man.lpr.1; 的參數。</para>
+
+	<note>
+	  <para>LPD 印完 header page 後會送出 form feed 字元。
+	    如果你的印表機送出紙張的指令不是用這個字元，你可以在
+	    <filename>/etc/printcap</filename> 檔案中用 <literal>ff</literal>
+	    關鍵字指定。</para>
+	</note>
+      </sect3>
+      
+      <sect3 id="printing-advanced-header-pages-controlling">
+	<title>控制 Header Pages</title>
+
+	<para>若選擇要列印 header pages，LPD 將會產生出 <emphasis>long
+	  header</emphasis>，
+	  這將使用者、機器以及工作名稱以大字列印在一整頁上。
+	  這裡有一個範例(kelly 從 rose 這台印機列印 outline 這個工作)：</para>
+	    
+	<programlisting>
+      k                   ll       ll
+      k                    l        l
+      k                    l        l
+      k   k     eeee       l        l     y    y
+      k  k     e    e      l        l     y    y
+      k k      eeeeee      l        l     y    y
+      kk k     e           l        l     y    y
+      k   k    e    e      l        l     y   yy
+      k    k    eeee      lll      lll     yyy y
+                                               y
+                                          y    y
+                                           yyyy
+
+
+                                   ll
+                          t         l        i
+                          t         l
+       oooo    u    u   ttttt       l       ii     n nnn     eeee
+      o    o   u    u     t         l        i     nn   n   e    e
+      o    o   u    u     t         l        i     n    n   eeeeee
+      o    o   u    u     t         l        i     n    n   e
+      o    o   u   uu     t  t      l        i     n    n   e    e
+       oooo     uuu u      tt      lll      iii    n    n    eeee
+
+
+
+
+
+
+
+
+
+      r rrr     oooo     ssss     eeee
+      rr   r   o    o   s    s   e    e
+      r        o    o    ss      eeeeee
+      r        o    o      ss    e
+      r        o    o   s    s   e    e
+      r         oooo     ssss     eeee
+
+
+
+
+
+
+
+                                              Job:  outline
+                                              Date: Sun Sep 17 11:04:58 1995</programlisting>
+
+	<para>LPD 在印完這些後會送出 form feed
+	  字元，使得真正的列印工作會從新的一頁開始列印(除非你在
+	  <filename>/etc/printcap</filename> 檔案為指定的印表機設定了
+	  <literal>sf</literal> (supress form feeds))。</para>
+	    
+	<para>如果你希望 LPD 列印 <emphasis>short header</emphasis>，那麼在
+	  <filename>/etc/printcap</filename> 檔裡使用 <literal>sb</literal>
+	  (short banner) 即可。這樣印出來的 header page
+	  看起來會像下面這個樣子：</para>
+	    
+	<programlisting>
+rose:kelly  Job: outline  Date: Sun Sep 17 11:07:51 1995</programlisting>
+
+	<para>LPD 的預設值是先列印 header page 再列印工作。如果你想要調換順序，
+	那麼在 <filename>/etc/printcap</filename> 裡使用
+	<literal>hl</literal> (header last) 即可。</para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-header-pages-accounting">
+	<title>統計列印 Header Pages</title>
+
+	<para>如果我們列印 LPD 內建的 header pages，
+	  那麼可們在做統計時可能會遇到一個目題：header pages
+	  得<emphasis>免費</emphasis>提供。</para>
+	    
+	<para>為什麼？</para>
+
+	<para>因為只有控制列印 header page 的輸出用過濾程式可以在列印 header
+	  pages 時做列印統計，但是這個過濾程式卻沒有
+	  <emphasis>使用者及機器</emphasis>的資料或是一個統計資料檔，
+	  所以無法向使用者收錢。我們也不能在文字過濾程式或是轉換用過濾程式
+	  (這些過濾程式可以直接取得使用者及機的資料)將統計結果都
+	  &ldquo;多加上一頁&rdquo;，因為使用者可以用
+	  <command>lpr -h</command> 命令設定不要列印 header
+	  page，而你可能就向這些使用者多收了列印 header page 的費用。基本上，
+	  <command>lpr -h</command> 是許多較環保的使用者喜好的參數，
+	  你無法鼓勵別人不去使用他。</para>
+	    
+	<para>而修改每個過濾程式使他們都可以列印出 header page 也是
+	  <emphasis>不可行的</emphasis>(雖然這麼做就可以正確的計費)。因為
+	  LPD 並不會把使用者有沒有使用 <option>-h</option>
+	  的資訊傳給過濾程式，這麼一來，即使使用者下了
+	  <command>lpr -h</command> 的命令要求不列印 header
+	  page，他仍然會因為得到一張 header page 而多收取了這個費用。</para>
+
+	<para>那麼，有什麼好辦法呢？</para>
+
+	<para>你可以：</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>接受 LPD 的缺點，不收取列印 header page 的費用。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>安裝可以取代 LPD 的程式，比如說 LPRng 或是 PLP。請參考
+	      <link linkend="printing-lpd-alternatives">標準 Spooler
+	    之外的選擇</link>這一節所介紹其他可以替代 LPD 的程式。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>撰寫一個<emphasis>聰明</emphasis>的輸出用過濾程式。在列印
+	      header page 及純文字時，若沒有文字(輸入用)過濾程式，
+	      那麼一般的輸出用過濾程式只做初始化印表機以及一些簡單的字元轉換工作。
+	      若有設定文字過濾程式，那麼 LPD 只會用輸出用過濾程式來做列印
+	      header page 的工作。事實上，輸出用過濾程式可以根據從 LPD 產生的
+	      header page 資料來判斷列印工作的使用者及機器而加以收費。
+	      唯一的問題就是輸出用過濾程式會無法取得紀錄使用情形的紀錄檔(由
+	      <literal>af</literal> 關鍵字所指用的紀錄檔不會被傳入)，
+	      但是如果你的紀錄檔是固定的，
+	      你可以這個檔案直接設定在輸出用過濾程式裡。
+	      若你考慮要用這種方式來處理的話，那麼在
+	      <filename>/etc/printcap</filename> 檔案使用 <literal>sh</literal>
+	      (short header) 關鍵字使判斷的工作較容易。
+	      上述的做法其實可能是很麻煩的，比較起來，使用者應該會較感謝讓列印
+	      header page 免費的管理者。</para>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+      
+      <sect3 id="printing-advanced-header-pages-ps">
+	<title>在 PostScript 印表機上列印 Header Pages</title>
+
+	<para>之前提到 LPD 可以為印表機產生合適的純文字 header page，當然，
+	  因為 PostScript 不能直接列印純文字，所以 LPD 產生 header page
+	  的工能在 PostScript 印表機上是用不到的&mdash;或是幾乎用不到。</para>
+	    
+	<para>一個直接產生 header page
+	  的方法是讓所有的轉換用過濾程式及文字過濾程式產生 header page。
+	  過濾程式可以用使用者及機器的參數產生合適的 header page。
+	  這個方法的缺點就是即使使用者以 <command>lpr -h</command>
+	  的方式送出工作，他們仍然會得到 header pages。</para>
+	    
+	<para>讓我們來試試這個方法。下面的 script 可以接受三個參數(使用者名稱、
+	  機器名稱以及工作名稱)並產生 PostScript 印表機能列印的 header page：
+	  </para>
+
+	<programlisting>
+#!/bin/sh
+#
+#  make-ps-header - make a PostScript header page on stdout
+#  Installed in /usr/local/libexec/make-ps-header
+#
+
+#
+#  These are PostScript units (72 to the inch).  Modify for A4 or
+#  whatever size paper you are using:
+#
+page_width=612
+page_height=792
+border=72
+
+#
+#  Check arguments
+#
+if [ $# -ne 3 ]; then
+    echo "Usage: `basename $0` &lt;user&gt; &lt;host&gt; &lt;job&gt;" 1&gt;&amp;2
+    exit 1
+fi
+
+#
+#  Save these, mostly for readability in the PostScript, below.
+#
+user=$1
+host=$2
+job=$3
+date=`date`
+
+#
+#  Send the PostScript code to stdout.
+#
+exec cat &lt;&lt;EOF
+%!PS
+
+%
+%  Make sure we do not interfere with user's job that will follow
+%
+save
+
+%
+%  Make a thick, unpleasant border around the edge of the paper.
+%
+$border $border moveto
+$page_width $border 2 mul sub 0 rlineto
+0 $page_height $border 2 mul sub rlineto
+currentscreen 3 -1 roll pop 100 3 1 roll setscreen
+$border 2 mul $page_width sub 0 rlineto closepath
+0.8 setgray 10 setlinewidth stroke 0 setgray
+
+%
+%  Display user's login name, nice and large and prominent
+%
+/Helvetica-Bold findfont 64 scalefont setfont
+$page_width ($user) stringwidth pop sub 2 div $page_height 200 sub moveto
+($user) show
+
+%
+%  Now show the boring particulars
+%
+/Helvetica findfont 14 scalefont setfont
+/y 200 def
+[ (Job:) (Host:) (Date:) ] {
+200 y moveto show /y y 18 sub def }
+forall
+
+/Helvetica-Bold findfont 14 scalefont setfont
+/y 200 def
+[ ($job) ($host) ($date) ] {
+        270 y moveto show /y y 18 sub def
+} forall
+
+%
+% That is it
+%
+restore
+showpage
+EOF</programlisting>
+
+	<para>現在，每個轉換用過濾程式以及文字過濾程式可以在列印前先呼叫這個
+	  script 印產生出 header page 然後再列印工作的內容。我們修改之前提過的
+	  DVI 轉換用過濾程式使他可以列印 header page：</para>
+
+	<programlisting>
+#!/bin/sh
+#
+#  psdf - DVI to PostScript printer filter
+#  Installed in /usr/local/libexec/psdf
+#
+#  Invoked by lpd when user runs lpr -d
+#
+		
+orig_args="$@"
+
+fail() {
+    echo "$@" 1&gt;&amp;2
+    exit 2
+}
+
+while getopts "x:y:n:h:" option; do
+    case $option in
+        x|y)  ;; # Ignore
+        n)    login=$OPTARG ;;
+        h)    host=$OPTARG ;;
+        *)    echo "LPD started `basename $0` wrong." 1&gt;&amp;2
+              exit 2
+              ;;
+    esac
+done
+
+[ "$login" ] || fail "No login name"
+[ "$host" ] || fail "No host name"
+
+( /usr/local/libexec/make-ps-header $login $host "DVI File"
+  /usr/local/bin/dvips -f ) | eval /usr/local/libexec/lprps $orig_args</programlisting>
+
+	<para>注意這個過濾程式如何從參數中取出使用者名稱及機器名稱。
+	  雖然這個過濾程式使用了一些不同的參數(請參見 <link
+	    linkend="printing-advanced-filters">過濾程式的運作方式</link>
+	    這一節)，不過同樣的技巧也可以應用在其他不同的過濾程式上。 </para>
+	    
+	<para>不過就如我們之前所提到的，這個方式雖然很簡單，但是卻讓
+	  <command>lpr</command> 命令無法&ldquo;不列印 header page&rdquo;(即
+	  <option>-h</option> 參數無效)。如果使用者想要拯救一些樹
+	  (或是少花些錢，如果列印 header pages 要收費的話)，
+	  那麼他們將無法做到。因為每個過濾程式都會為每個工作列印
+	  header page。</para>
+	    
+	<para>若要允許使用者可以自己選擇是否列印 header pager，你得使用 <link
+	    linkend="printing-advanced-header-pages-accounting">統計列印
+	    Header Pages</link> 這一裡介紹的技巧：寫一個可以判斷由 LPD 產生的
+	  header page 的輸出用過濾程式，並由他輸出 PostScript
+	  印表機可以處理的資料。這麼一來，如果使用者以
+	  <command>lpr -h</command> 送出工作，LPD 將不會產生 header
+	  page，且你的輸出用過濾程式也不會。否則，你的輸出用過濾程式將要根據
+	  LPD 送出的資料然後以適當 PostScript 碼將 header page
+	  送給印表機處理。</para>
+	    
+	<para>如果你的 PostScript 印表機是接在序列埠上，那麼你可以使用
+	  <command>lprps</command> 裡提供的輸出用過濾程式，
+	  <command>psof</command>，這個過濾程式會做上述的動作。注意，
+	  <command>psof</command> 這個過濾程式將不會為 header pages 計費。</para>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="printing-advanced-network-printers">
+      <title>網路列印</title>
+      
+      <para>FreeBSD 支援網路列印：將工作送給遠端的印表機處理。
+        網路列印有兩大類型：</para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para>存取遠端機器所安裝的印表機。
+	    你在某一台機器上的序列埠或並列埠上接了一台印表機，然後你設定 LPD
+	    使該台印表機可以接受網路上其他機器來使用。<link
+	      linkend="printing-advanced-network-rm">安裝遠端機器上的印表機</link>
+	    這一節將告訴你如何設定。</para>
+	</listitem>
+
+	<listitem>
+	  <para>使用直接接在網路上的印表機。
+	    這種印表機通常有一個額外的網路界面，
+	    以及(或是取代掉原本的)傳統的序列埠或並列埠。
+	    這種印表機可能有下列的工作方式：</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para>他可能可以使用 LPD 通訊協定直接接受從其他機器送來的工作。
+	        在這種情況下，就和一般的機器上面跑 LPD 沒什麼不同。只要照著
+	        <link 
+	        linkend="printing-advanced-network-rm">安裝遠端機器上的印表機</link>
+	        這一節裡的設定即可。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>他可能支援網路資料傳輸界面。這種情況下，你得將印表機
+	        &ldquo;連接&rdquo;到網路上的某一台機器上，
+	        然後讓該機器負責接受工作以及與印表機之間傳送資料。請參見<link
+		  linkend="printing-advanced-network-net-if">
+		使用網路資料傳輸界面的印表機</link>
+		裡關於這類印表機安裝的建議。</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </itemizedlist>
+      	  
+      <sect3 id="printing-advanced-network-rm">
+	<title>安裝遠端機器上的印表機</title>
+
+	<para>LPD spooling 系統內建有將工作送給網路上其他執行 LPD (或與 LPD
+	  相容)程式的機器列印的功能。這個功能讓你可以將印表機安裝在一台機器上，
+	  並讓網路上其他的機器可以來使用。這功能也可以直接配合支援 LPD
+	  通訊協定的網路界面印表機使用。</para>
+	    
+	<para>要使用遠端列印，首先，我們要先按照<link
+	  linkend="printing-simple">簡單的印表機設定</link>
+	  在<emphasis>印表機伺服器</emphasis>上將印表機設定好。然後也參考 <link
+	  linkend="printing-advanced">進階印表機設定</link>設定你所需要的參數，
+	  確定你的印表機可以和 LPD 配合運作。最後要確定
+	  <emphasis>本機</emphasis>有在 LPD 的己授權使用
+	  <emphasis>遠端機器</emphasis>列表裡(請參見 <link
+	    linkend="printing-advanced-restricting-remote">限制來自遠端印表機的工作</link>
+	  這一節)。</para>
+	    
+	<para>如果你是使用相容於 LPD 通訊協定的網路界面印表機，
+	  那麼接下來討論的<emphasis>印表機伺服器</emphasis>就是這台印表機，
+	  而<emphasis>印表機名稱</emphasis>則是你為印表機設定的名稱。
+	  請查閱隨印表機或網路界面附的手冊來設定。</para>
+	    
+	<para>在其他要存取這些網路印表機的機器上，他們的
+	  <filename>/etc/printcap</filename> 設定檔得這麼設定：</para>
+
+	<orderedlist>
+	  <listitem>
+	    <para>為你的網路印表機取個名字，為了簡單起見，
+	      你可能會把印表機的名稱及別名和印表機伺服器取一樣的名字。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>明確的將 <literal>lp</literal> 關鍵字設定為空的
+	      (<literal>:lp=:</literal>)。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>建立一個 spooling 目錄同時將其位置以
+	      <literal>sd</literal> 關鍵字指定。LPD
+	      在將工作送給印表機伺服器之前，會將這此工作放在這個目錄之下。
+	      </para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>將印表機伺服器的名稱以 <literal>rm</literal> 關鍵字指定。</para>
+	  </listitem>
+	  
+	  <listitem>
+	    <para>將<emphasis>印表機伺服器</emphasis>上的印表機名稱用
+	      <literal>rp</literal> 關鍵字指定。</para>
+	  </listitem>
+	</orderedlist>
+
+	<para>這些就足夠了，你不需要在 <filename>/etc/printcap</filename>
+	  檔裡將轉換用的過濾程式列出，或是指定紙張的大小。</para>
+
+	<para>接下來是一個範例。<hostid>rose</hostid> 這台機器有兩台印表機，
+	  分別為 <literal>bamboo</literal> 及 <literal>rattan</literal>。
+	  我們要讓 orchid 這台機器上的使用者可以使用這兩台印很機。下面是
+	  <hostid>orchid</hostid> 這台機器上的 <filename>/etc/printcap</filename>
+	  設定檔(回想<link
+	    linkend="printing-advanced-header-pages-enabling">要求列印 Header
+	  Pages</link>這一節)，這個檔裡面已經設定 <literal>teak</literal>
+	  這台印表機了，我們將要再加入兩台連接在 rose 這台機器上的網路印表機：
+	  </para>
+
+	<programlisting>
+#
+#  /etc/printcap for host orchid - added (remote) printers on rose
+#
+
+#
+#  teak is local; it is connected directly to orchid:
+#
+teak|hp|laserjet|Hewlett Packard LaserJet 3Si:\
+        :lp=/dev/lpt0:sd=/var/spool/lpd/teak:mx#0:\
+        :if=/usr/local/libexec/ifhp:\
+        :vf=/usr/local/libexec/vfhp:\
+        :of=/usr/local/libexec/ofhp:
+
+#
+#  rattan is connected to rose; send jobs for rattan to rose:
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :lp=:rm=rose:rp=rattan:sd=/var/spool/lpd/rattan:
+
+#
+#  bamboo is connected to rose as well:
+#
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :lp=:rm=rose:rp=bamboo:sd=/var/spool/lpd/bamboo:</programlisting>
+
+	<para>然後，我們只要在 <hostid>orchid</hostid> 建立 spooling 目錄：</para>
+	      
+	<screen>&prompt.root; <userinput>mkdir -p /var/spool/lpd/rattan /var/spool/lpd/bamboo</userinput>
+&prompt.root; <userinput>chmod 770 /var/spool/lpd/rattan /var/spool/lpd/bamboo</userinput>
+&prompt.root; <userinput>chown daemon.daemon /var/spool/lpd/rattan /var/spool/lpd/bamboo</userinput></screen>
+	      
+	<para>現在，<hostid>orchid</hostid> 上的使用者可以將資料交由
+	  <literal>rattan</literal> 及 <literal>bamboo</literal> 列印。
+	  舉例來說，orchid 上的使用者可以輸入
+	      
+	  <screen>&prompt.user; <userinput>lpr -P bamboo -d sushi-review.dvi</userinput></screen>
+
+	  而 orchid 上的 LPD 系統將會將工作拷貝到
+	  <filename>/var/spool/lpd/bamboo</filename> spooling
+	  目錄下並註明他是要列印 DVI 的工作。當 rose 這台機器上給
+	  <hostid>bamboo</hostid> 用的 spooling 目錄有空間時，這兩個 LPD
+	  就會開始溝通將檔案傳給 rose。然後這工作便進入 rose
+	  的佇列直到他被印出為止。而將 DVI 轉換成 PostScript(因為 bamboo 是
+	  PostScript 印表機)的工作將會在 rose 這台機器上執行。</para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-network-net-if">
+	<title>使用網路資料傳輸界面的印表機</title>
+
+	<para>若你為你的印表機安裝了一塊網路卡界面，通常有兩種情形：
+	  這個界面具有 spooler 的能力(較貴)，
+	  或是只是拿來取代序列埠或並列埠(較便宜)。
+	  這一節要討論的是如何使用較便宜的那一種方式。如果你是選用較貴的界面
+	  ，請參考前一節：<link
+	    linkend="printing-advanced-network-rm">安裝遠端機器上的印表機
+	    </link>。</para>
+	    
+	<para><filename>/etc/printcap</filename>
+	  設定檔裡允許你指定使用序列埠或是並列埠，
+	  以及(若你使用序列埠)使用什麼傳輸速率、哪一種流量控制、
+	  是否需要延及轉換換行字元等等。但是，卻沒有一種方法可以指定以 TCP/IP
+	  或是其他的網路連接埠與印表機連結。</para>
+	    
+	<para>若要將資料送給這種網路印表機，你需要一種可以被文字及轉換用
+	  過濾程式呼叫的資料傳輸程式。這裡有一個例子：
+	  <command>netprint</command> 這個 script
+	  可以讀取標準輸入的資料並將這些資料送到用網路連接的印表機。我們在
+	  <command>netprint</command> 命令的第一個參數得傳入該印表機的機器名稱，
+	  並使用第二個參數傳送通訊埠的號碼。
+	  注意，這個程式只支援單向的傳輸(即從 FreeBSD 到印表機)，
+	  而很多網路印表機都支援雙向傳輸，
+	  而你可能會想要使用這些功能(如取得印表機狀態、統計列印情形等)。</para>
+
+	<programlisting>
+#!/usr/bin/perl
+#
+#  netprint - Text filter for printer attached to network
+#  Installed in /usr/local/libexec/netprint
+#
+$#ARGV eq 1 || die "Usage: $0 &lt;printer-hostname&gt; &lt;port-number&gt;";
+
+$printer_host = $ARGV[0];
+$printer_port = $ARGV[1];
+
+require 'sys/socket.ph';
+
+($ignore, $ignore, $protocol) = getprotobyname('tcp');
+($ignore, $ignore, $ignore, $ignore, $address)
+    = gethostbyname($printer_host);
+
+$sockaddr = pack('S n a4 x8', &amp;AF_INET, $printer_port, $address);
+
+socket(PRINTER, &amp;PF_INET, &amp;SOCK_STREAM, $protocol)
+    || die "Can't create TCP/IP stream socket: $!";
+connect(PRINTER, $sockaddr) || die "Can't contact $printer_host: $!";
+while (&lt;STDIN&gt;) { print PRINTER; }
+exit 0;</programlisting>
+	    
+	<para>然後我門可以在不同的過濾程式裡使用這個 script。
+	  假設我們有一台連接在網路上的 Diablo 750-N 行式印表機。
+	  這台印表機用通訊埠 5100 接收資料。這台印表機的名字叫做 scrivener。
+	  以下是給這印表機使用的文字過濾程式：</para>
+
+	<programlisting>
+#!/bin/sh
+#
+#  diablo-if-net - Text filter for Diablo printer `scrivener' listening
+#  on port 5100.   Installed in /usr/local/libexec/diablo-if-net
+#
+exec /usr/libexec/lpr/lpf "$@" | /usr/local/libexec/netprint scrivener 5100</programlisting>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="printing-advanced-restricting">
+      <title>限制印表機的使用</title>
+      
+      <para>這一節討論如何限制印表機的使用。LPD
+        系統可以限制本機及遠端使用印表機的使用者，
+        設定他們是否可以列印多分、印工作大小的限制以及印表機佇列的上限。</para>
+      
+      <sect3 id="printing-advanced-restricting-copies">
+	<title>限制列印多份</title>
+
+	<para>LPD 系統讓使用者可以很容易的將一個檔案列印多份。舉例來說，
+	  使用者只要以 <command>lpr -#5</command>
+	  命令就可以將這個工作裡的每個檔案都列印 5
+	  份。不論這些檔案裡是什麼東西。</para>
+	    
+	<para>如果你覺得列印多份會造成印表機無謂的傷害，你可以在
+	  <filename>/etc/printcap</filename> 設定檔裡以
+	  <literal>sc</literal> 關鍵字關閉 &man.lpr.1; 命令的
+	  <option>-#</option> 參數。如此，當使用者嘗試以 <option>-#</option>
+	  參數送出工作時，他們將看到：</para>
+	      
+	<screen>lpr: multiple copies are not allowed</screen>
+
+	<para>注意，如果你允許從遠端使用你的印表機(請參見
+	  <link
+	  linkend="printing-advanced-network-rm">安裝遠端機器上的印表機</link>
+	  這一節)，那麼你得在遠端機器上的 <filename>/etc/printcap</filename>
+	  檔裡也設定 <literal>sc</literal> 關鍵字，
+	  否則使用者仍然可以從遠端的機器上要求列印多份。</para>
+
+	<para>這裡有一個範例。這是 <hostid>rose</hostid> 這台機器的
+	  <filename>/etc/printcap</filename> 設定檔。<literal>rattan</literal>
+	  這台印表機十分夠力，所以我們允許在他上面列印多份，但是
+	  <literal>bamboo</literal> 這台雷射印表機有點脆弱，
+	  因此我們在他上面設定了 <literal>sc</literal>
+	  關鍵字，不允許列印多份：</para>
+
+	<programlisting>
+#
+#  /etc/printcap for host rose - restrict multiple copies on bamboo
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:\
+        :lp=/dev/lpt0:\
+        :if=/usr/local/libexec/if-simple:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:sc:\
+        :lp=/dev/ttyd5:fs#0x82000e1:xs#0x820:rw:\
+        :if=/usr/local/libexec/psif:\
+        :df=/usr/local/libexec/psdf:</programlisting>
+	    
+	<para>然後，我們也需要在 <hostid>orchid</hostid> 這台機器上的
+	  <filename>/etc/printcap</filename> 設定檔裡為為網路印表機加上
+	  <literal>sc</literal> 關鍵字(同時，我們也不允許使用者用
+	  <literal>teak</literal> 這台印表機來做列印多份的工作)：</para>
+
+	<programlisting>
+#
+#  /etc/printcap for host orchid - no multiple copies for local
+#  printer teak or remote printer bamboo
+teak|hp|laserjet|Hewlett Packard LaserJet 3Si:\
+        :lp=/dev/lpt0:sd=/var/spool/lpd/teak:mx#0:sc:\
+        :if=/usr/local/libexec/ifhp:\
+        :vf=/usr/local/libexec/vfhp:\
+        :of=/usr/local/libexec/ofhp:
+
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :lp=:rm=rose:rp=rattan:sd=/var/spool/lpd/rattan:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :lp=:rm=rose:rp=bamboo:sd=/var/spool/lpd/bamboo:sc:</programlisting>
+	    
+	<para>使用 <literal>sc</literal> 關鍵字之後，我們可以防止使用者使用
+	  <command>lpr -#</command>，但是無法防止使用者執行多次 &man.lpr.1;，
+	  或是在一個工作裡將同樣的檔案送好幾次，像這樣：</para>
+	      
+	<screen>&prompt.user; <userinput>lpr forsale.sign forsale.sign forsale.sign forsale.sign forsale.sign</userinput></screen>
+	      
+	<para>有很多方式可以防止這個濫用(包括忽略他)，你可以自己嘗試看看。</para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-restricting-access">
+	<title>限制存取印表機</title>
+
+	<para>你可以使用 UNIX 下群組的機制及 <filename>/etc/printcap</filename>
+	  設定檔的 <literal>rg</literal> 關鍵字來控制誰可以使用哪台印表機。
+	  只要將允許存取印表機的使用者放在某一個群組中，然後用
+	  <literal>rg</literal> 關鍵字指定這個群組名稱即可。</para>
+	    
+	<para>在這個群組之外的吏用者(包括 root)將會看到
+	  
+	  <errorname>lpr: Not a member of the restricted group</errorname>
+	  
+	  如果他們嘗試使用被限制使用的印表機。</para>
+
+	<para>和 <literal>sc</literal> (禁止列印多份)一樣，若你覺得需要限
+	  制遠端使用者使用你的印表機，你也得在遠端機器上的設定檔裡設定
+	  <literal>rg</literal> 關鍵字。(請參見<link
+	    linkend="printing-advanced-network-rm">安裝遠端機器上的印表機
+	    </link>這一節)。</para>
+	    
+	<para>我們將讓所有人都可以使用 <literal>rattan</literal> 這台印表機，
+	  但是只有在 <literal>artists</literal> 群組裡的人可以使使用
+	  <literal>bamboo</literal> 這台印表機。下面是 <hostid>rose</hostid>
+	  這台機器的 <filename>/etc/printcap</filename> 設定檔：</para>
+
+	<programlisting>
+#
+#  /etc/printcap for host rose - restricted group for bamboo
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:sd=/var/spool/lpd/rattan:\
+        :lp=/dev/lpt0:\
+        :if=/usr/local/libexec/if-simple:
+
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:sc:rg=artists:\
+        :lp=/dev/ttyd5:fs#0x82000e1:xs#0x820:rw:\
+        :if=/usr/local/libexec/psif:\
+        :df=/usr/local/libexec/psdf:</programlisting>
+
+	<para>我們在這裡不修改其他的 <filename>/etc/printcap</filename> 設定檔
+	  (比如說 <hostid>orchid</hostid> 機器上的)。這麼一來，所有
+	  <hostid>orchid</hostid> 機器上的使用者都可以用 <literal>bamboo</literal>
+	  來列印。通常這種情況是因為 <hostid>orchid</hostid>
+	  上的使用者不多且希望他們都可以存取印表機。</para>
+
+	<note>
+	  <para>每個印表機只能使用一個群組名稱來做限制。</para>
+	</note>
+      </sect3>
+      
+      <sect3 id="printing-advanced-restricting-sizes">
+	<title>控制送出工作的大小</title>
+
+	<para>如果你有很多使用者在使用印表機，
+	  你也許會想要設定使用者能傳過來列印的檔案大小限制。畢竟，在我們
+	  spooling 目錄所在的檔案系統空間有限，
+	  而你得確保有足夠的空間給其他的使用者列印時候用。</para>
+	    
+	<para>LPD 讓你可以用 <literal>mx</literal>
+	  關鍵字限制一個列印工作中的檔案大小，以 BUFSIZ
+	  區塊為單位，每一塊大小為 1024 位元組。如果你將值設定為
+	  0，那麼表示對檔案大小沒有限制。如果沒有使用
+	  <literal>mx</literal> 關鍵字的話，那麼預設的大小是 1000 個區塊。</para>
+
+	<note>
+	  <para>這些限制將會套用在列印工作中的<emphasis>檔案</emphasis>，
+	    而<emphasis>不是</emphasis>整個列印工作的大小。</para>
+	</note>
+
+	<para>LPD 不會拒絕接收一個檔案大小超過你為印表機設定上限的檔案。
+	  而會儘量將該檔小於上限的資料放入佇例並印出，而超出上限的資料則捨棄。
+	  這是不是一個正確的處理方式還有待爭議。</para>
+	    
+	<para>讓我們為我們的範例印表機 <literal>rattan</literal> 和
+	  <literal>bamboo</literal> 設定上限。既然這些藝術家的 PostScript
+	  檔案都蠻大的，我們將上限設定為
+	  5 MB。而我們在純文字行式印表機上不做任何限制：</para>
+
+	<programlisting>
+#
+#  /etc/printcap for host rose
+#
+
+#
+#  No limit on job size:
+#
+rattan|line|diablo|lp|Diablo 630 Line Printer:\
+        :sh:mx#0:sd=/var/spool/lpd/rattan:\
+        :lp=/dev/lpt0:\
+        :if=/usr/local/libexec/if-simple:
+
+#
+#  Limit of five megabytes:
+#
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:sc:rg=artists:mx#5000:\
+        :lp=/dev/ttyd5:fs#0x82000e1:xs#0x820:rw:\
+        :if=/usr/local/libexec/psif:\
+        :df=/usr/local/libexec/psdf:</programlisting>
+
+	<para>同樣的，這些限制僅對本機使用者有效。
+	  如果有人透過網路使用這些印表機，那麼這些設定是不會產生效用的。
+	  你得在遠端的 <filename>/etc/printcap</filename> 設定檔裡也設定
+	  <literal>mx</literal> 關鍵字才行。請參見 <link
+	    linkend="printing-advanced-network-rm">安裝遠端機器上的印表機
+	    </link>這一節以取得更多關於遠端列印的訊息。</para>
+	    
+	<para>有另一種更好的方法來限定遠端印表機傳送過來的列印工作大小。
+	  請參見 <link
+	  linkend="printing-advanced-restricting-remote">限制來自遠端印表機的工作</link>
+	  這一節的說明。</para>
+      </sect3>
+      
+      <sect3 id="printing-advanced-restricting-remote">
+	<title>限制來自遠端印表機的工作</title>
+
+	<para>LPD spooling 系統提供好幾種方法來限制從遠端送過來列印的工作：
+	  </para>
+	    
+	<variablelist>
+	  <varlistentry>
+	    <term>限制機器來源</term>
+
+	    <listitem>
+	      <para>你可以用 <filename>/etc/hosts.equiv</filename> 和
+	        <filename>/etc/hosts.lpd</filename> 這兩個檔來限制 LPD
+	        接受哪些遠端機器的要求。LPD
+	        會檢查送出要求的機器是否列在這些檔案之中。如果沒有的話，那麼
+	        LPD 會拒絕這些要求。</para>
+		    
+	      <para>這兩個檔案的格式很簡單：一行寫一台機器名稱即可。不過你得
+	        注意 <filename>/etc/hosts.equiv</filename> 這個檔也被
+		  &man.ruserok.3; 通訊協定所使用，因此會影響到像 &man.rsh.1;
+		和 &man.rcp.1; 等程式，所以你得小心的設定。</para>
+	      
+	      <para>舉例來說，<hostid>rose</hostid> 的
+		<filename>/etc/hosts.lpd</filename> 設定檔是下面這樣：</para>
+
+	      <programlisting>
+orchid
+violet
+madrigal.fishbaum.de</programlisting>
+		    
+	      <para>意思就是 <hostid>rose</hostid> 這台機器將會接受從
+	        <hostid>orchid</hostid>、<hostid>violet</hostid>、以及
+		<hostid role="fqdn">madrigal.fishbaum.de</hostid>這三台機器
+		送過來的要求。如果其他的機器想要來使用 <hostid>rose</hostid>
+		這機器的 LPD，那麼 LPD 將會拒絕他們。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>限制大小</term>
+	    
+	    <listitem>
+	      <para>你可以控制有多少空間得保留在 spooling
+	        目錄所在的檔案系統上。只要在本機印表機的 spooling
+	        目錄上建立一個叫做 <filename>minfree</filename> 的檔案就行了。
+	        而這個檔案的內容是一個數字紀錄當檔案系統至少還有多少磁碟區塊(512
+	        位元組)的剩餘空間時才接受遠端送來的列印工作。</para>
+		    
+	      <para>這可以確保遠端的使用者不會將你的檔案系統空間用完。
+	        而這塊空間給本機使用者一些保障：他們在檔案系統剩餘空間小於
+	        <filename>minfree</filename> 檔案裡所指定的大小時，
+	        還是可以將列印工作送進列印佇列。</para>
+		    
+	      <para>舉例來說，我們若想要為 <hostid>bamboo</hostid> 設定
+	        <filename>minfree</filename> 檔。我們得先查看
+		<filename>/etc/printcap</filename> 檔以找出這台印表機 spooling
+		目錄的位置。下面是關於 <hostid>bamboo</hostid> 的設定：</para>
+		  
+	      <programlisting>
+bamboo|ps|PS|S|panasonic|Panasonic KX-P4455 PostScript v51.4:\
+        :sh:sd=/var/spool/lpd/bamboo:sc:rg=artists:mx#5000:\
+        :lp=/dev/ttyd5:fs#0x82000e1:xs#0x820:rw:mx#5000:\
+        :if=/usr/local/libexec/psif:\
+        :df=/usr/local/libexec/psdf:</programlisting>
+
+	      <para>Spooling 的目錄是以 <literal>sd</literal> 關鍵字設定。
+	        我們可以設定當那個檔案系統的剩餘空間在 3 MB(即 6144
+	        個磁碟區塊)之上時就接受遠端來的列印工作：</para>
+		  
+	      <screen>&prompt.root; <userinput>echo 6144 &gt; /var/spool/lpd/bamboo/minfree</userinput></screen>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>限制使用者</term>
+	    
+	    <listitem>
+	      <para>你可以在 <filename>/etc/printcap</filename> 裡用
+	        <literal>rs</literal>
+	        關鍵字設定哪些遠端使用者可以使用本機的印表機。
+	        當你為本機的印表機使用了 <literal>rs</literal> 之後，LPD
+	        <emphasis>只有在</emphasis>
+	        遠端的使用者名稱在本機上也有同樣的使用者名稱時，
+	        才會接受這個列印工作。否則 LPD 會拒絕接受該工作。</para>
+		    
+	      <para>這個功能(舉例來說)在不同部門共用印表機時，
+	        另一個部門的某些使用者需要用到印表機。
+	        你只要在你的機器上為這些使用者建立帳號，
+	        那麼他們就可以在他們的部門裡使用你的印表機。
+	        如果你<emphasis>只想要</emphasis>
+	        讓他們使用你的印表機而不能使用你機器上的其他資源的話，
+	        那麼你只要為他們建立 &ldquo;token&rdquo; 帳號，即沒有 home
+	        目錄也沒有可用的 shell 像 <filename>/usr/bin/false</filename>
+	        這樣子即可。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </sect3>
+    </sect2>
+    
+    <sect2 id="printing-advanced-acct">
+      <title>統計印表機使用情形</title>
+	  
+      <para>紙張及墨水都是要錢的，管理也是需要花錢的
+        &mdash;印表機常常因為運轉負荷過重而故障，
+        為何不向使用者收取列印的費用呢？若你打算收錢，
+        你必需檢查你的印表機、訂定使用方式、以及訂定列印一張紙
+        (一英尺、一公尺，等等) 要收多少錢。
+        那麼你要如何統計列印了多少呢？</para>
+	  
+      <para>嗯，不幸的是，LPD spooling 系統在這方面的幫助並不大。
+        統計的方法與你所使用的印表機、列印的格式，
+        以及其他<emphasis>你</emphasis>想收費的項目有關。</para>
+      
+      <para>若要統計這個功能，你得修改印表機的文字過濾程式(以對列印純文字收費)
+        或轉換用過濾程式(以對列其他的格式收費)，
+        以計算列印的張數或是如果無法計算的話，則向印表機查詢印出的張數。
+        你沒有辦法用輸出用的過濾程式來做統計的工作。請參見 <link
+	  linkend="printing-advanced-filter-intro">過濾程式</link>
+	這一節的說明。</para>
+	  
+      <para>一般而言，有兩種統計的方式：</para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para><emphasis>定期統計</emphasis>是較常見的方式，
+	    也許是因為他比較容易。當有人列印工作時，
+	    過濾程式將使用者名稱、機器以及列印的張數紀錄到一個紀錄檔裡。
+	    每個月、每個學期、每年或是任何一段時間，
+	    你可以根據這些不同印表機的紀錄檔來結算每個使用者所需的費用，
+	    並向他們收費。然後你就可以清掉這些紀錄再重新開始計算。</para>
+	</listitem>
+	      
+	<listitem>
+	  <para><emphasis>即時統計</emphasis>是較少用的方式，
+	    也許是因為他比較難設定。
+	    這個方式讓過濾程式馬上計算出使用者列印的數目並向他們收費。
+	    就像磁碟配額一樣，這個統計是馬上生效的。
+	    你可以提供一種方式供使用者檢查或調整他們的&ldquo;列印配額&rdquo;，
+	    以防止某些使用者列印過量。
+	    但是這種方法需要一些維護資料庫的程式碼以紀錄使用者以他們的配額。
+	    </para>
+	</listitem>
+      </itemizedlist>
+      
+      <para>LPD spooling 系統可以很容易的支援上述兩者：
+        因為(大部份的時候)你得提供你的過濾程式以及計算的程式。
+        這有一個好處就是你可以很有彈性的調整計算的方法。
+        舉例來說，不管你是使用定期統計或是即時統計。你可以選擇要紀錄哪些資訊：
+        使用者名稱、機器名稱、工作型態、列印的張數、紙張的大小、
+        列印工作所花的時間等等。而你只要調整你的過濾程式就可以了。</para>
+	  
+      <sect3>
+	<title>快速設定印表機使用情形統計</title>
+
+	<para>FreeBSD 提供兩個程式讓你可以快速的設定好定期統計。他們是在
+	  <link linkend="printing-advanced-lpf">文字過濾程式：lpf</link>
+	  這一節所提到的 <command>lpf</command> 以及 &man.pac.8;，
+	  一個可以從印表機列印紀錄檔抓取並統計資料的程式。</para>
+
+	<para>在前幾節(<link
+	    linkend="printing-advanced-filters">過濾程式的運作方式</link>)，
+	  我們曾提到 LPD
+	  會將紀錄檔名以參數的方式傳給文字過濾程式和轉換用過濾程式。
+	  如此過濾程式就知道可以將計算結果紀錄到哪個檔裡。這個檔名在
+	  <filename>/etc/printcap</filename> 檔裡是以 <literal>af</literal>
+	  關鍵字指定，如果不是以絕對路徑來指定的話，
+	  那麼這個檔案將會放在相對應於 spooling 目錄的位置下。</para>
+
+	<para>LPD 會將紙張的寬度及高度傳給 <command>lpf</command> 命令
+	  (由 <literal>pw</literal> 及 <literal>pl</literal> 關鍵字所指定)。
+	  <command>lpf</command> 使用這些參數來計算將會用到多少張紙。
+	  而將檔案送給印表機列印後，他會將這些結果紀錄在紀錄檔裡。
+	  這些結果看起來是像這個樣子的：</para>
+
+	<programlisting>
+2.00 rose:andy
+3.00 rose:kelly
+3.00 orchid:mary
+5.00 orchid:mary
+2.00 orchid:zhang</programlisting>
+	    
+	<para>由於 <command>lpf</command> 沒有使用檔案鎖定的相關動作，
+	  因此每台印表機都要有獨立的統計紀錄檔，否則兩個 <command>lpf</command>
+	  同時對同一個檔案做寫入的動作可能會使彼此的紀錄都不正確。
+	  而最簡單的解決方式就是讓不同的印表機在
+	  <filename>/etc/printcap</filename> 設定檔裡以
+	  <literal>af=acct</literal> 關鍵字指定不同的統計紀錄檔。這些
+	  <filename>acct</filename> 檔將會分別放置在不同的 spooling 目錄之下。
+	  </para>
+	    
+	<para>當你準備要向使用者收錢時，執行 &man.pac.8; 這個程式。
+	  只要將目錄切換到你想收錢的印表機 spooling 目錄下，然後打
+	  <literal>pac</literal> 。你將會得到一份像下列的收費摘要：</para>
+	    
+	<screen>  Login               pages/feet   runs    price
+orchid:kelly                5.00    1   $  0.10
+orchid:mary                31.00    3   $  0.62
+orchid:zhang                9.00    1   $  0.18
+rose:andy                   2.00    1   $  0.04
+rose:kelly                177.00  104   $  3.54
+rose:mary                  87.00   32   $  1.74
+rose:root                  26.00   12   $  0.52
+
+total                     337.00  154   $  6.74</screen>
+	      
+	<para>&man.pac.8; 有下列參數可以使用：</para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term><option>-P<replaceable>printer</replaceable></option></term>
+
+	    <listitem>
+	      <para>指定要處理哪一台 <replaceable>printer</replaceable>
+	        的統計資料。這個參數只有在 <filename>/etc/printcap</filename>
+	        檔裡的 <literal>af</literal> 關鍵字是使用絕對路徑時才有用。
+		</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-c</option></term>
+	    
+	    <listitem>
+	      <para>將輸出的結果以費用排序，而不是以使用者的名字排序。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-m</option></term>
+	    
+	    <listitem>
+	      <para>忽略紀錄檔裡的機器名稱。若使用這個參數，那麼
+	        <hostid>alpha</hostid> 機器上的使用者
+	        <username>smith</username> 和 <hostid>gamma</hostid>
+	        機器上的使用者 <username>smith</username>
+	        將會被視為同一個使用者。否則，他們會被視為不同的使用者。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-p<replaceable>price</replaceable></option></term>
+	    
+	    <listitem>
+	      <para>計算時以每一頁收取 <replaceable>price</replaceable>
+	        元計算，而非使用 <filename>/etc/printcap</filename> 裡的
+	        <literal>pc</literal> 所指定的費率或 2 分美金(預設的費率)計算。
+	        你可以用浮點數來指定 <replaceable>price</replaceable>
+	        這個參數。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-r</option></term>
+	    
+	    <listitem>
+	      <para>顛倒排序的順序。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><option>-s</option></term>
+	    
+	    <listitem>
+	      <para>將計算的結果寫到一個摘要檔裡同時清除統計紀錄檔的內容。</para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term><replaceable>name</replaceable>
+	      <replaceable>&hellip;</replaceable></term>
+	    
+	    <listitem>
+	      <para>只為指定的使用者 <replaceable>names</replaceable>
+	        做統計。</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+	<para>在 &man.pac.8;
+	  預設的輸出裡，你可以看到不同機器上不同使用者所列印的張數。
+	  如果你不在乎使用者使用的機器(比如說使用者可以用任何機器)，
+	  那麼你可以用 <command>pac -m</command> 產生下列的摘要輸出：</para>
+	      
+	<screen>  Login               pages/feet   runs    price
+andy                        2.00    1   $  0.04
+kelly                     182.00  105   $  3.64
+mary                      118.00   35   $  2.36
+root                       26.00   12   $  0.52
+zhang                       9.00    1   $  0.18
+
+total                     337.00  154   $  6.74</screen>
+	      
+
+	<para>&man.pac.8; 計算應繳納的金額時，會使用
+	  <filename>/etc/printcap</filename> 檔裡 <literal>pc</literal>
+	  關鍵字所指定的費率(預設值為 2 分美金)。
+	  即每一頁或是每一英尺你想要收多少錢就是在這裡指定。你可以在執行
+	  &man.pac.8; 時以參數 <option>-p</option> 改變這個費率。不過
+	  <option>-p</option> 的單位是元，而不是分，舉例來說，
+	      
+	  <screen>&prompt.root; <userinput>pac -p1.50</userinput></screen>
+	      
+	  將使列印每一頁以 1 元 5
+	  分美金計算。你可以用這個參調整你所收取的費用。</para>
+
+	<para>最後，若你使用 <command>pac -s</command>
+	  將會把這些摘要資訊存在一個檔案裡，這個檔案的名稱會和統計紀錄檔相同，
+	  不過檔名後面會再加上 <literal>_sum</literal>。
+	  然後他會將統計紀錄檔清空。如果你再執行一次 &man.pac.8;
+	  命令，那麼他會先讀取之前統計的結果，
+	  然後再加上從統計紀錄檔裡所計算出來的結果。</para>
+      </sect3>
+      
+      <sect3>
+	<title>如何統計有幾頁被印出？</title>
+
+	<para>為了要能精確的統計列印的情形，你必需要能得知每個工作用了幾張紙。
+	  這是印表機使用情形統計最基本的問題。</para>
+	    
+	<para>對於純文字的工作，這個問題並不難解決：
+	  你只要統計這個工作裡有幾行並知道你的印表機一張紙可以印幾行就行了。
+	  別忘了考慮倒退字元以及因為同一行字元過多而換行的情形。</para>
+	    
+	<para><command>lpf</command>文字過濾程式(在 <link
+	    linkend="printing-advanced-lpf">文字過濾程式：lpf</link>
+	  這一節裡介給的)在做統計時會將這些情形都考慮進來。
+	  如果你要自己撰寫有統計功能的文字過濾程式，你可以參考
+	  <command>lpf</command> 的原始碼。</para>
+	    
+	<para>那麼要如何統計其他格式的文件呢？</para>
+
+	<para>嗯，對於 DVI 轉成 LaserJet 或 DVI 轉成 PostScript，
+	  你可以讓你的過濾程式處理由 <command>dvilj</command> 或
+	  <command>dvips</command> 的輸出以判斷一共轉換了幾頁。
+	  你也許可以用類似的方式來處理其他的檔案格式以轉換程式。</para>
+
+	<para>但是這樣的方法所計算出來的和印表機實際印出來的可能不大相同，
+	  舉例來說，印表機可能會卡紙、用完色帶碳粉或墨水、或是其他的故障
+	  &mdash;而這些使用者仍然需要付費。</para>
+	    
+	<para>那麼，我該怎麼辦？</para>
+
+	<para>只有一種方式<emphasis>肯定</emphasis>是可以做出
+	  <emphasis>精確</emphasis>的統計。
+	  買一台可以告訴你一共印出多少紙張的印表機，
+	  同時將他接在序列埠或是以網路連接。幾乎所有的 PostScript
+	  印表機都支援這個功能。當然其他種類的印表機也有支援的(如網路 Imagen
+	  雷射印表機)。為這些印表機修改你的過濾程式，
+	  使得過濾程式在列印完成後可以從印表機取得這些資訊，
+	  同時也<emphasis>只</emphasis>根據這些紀錄來做統計。
+	  不需要做行數統計或是其他可能發生錯誤的計算方式。</para>
+	    
+	<para>當然，你也可以大方的讓所有的紙張列印輸出都免費。</para>
+      </sect3>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="printing-lpd-alternatives">
+    <title>標準 Spooler 之外的選擇</title>
+    
+    <para>若你讀完了這份文件，現在你應該已經徹底了解 FreeBSD 提供的 LPD
+      spooling 系統。不過你可能覺得這個系統有些缺點，因此你可能會想到：
+      &ldquo;除此之外還有哪些 spooling 系統(可以配合 FreeBSD 使用)？&rdquo;
+      </para>
+
+    <para>不幸的是，我只有找到<emphasis>兩種</emphasis>選擇
+      &mdash;而那兩種幾乎是相同的。他們分別是：</para>
+
+    <variablelist>
+      <varlistentry>
+	<term>PLP, the Portable Line Printer Spooler System</term>
+
+	<listitem>
+	  <para>PLP 是以由 Patrick Powell 所發展的軟體為基礎，
+	    現在由網路上的一群人共同維護發展。你可以在 <ulink
+	      url="ftp://ftp.iona.ie/pub/plp/">ftp://ftp.iona.ie/pub/plp/</ulink>
+	      這個站取得這個軟體。他也有個<ulink
+	      url="http://www.iona.ie:8000/www/hyplan/jmason/plp.html">網址
+	      </ulink>。</para>
+		
+	  <para>他和 BSD LPD 很相似，不過加強了一些功能，包括：</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+	      <para>更好的網路支援，包括內建一網路印表機支援、以 NIS 管理的
+	        printcaps 以及用 NFS mount 的 spooling 目錄。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>成熟的佇列管理。允許多台印表機使用同一個佇列、
+	        在佇例之間傳送工作或是將佇例重新導向其他印表機。</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>遠端控制印表機</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>工作優先權設定</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>較複雜的保密及存取設定</para>
+	    </listitem>
+	  </itemizedlist>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>LPRng</term>
+
+	<listitem>
+	  <para>LPRng 指的是 &ldquo; 下一代的 LPR&rdquo; 。LPRng 是將 PLP
+	    完全重寫。Patrick Powell 和 Justin Mason (PLP
+	    的主要負責人)一起合作 LPRng。LPRng 的網站是 <ulink
+	      url="ftp://dickory.sdsu.edu/pub/LPRng/">ftp://dickory.sdsu.edu/pub/LPRng/</ulink>。</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+  
+  <sect1>
+    <title>致謝</title>
+    
+    <para>我想要感謝下列支持我完成這份文件的人們：</para>
+
+    <variablelist>
+      <varlistentry>
+	<term>Daniel Eischen
+	  <email>deischen@iworks.interworks.org</email></term>
+
+	<listitem>
+	  <para>提供許多 HP 過濾程式供我研究。</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>&a.jehamby;</term>
+
+	<listitem>
+	  <para>提供 Ghostscript-to-HP 過濾程式。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.jfieber;</term>
+
+	<listitem>
+	  <para> 協助我找出為什麼從 Windows 95 用 Ghostscript 摸擬
+	    PostScript 印表機透過 FreeBSD 列印時無法產生正確的輸出。
+	    同時在本文中也提供了解決的辦法。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>Stephen Montgomery-Smith
+	  <email>stephen@math.missouri.edu</email></term>
+
+	<listitem>
+	  <para>建議我在 HP 的印表機上使用 "\033&amp;l0H" 取代 "\f"
+	    使得最後不會多印出一張白張。</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>我的妻子，Mary Kelly
+	  <email>urquhart@argyre.colorado.edu</email></term>
+
+	<listitem>
+	  <para>允許我在 FreeBSD 上比在她身上花費更多的時間。</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+
+

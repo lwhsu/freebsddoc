@@ -1,0 +1,3591 @@
+<!DOCTYPE article PUBLIC "-//FreeBSD//DTD DocBook V4.1-Based Extension//EN" [
+<!ENTITY % articles.ent PUBLIC "-//FreeBSD//ENTITIES DocBook FreeBSD Articles Entity Set//EN">
+%articles.ent;
+]>
+
+<article>
+  <articleinfo>
+    <title>Committer's Guide</title>
+
+    <corpauthor>The &os; Documentation Project</corpauthor>
+
+    <pubdate>$FreeBSD: doc/en_US.ISO8859-1/articles/committers-guide/article.sgml,v 1.290 2010/07/31 10:39:08 pgj Exp $</pubdate>
+
+    <copyright>
+      <year>1999</year>
+      <year>2000</year>
+      <year>2001</year>
+      <year>2002</year>
+      <year>2003</year>
+      <year>2004</year>
+      <year>2005</year>
+      <year>2006</year>
+      <year>2007</year>
+      <year>2008</year>
+      <year>2009</year>
+      <year>2010</year>
+      <holder>The FreeBSD Documentation Project</holder>
+    </copyright>
+
+    <legalnotice id="trademarks" role="trademarks">
+      &tm-attrib.freebsd;
+      &tm-attrib.coverity;
+      &tm-attrib.cvsup;
+      &tm-attrib.ibm;
+      &tm-attrib.intel;
+      &tm-attrib.sparc;
+      &tm-attrib.general;
+    </legalnotice>
+
+    <abstract>
+      <para>This document provides information for the FreeBSD committer
+	community.  All new committers should read this document before they
+	start, and existing committers are strongly encouraged to review it
+	from time to time.</para>
+
+      <para>Almost all FreeBSD developers have commit rights to one or
+	more repositories.  However, a few developers do not, and some of
+	the information here applies to them as well.  (For instance, some
+	people only have rights to work with the Problem Report database).
+	Please see <xref linkend="non-committers"> for more information.</para>
+
+      <para>This document may also be of interest to members of the FreeBSD
+	community who want to learn more about how the project works.</para>
+    </abstract>
+  </articleinfo>
+
+  <sect1 id="admin">
+    <title>Administrative Details</title>
+
+    <informaltable frame="none" orient="port" pgwide="1">
+      <tgroup cols="2">
+	<tbody>
+	  <row>
+	    <entry><emphasis>Main CVS Repository Host</emphasis></entry>
+	    <entry><hostid role="fqdn">ncvs.FreeBSD.org</hostid></entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Main Subversion Repository Host</emphasis></entry>
+	    <entry><hostid role="fqdn">svn.FreeBSD.org</hostid></entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Login Methods</emphasis></entry>
+	    <entry>&man.ssh.1;, protocol 2 only</entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Main CVSROOT</emphasis></entry>
+	    <entry>
+	      <hostid role="fqdn">ncvs.FreeBSD.org</hostid><literal>:</literal><filename>/home/ncvs</filename> (although also see <xref linkend="vcs.operations">).
+	    </entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Main Subversion Root</emphasis></entry>
+	    <entry>
+	      <literal>svn+ssh://</literal><hostid role="fqdn">svn.FreeBSD.org</hostid><filename>/base</filename> (although also see <xref linkend="vcs.operations">).
+	    </entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Main &a.cvsadm;</emphasis></entry>
+	    <entry>&a.peter; and &a.simon;, as well as &a.joe; and &a.marcus; for
+	      <filename>ports/</filename></entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>&a.bugmeister;</emphasis></entry>
+	    <entry>&a.gavin; &a.linimon;, &a.remko;, and &a.vwe .</entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Mailing Lists</emphasis></entry>
+	    <entry>&a.doc-developers;, &a.doc-committers;;
+	    &a.ports-developers;, &a.ports-committers;;
+	    &a.src-developers;, &a.src-committers;.  (Each project
+	    repository has its own -developers and -committers mailing
+	    lists.  Archives for these lists may be found in files
+	    <filename>/home/mail/<replaceable>repository-name</replaceable>-developers-archive</filename>
+	    and
+	    <filename>/home/mail/<replaceable>repository-name</replaceable>-committers-archive</filename>
+	    on the <hostid role="domainname">FreeBSD.org</hostid>
+	    cluster.)
+	    </entry>
+	  </row>
+
+
+	  <row>
+	    <entry><emphasis>Core Team monthly reports</emphasis></entry>
+	    <entry><filename>/home/core/public/monthly-reports</filename>
+	      on the <hostid role="domainname">FreeBSD.org</hostid> cluster.
+	    </entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Noteworthy CVSup Tags</emphasis></entry>
+	    <entry>
+	      <literal>RELENG_6</literal> (6.X-STABLE), 
+	      <literal>RELENG_7</literal> (7.X-STABLE), 
+	      <literal>RELENG_8</literal> (8.X-STABLE), 
+	      <literal>HEAD</literal> (-CURRENT)
+	    </entry>
+	  </row>
+
+	  <row>
+	    <entry><emphasis>Noteworthy SVN Branches</emphasis></entry>
+
+	    <entry>
+	      <literal>stable/6</literal> (6.X-STABLE),
+	      <literal>stable/7</literal> (7.X-STABLE),
+	      <literal>stable/8</literal> (8.X-STABLE),
+	      <literal>head</literal> (-CURRENT)
+	    </entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>It is required that you use &man.ssh.1; or &man.telnet.1;
+      with Kerberos 5 to connect to the project hosts.  For
+      &man.ssh.1; only protocol 2 is allowed.
+      These are generally more secure than plain &man.telnet.1; or
+      &man.rlogin.1; since credential negotiation will always be
+      encrypted.  All traffic is encrypted by default with &man.ssh.1;.
+      With utilities like &man.ssh-agent.1; and &man.scp.1; also
+      available, &man.ssh.1; is also far more convenient.  If you do
+      not know anything about &man.ssh.1;, please see
+      <xref linkend="ssh.guide">.</para>
+  </sect1>
+
+  <sect1 id="committer.types">
+    <title>Commit Bit Types</title>
+
+    <para>The FreeBSD repository has a number of components which,
+      when combined, support the basic operating system source,
+      documentation, third party application ports infrastructure, and
+      various maintained utilities.  When FreeBSD commit bits are
+      allocated, the areas of the tree where the bit may be used are
+      specified.  Generally, the areas associated with a bit reflect who
+      authorized the allocation of the commit bit.  Additional areas of
+      authority may be added at a later date: when this occurs, the
+      committer should follow normal commit bit allocation procedures for
+      that area of the tree, seeking approval from the appropriate entity
+      and possibly getting a mentor for that area for some period of time.
+      </para>
+
+    <informaltable frame="none" pgwide="1">
+      <tgroup cols="3">
+	<tbody>
+	  <row>
+	    <entry><emphasis>Committer Type</emphasis></entry>
+	    <entry><emphasis>Responsible</emphasis></entry>
+	    <entry><emphasis>Tree Components</emphasis></entry>
+	  </row>
+
+	  <row>
+	    <entry>src</entry>
+	    <entry>core@</entry>
+	    <entry>src/, doc/ subject to appropriate review</entry>
+	  </row>
+
+	  <row>
+	    <entry>doc</entry>
+	    <entry>doceng@</entry>
+	    <entry>doc/, www/, src/ documentation</entry>
+	  </row>
+
+	  <row>
+	    <entry>ports</entry>
+	    <entry>portmgr@</entry>
+	    <entry>ports/</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Commit bits allocated prior to the development of the notion of
+      areas of authority may be appropriate for use in many parts of the
+      tree.  However, common sense dictates that a committer who has not
+      previously worked in an area of the tree seek review prior to
+      committing, seek approval from the appropriate responsible party,
+      and/or work with a mentor.  Since the rules regarding code
+      maintenance differ by area of the tree, this is as much for the
+      benefit of the committer working in an area of less familiarity as
+      it is for others working on the tree.</para>
+
+    <para>Committers are encouraged to seek review for their work as part
+      of the normal development process, regardless of the area of the
+      tree where the work is occurring.</para>
+
+    <sect2>
+      <title>Policy for <filename>doc/</filename> committer activity
+        in <filename>src/</filename></title>
+
+      <itemizedlist>
+	<listitem><para>doc committers may commit documentation
+	  changes to src files, such as man pages, READMEs, fortune
+	  databases, calendar files, and comment fixes without
+	  approval from a src committer, subject to the normal care
+	  and tending of commits.</para></listitem>
+
+	<listitem><para>doc committers may commit minor src changes
+	  and fixes, such as build fixes, small features, etc, with an
+	  "Approved by" from a src committer.</para></listitem>
+
+	<listitem><para>doc committers may seek an upgrade to a src
+	  commit bit by acquiring a mentor, who will propose the doc
+	  committer to core.  When approved, they will be added to
+	  'access' and the normal mentoring period will ensue, which
+	  will involve a continuing of <quote>Approved by</quote> for
+	  some period.</para></listitem>
+
+     	<listitem><para>"Approved by" is only acceptable from
+	  non-mentored src committers -- mentored committers can
+	  provide a "Reviewed by" but not an "Approved
+	  by".</para></listitem>
+      </itemizedlist>
+    </sect2>
+
+  </sect1>
+
+  <sect1 id="vcs.operations">
+    <title>Version Control System Operations</title>
+
+    <para>It is assumed that you are already familiar with the basic operation
+      of the version control systems in use.  Traditionally this was
+      CVS, but as of June 2008, Subversion is used for the src tree.</para>
+
+    <para>The &a.cvsadm; are the <quote>owners</quote> of the repository and
+      are responsible for direct modification of it for the purposes of
+      cleanup or fixing some unfortunate abuse of the version control system by a committer.
+      Should you cause some repository accident, say a bad
+      import or a bad tag creation, mail the
+      responsible part of &a.cvsadm;, as stated in the table below,
+      (or call one of them) and report the problem.
+      For very important issues affecting the entire tree&mdash;not
+      just a specific area&mdash;you can contact the &a.cvsadm;.
+      Please do <emphasis>not</emphasis> contact the &a.cvsadm; for repocopies
+      or other things that the more specific teams can handle.</para>
+
+    <para><anchor id="repomeisters">The only ones able to directly fiddle the repository bits on the
+      repository hosts are the repomeisters.  To enforce this, there are
+      no login shells available on the repository machines, except to
+      the repomeisters.</para>
+
+    <note><para>Depending on the affected area of the repository,
+      you should send your request for a repocopy to one of the following email
+      addresses.  Email sent to these addresses will be forwarded
+      to the appropriate repomeisters.</para>
+      
+      <itemizedlist>
+	<listitem><para>pcvs@ - regarding <filename class="directory">
+	    /home/pcvs</filename>, the ports
+	  repository</para></listitem>
+
+	<listitem><para>dcvs@ - regarding <filename class="directory">
+	    /home/dcvs</filename>, the doc
+	  repository</para></listitem>
+
+	<listitem><para>projcvs@ - regarding <filename class="directory">
+	    /home/projcvs</filename>, the
+	  third party projects repository</para></listitem>
+      </itemizedlist>
+    </note>
+
+    <para>The &os; repositories are currently split into four distinct parts,
+      namely <literal>doc</literal>, <literal>ports</literal>,
+      <literal>projects</literal> and <literal>src</literal>.  These are
+      combined under a single <literal>CVSROOT</literal> when distributed
+      via <application>CVSup</application> for the convenience of our users.
+      The <literal>src</literal> tree is automatically exported to
+      CVS for compatibility reasons only (e.g.
+      <application>CVSup</application>).  The <quote>official</quote>
+      <literal>src</literal> repository is not stored in
+      <application>CVS</application> but in Subversion.  The official
+      and exported trees are not necessarily equal.</para>
+
+    <note><para>Note that the <literal>www</literal> module containing sources
+      for the <ulink url="http://www.FreeBSD.org">FreeBSD website</ulink> is
+      contained within the <literal>doc</literal> repository.</para></note>
+
+    <para>The CVS repositories are hosted on the repository machines.
+      Currently, each of the repositories above reside on the same physical
+      machine, <hostid role="hostname">ncvs.FreeBSD.org</hostid>, but to allow for
+      the possibility of placing each on a separate machine in the future,
+      there is a separate hostname for each that committers should use.
+      Additionally, each repository is stored in a separate directory.  The
+      following table summarizes the situation.</para>
+
+    <table frame="none" id="cvs-repositories-and-hosts">
+      <title>&os; CVS Repositories, Hosts and Directories</title>
+
+      <tgroup cols="3">
+	<thead>
+	  <row>
+	    <entry>Repository</entry>
+	    <entry>Host</entry>
+	    <entry>Directory</entry>
+	  </row>
+	</thead>
+
+	<tbody>
+	  <row>
+	    <entry>doc</entry>
+	    <entry>dcvs.FreeBSD.org</entry>
+	    <entry>/home/dcvs</entry>
+	  </row>
+
+	  <row>
+	    <entry>ports</entry>
+	    <entry>pcvs.FreeBSD.org</entry>
+	    <entry>/home/pcvs</entry>
+	  </row>
+
+	  <row>
+	    <entry>projects</entry>
+	    <entry>projcvs.FreeBSD.org</entry>
+	    <entry>/home/projcvs</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </table>
+
+    <para>CVS operations are done remotely by setting the
+      <envar>CVSROOT</envar> environment variable to the appropriate host
+      and top-level directory (for example,
+      <hostid role="fqdn">dcvs.FreeBSD.org</hostid><literal>:</literal><filename>/home/dcvs</filename>),
+      and
+      doing the appropriate check-out/check-in operations.  Many committers
+      define aliases which expand to the correct <application>cvs</application>
+      invocation for the appropriate repository.  For example, a &man.tcsh.1;
+      user may add the following to their <filename>.cshrc</filename> for this
+      purpose:</para>
+
+    <programlisting>alias dcvs cvs -d <replaceable>user</replaceable>@dcvs.FreeBSD.org:/home/dcvs
+alias pcvs cvs -d <replaceable>user</replaceable>@pcvs.FreeBSD.org:/home/pcvs
+alias projcvs cvs -d <replaceable>user</replaceable>@projcvs.FreeBSD.org:/home/projcvs</programlisting>
+
+    <para>This way they can do all CVS operations
+      locally and use <command><replaceable>X</replaceable>cvs commit</command> for committing
+      to the official CVS repository.
+      Refer to the &man.cvs.1; manual page for usage.</para>
+
+    <note>
+      <para>Please do <emphasis>not</emphasis> use
+	<command>cvs checkout</command> or
+	<command>update</command> with the official repository machine set
+	as the CVS Root for keeping your source tree up to date.
+	Remote CVS is not optimized for network distribution
+	and requires a big work/administrative overhead on the server side.
+	Please use our advanced <command>cvsup</command> distribution
+	method for obtaining the repository bits, and only do the actual
+	<command>commit</command> operation on the repository host.
+	We provide an extensive cvsup replication network for this purpose,
+	as well as give access to <hostid>cvsup-master</hostid> if you
+	really need to stay current to the latest changes.
+	<hostid>cvsup-master</hostid> has got the horsepower to deal with
+	this, the repository master server does not.  &a.kuriyama; is in
+	charge of <hostid>cvsup-master</hostid>.
+      </para>
+    </note>
+
+    <para>If you need to use CVS <command>add</command> and
+      <command>delete</command> operations in a manner that is
+      effectively a &man.mv.1; operation, then a repository
+      copy is in order rather than using CVS <command>add</command> and
+      <command>delete</command>.  In a repository copy, a <link
+      linkend="repomeisters">repomeister</link> will copy the file(s)
+      to their new name and/or location and let you know when it is
+      done.  The purpose of a repository copy is to preserve file
+      change history, or logs.  We in the FreeBSD Project greatly
+      value the change history that a version control system gives to the project.</para>
+
+    <para>CVS reference information, tutorials, and FAQs can be found at:
+      <ulink url="http://www.cvshome.org/docs/"></ulink>.
+      The information in <ulink url="http://cvsbook.red-bean.com/cvsbook.html">Karl Fogel's
+	chapters from <quote>Open Source Development with CVS</quote></ulink> is also very
+      useful.</para>
+
+    <para>&a.des; also supplied the following <quote>mini primer</quote> for
+      CVS.</para>
+
+    <orderedlist>
+      <listitem>
+	<para>Check out a module with the <command>co</command> or
+	  <command>checkout</command> command.</para>
+
+	<screen>&prompt.user; <userinput>cvs checkout shazam</userinput></screen>
+
+	<para>This checks out a copy of the <filename>shazam</filename> module. If
+	  there is no <filename>shazam</filename> module in the modules file, it looks for a
+	  top-level directory named <filename>shazam</filename> instead.</para>
+
+	<table frame="none">
+	  <title>Useful <command>cvs checkout</command> options</title>
+
+	  <tgroup cols=2>
+	    <tbody>
+	      <row>
+		<entry><option>-P</option></entry>
+		<entry>Do not create empty directories</entry>
+	      </row>
+
+	      <row>
+		<entry><option>-l</option></entry>
+		<entry>Check out a single level, no subdirectories</entry>
+	      </row>
+
+	      <row>
+		<entry><option>-r<replaceable>rev</replaceable></option></entry>
+		<entry>Check out revision, branch or tag
+		  <replaceable>rev</replaceable></entry>
+	      </row>
+
+	      <row>
+		<entry><option>-D<replaceable>date</replaceable></option></entry>
+		<entry>Check out the sources as they were on date
+		  <replaceable>date</replaceable></entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<para>Practical FreeBSD examples:</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>Check out the <filename>Tools</filename> module,
+	      which corresponds to <filename>ports/Tools</filename>:</para>
+
+	    <screen>&prompt.user; <userinput>cvs co Tools</userinput></screen>
+
+	    <para>You now have a directory named <filename>ports/Tools</filename>
+	      with subdirectories <filename>portbuild</filename>,
+	      <filename>scripts</filename>, and
+	      <filename>CVS</filename>.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>Check out the same files, but with full path:</para>
+
+	    <screen>&prompt.user; <userinput>cvs co ports/Tools</userinput></screen> 
+	    <para>You now have a directory named <filename>ports</filename>,
+	      with subdirectories <filename>CVS</filename> and
+	      <filename>Tools</filename>.  The <filename>ports/Tools</filename> directory has
+	      subdirectories <filename>CVS</filename> and
+	      <filename>scripts</filename>, etc.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>Check out the directory <filename>Tools</filename>, but
+	      none of the subdirectories:</para>
+
+	    <screen>&prompt.user; <userinput>cvs co -l Tools</userinput></screen>
+
+	    <para>You now have a directory named <filename>Tools</filename>
+	      with just one subdirectory named
+	      <filename>CVS</filename>.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>Check out the <filename>Tools</filename> module as
+	      it was when support for &os;&nbsp;5.X was dropped:</para>
+
+
+	    <screen>&prompt.user; <userinput>cvs co -rRELEASE_5_EOL Tools</userinput></screen>
+
+	    <para>You will not be able to commit modifications, since
+	      <literal>RELEASE_5_EOL</literal> is a point in time, not a branch.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>Check out the <filename>Tools</filename> module as it was
+	      on March 25th, 2009:</para>
+
+	    <screen>&prompt.user; <userinput>cvs co -D'2009-03-25' Tools</userinput></screen>
+
+	    <para>You will not be able to commit modifications.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>Check out the <filename>Tools</filename> module as it was
+	      one week ago:</para>
+
+	    <screen>&prompt.user; <userinput>cvs co -D'last week' Tools</userinput></screen>
+
+	    <para>You will not be able to commit modifications.</para>
+	  </listitem>
+	</itemizedlist>
+
+	<para>Note that cvs stores metadata in subdirectories named
+	  <filename>CVS</filename>.
+	  Similarly, Subversion stores metadata in subdirectories named
+	  <filename>.svn</filename>.</para>
+
+	<para>Arguments to <option>-D</option> and <option>-r</option>
+	  are sticky, which means cvs will remember them later, e.g.
+	  when you do a <command>cvs update</command>.</para>
+      </listitem>
+
+      <listitem>
+	<para>Check the status of checked-out files with the
+	  <command>status</command> command.</para>
+
+	<screen>&prompt.user; <userinput>cvs status shazam</userinput></screen>
+
+	<para>This displays the status of the
+	  file <filename>shazam</filename> or of every file in the
+	  <filename>shazam</filename> directory. For every file, the
+	  status is given as one of:</para>
+
+	<informaltable frame="none" pgwide="1">
+	  <tgroup cols=2>
+	    <tbody>
+	      <row>
+		<entry>Up-to-date</entry>
+		<entry>File is up-to-date and unmodified.</entry>
+	      </row>
+
+	      <row>
+		<entry>Needs Patch</entry>
+		<entry>File is unmodified, but there is a newer revision in
+		  the repository.</entry>
+	      </row>
+
+	      <row>
+		<entry>Locally Modified</entry>
+		<entry>File is up-to-date, but modified.</entry>
+	      </row>
+
+	      <row>
+		<entry>Needs Merge</entry>
+		<entry>File is modified, and there is a newer revision in the
+		  repository.</entry>
+	      </row>
+
+	      <row>
+		<entry>File had conflicts on merge</entry>
+		<entry>There were conflicts the last time this file was
+		  updated, and they have not been resolved yet.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+
+	<para>You will also see the local revision and date,
+	  the revision number of the newest applicable version
+	  (<quote>newest applicable</quote> because if you have a
+	  sticky date, tag or branch, it may not be the actual newest
+	  revision), and any sticky tags, dates or options.</para>
+      </listitem>
+
+      <listitem>
+	<para>Once you have checked something out, you can update it with the
+	  <command>update</command> command.</para>
+
+	<screen>&prompt.user; <userinput>cvs update shazam</userinput></screen>
+
+	<para>This updates the file <filename>shazam</filename> or the
+	  contents of the <filename>shazam</filename> directory to the
+	  latest version along the branch you checked out.  If you
+	  checked out a <quote>point in time</quote>, it does nothing
+	  unless the tags have moved in the repository or some other weird
+	  stuff is going on.</para>
+
+	<para>Useful options, in addition to those listed above for
+	  <command>checkout</command>:</para>
+
+	<informaltable frame="none" pgwide="1">
+	  <tgroup cols=2>
+	    <tbody>
+	      <row>
+		<entry><option>-d</option></entry>
+		<entry>Check out any additional missing directories.</entry>
+	      </row>
+
+	      <row>
+		<entry><option>-A</option></entry>
+		<entry>Update to head of main branch.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+
+	<para>If you checked out a module with <option>-r</option> or
+	  <option>-D</option>, running <command>cvs update</command>
+	  with a different <option>-r</option> or <option>-D</option>
+	  argument or with <option>-A</option> will select a new branch,
+	  revision or date. The <option>-A</option> option clears all
+	  sticky tags, dates or revisions whereas <option>-r</option>
+	  and <option>-D</option> set new ones.</para>
+
+	<para>Theoretically, specifying <literal>HEAD</literal> as the
+	  argument to <option>-r</option> will give you the same result
+	  as <option>-A</option>, but that is just theory.</para>
+
+	<para>The <option>-d</option> option is useful if:</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>somebody has added subdirectories to the module
+	      you have checked out after you checked it out.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>you checked out with <option>-l</option>, and later
+	      change your mind and want to check out the subdirectories
+	      as well.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>you deleted some subdirectories and want to check
+	      them all back out.</para>
+	  </listitem>
+	</itemizedlist>
+
+	<para><emphasis>Watch the output of the <command>cvs
+	  update</command> with care.</emphasis> The letter in front of
+	  each filename indicates what was done with it:</para>
+
+	<informaltable frame="none" pgwide="1">
+	  <tgroup cols=2>
+	    <tbody>
+	      <row>
+		<entry><literal>U</literal></entry>
+		<entry>The file was updated without trouble.</entry>
+	      </row>
+
+	      <row>
+		<entry><literal>P</literal></entry>
+		<entry>The file was updated without trouble (you will only see
+		  this when working against a remote repository).</entry>
+	      </row>
+
+	      <row>
+		<entry><literal>M</literal></entry>
+		<entry>The file had been modified, and was merged without
+		  conflicts.</entry>
+	      </row>
+
+	      <row>
+		<entry><literal>C</literal></entry>
+		<entry>The file had been modified, and was merged with
+		  conflicts.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+
+	<para>Merging is what happens if you check out a copy of
+	  some file, modify it, then someone else commits a
+	  change, and you run <command>cvs update</command>. CVS notices
+	  that you have made local changes, and tries to merge your
+	  changes with the changes between the version you originally
+	  checked out and the one you updated to. If the changes are to
+	  separate portions of the file, it will almost always work fine
+	  (though the result might not be syntactically or semantically
+	  correct).</para>
+
+	<para>CVS will print an <literal>M</literal> in front of every locally modified
+	  file even if there is no newer version in the repository, so
+	  <command>cvs update</command> is handy for getting a summary
+	  of what you have changed locally.</para>
+
+	<para>If you get a <literal>C</literal>, then your changes
+	  conflicted with the changes in the repository (the changes
+	  were to the same lines, or neighboring lines, or you changed
+	  the local file so much that <command>cvs</command> can not
+	  figure out how to apply the repository's changes). You will have
+	  to go through the file manually and resolve the conflicts;
+	  they will be marked with rows of <literal>&lt;</literal>,
+	  <literal>=</literal> and <literal>&gt;</literal> signs. For
+	  every conflict, there will be a marker line with seven
+	  <literal>&lt;</literal> signs and the name of the file,
+	  followed by a chunk of what your local file contained,
+	  followed by a separator line with seven <literal>=</literal>
+	  signs, followed by the corresponding chunk in the
+	  repository version, followed by a marker line with seven
+	  <literal>&gt;</literal> signs and the revision number you
+	  updated to.</para>
+      </listitem>
+
+      <listitem>
+	<para>View differences between the local version and the
+	  repository version with the <command>diff</command>
+	  command.</para>
+
+	<screen>&prompt.user; <userinput>cvs diff shazam</userinput></screen>
+
+	<para>shows you every modification you have made to the
+	  <filename>shazam</filename> file or module.</para>
+
+	<table frame="none">
+	  <title>Useful <command>cvs diff</command> options</title>
+
+	  <tgroup cols=2>
+	    <tbody>
+	      <row>
+		<entry><option>-u</option></entry>
+		<entry>Uses the unified diff format.</entry>
+	      </row>
+
+	      <row>
+		<entry><option>-c</option></entry>
+		<entry>Uses the context diff format.</entry>
+	      </row>
+
+	      <row>
+		<entry><option>-N</option></entry>
+		<entry>Shows missing or added files.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<para>You always want to use <option>-u</option>, since
+	  unified diffs are much easier to read than almost any other
+	  diff format (in some circumstances, context diffs generated with
+	  the <option>-c</option> option may be
+	  better, but they are much bulkier). A unified diff consists of
+	  a series of hunks. Each hunk begins with a line that starts
+	  with two <literal>@</literal> signs and specifies where in the
+	  file the differences are and how many lines they span. This
+	  is followed by a number of lines; some (preceded by a blank)
+	  are context; some (preceded by a <literal>-</literal> sign)
+	  are outtakes and some (preceded by a <literal>+</literal>) are
+	  additions.</para>
+
+	<para>You can also diff against a different version
+	  than the one you checked out by specifying a version
+	  with <option>-r</option> or <option>-D</option> as in
+	  <command>checkout</command> or <command>update</command>,
+	  or even view the diffs between two arbitrary versions
+	  (without regard for what you have locally) by specifying
+	  <emphasis>two</emphasis> versions with <option>-r</option> or
+	  <option>-D</option>.</para>
+      </listitem>
+
+      <listitem>
+	<para>View log entries with the <command>log</command>
+	  command.</para>
+
+	<screen>&prompt.user; <userinput>cvs log shazam</userinput></screen>
+
+	<para>If <filename>shazam</filename> is a file, this will print a
+	  <emphasis>header</emphasis> with information about this file, such
+	  as where in the repository this file is stored, which revision is
+	  the <literal>HEAD</literal> for this file, what branches this file
+	  is in, and any tags that are valid for this file.  Then, for each
+	  revision of this file, a log message is printed.  This includes
+	  the date and time of the commit, who did the commit, how many lines
+	  were added and/or deleted, and finally the log message that the
+	  committer who did the change wrote.</para>
+
+	<para>If <filename>shazam</filename> is a directory, then the log
+	  information described above is printed for each file in the
+	  directory in turn.  Unless you give the <option>-l</option> to
+	  <command>log</command>, the log for all subdirectories of
+	  <filename>shazam</filename> is printed too, in a recursive
+	  manner.</para>
+
+	<para>Use the <command>log</command> command to view the history of
+	  one or more files, as it is stored in the CVS repository.  You can
+	  even use it to view the log message of a specific revision, if you
+	  add the <option>-r<replaceable>rev</replaceable></option> to the
+	  <command>log</command> command:</para>
+
+	<screen>&prompt.user; <userinput>cvs log -r1.2 shazam</userinput></screen>
+
+	<para>This will print only the log message for revision
+	  <literal>1.2</literal> of file <filename>shazam</filename> if it is
+	  a file, or the log message for revision <literal>1.2</literal> of
+	  each file under <filename>shazam</filename> if it is a
+	  directory.</para>
+      </listitem>
+
+      <listitem>
+	<para>See who did what with the <command>annotate</command> command.
+	  This command shows you each line of the specified file or
+	  files, along with which user most recently changed that
+	  line.</para>
+
+	<screen>&prompt.user; <userinput>cvs annotate shazam</userinput></screen>
+      </listitem>
+
+      <listitem>
+	<para>Add new files with the <command>add</command> command.</para>
+
+	<para>Create the file, <command>cvs add</command> it, then
+	  <command>cvs commit</command> it.</para>
+
+	<para>Similarly, you can add new directories by creating them
+	  and then <command>cvs add</command>ing them. Note that you
+	  do not need to commit directories.</para>
+      </listitem>
+
+      <listitem>
+	<para>Remove obsolete files with the <command>remove</command> command.</para>
+
+	<para>Remove the file, then <command>cvs rm</command> it, then
+	  <command>cvs commit</command> it.</para>
+      </listitem>
+
+      <listitem>
+	<para>Commit with the <command>commit</command> or
+	  <command>checkin</command> command.</para>
+
+	<table frame="none">
+	  <title>Useful <command>cvs commit</command> options</title>
+
+	  <tgroup cols=2>
+	    <tbody>
+	      <row>
+		<entry><option>-f</option></entry>
+		<entry>Force a commit of an unmodified file.</entry>
+	      </row>
+
+	      <row>
+		<entry><option>-m<replaceable>msg</replaceable></option></entry>
+		<entry>Specify a commit message on the command line rather
+		  than invoking an editor.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<para>The following are some Subversion examples related to the
+	  src repository.  More (in-depth) information can be found at
+	  <ulink
+	    url="http://wiki.freebsd.org/SubversionPrimer">Subversion
+	    Primer</ulink> and <ulink
+	    url="http://wiki.freebsd.org/SubversionMissing">List of
+	    things missing in Subversion when compared to CVS</ulink>.
+	  The notes at <ulink
+	     url="http://people.freebsd.org/~peter/svn_notes.txt"></ulink>
+	  might also be useful.  Subversion is also described in-depth
+	  in <ulink url="http://svnbook-red-bean.com/">Version Control with Subversion</ulink>.</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>Check out the <literal>head</literal> branch:</para>
+
+	    <screen>&prompt.user; <userinput>svn co svn+ssh://svn.freebsd.org/base/head /usr/src</userinput></screen>
+	  </listitem>
+	</itemizedlist>
+
+	<para>Good commit messages are important. They tell others
+	  why you did the changes you did, not just right here and now,
+	  but months or years from now when someone wonders why some
+	  seemingly illogical or inefficient piece of code sneaked into
+	  your source file. It is also an invaluable aid to deciding
+	  which changes to MFC and which not to MFC.</para>
+
+	<para>Commit messages should be clear, concise and provide
+	  a reasonable summary to give an indication of what was
+	  changed and why.</para>
+
+	<para>Commit messages should provide enough information to
+	  enable a third party to decide if the change is relevant to
+	  them and if they need to read the change itself.</para>
+
+	<para>Avoid committing several unrelated changes in one go. It
+	  makes merging difficult, and also makes it harder to determine
+	  which change is the culprit if a bug crops up.</para>
+
+	<para>Avoid committing style or whitespace fixes and
+	  functionality fixes in one go. It makes merging difficult,
+	  and also makes it harder to understand just what functional
+	  changes were made.  In the case of documentation files, it
+	  can make the job of the translation teams more complicated,
+	  as it becomes difficult for them to determine exactly what
+	  content changes need to be translated.</para>
+
+	<para>Avoid committing changes to multiple files in one go
+	  with a generic, vague message. Instead, commit each file (or
+	  small, related groups of files) with tailored commit messages.</para>
+
+	<para>Before committing, <emphasis>always</emphasis>:</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>verify which branch you are committing to, using
+	      <command>svn status</command>.  This is only needed for
+	      the src tree, as the other trees are not branched.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>review your diffs, using the diff command of the version control system.</para>
+	  </listitem>
+	</itemizedlist>
+
+	<para>Also, ALWAYS specify which files to commit explicitly on
+	  the command line, so you do not accidentally commit other files
+	  than the ones you intended &mdash; a commit operation
+	  without any arguments usually will commit every modification in your
+	  current working directory and every subdirectory.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>Additional tips and tricks:</para>
+
+    <orderedlist>
+      <listitem>
+
+	<para>You can place commonly used options in your
+	  <filename>~/.cvsrc</filename>, like this:</para>
+
+	<programlisting>cvs -z3
+diff -Nu
+update -Pd
+checkout -P</programlisting>
+
+	<para>This example says:</para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para>always use compression level 3 when talking to a
+	      remote server. This is a life-saver when working over a
+	      slow connection.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>always use the <option>-N</option> (show added or
+	      removed files) and <option>-u</option> (unified diff
+	      format) options to &man.diff.1;.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>always use the <option>-P</option> (prune empty
+	      directories) and <option>-d</option> (check out new
+	      directories) options when updating.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>always use the <option>-P</option> (prune empty
+	      directories) option when checking out.</para>
+	  </listitem>
+	</itemizedlist>
+      </listitem>
+
+      <listitem>
+	<para>Use Eivind Eklund's <command>cdiff</command> script to
+	  view unidiffs.  It is a wrapper for &man.less.1; that adds ANSI
+	  color codes to make hunk headers, outtakes and additions stand
+	  out; context and garbage are unmodified.  It also expands tabs
+	  properly (tabs often look wrong in diffs because of the extra
+	  character in front of each line).</para>
+
+	<para><filename role="package">textproc/cdiff</filename></para>
+
+	<para>Simply use it instead of &man.more.1; or &man.less.1;:</para>
+
+	<screen>&prompt.user; <userinput>cvs diff -Nu shazam | cdiff</userinput></screen>
+
+	<para>Alternatively some editors like &man.vim.1;
+	  (<filename role="package">editors/vim</filename>) have color support and when used as
+	  a pager with color syntax highlighting switched on will
+	  highlight many types of file, including diffs, patches,
+	  and CVS/RCS logs. </para>
+
+	<screen>&prompt.user; <userinput>echo "syn on" &gt;&gt; ~/.vimrc </userinput>
+&prompt.user; <userinput>cvs diff -Nu shazam | vim -</userinput>
+&prompt.user; <userinput>cvs log shazam | vim -</userinput> </screen>
+      </listitem>
+
+      <listitem>
+	<para>CVS is old, arcane, crufty and buggy, and sometimes
+	  exhibits non-deterministic behavior which some claim as proof
+	  that it is actually merely the Newtonian manifestation of a
+	  sentient transdimensional entity.  It is not humanly possible
+	  to know its every quirk inside out, so do not be afraid to ask
+	  the resident AI (&a.cvsadm;) for help.</para>
+      </listitem>
+
+      <listitem>
+	<para>Do not leave the <command>cvs commit</command> command in commit
+	  message editing mode for too long (more than 2&ndash;3 minutes).  It
+	  locks the directory you are working with and will prevent other
+	  developers from committing into the same directory.  If you have
+	  to type a long commit message, type it before executing
+	  <command>cvs commit</command> and insert it into the commit
+	  message or save it in a file before committing and use the
+	  <option>-F</option> option of CVS to read the commit message from
+	  that file, i.e.</para>
+
+	  <screen>&prompt.user; <userinput>vi logmsg</userinput>
+&prompt.user; <userinput>cvs ci -F logmsg shazam</userinput></screen>
+
+	<para>This is the fastest way of passing a commit message to CVS but
+	  you should be careful when editing the <filename>logmsg</filename>
+	  file before the commit, because CVS will not give you a chance to edit
+	  the message when you do the actual commit.</para>
+      </listitem>
+
+      <listitem>
+	<para>Speed up your CVS operation considerably by using a persistent
+	  ssh connection to the repository machine.  First, put this
+	  configuration into your <filename>~/.ssh/config</filename>:</para>
+
+	<programlisting>Host dcvs.FreeBSD.org
+      ControlPath /home/<replaceable>user</replaceable>/.ssh/cvs.cpath
+Host projcvs.FreeBSD.org
+      ControlPath /home/<replaceable>user</replaceable>/.ssh/cvs.cpath
+Host pcvs.FreeBSD.org
+      ControlPath /home/<replaceable>user</replaceable>/.ssh/cvs.cpath</programlisting>
+
+	<para>Now open the persistent connection to the repoman:</para>
+
+	<screen>&prompt.user; <userinput>ssh -fNM ncvs.FreeBSD.org</userinput></screen>
+
+	<para>The CVS commands should now respond faster, as they are reusing
+	  existing connection with the repository.  Note that all
+	  the hostnames are case sensitive.</para>
+
+      </listitem>
+
+    </orderedlist>
+
+  </sect1>
+
+  <sect1 id="conventions">
+    <title>Conventions and Traditions</title>
+
+    <para>As a new developer there are a number of things you should do
+      first.  The first set is specific to committers only.</para>
+
+    <sect2 id="conventions-committers">
+      <title>Guidelines For Committers</title>
+
+      <para>If you have been given commit rights to one or more of the
+	repositories:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Add your author entity to
+	  <filename>doc/en_US.ISO8859-1/share/sgml/authors.ent</filename>;
+	  this should be done first since an omission of this commit will
+	  cause the next commits to break the doc/ build.</para>
+
+	<para>This is a relatively easy task, but remains a good first test of
+	  your CVS skills.</para>
+      </listitem>
+
+      <listitem>
+	<para>Also add your author entity to
+	  <filename>www/en/developers.sgml</filename>.</para>
+      </listitem>
+
+      <listitem>
+	<para>Add yourself to the <quote>Developers</quote> section of
+	  the <ulink url="&url.articles.contributors;/index.html">Contributors List</ulink>
+	  (<filename>doc/en_US.ISO8859-1/articles/contributors/contrib.committers.sgml</filename>) and remove yourself from the <quote>Additional
+	  Contributors</quote> section (<filename>doc/en_US.ISO8859-1/articles/contributors/contrib.additional.sgml</filename>).</para>
+      </listitem>
+
+      <listitem>
+	<para>Add an entry for yourself to
+	  <filename>www/share/sgml/news.xml</filename>. Look for the other
+	  entries that look like <quote>A new committer</quote> and follow the
+	  format.</para>
+      </listitem>
+
+      <listitem>
+	<para>You should add your PGP or GnuPG key to
+	  <filename>doc/share/pgpkeys</filename> (and if you do not
+	  have a key, you should create one).  Do not forget to commit
+	  the updated <filename>doc/share/pgpkeys/pgpkeys.ent</filename>
+	  and <filename>doc/share/pgpkeys/pgpkeys-developers.sgml</filename>.</para>
+
+	<para>&a.des; has
+	  written a shell script (<filename>doc/share/pgpkeys/addkey.sh</filename>) to make this extremely simple.  See the
+	  <ulink
+	  url="http://cvsweb.FreeBSD.org/doc/share/pgpkeys/README">README</ulink>
+	  file for more information.</para>
+
+	<note>
+	  <para>It is important to have an up-to-date PGP/GnuPG key in
+	    the Handbook, since the key may be required for positive
+	    identification of a committer, e.g. by the &a.admins; for
+	    account recovery.  A complete keyring of <hostid
+	    role="domainname">FreeBSD.org</hostid> users is available
+	    for download from <ulink
+	    url="&url.base;/doc/pgpkeyring.txt">http://www.FreeBSD.org/doc/pgpkeyring.txt</ulink>.</para>
+	</note>
+      </listitem>
+
+      <listitem>
+	<para>Add an entry for yourself to
+	  <filename>src/share/misc/committers-<replaceable>repository</replaceable>.dot</filename>,
+	  where repository is either doc, ports or src, depending on the commit privileges
+	  you obtained.</para>
+      </listitem>
+
+      <listitem>
+	<para>Some people add an entry for themselves to
+	  <filename>ports/astro/xearth/files/freebsd.committers.markers</filename>.</para>
+      </listitem>
+
+      <listitem>
+	<para>Some people add an entry for themselves to
+	  <filename>src/usr.bin/calendar/calendars/calendar.freebsd</filename>.</para>
+      </listitem>
+
+      <listitem>
+	<para>If you already have an account at the <ulink url="http://wiki.freebsd.org">&os; wiki</ulink>,
+	  make sure your mentor moves you from the
+	  <ulink url="http://wiki.freebsd.org/ContributorsGroup">Contributors group</ulink>
+	  to the
+	  <ulink url="http://wiki.freebsd.org/DevelopersGroup">Developers group</ulink>.
+	  Otherwise, consider signing up for an account so you can publish
+	  projects and ideas you are working on.</para>
+      </listitem>
+
+      <listitem>
+	<para>If you subscribe to &a.svn-src-all.name; or the &a.cvsall;,
+	  you will probably want to unsubscribe to avoid receiving duplicate
+	  copies of commit messages and their followups.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>All <filename>src</filename> commits should go to
+      &os.current; first before being merged to &os.stable;.  No major
+      new features or high-risk modifications should be made to the
+      &os.stable; branch.</para>
+    </sect2>
+
+    <sect2 id="conventions-everyone">
+      <title>Guidelines For Everyone</title>
+
+      <para>Whether or not you have commit rights:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Introduce yourself to the other developers, otherwise no one
+	  will have any idea who you are or what you are working on.  You do
+	  not have to write a comprehensive biography, just write a paragraph
+	  or two about who you are and what you plan to be working on as a
+	  developer in FreeBSD.  (You should also mention who your mentor
+	  will be).  Email this to the &a.developers; and you will
+	  be on your way!</para>
+      </listitem>
+
+      <listitem>
+	<para>Log into <hostid>hub.FreeBSD.org</hostid> and create a
+	  <filename>/var/forward/<replaceable>user</replaceable></filename>
+	  (where <replaceable>user</replaceable> is your username) file
+	  containing the e-mail address where you want mail addressed to
+	  <replaceable>yourusername</replaceable>@FreeBSD.org to be forwarded.
+	  This includes all of the commit messages as well as any other mail
+	  addressed to the &a.committers; and the &a.developers;.  Really
+	  large mailboxes which have taken up permanent residence on
+	  <hostid>hub</hostid> often get <quote>accidentally</quote> truncated
+	  without warning, so forward it or read it and you will not lose
+	  it.</para>
+
+	<para>Due to the severe load dealing with SPAM places on
+	  the central mail servers that do the mailing list processing
+	  the front-end server does do some basic checks and will
+	  drop some messages based on these checks.  At the moment
+	  proper DNS information for the connecting host is the only
+	  check in place but that may change.  Some people blame these
+	  checks for bouncing valid email.  If you want these checks
+	  turned off for your email you can place a file named
+	  <filename>.spam_lover</filename> in your home directory
+	  on <hostid role="fqdn">freefall.FreeBSD.org</hostid> to
+	  disable the checks for your email.</para>
+      </listitem>
+    </itemizedlist>
+
+    <note>
+      <para>If you are a developer but not a committer, you will
+	not be subscribed to the committers or developers mailing lists;
+	the subscriptions are derived from the access rights.</para>
+    </note>
+    </sect2>
+
+    <sect2 id="mentors">
+      <title>Mentors</title>
+
+    <para>All new developers also have a mentor assigned to them for
+      the first few months.  Your mentor is responsible for teaching
+      you the rules and conventions of the project and guiding your
+      first steps in the developer community.  Your mentor is also
+      personally responsible for your actions during this initial
+      period.</para>
+
+    <para>For committers: until your 
+      mentor decides (and announces with a forced
+      commit to <filename>access</filename>) that you have learned the
+      ropes and are ready to commit on your own, you should not commit
+      anything without first getting your mentor's review and
+      approval, and you should document that approval with an
+      <literal>Approved by:</literal> line in the commit
+      message.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="pref-license">
+    <title>Preferred License for New Files</title>
+
+    <para>Currently the &os; Project suggests and uses the following
+      text as the preferred license scheme:</para>
+
+<programlisting>/*-
+ * Copyright (c) [year] [your name]
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ * [id for your version control system, if any]
+ */</programlisting>
+
+    <para>The &os; project strongly discourages the so-called
+      "advertising clause" in new code.  Due to the large number of
+      contributors to the &os; project, complying with this clause for
+      many commercial vendors has become difficult.  If you have code
+      in the tree with the advertising clause, please consider
+      removing it.  In fact, please consider using the above license
+      for your code.</para>
+
+    <para>The &os; project discourages completely new licenses and
+      variations on the standard licenses.  New licenses require the
+      approval of <email>core@FreeBSD.org</email> to reside in the
+      main repository.  The more different licenses that are used in
+      the tree, the more problems that this causes to those wishing to
+      utilize this code, typically from unintended consequences from a
+      poorly worded license.</para>
+
+    <para>Project policy dictates that code under some non-BSD licenses
+      must be placed only in specific sections of the repository, and
+      in some cases, compilation must be conditional or even disabled
+      by default.  For example, the GENERIC kernel must be compiled
+      under only licenses identical to or substantially similar to the
+      BSD license.  GPL, APSL, CDDL, etc, licensed software must not be
+      compiled into GENERIC.</para>
+
+    <para>Developers are reminded that in open source, getting "open"
+      right is just as important as getting "source" right, as improper
+      handling of intellectual property has serious consequences.  Any
+      questions or concerns should immediately be brought to the
+      attention of the core team.</para>
+
+  </sect1>
+
+  <sect1 id="developer.relations">
+    <title>Developer Relations</title>
+
+    <para>If you are working directly on your own code or on code
+      which is already well established as your responsibility, then
+      there is probably little need to check with other committers
+      before jumping in with a commit.  If you see a bug in an area of
+      the system which is clearly orphaned (and there are a few such
+      areas, to our shame), the same applies.  If, however, you are
+      about to modify something which is clearly being actively
+      maintained by someone else (and it is only by watching the
+      <literal><replaceable>repository</replaceable>-committers</literal> mailing list that you can
+      really get a feel for just what is and is not) then consider
+      sending the change to them instead, just as you would have
+      before becoming a committer.  For ports, you should contact the
+      listed <makevar>MAINTAINER</makevar> in the
+      <filename>Makefile</filename>.  For other parts of the
+      repository, if you are unsure who the active maintainer might
+      be, it may help to scan the revision history
+      to see who has committed changes in the past.  &a.fenner; has
+      written a nice shell script that can help determine who the
+      active maintainer might be.  It lists each person who has
+      committed to a given file along with the number of commits each
+      person has made.  It can be found on <hostid>freefall</hostid>
+      at <filename>~fenner/bin/whodid</filename>.  If your queries go
+      unanswered or the committer otherwise indicates a lack of
+      interest in the area affected, go ahead and commit
+      it.</para>
+
+    <para>If you are unsure about a commit for any reason at
+      all, have it reviewed by <literal>-hackers</literal>
+      before committing.  Better to have it flamed then and there
+      rather than when it is part of the repository.  If you do
+      happen to commit something which results in controversy
+      erupting, you may also wish to consider backing the change out
+      again until the matter is settled.  Remember &ndash; with a version control system we
+      can always change it back.</para>
+
+    <para>Do not impugn the intentions of someone you disagree with.
+      If they see a different solution to a problem than you, or even
+      a different problem, it is not because they are stupid, because
+      they have questionable parentage, or because they are trying to
+      destroy your hard work, personal image, or FreeBSD, but simply
+      because they have a different outlook on the world.  Different
+      is good.</para>
+
+    <para>Disagree honestly.  Argue your position from its merits,
+      be honest about any shortcomings it may have, and be open to
+      seeing their solution, or even their vision of the problem,
+      with an open mind.</para>
+
+    <para>Accept correction.  We are all fallible.  When you have made
+      a mistake, apologize and get on with life.  Do not beat up
+      yourself, and certainly do not beat up others for your mistake.
+      Do not waste time on embarrassment or recrimination, just fix
+      the problem and move on.</para>
+
+    <para>Ask for help.  Seek out (and give) peer reviews.  One of
+      the ways open source software is supposed to excel is in the
+      number of eyeballs applied to it; this does not apply if nobody
+      will review code.</para>
+  </sect1>
+
+  <sect1 id="gnats">
+    <title>GNATS</title>
+
+    <para>The FreeBSD Project utilizes
+      <application>GNATS</application> for tracking bugs and change
+      requests.  Be sure that if you commit a fix or suggestion found
+      in a <application>GNATS</application> PR, you use
+      <command>edit-pr <replaceable>pr-number</replaceable></command>
+      on <hostid>freefall</hostid> to close it.  It is also considered
+      nice if you take time to close any PRs associated with your
+      commits, if appropriate.  You can also make use of
+      &man.send-pr.1; yourself for proposing any change which you feel
+      should probably be made, pending a more extensive peer-review
+      first.</para>
+
+    <para>You can find out more about <application>GNATS</application>
+      at:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para><ulink url="&url.articles.pr-guidelines;/index.html">FreeBSD Problem Report Handling Guidelines</ulink></para>
+      </listitem>
+
+      <listitem>
+	<para><ulink url="http://www.cs.utah.edu/csinfo/texinfo/gnats/gnats.html"></ulink></para>
+      </listitem>
+
+      <listitem>
+	<para><ulink url="&url.base;/support.html">http://www.FreeBSD.org/support.html</ulink></para>
+      </listitem>
+
+      <listitem>
+	<para>&man.send-pr.1;</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>You can run a local copy of GNATS, and then integrate the FreeBSD
+      GNATS tree in to it using CVSup.  Then you can run GNATS commands
+      locally.
+      This lets you query the PR database without needing to be connected to
+      the Internet.</para>
+
+    <procedure>
+      <title>Using a local GNATS tree</title>
+
+      <step>
+	<para>If you are not already downloading the GNATS tree, add this line
+	  to your <filename>supfile</filename>, and re-sup. Note that since
+	  GNATS is not under CVS control it has no tag, so if you are adding
+	  it to your existing <filename>supfile</filename> it should appear
+	  before any <quote>tag=</quote> entry as these remain active once set.
+	</para>
+
+	<programlisting>gnats release=current prefix=/usr</programlisting>
+
+	<para>This will place the FreeBSD GNATS tree in
+	  <filename>/usr/gnats</filename>.  You can use a
+	  <emphasis>refuse</emphasis> file to control which categories to
+	  receive.  For example, to only receive <literal>docs</literal> PRs,
+	  put this line in
+	  <filename>/usr/local/etc/cvsup/sup/refuse</filename><footnote>
+	    <para>The precise path depends on the <literal>*default
+		base</literal> setting in your
+	      <filename>supfile</filename>.</para>
+	  </footnote>.</para>
+
+	<programlisting>gnats/[a-ce-z]*</programlisting>
+
+	<para>The rest of these examples assume you have only supped the
+	  <literal>docs</literal> category.  Adjust them as necessary,
+	  depending on the categories you are syncing.</para>
+      </step>
+
+      <step>
+	<para>Install the GNATS port from
+	  <filename>ports/databases/gnats</filename>.  This will place the
+	  various GNATS directories under
+	  <filename>$PREFIX/share/gnats</filename>.</para>
+      </step>
+
+      <step>
+	<para>Symlink the GNATS directories you are supping under the version
+	  of GNATS you have installed.</para>
+
+	<screen>&prompt.root; <userinput>cd /usr/local/share/gnats/gnats-db</userinput>
+&prompt.root; <userinput>ln -s /usr/gnats/docs</userinput></screen>
+
+	<para>Repeat as necessary, depending on how many GNATS categories you
+	  are syncing.</para>
+      </step>
+
+      <step>
+	<para>Update the GNATS <filename>categories</filename> file with these
+	  categories.  The file is
+	  <filename>$PREFIX/share/gnats/gnats-db/gnats-adm/categories</filename>.</para>
+
+	<programlisting># This category is mandatory
+pending:Category for faulty PRs:gnats-admin:
+#
+# FreeBSD categories
+#
+docs:Documentation Bug:freebsd-doc:</programlisting>
+      </step>
+
+      <step>
+	<para>Run <filename>$PREFIX/libexec/gnats/gen-index</filename> to
+	  recreate the GNATS index.  The output has to be redirected to
+	  <filename>$PREFIX/share/gnats/gnats-db/gnats-adm/index</filename>.
+	  You can do this periodically from &man.cron.8;, or run &man.cvsup.1;
+	  from a shell script that does this as well.</para>
+
+	<screen>&prompt.root; <userinput>/usr/local/libexec/gnats/gen-index \
+	> /usr/local/share/gnats/gnats-db/gnats-adm/index</userinput></screen>
+      </step>
+
+      <step>
+	<para>Test the configuration by querying the PR database.  This
+	  command shows open <literal>docs</literal> PRs.</para>
+
+	<screen>&prompt.root; <userinput>query-pr -c docs -s open</userinput></screen>
+
+      </step>
+
+      <step>
+	<para>Pick a PR and close it.</para>
+      </step>
+    </procedure>
+
+    <note>
+      <para>This procedure only works to allow you to view and query the PRs
+	locally.  To edit or close them you will still have to log in to
+	<hostid>freefall</hostid> and do it from there.</para>
+    </note>
+  </sect1>
+
+  <sect1 id="people">
+    <title>Who's Who</title>
+
+    <para>Besides the repository
+    meisters, there are other FreeBSD project members and teams whom you will
+    probably get to know in your role as a committer.  Briefly,
+    and by no means all-inclusively, these are:</para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>&a.jhb;</term>
+
+	<listitem>
+	  <para>John is the manager of the SMPng Project, and has
+	    authority over the architectural design and implementation
+	    of the move to fine-grained kernel threading and locking.
+	    He is also the editor of the SMPng Architecture Document.
+	    If you are working on fine-grained SMP and locking, please
+	    coordinate with John.  You can learn more about the
+	    SMPng Project on its home page:
+	    <ulink url="http://www.FreeBSD.org/smp/"></ulink></para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.doceng;</term>
+
+	<listitem>
+	  <para>doceng is the group responsible for the documentation build
+	    infrastructure, approving new documentation committers, and
+	    ensuring that the FreeBSD website and documentation on the FTP
+	    site is up to date with respect to the CVS tree.  It is not a
+	    conflict resolution body.  The vast majority of documentation
+	    related discussion takes place on the &a.doc;.  More details regarding the doceng team can be found in its <ulink url="http://www.FreeBSD.org/internal/doceng.html">charter</ulink>.  Committers
+	    interested in contributing to the documentation should familiarize
+	    themselves with the <ulink
+	    url="&url.books.fdp-primer;/index.html">Documentation Project
+	    Primer</ulink>.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.ru;</term>
+
+	<listitem>
+	  <para>Ruslan is Mister &man.mdoc.7;.  If you are writing a
+	    manual page and need
+	    some advice on the structure, or the markup, ask Ruslan.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.bde;</term>
+
+	<listitem>
+	  <para>Bruce is the Style Police-Meister.
+	    When you do a commit that could have been done better,
+	    Bruce will be there to tell you.  Be thankful that someone
+	    is.  Bruce is also very knowledgeable on the various
+	    standards applicable to FreeBSD.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.murray;</term>
+	<term>&a.dwhite;</term>
+	<term>&a.rwatson;</term>
+	<term>&a.kensmith;</term>
+	<term>&a.hrs;</term>
+	<term>&a.mux;</term>
+	<term>&a.bmah;</term>
+
+	<listitem>
+	  <para>These are the members of the &a.re;.  This team is
+	    responsible for setting release deadlines and controlling
+	    the release process.  During code freezes, the release
+	    engineers have final authority on all changes to the
+	    system for whichever branch is pending release status.  If
+	    there is something you want merged from &os.current; to
+	    &os.stable; (whatever values those may have at any given
+	    time), these are the people to talk to about it.</para>
+
+	  <para>Hiroki is also the keeper of the release documentation
+	    (<filename>src/release/doc/*</filename>).  If you commit a
+	    change that you think is worthy of mention in the release notes,
+	    please make sure he knows about it.  Better still, send him
+	    a patch with your suggested commentary.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.cperciva;</term>
+
+	<listitem>
+	  <para>Colin is the
+	  <ulink url="&url.base;/security/">FreeBSD Security
+	  Officer</ulink>
+	  and oversees the &a.security-officer;.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.wollman;</term>
+
+	<listitem>
+	  <para>If you need advice on obscure network internals or
+	    are not sure of some potential change to the networking
+	    subsystem you have in mind, Garrett is someone to talk
+	    to.  Garrett is also very knowledgeable on the various
+	    standards applicable to FreeBSD.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.committers;</term>
+
+	<listitem>
+	  <para>cvs-committers is the entity that the version control system uses to send you all your
+	    commit messages.  You should <emphasis>never</emphasis> send email
+	    directly to this list.  You should only send replies to this list
+	    when they are short and are directly related to a commit.</para>
+
+	  <para>There is a similar list, svn-committers, which has a
+	    similar purpose but is a normal list, i.e. you are free to
+	    send any suitable message to this list.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>&a.developers;</term>
+
+	<listitem>
+	  <para>All committers are subscribed to -developers.  This list was created to be a
+	    forum for the committers <quote>community</quote> issues.
+	    Examples are Core
+	    voting, announcements, etc.</para>
+
+	  <para>The &a.developers; is for the exclusive use of
+	    FreeBSD committers.  In order to develop FreeBSD, committers must
+	    have the ability to openly discuss matters that will be resolved
+	    before they are publicly announced.  Frank discussions of work in
+	    progress are not suitable for open publication and may harm FreeBSD.</para>
+
+	  <para>All FreeBSD committers are reminded to obey the copyright of the
+	    original author(s) of &a.developers; mail.  Do not publish or
+	    forward messages from the &a.developers; outside the list
+	    membership without permission of all of the authors.</para>
+
+	  <para>Copyright violators will be removed from the &a.developers;,
+	    resulting in a suspension of commit privileges.  Repeated or
+	    flagrant violations may result in permanent revocation of
+	    commit privileges.</para>
+
+	  <para>This list is
+	    <emphasis>not</emphasis> intended as a place for code reviews or a
+	    replacement for the &a.arch; or the &a.audit;.  In fact
+	    using it as such hurts the FreeBSD Project as it gives a sense of a
+	    closed list where general decisions affecting all of the FreeBSD
+	    using community are made without being <quote>open</quote>.
+	    Last, but not least <emphasis>never, never ever, email
+	    the &a.developers; and CC:/BCC: another FreeBSD list</emphasis>.
+	    Never, ever email another FreeBSD email list and CC:/BCC:
+	    the &a.developers;.  Doing so can greatly diminish the benefits
+	    of this list.</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+
+  <sect1 id="ssh.guide">
+    <title>SSH Quick-Start Guide</title>
+
+    <procedure>
+      <step>
+	<para>If you do not wish to type your password in every
+	  time you use &man.ssh.1;, and you use RSA or DSA keys to
+	  authenticate, &man.ssh-agent.1; is there for your
+	  convenience.  If you want to use &man.ssh-agent.1;, make
+	  sure that you run it before running other applications.  X
+	  users, for example, usually do this from their
+	  <filename>.xsession</filename> or
+	  <filename>.xinitrc</filename> file.  See &man.ssh-agent.1;
+	  for details.</para>
+      </step>
+
+      <step>
+	<para>Generate a key pair using &man.ssh-keygen.1;.  The key
+	  pair will wind up in your
+	  <filename><envar>$HOME</envar>/.ssh/</filename>
+	  directory.</para>
+      </step>
+
+      <step>
+	<para>Send your public key
+	  (<filename><envar>$HOME</envar>/.ssh/id_dsa.pub</filename>
+	  or <filename><envar>$HOME</envar>/.ssh/id_rsa.pub</filename>)
+	  to the person setting you up as a committer so it can be put
+	  into the <filename><replaceable>yourlogin</replaceable></filename> file in
+	  <filename class="directory">/etc/ssh-keys/</filename> on
+	  <hostid>freefall</hostid>.
+	</para>
+      </step>
+    </procedure>
+
+    <para>Now you should be able to use &man.ssh-add.1; for
+      authentication once per session.  This will prompt you for
+      your private key's pass phrase, and then store it in your
+      authentication agent (&man.ssh-agent.1;).  If you no longer
+      wish to have your key stored in the agent, issuing
+      <command>ssh-add -d</command> will remove it.</para>
+
+    <para>Test by doing something such as <command>ssh
+	freefall.FreeBSD.org ls /usr</command>.</para>
+
+    <para>For more information, see
+      <filename role="package">security/openssh</filename>, &man.ssh.1;,
+      &man.ssh-add.1;, &man.ssh-agent.1;, &man.ssh-keygen.1;, and
+      &man.scp.1;.</para>
+  </sect1>
+
+  <sect1 id="coverity">
+    <title>&coverity.prevent; Availability for &os; Committers</title>
+
+    <para>In January 2006, the &os;&nbsp;Foundation obtained a license for
+      &coverity.prevent; from &coverity&nbsp;Ltd.  With this donation, all
+      &os; developers can obtain access to <application>Coverity
+        Prevent</application> analysis results of all &os; Project
+      software.</para>
+
+    <para>&os; developers who are interested in obtaining access to the
+      analysis results of the automated <application>Coverity
+        Prevent</application> runs, can find out more by logging
+      into <hostid>freefall</hostid> and reading the relevant bits of the
+      files:</para>
+
+    <variablelist>
+      <varlistentry>
+	<term><filename>/usr/local/coverity/coverity_license.txt</filename></term>
+	<listitem>
+	  <para>The license terms to which the &os; developers will have
+	    to agree in order to use &coverity.prevent; analysis
+	    results.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><filename>/usr/local/coverity/coverity_announcement.txt</filename></term>
+	<listitem>
+	  <para>The announcement posted to the developers' mailing list of the
+	    &os; Project.  It contains useful information about the &os;
+	    Foundation and &coverity;&nbsp;Ltd., as well as signup information
+	    for registering with the &coverity.prevent; installation of the
+	    &os; Cluster.</para>
+
+	  <para>After reading and understanding the license terms
+	    of <filename>coverity_license.txt</filename>, all &os; developers
+	    who are interested in using the analysis results of
+	    &coverity.prevent; should read this file.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><filename>/usr/local/coverity/coverity_readme.txt</filename></term>
+	<listitem>
+	  <para>A short guide about fixes which are committed to the &os;
+	    source tree after being detected by &coverity.prevent; and
+	    analyzed by an &os; developer.</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The &os; Wiki includes a mini-guide for developers who are
+      interested in working with the &coverity.prevent; analysis reports:
+      <ulink url="http://wiki.freebsd.org/CoverityPrevent"></ulink>.  Please
+      note that this mini-guide is only readable by &os; developers, so if you
+      cannot access this page, you will have to ask someone to add you to the
+      appropriate Wiki access list.</para>
+
+    <para>Finally, all &os; developers who are going to use &coverity.prevent;
+      are always encouraged to ask for more details and usage information, by
+      posting any questions to the mailing list of the &os; developers.</para>
+  </sect1>
+
+  <sect1 id="rules">
+    <title>The FreeBSD Committers' Big List of Rules</title>
+
+    <orderedlist>
+      <listitem>
+	<para>Respect other committers.</para>
+      </listitem>
+
+      <listitem>
+	<para>Respect other contributors.</para>
+      </listitem>
+
+      <listitem>
+	<para>Discuss any significant change
+	  <emphasis>before</emphasis> committing.</para>
+      </listitem>
+
+      <listitem>
+	<para>Respect existing maintainers (if listed in the
+	  <makevar>MAINTAINER</makevar> field in
+	  <filename>Makefile</filename> or in the
+	  <filename>MAINTAINER</filename> file in the top-level
+	  directory).</para>
+      </listitem>
+
+      <listitem>
+	<para>Any disputed change must be backed out pending
+	  resolution of the dispute if requested by a maintainer.
+	  Security related changes may
+	  override a maintainer's wishes at the Security Officer's
+	  discretion.</para>
+      </listitem>
+
+      <listitem>
+	<para>Changes go to &os.current; before
+	  &os.stable; unless specifically permitted by
+	  the release engineer or unless they are not applicable to
+	  &os.current;.  Any non-trivial or non-urgent
+	  change which is applicable should also be allowed to sit in
+	  &os.current; for at least 3 days before
+	  merging so that it can be given sufficient testing.  The
+	  release engineer has the same authority over the
+	  &os.stable; branch as outlined for the
+	  maintainer in rule #5.</para>
+      </listitem>
+
+      <listitem>
+	<para>Do not fight in public with other committers; it looks
+	  bad.  If you must <quote>strongly disagree</quote> about
+	  something, do so only in private.</para>
+      </listitem>
+
+      <listitem>
+	<para>Respect all code freezes and read the
+	  <literal>committers</literal> and <literal>developers</literal>
+	  mailing lists in a timely manner so you know when a code freeze is
+	  in effect.</para>
+      </listitem>
+
+      <listitem>
+	<para>When in doubt on any procedure, ask first!</para>
+      </listitem>
+
+      <listitem>
+	<para>Test your changes before committing them.</para>
+      </listitem>
+
+      <listitem>
+	<para>Do not commit to anything under the
+	  <filename>src/contrib</filename>,
+	  <filename>src/crypto</filename>, or
+	  <filename>src/sys/contrib</filename> trees without
+	  <emphasis>explicit</emphasis> approval from the respective
+	  maintainer(s).</para>
+      </listitem>
+    </orderedlist>
+
+    <para>As noted, breaking some of these rules can be grounds for
+      suspension or, upon repeated offense, permanent removal of
+      commit privileges.  Individual members of core
+      have the power to temporarily suspend commit privileges until
+      core as a whole has the chance to review the
+      issue.  In case of an <quote>emergency</quote> (a committer
+      doing damage to the repository), a temporary suspension may also
+      be done by the repository meisters.
+      Only a 2/3 majority of core
+      has the authority to suspend commit privileges for longer
+      than a week or to remove them permanently.
+      This rule does not exist to set core up as a bunch
+      of cruel dictators who can dispose of committers as casually as
+      empty soda cans, but to give the project a kind of safety fuse.
+      If someone is out of control, it is important to be
+      able to deal with this immediately rather than be paralyzed by
+      debate.  In all cases, a committer whose privileges are
+      suspended or revoked is entitled to a <quote>hearing</quote> by core,
+      the total duration of the suspension being determined at that
+      time.  A committer whose privileges are suspended may also
+      request a review of the decision after 30 days and every 30 days
+      thereafter (unless the total suspension period is less than 30
+      days).  A committer whose privileges have been revoked entirely
+      may request a review after a period of 6 months has elapsed.
+      This review policy is <emphasis>strictly informal</emphasis>
+      and, in all cases, core reserves the right to either act on or
+      disregard requests for review if they feel their original
+      decision to be the right one.</para>
+
+    <para>In all other aspects of project operation, core is a subset
+      of committers and is bound by the <emphasis>same
+      rules</emphasis>.  Just because someone is in core this does not mean
+      that they have special dispensation to step outside any of
+      the lines painted here; core's <quote>special powers</quote>
+      only kick in when it acts as a group, not on an individual
+      basis.  As individuals, the core team members are all committers
+      first and core second.</para>
+
+    <sect2>
+      <title>Details</title>
+
+      <orderedlist>
+	<listitem id="respect">
+	  <para>Respect other committers.</para>
+
+	  <para>This means that you need to treat other committers as
+	    the peer-group developers that they are.  Despite our
+	    occasional attempts to prove the contrary, one does not get
+	    to be a committer by being stupid and nothing rankles more
+	    than being treated that way by one of your peers.  Whether
+	    we always feel respect for one another or not (and
+	    everyone has off days), we still have to
+	    <emphasis>treat</emphasis> other committers with respect
+	    at all times, on public forums and in private email.</para>
+
+	  <para>Being able to work together long term is this project's
+	    greatest asset, one far more important than any set of
+	    changes to the code, and turning arguments about code into
+	    issues that affect our long-term ability to work
+	    harmoniously together is just not worth the trade-off by
+	    any conceivable stretch of the imagination.</para>
+
+	  <para>To comply with this rule, do not send email when you are
+	    angry or otherwise behave in a manner which is likely to
+	    strike others as needlessly confrontational.  First calm
+	    down, then think about how to communicate in the most
+	    effective fashion for convincing the other person(s) that
+	    your side of the argument is correct, do not just blow off
+	    some steam so you can feel better in the short term at the
+	    cost of a long-term flame war.  Not only is this very bad
+	    <quote>energy economics</quote>, but repeated displays of
+	    public aggression which impair our ability to work well
+	    together will be dealt with severely by the project
+	    leadership and may result in suspension or termination of
+	    your commit privileges.  The project leadership will
+	    take into account both public and private communications
+	    brought before it.  It will not seek the disclosure of
+	    private communications, but it will take it into account
+	    if it is volunteered by the committers involved in the
+	    complaint.</para>
+
+	    <para>All of this is never an option which the
+	    project's leadership enjoys in the slightest, but unity
+	    comes first.  No amount of code or good advice is worth
+	    trading that away.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Respect other contributors.</para>
+
+	  <para>You were not always a committer. At one time you were
+	    a contributor. Remember that at all times. Remember what
+	    it was like trying to get help and attention.  Do not forget
+	    that your work as a contributor was very important to
+	    you.  Remember what it was like. Do not discourage, belittle,
+	    or demean contributors.  Treat them with respect.  They are
+	    our committers in waiting.  They are every bit as important
+	    to the project as committers. Their contributions are as
+	    valid and as important as your own.  After all, you made
+	    many contributions before you became a committer.  Always
+	    remember that.  </para>
+
+	  <para>Consider the points raised under <xref linkend="respect">
+	    and apply them also to contributors.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Discuss any significant change
+	    <emphasis>before</emphasis> committing.</para>
+
+	  <para>The repository is not where changes should be
+	    initially submitted for correctness or argued over, that
+	    should happen first in the mailing lists and the commit should
+	    only happen once something resembling consensus has
+	    been reached.  This does not mean that you have to ask
+	    permission before correcting every obvious syntax error or
+	    manual page misspelling, simply that you should try to
+	    develop a feel for when a proposed change is not quite such
+	    a no-brainer and requires some feedback first.  People
+	    really do not mind sweeping changes if the result is
+	    something clearly better than what they had before, they
+	    just do not like being <emphasis>surprised</emphasis> by
+	    those changes.  The very best way of making sure that
+	    you are on the right track is to have your code reviewed by
+	    one or more other committers.</para>
+
+	  <para>When in doubt, ask for review!</para>
+	</listitem>
+
+	<listitem>
+	  <para>Respect existing maintainers if listed.</para>
+
+	  <para>Many parts of FreeBSD are not <quote>owned</quote> in
+	    the sense that any specific individual will jump up and
+	    yell if you commit a change to <quote>their</quote> area,
+	    but it still pays to check first.  One convention we use
+	    is to put a maintainer line in the
+	    <filename>Makefile</filename> for any package or subtree
+	    which is being actively maintained by one or more people;
+	    see <ulink
+	      url="&url.books.developers-handbook;/policies.html">
+	      http://www.FreeBSD.org/doc/en_US.ISO8859-1/books/developers-handbook/policies.html</ulink>
+	    for documentation on this.  Where sections of code have
+	    several maintainers, commits to affected areas by one
+	    maintainer need to be reviewed by at least one other
+	    maintainer.  In cases where the
+	    <quote>maintainer-ship</quote> of something is not clear,
+	    you can also look at the repository logs for the file(s) in
+	    question and see if someone has been working recently or
+	    predominantly in that area.</para>
+
+	  <para>Other areas of FreeBSD fall under the control of
+	    someone who manages an overall category of FreeBSD
+	    evolution, such as internationalization or networking.
+	    See <ulink
+	      url="&url.base;/administration.html">
+	      http://www.FreeBSD.org/administration.html</ulink>
+	    for more information on this.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Any disputed change must be backed out pending
+	    resolution of the dispute if requested by a maintainer.
+	    Security related changes may
+	    override a maintainer's wishes at the Security Officer's
+	    discretion.</para>
+
+	  <para>This may be hard to swallow in times of conflict (when
+	    each side is convinced that they are in the right, of
+	    course) but a version control system makes it unnecessary to have an ongoing
+	    dispute raging when it is far easier to simply reverse the
+	    disputed change, get everyone calmed down again and then
+	    try to figure out what is the best way to proceed.  If the change
+	    turns out to be the best thing after all, it can be easily
+	    brought back. If it turns out not to be, then the users
+	    did not have to live with the bogus change in the tree
+	    while everyone was busily debating its merits.  People
+	    <emphasis>very</emphasis> rarely call for back-outs in the repository
+	    since discussion generally exposes bad or controversial
+	    changes before the commit even happens, but on such rare
+	    occasions the back-out should be done without argument so
+	    that we can get immediately on to the topic of figuring
+	    out whether it was bogus or not.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Changes go to &os.current; before
+	    &os.stable; unless specifically permitted
+	    by the release engineer or unless they are not applicable
+	    to &os.current;.  Any non-trivial or
+	    non-urgent change which is applicable should also be
+	    allowed to sit in &os.current; for at least
+	    3 days before merging so that it can be given sufficient
+	    testing.  The release engineer has the same authority over
+	    the &os.stable; branch as outlined in rule
+	    #5.</para>
+
+	  <para>This is another <quote>do not argue about it</quote>
+	    issue since it is the release engineer who is ultimately
+	    responsible (and gets beaten up) if a change turns out to
+	    be bad.  Please respect this and give the release engineer
+	    your full cooperation when it comes to the
+	    &os.stable; branch.  The management of
+	    &os.stable; may frequently seem to be
+	    overly conservative to the casual observer, but also bear
+	    in mind the fact that conservatism is supposed to be the
+	    hallmark of &os.stable; and different rules
+	    apply there than in &os.current;.  There is
+	    also really no point in having &os.current;
+	    be a testing ground if changes are merged over to
+	    &os.stable; immediately.  Changes need a
+	    chance to be tested by the &os.current;
+	    developers, so allow some time to elapse before merging
+	    unless the &os.stable; fix is critical,
+	    time sensitive or so obvious as to make further testing
+	    unnecessary (spelling fixes to manual pages, obvious bug/typo
+	    fixes, etc.)  In other words, apply common sense.</para>
+
+	  <para>Changes to the security branches
+	    (for example, <literal>RELENG_6_0</literal>) must be
+	    approved by a member of the &a.security-officer;, or in
+	    some cases, by a member of the &a.re;.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Do not fight in public with other committers; it looks
+	    bad.  If you must <quote>strongly disagree</quote> about
+	    something, do so only in private.</para>
+
+	  <para>This project has a public image to uphold and that
+	    image is very important to all of us, especially if we are
+	    to continue to attract new members.  There will be
+	    occasions when, despite everyone's very best attempts at
+	    self-control, tempers are lost and angry words are
+	    exchanged.  The best thing that can be done in such cases is to minimize
+	    the effects of this until everyone has cooled back down.  That
+	    means that you should not air your angry words in public
+	    and you should not forward private correspondence to
+	    public mailing lists or aliases.  What people say
+	    one-to-one is often much less sugar-coated than what they
+	    would say in public, and such communications therefore
+	    have no place there - they only serve to inflame an
+	    already bad situation. If the person sending you a
+	    flame-o-gram at least had the grace to send it privately,
+	    then have the grace to keep it private yourself.  If you
+	    feel you are being unfairly treated by another developer,
+	    and it is causing you anguish, bring the matter up with
+	    core rather than taking it public.  Core will do its best to
+	    play peace makers and get things back to sanity.  In cases
+	    where the dispute involves a change to the codebase and
+	    the participants do not appear to be reaching an amicable
+	    agreement, core may appoint a mutually-agreeable 3rd party
+	    to resolve the dispute.  All parties involved must then
+	    agree to be bound by the decision reached by this 3rd
+	    party.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Respect all code freezes and read the
+	    <literal>committers</literal> and <literal>developers</literal>
+	    mailing list on a timely basis so you know when a code freeze is
+	    in effect.</para>
+
+	  <para>Committing unapproved changes during a code freeze is a really
+	    big mistake and committers are expected to keep up-to-date
+	    on what is going on before jumping in after a long absence
+	    and committing 10 megabytes worth of accumulated stuff.
+	    People who abuse this on a regular basis will have their
+	    commit privileges suspended until they get back from the
+	    FreeBSD Happy Reeducation Camp we run in Greenland.</para>
+	</listitem>
+
+	<listitem>
+	  <para>When in doubt on any procedure, ask first!</para>
+
+	  <para>Many mistakes are made because someone is in a hurry
+	    and just assumes they know the right way of doing
+	    something.  If you have not done it before, chances are
+	    good that you do not actually know the way we do things
+	    and really need to ask first or you are going to
+	    completely embarrass yourself in public.  There is no shame
+	    in asking <quote>how in the heck do I do this?</quote> We
+	    already know you are an intelligent person; otherwise, you
+	    would not be a committer.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Test your changes before committing them.</para>
+
+	  <!-- XXX Needs update re sparc64 + pc98
+	    Also, needs more details on which machines are available for testing
+	  -->
+	  <para>This may sound obvious, but if it really were so
+	    obvious then we probably would not see so many cases of
+	    people clearly not doing this.  If your changes are to the
+	    kernel, make sure you can still compile both GENERIC and
+	    LINT.  If your changes are anywhere else, make sure you
+	    can still make world.  If your changes are to a branch,
+	    make sure your testing occurs with a machine which is
+	    running that code.  If you have a change which also may
+	    break another architecture, be sure and test on all
+	    supported architectures.  Please refer to the <ulink
+	    url="http://www.FreeBSD.org/internal/">FreeBSD Internal
+	    Page</ulink> for a list of available resources.  As other
+	    architectures are added to the FreeBSD supported platforms
+	    list, the appropriate shared testing resources will be
+	    made available.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Do not commit to anything under the
+	    <filename>src/contrib</filename>,
+	    <filename>src/crypto</filename>, and
+	    <filename>src/sys/contrib</filename> trees without
+	    <emphasis>explicit</emphasis> approval from the respective
+	    maintainer(s).</para>
+
+	  <para>The trees mentioned above are for contributed software
+	    usually imported onto a vendor branch.  Committing something
+	    there, even if it does not take the file off the vendor branch,
+	    may cause unnecessary headaches for those responsible for
+	    maintaining that particular piece of software.  Thus, unless
+	    you have <emphasis>explicit</emphasis> approval from the
+	    maintainer (or you are the maintainer), do
+	    <emphasis>not</emphasis> commit there!</para>
+
+	  <para>Please note that this does not mean you should not try to
+	    improve the software in question; you are still more than
+	    welcome to do so.  Ideally, you should submit your patches to
+	    the vendor.  If your changes are FreeBSD-specific, talk to the
+	    maintainer; they may be willing to apply them locally.  But
+	    whatever you do, do <emphasis>not</emphasis> commit there by
+	    yourself!</para>
+
+	  <para>Contact the &a.core; if you wish to take up maintainership
+	    of an unmaintained part of the tree.</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+
+    <sect2>
+      <title>Policy on Multiple Architectures</title>
+
+      <para>FreeBSD has added several new architecture ports during recent
+	release cycles and is truly no longer an &i386; centric operating
+	system.  In an effort to make it easier to keep FreeBSD portable
+	across the platforms we support, core has developed the following
+	mandate:</para>
+
+	<blockquote>
+	  <para>Our 32-bit reference platform is i386, and our 64-bit
+	    reference platform is Sparc64.  Major design work (including
+	    major API and ABI changes) must prove itself on at least one
+	    32-bit and at least one 64-bit platform, preferably the
+	    primary reference platforms, before it may be committed
+	    to the source tree.</para>
+	</blockquote>
+
+      <para>The i386 and Sparc64 platforms were chosen due to being more
+	readily available to developers and as representatives of more
+	diverse processor and system designs - big vs little endian,
+	register file vs register stack, different DMA and cache
+	implementations, hardware page tables vs software TLB management
+	etc.</para>
+
+      <para>The ia64 platform has many of the same complications that
+	Sparc64 has, but is still limited in availability to
+	developers.</para>
+
+      <para>We will continue to re-evaluate this policy as cost and
+	availability of the 64-bit platforms change.</para>
+
+      <para>Developers should also be aware of our Tier Policy for
+	the long term support of hardware architectures.  The rules
+	here are intended to provide guidance during the development
+	process, and are distinct from the requirements for features
+	and architectures listed in that section.  The Tier rules for
+	feature support on architectures at release-time are more
+	strict than the rules for changes during the development
+	process.</para>
+    </sect2>
+
+    <sect2>
+      <title>Other Suggestions</title>
+
+      <para>When committing documentation changes, use a spell checker
+	before committing.  For all SGML docs, you should also
+	verify that your formatting directives are correct by running
+	<command>make lint</command>.</para>
+
+      <para>For all on-line manual pages, run <command>manck</command>
+	(from ports) over the manual page to verify all of the cross
+	references and file references are correct and that the man
+	page has all of the appropriate <makevar>MLINK</makevar>s
+	installed.</para>
+
+      <para>Do not mix style fixes with new functionality.  A style
+	fix is any change which does not modify the functionality of
+	the code.  Mixing the changes obfuscates the functionality
+	change when asking for differences between revisions, which can hide 
+	any new bugs.  Do not include whitespace changes with content
+	changes in commits to <filename>doc/</filename> or
+	<filename>www/</filename>.  The extra clutter in the diffs
+	makes the translators' job much more difficult.  Instead, make
+	any style or whitespace changes in separate commits that are
+	clearly labeled as such in the commit message.</para>
+    </sect2>
+
+    <sect2>
+      <title>Deprecating Features</title>
+
+      <para>When it is necessary to remove functionality from software
+	in the base system the following guidelines should be followed
+	whenever possible:</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>Mention is made in the manual page and possibly the
+	    release notes that the option, utility, or interface is
+	    deprecated.  Use of the deprecated feature generates a
+	    warning.</para>
+	</listitem>
+
+	<listitem>
+	  <para>The option, utility, or interface is preserved until
+	    the next major (point zero) release.</para>
+	</listitem>
+
+	<listitem>
+	  <para>The option, utility, or interface is removed and no
+	    longer documented.  It is now obsolete.  It is also
+	    generally a good idea to note its removal in the release
+	    notes.</para>
+	</listitem>
+      </orderedlist>
+    </sect2>
+  </sect1>
+
+  <sect1 id="archs">
+    <title>Support for Multiple Architectures</title>
+
+    <para>FreeBSD is a highly portable operating system intended to
+      function on many different types of hardware architectures.
+      Maintaining clean separation of Machine Dependent (MD) and Machine
+      Independent (MI) code, as well as minimizing MD code, is an important
+      part of our strategy to remain agile with regards to current
+      hardware trends.  Each new hardware architecture supported by
+      FreeBSD adds substantially to the cost of code maintenance,
+      toolchain support, and release engineering.  It also dramatically
+      increases the cost of effective testing of kernel changes.  As such,
+      there is strong motivation to differentiate between classes of
+      support for various architectures while remaining strong in a few
+      key architectures that are seen as the FreeBSD "target audience".
+      </para>
+
+    <sect2>
+      <title>Statement of General Intent</title>
+
+      <para>The FreeBSD Project targets "production quality commercial
+	off-the-shelf (COTS) workstation, server, and high-end embedded
+	systems".  By retaining a focus on a narrow set of architectures
+	of interest in these environments, the FreeBSD Project is able
+	to maintain high levels of quality, stability, and performance,
+	as well as minimize the load on various support teams on the
+	project, such as the ports team, documentation team,
+	security officer, and release engineering teams.  Diversity in
+	hardware support broadens the options for FreeBSD consumers by
+	offering new features and usage opportunities (such as support
+	for 64-bit CPUs, use in embedded environments, etc.), but these
+	benefits must always be carefully considered in terms of the real-world
+	maintenance cost associated with additional platform support.
+	</para>
+
+      <para>The FreeBSD Project differentiates platform targets into
+	four tiers.  Each tier includes a specification of the
+	requirements for an architecture to be in that tier,
+	as well as specifying the obligations of developers with
+	regards to the platform.  In addition, a policy is defined
+	regarding the circumstances required to change the tier
+	of an architecture.</para>
+    </sect2>
+
+    <sect2>
+      <title>Tier 1: Fully Supported Architectures</title>
+
+      <para>Tier 1 platforms are fully supported by the security
+	officer, release engineering, and toolchain maintenance staff.
+	New features added to the operating system must be fully
+	functional across all Tier 1 architectures for every release
+	(features which are inherently architecture-specific, such as
+	support for hardware device drivers, may be exempt from this
+	requirement).  In general, all Tier 1 platforms must have build
+	and Tinderbox support either in the FreeBSD.org cluster, or be
+	easily available for all developers.  Embedded platforms may
+	substitute an emulator available in the FreeBSD cluster for
+	actual hardware.</para>
+
+      <para>Tier 1 architectures are expected to be Production Quality
+	with respects to all aspects of the FreeBSD operating system,
+	including installation and development environments.</para>
+
+      <para>Tier 1 architectures are expected to be completely
+        integrated into the source tree and have all features
+	necessary to produce an entire system relevant for that target
+        architecture.  Tier 1 architectures generally have at least 6 active
+        developers.</para>
+
+      <para>Tier 1 architectures are expected to be fully supported by
+        the ports system.  All the ports should build on a Tier 1
+        platform, or have the appropriate filters to prevent the
+        inappropriate ones from building there.  The packaging system
+        must support all Tier 1 architectures.  To ensure an
+        architecture's Tier 1 status, proponents of that architecture
+        must show that all relevant packages can be built on that
+        platform.</para>
+
+      <para>Tier 1 embedded architectures must be able to cross-build
+        packages on at least one other Tier 1 architecture.  The
+        packages must be the most relevant for the platform, but may
+        be a non-empty subset of those that build natively.</para>
+
+      <para>Tier 1 architectures must be fully documented.  All basic
+        operations need to be covered by the handbook or other
+        documents.  All relevant integration documentation must also
+        be integrated into the tree, or readily available.</para>
+
+      <para>Current Tier 1 platforms are i386, AMD64, and PC98.</para>
+    </sect2>
+
+    <sect2>
+      <title>Tier 2: Developmental Architectures</title>
+
+      <para>Tier 2 platforms are not supported by the security officer
+	and release engineering teams.  Platform maintainers are
+	responsible for toolchain support in the tree.  The toolchain
+	maintainer is expected to work with the platform maintainers
+	to refine these changes.  Major new toolchain components are
+	allowed to break support for Tier 2 architectures if the
+	FreeBSD-local changes have not been incorporated upstream.  The
+	toolchain maintainers are expected to provide prompt review of
+	any proposed changes and cannot block, through their inaction,
+	changes going into the tree.  New features added to FreeBSD
+	should be feasible to implement on these platforms, but an
+	implementation is not required before the feature may be added
+	to the FreeBSD source tree. New features that may be difficult
+	to implement on Tier 2 architectures should provide a means of
+	disabling them on those architectures.  The implementation of
+	a Tier 2 architecture may be committed to the main FreeBSD
+	tree as long as it does not interfere with production work on
+	Tier 1 platforms, or substantially with other Tier 2 platforms.
+	Before a Tier 2 platform can be added to the FreeBSD base
+	source tree, the platform must be able to boot multi-user on
+	actual hardware.  Generally, there must be at least three active
+	developers working on the platform.</para>
+
+      <para>Tier 2 architectures are usually systems targeted at Tier 1
+	support, but that are still under development.  Architectures
+	reaching end of life may also be moved from Tier 1 status to Tier
+	2 status as the availability of resources to continue to maintain
+	the system in a Production Quality state diminishes.  Well supported
+        niche architectures may also be Tier 2.</para>
+
+      <para>Tier 2 architectures may have some support for them
+        integrated into the ports infrastructure.  They may have cross
+        compilation support added, at the discretion of portmgr.  Some
+        ports must built natively into packages if the package system
+        supports that architecture.  If not integrated into the base
+        system, some external patches for the architecture for ports
+        must be available.</para>
+
+      <para>Tier 2 architectures can be integrated into the FreeBSD
+        handbook.  The basics for how to get a system running must be
+        documented, although not necessarily for every single board or
+        system a Tier 2 architecture supports.  The supported hardware
+        list must exist and should be no more than a couple of months
+        old.  It should be integrated into the FreeBSD
+        documentation.</para>
+
+      <para>Current Tier 2 platforms are ARM, PowerPC, ia64, Sparc64 and
+        sun4v.</para>
+    </sect2>
+
+    <sect2>
+      <title>Tier 3: Experimental Architectures</title>
+
+      <para>Tier 3 platforms are not supported by the security officer
+	and release engineering teams.  At the discretion of the
+	toolchain maintainer, they may be supported in the toolchain.
+	Tier 3 platforms are architectures in the early stages of
+	development, for non-mainstream hardware platforms, or which
+	are considered legacy systems unlikely to see broad future
+	use.  New Tier 3 systems will not be committed to the base
+	source tree.  Support for Tier 3 systems may be worked on in
+	the FreeBSD Perforce Repository, providing source control and
+	easier change integration from the main FreeBSD tree.
+	Platforms that transition to Tier 3 status may be removed from
+	the tree if they are no longer actively supported by the
+	FreeBSD developer community at the discretion of the release
+	engineer.</para>
+
+      <para>Tier 3 platforms may have ports support, either integrated
+        or external, but do not require it.</para>
+
+      <para>Tier 3 platforms must have the basics documented for how
+        to build a kernel and how to boot it on at least one target
+        hardware or emulation environment.  This documentation need
+        not be integrated into the FreeBSD tree.</para>
+
+      <para>Current Tier 3 platforms are MIPS and &s390;.</para>
+    </sect2>
+
+    <sect2>
+      <title>Tier 4: Unsupported Architectures</title>
+
+      <para>Tier 4 systems are not supported in any form by the project.
+	</para>
+
+      <para>All systems not otherwise classified into a support tier
+	are Tier 4 systems.</para>
+    </sect2>
+
+    <sect2>
+      <title>Policy on Changing the Tier of an Architecture</title>
+
+      <para>Systems may only be moved from one tier to another by
+	approval of the FreeBSD Core Team, which shall make that
+	decision in collaboration with the Security Officer, Release
+	Engineering, and toolchain maintenance teams.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="ports">
+    <title>Ports Specific FAQ</title>
+
+    <qandaset>
+      <qandadiv>
+	<title>Adding a New Port</title>
+
+	<qandaentry>
+	  <question>
+	    <para>How do I add a new port?</para>
+	  </question>
+
+	  <answer>
+	    <para>First, please read the section about repository
+	      copies.</para>
+
+	    <para>The easiest way to add a new port is to use the
+	      <command>addport</command> script from your machine (located
+	      in the <filename>ports/Tools/scripts</filename> directory).
+	      It will add a port from the
+	      directory you specify, determining the category automatically
+	      from the port <filename>Makefile</filename>.
+	      It will also add an entry to the port's
+	      category <filename>Makefile</filename>.  It was
+	      written by &a.mharo; and &a.will;, and is currently maintained
+	      by &a.garga;, so please send questions/patches about
+	      <command>addport</command> to him.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>Any other things I need to know when I add a new
+	      port?</para>
+	  </question>
+
+	  <answer>
+	    <para>Check the port, preferably to make sure it compiles
+	      and packages correctly.  This is the recommended
+	      sequence:</para>
+
+	    <screen>&prompt.root; <userinput>make install</userinput>
+&prompt.root; <userinput>make package</userinput>
+&prompt.root; <userinput>make deinstall</userinput>
+&prompt.root; <userinput>pkg_add <replaceable>package you built above</replaceable></userinput>
+&prompt.root; <userinput>make deinstall</userinput>
+&prompt.root; <userinput>make reinstall</userinput>
+&prompt.root; <userinput>make package</userinput>
+	    </screen>
+
+	    <para>The
+	      <ulink url="&url.books.porters-handbook;/index.html">Porters
+	      Handbook</ulink> contains more detailed
+	      instructions.</para>
+
+	    <para>Use &man.portlint.1; to check the syntax of the port.
+	      You do not necessarily have to eliminate all warnings but
+	      make sure you have fixed the simple ones.</para>
+
+	    <para>If the port came from a submitter who has not
+	      contributed to the Project before, add that person's
+	      name to the <ulink
+	      url="&url.articles.contributors;/contrib-additional.html">Additional
+	      Contributors</ulink> section of the FreeBSD Contributors
+	      List.</para>
+
+	    <para>Close the PR if the port came in as a PR.  To close
+	      a PR, just do
+	      <userinput>edit-pr <replaceable>PR#</replaceable></userinput>
+	      on <hostid>freefall</hostid> and change the
+	      <varname>state</varname> from <constant>open</constant>
+	      to <constant>closed</constant>.  You will be asked to
+	      enter a log message and then you are done.</para>
+	  </answer>
+	</qandaentry>
+      </qandadiv>
+
+      <qandadiv>
+	<title>Removing an Existing Port</title>
+
+	<qandaentry>
+	  <question>
+	    <para>How do I remove an existing port?</para>
+	  </question>
+
+	  <answer>
+	    <para>First, please read the section about repository
+	      copies. Before you remove the port, you have to verify
+	      there are no other ports depending on it.</para>
+	    <itemizedlist>
+              <listitem>
+	        <para>Make sure there is no dependency on the port
+	          in the ports collection:</para>
+	          <itemizedlist>
+	            <listitem>
+	              <para>The port's PKGNAME should appear in exactly one
+	                line in a recent INDEX file.</para>
+	            </listitem>
+	            <listitem>
+	              <para>No other ports should contain any reference to
+	                the port's directory or PKGNAME in their
+	                Makefiles</para>
+	            </listitem>
+	      </itemizedlist>
+              </listitem>
+              <listitem>
+	        <para>Then, remove the port:</para>
+
+	        <procedure>
+	          <step>
+	            <para>Remove the port's files via <command>cvs remove</command>.</para>
+	          </step>
+
+	          <step>
+	            <para>Remove <makevar>SUBDIR</makevar> listing of the port
+	              in the parent directory <filename>Makefile</filename>.</para>
+	          </step>
+
+	          <step>
+	            <para>Add an entry to
+	              <filename>ports/MOVED</filename>.</para>
+	          </step>
+
+	          <step>
+	            <para>Remove the port from
+	              <filename>ports/LEGAL</filename> if it is there.</para>
+	          </step>
+	        </procedure>
+	      </listitem>
+	    </itemizedlist>
+
+	    <para>Alternatively, you can use the <command>rmport</command>
+	      script, from <filename class="directory">ports/Tools/scripts</filename>.
+	      This script has been written by &a.vd;, who is also its current
+	      maintainer, so please send questions, patches or suggestions
+	      about <command>rmport</command> to him.</para>
+	  </answer>
+	</qandaentry>
+      </qandadiv>
+
+      <qandadiv>
+	<title>Repository Copies</title>
+
+	<qandaentry>
+	  <question>
+	    <para>When do we need a repository copy?</para>
+	  </question>
+
+	  <answer>
+	    <para>When you want to add a port that is related to
+	      any port that is already in the tree in a separate
+	      directory, you have to do a repository copy.
+	      Here <wordasword>related</wordasword> means
+	      it is a different version or a slightly modified
+	      version.  Examples are
+	      <filename>print/ghostscript*</filename> (different
+	      versions) and <filename>x11-wm/windowmaker*</filename>
+	      (English-only and internationalized version).</para>
+
+	    <para>Another example is when a port is moved from one
+	      subdirectory to another, or when you want to change the
+	      name of a directory because the author(s) renamed their
+	      software even though it is a
+	      descendant of a port already in a tree.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>When do we <emphasis>not</emphasis> need a
+	      repository copy?</para>
+	  </question>
+
+	  <answer>
+	    <para>When there is no history to preserve.  If a port is
+	      added into a wrong category and is moved immediately,
+	      it suffices to simply <command>cvs remove</command> the
+	      old one and <command>addport</command> the new
+	      one.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>What do I need to do?</para>
+	  </question>
+
+	  <answer>
+	    <para>File a PR in <application>GNATS</application>, listing the
+	      reasons for the repository copy request.  Assign it to
+	      <literal>portmgr</literal> and set <varname>state</varname> to
+	      <literal>repocopy</literal>.  In a few days,
+	      <literal>portmgr</literal> will do
+	      a repository copy from the old to the new location, and
+	      reassign the PR back to you.  Once everything is done, perform the
+	      following:</para>
+
+	    <itemizedlist>
+	      <listitem>
+		<para>When a port has been repo copied:</para>
+
+		<procedure>
+		  <step>
+		    <para>Do a force commit on the files of the copied port,
+		      stating repository copy was performed.</para>
+		  </step>
+
+		  <step>
+		    <para>Upgrade the copied port to the new version.
+		      Remember to change the <makevar>LATEST_LINK</makevar>
+		      so there are no duplicate ports with the same name.
+		      In some rare cases it may be necessary to change the
+		      <makevar>PORTNAME</makevar> instead of
+		      <makevar>LATEST_LINK</makevar>, but this should only
+		      be done when it is really needed &mdash; e.g. using
+		      an existing port as the base for a very similar
+		      program with a different name, or upgrading a port to
+		      a new upstream version which actually changes the
+		      distribution name, like the transition from
+		      <filename>textproc/libxml</filename> to
+		      <filename>textproc/libxml2</filename>.  In most cases,
+		      changing <makevar>LATEST_LINK</makevar> should
+		      suffice.</para>
+		  </step>
+
+		  <step>
+		    <para>Add the new subdirectory to the
+		      <makevar>SUBDIR</makevar> listing in the parent
+		      directory <filename>Makefile</filename>.  You can run
+		      <command>make checksubdirs</command> in the parent
+		      directory to check this.</para>
+		  </step>
+
+		  <step>
+		    <para>If the port changed categories, modify the
+		      <makevar>CATEGORIES</makevar> line of the port's
+		      <filename>Makefile</filename> accordingly</para>
+		  </step>
+
+		  <step>
+		    <para>Add an entry to
+		      <filename>ports/MOVED</filename>, if you remove the
+		      original port.</para>
+		  </step>
+		</procedure>
+	      </listitem>
+
+	      <listitem>
+		<para>When removing a port:</para>
+
+		<procedure>
+		  <step>
+		    <para>Perform a thorough check of the ports collection for
+		      any dependencies on the old port location/name, and
+		      update them.  Running <command>grep</command> on
+		      <filename>INDEX</filename> is not enough because some
+		      ports have dependencies enabled by compile-time options.
+		      A full <command>grep -r</command> of the ports
+		      collection is recommended.</para>
+		  </step>
+
+		  <step>
+		    <para>Remove the old port, the old
+		      <makevar>SUBDIR</makevar> entry and the old module
+		      entry.</para>
+		  </step>
+
+		  <step>
+		    <para>Add an entry to
+		      <filename>ports/MOVED</filename>.</para>
+		  </step>
+		</procedure>
+	      </listitem>
+
+	      <listitem>
+		<para>After repo moves (<quote>rename</quote> operations where
+		  a port is copied and the old location is removed):</para>
+
+		<procedure>
+		  <step>
+		    <para>Follow the same steps that are outlined in the
+		      previous two entries, to activate the new location of
+		      the port and remove the old one.</para>
+		  </step>
+		</procedure>
+	      </listitem>
+	    </itemizedlist>
+	  </answer>
+	</qandaentry>
+      </qandadiv>
+
+      <qandadiv>
+	<title>Ports Freeze</title>
+
+	<qandaentry>
+	  <question>
+	    <para>What is a <quote>ports freeze</quote>?</para>
+	  </question>
+
+	  <answer>
+	    <para>Before a release, it is necessary to restrict
+	      commits to the ports tree for a short period of time
+	      while the packages and the release itself are being
+	      built.  This is to ensure consistency among the various
+	      parts of the release, and is called the <quote>ports
+	      freeze</quote>.</para>
+
+	    <para>For more information on the background and
+	      policies surrounding a ports freeze, see the
+	      <ulink url="&url.base/portmgr/qa.html">Portmgr
+		Quality Assurance page</ulink>.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>How long is a ports freeze?</para>
+	  </question>
+
+	  <answer>
+	    <para>Usually a week or two.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>What does it mean to me?</para>
+	  </question>
+
+	  <answer>
+	    <para>During the ports freeze, you are not allowed to
+	      commit anything to the tree without explicit approval
+	      from the Ports Management Team.  <quote>Explicit
+	      approval</quote> here means that you send a patch to
+	      the Ports Management Team for review and get a reply
+	      saying, <quote>Go ahead and commit it.</quote> 
+	    </para>
+
+	    <para>Not everything is allowed to be committed during
+	      a freeze.  Please see the <ulink
+		url="&url.base/portmgr/qa.html">Portmgr Quality
+		Assurance page</ulink> for more information.
+	    </para>
+
+	    <para>Note that you do not have implicit permission to fix
+	      a port during the freeze just because it is
+	      broken.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>How do I know when the ports freeze starts?</para>
+	  </question>
+
+	  <answer>
+	    <para>The ports management team will send out warning
+	      messages to the &a.ports; and &a.committers;
+	      announcing the start of the impending release, usually
+	      two or three weeks in advance.  The exact starting time
+	      will not be determined until a few days before the
+	      actual release.  This is because the ports freeze has to
+	      be synchronized with the release, and it is usually not
+	      known until then when exactly the release will be
+	      rolled.</para>
+
+	    <para>When the freeze starts, there will be another
+	      announcement to the &a.ports; and &a.committers;, of course.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>How do I know when the ports freeze ends?</para>
+	  </question>
+
+	  <answer>
+	    <para>A few hours after the release, the ports management team
+	      will send out a mail to the &a.ports; and &a.committers;
+	      announcing the end of the ports freeze.  Note that the
+	      release being cut does not automatically end the freeze.
+	      We have to make sure there will not be any last minute
+	      snafus that result in an immediate re-rolling of the
+	      release.</para>
+	  </answer>
+	</qandaentry>
+      </qandadiv>
+
+      <qandadiv>
+	<title>Creating a New Category</title>
+
+	<qandaentry>
+	  <question>
+	    <para>What is the procedure for creating a new category?</para>
+	  </question>
+
+	  <answer>
+	    <para>Please see
+	      <ulink url="&url.books.porters-handbook;/makefile-categories.html#PROPOSING-CATEGORIES">
+	      Proposing a New Category</ulink> in the Porter's Handbook.
+	      Once that procedure has been followed and the PR has been
+	      assigned to &a.portmgr;, it is their decision whether or
+	      not to approve it.  If they do, it is their responsibility
+	      to do the following:</para>
+
+	    <procedure>
+	      <step>
+		<para>Perform any needed repocopies.  (This only applies
+		  to physical categories.)</para>
+	      </step>
+
+	      <step>
+		<para>Update the <makevar>VALID_CATEGORIES</makevar>
+		  definition in <filename>ports/Mk/bsd.port.mk</filename>.
+		</para>
+	      </step>
+
+	      <step>
+		<para>Assign the PR back to you.</para>
+	      </step>
+	    </procedure>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>What do I need to do to implement a new physical
+	      category?</para>
+	  </question>
+
+	  <answer>
+	    <para>The procedure is a strict superset of the one to
+	      repocopy individual ports (see above).</para>
+
+	      <procedure>
+		<step>
+		  <para>Upgrade each copied port's
+		    <filename>Makefile</filename>.  Do not connect the
+		    new category to the build yet.</para>
+
+		  <para>To do this, you will need to:</para>
+		    <procedure>
+		      <step>
+			<para>Change the port's <makevar>CATEGORIES</makevar>
+			  (this was the point of the exercise, remember?)
+			  The new category should be listed
+			  <emphasis>first</emphasis>.  This will help to
+			  ensure that the the <makevar>PKGORIGIN</makevar>
+			  is correct.</para>
+		      </step>
+
+		      <step>
+			<para>Run a <command>make describe</command>.  Since
+			  the top-level <command>make index</command> that
+			  you will be running in a few steps is an iteration
+			  of <command>make describe</command> over the entire
+			  ports hierarchy, catching any errors here will
+			  save you having to re-run that step later on.</para>
+		      </step>
+
+		      <step>
+			<para>If you want to be really thorough, now might
+			  be a good time to run &man.portlint.1;.</para>
+		      </step>
+		    </procedure>
+		</step>
+
+		<step>
+		  <para>Check that the <makevar>PKGORIGIN</makevar>s are
+		    correct.  The ports system uses each port's
+		    <makevar>CATEGORIES</makevar> entry to create
+		    its <makevar>PKGORIGIN</makevar>, which is used to
+		    connect installed packages to the port directory they
+		    were built from. If this entry is wrong, common port
+		    tools like &man.pkg.version.1; and
+		    &man.portupgrade.1; fail.</para>
+
+		  <para>To do this, use the <filename>chkorigin.sh</filename>
+		    tool, as follows: <command>env
+		    PORTSDIR=<replaceable>/path/to/ports</replaceable>
+		    sh -e <replaceable>/path/to/ports</replaceable>/Tools/scripts/chkorigin.sh
+		    </command>.  This will check <emphasis>every</emphasis>
+		    port in the ports tree, even those not connected to the
+		    build, so you can run it directly after the repocopy.
+		    Hint: do not forget to look at the
+		    <makevar>PKGORIGIN</makevar>s of any slave ports of the
+		    ports you just repocopied!</para>
+		</step>
+
+		<step>
+		  <para>On your own local system, test the proposed
+		    changes: first, comment out the
+		    <makevar>SUBDIR</makevar> entries in the old
+		    ports' categories' <filename>Makefile</filename>s;
+		    then enable building the new category in
+		    <filename>ports/Makefile</filename>.
+		    Run <command>make checksubdirs</command> in the
+		    affected category directories to check the
+		    <makevar>SUBDIR</makevar> entries.  Next, in
+		    the <filename class="directory">ports/</filename>
+		    directory, run <command>make index</command>.  This
+		    can take over 40 minutes on even modern systems;
+		    however, it is a necessary step to prevent problems
+		    for other people.</para>
+		</step>
+
+		<step>
+		  <para>Once this is done, you can commit the
+		    updated <filename>ports/Makefile</filename> to
+		    connect the new category to the build and also
+		    commit the <filename>Makefile</filename> changes
+		    for the old category or categories.</para>
+		</step>
+
+		<step>
+		  <para>Add appropriate entries to
+		    <filename>ports/MOVED</filename>.</para>
+		</step>
+
+		<step>
+		  <para>Update the instructions for &man.cvsup.1;:</para>
+
+		  <itemizedlist>
+		    <listitem>
+		      <para>
+			add the category to
+			<filename>distrib/cvsup/sup/README</filename>
+		      </para>
+		    </listitem>
+
+		    <listitem>
+		      <para>
+			adding the following files into
+			<filename>distrib/cvsup/sup/ports-<replaceable>categoryname</replaceable></filename>:
+			<filename>list.cvs</filename> and
+			<filename>releases</filename>.</para>
+		    </listitem>
+
+		    <listitem>
+		      <para>
+			add the category to
+			<filename>src/share/examples/cvsup/ports-supfile</filename>
+		      </para>
+		    </listitem>
+		  </itemizedlist>
+
+		  <para>
+		    (Note: these are
+		    in the src, not the ports, repository).  If you
+		    are not a src committer, you will need to submit
+		    a PR for this.</para>
+		</step>
+
+		<step>
+		  <para>
+		    Update the list of categories used by &man.sysinstall.8;
+		    in <filename>src/usr.sbin/sysinstall</filename>.</para>
+		</step>
+
+		<step>
+		  <para>Update the documentation by modifying the
+		    following:</para>
+
+		  <itemizedlist>
+		    <listitem>
+		      <para>the section of the Handbook that lists the
+			<ulink url="&url.books.handbook;/cvsup.html#CVSUP-COLLEC">
+			cvsup collections</ulink>.</para>
+		    </listitem>
+
+		    <listitem>
+		      <para>the
+		    <ulink url="&url.books.porters-handbook;/makefile-categories.html#PORTING-CATEGORIES">
+		    list of categories</ulink> in the Porter's Handbook</para>
+		    </listitem>
+
+		    <listitem>
+		      <para>
+			<filename>www/en/ports/categories</filename>.
+			Note that these are now displayed by sub-groups,
+			as specified in
+			<filename>www/en/ports/categories.descriptions</filename>.
+		      </para>
+		    </listitem>
+		  </itemizedlist>
+		  <para>(Note: these are
+		    in the docs, not the ports, repository).  If you
+		    are not a docs committer, you will need to submit
+		    a PR for this.</para>
+		</step>
+
+		<step>
+		  <para>Only once all the above have been done, and
+		    no one is any longer reporting problems with the
+		    new ports, should the old ports be deleted from
+		    their previous locations in the repository.</para>
+		</step>
+	      </procedure>
+
+	     <para>It is not necessary to manually update the <ulink
+	      url="&url.base;/ports/index.html">ports web pages</ulink>
+	      to reflect the new category.  This is now done automatically
+	      via your change to <filename>www/en/ports/categories</filename>
+	      and the daily automated rebuild of <filename>INDEX</filename>.
+	    </para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>What do I need to do to implement a new virtual
+	      category?</para>
+	  </question>
+
+	  <answer>
+	    <para>This is much simpler than a physical category.  You
+	      only need to modify the following:</para>
+
+	    <itemizedlist>
+	      <listitem>
+		<para><filename>src/usr.sbin/sysinstall</filename></para>
+	      </listitem>
+
+	      <listitem>
+		<para>the
+		  <ulink url="&url.books.porters-handbook;/makefile-categories.html#PORTING-CATEGORIES">
+		  list of categories</ulink> in the Porter's Handbook</para>
+	      </listitem>
+
+	      <listitem>
+		<para><filename>www/en/ports/categories</filename></para>
+	      </listitem>
+	    </itemizedlist>
+	  </answer>
+	</qandaentry>
+      </qandadiv>
+
+      <qandadiv>
+	<title>Miscellaneous Questions</title>
+
+	<qandaentry>
+	  <question>
+	    <para>How do I know if my port is building correctly or
+	      not?</para>
+	  </question>
+
+	  <answer>
+	    <para>First, go check
+	      <ulink url="http://pointyhat.FreeBSD.org/errorlogs/"></ulink>.
+	      There you will find error logs from the latest package
+	      building runs on all supported platforms for the most
+	      recent branches.</para>
+
+	    <para>However, just because the port does not show up there
+	      does not mean it is building correctly.  (One of the
+	      dependencies may have failed, for instance.)  The relevant
+	      directories are available on <hostid>pointyhat</hostid> under
+	      <filename class="directory">/a/portbuild/&lt;arch&gt;/&lt;major_version&gt;</filename>
+	      so feel free to dig around.  Each architecture and version has
+	      the following subdirectories:</para>
+
+<programlisting>errors        error logs from latest &lt;major_version&gt; run on &lt;arch&gt;
+logs          all logs from latest &lt;major_version&gt; run on &lt;arch&gt;
+packages      packages from latest &lt;major_version&gt; run on &lt;arch&gt;
+bak/errors    error logs from last complete &lt;major_version&gt; run on &lt;arch&gt;
+bak/logs      all logs from last complete &lt;major_version&gt; run on &lt;arch&gt;
+bak/packages  packages from last complete &lt;major_version&gt; run on &lt;arch&gt;</programlisting>
+
+	    <para>Basically, if the port shows up in
+	      <filename>packages</filename>, or it is in
+	      <filename>logs</filename> but not in
+	      <filename>errors</filename>, it built fine.  (The
+	      <filename>errors</filename> directories are what you get
+	      from the web page.)</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>I added a new port.  Do I need to add it to the
+	      <filename>INDEX</filename>?</para>
+	  </question>
+
+	  <answer>
+	    <para>No, <filename>INDEX</filename> is no longer stored
+	      in the CVS repository.  The file can either be generated
+	      by running <command>make index</command>, or a pre-generated
+	      version can be downloaded with <command>make
+	      fetchindex</command>.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>Are there any other files I am not allowed to
+	      touch?</para>
+	  </question>
+
+	  <answer>
+	    <para>Any file directly under <filename>ports/</filename>, or
+	      any file under a subdirectory that starts with an
+	      uppercase letter (<filename>Mk/</filename>,
+	      <filename>Tools/</filename>, etc.).  In particular, the
+	      ports management team is very protective of
+	      <filename>ports/Mk/bsd.port*.mk</filename> so do not
+	      commit changes to those files unless you want to face his
+	      wra(i)th.</para>
+	  </answer>
+	</qandaentry>
+
+	<qandaentry>
+	  <question>
+	    <para>What is the proper procedure for updating the checksum
+	      for a port's distfile when the file changes without a
+	      version change?</para>
+	  </question>
+
+	  <answer>
+	    <para>When the checksum for a port's distfile is updated due
+	      to the author updating the file without changing the port's
+	      revision, the commit message should include a summary of
+	      the relevant diffs between the original and new distfile to
+	      ensure that the distfile has not been corrupted or
+	      maliciously altered.  If the current version of the port
+	      has been in the ports tree for a while, a copy of the old
+	      distfile will usually be available on the ftp servers;
+	      otherwise the author or maintainer should be contacted to
+	      find out why the distfile has changed.</para>
+	  </answer>
+	</qandaentry>
+      </qandadiv>
+    </qandaset>
+  </sect1>
+
+  <sect1 id="non-committers">
+    <title>Issues Specific To Developers Who Are Not Committers</title>
+
+    <para>A few people who have access to the FreeBSD machines do not
+      have commit bits.  For instance, the project is willing to give
+      access to the GNATS database to contributors who have shown interest
+      and dedication in working on Problem Reports.</para>
+
+    <para>Almost all of this document will apply to these developers as
+      well (except things specific to commits and the mailing list
+      memberships that go with them).  In particular, we recommend that
+      you read:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>
+	  <link linkend="admin">Administrative Details</link>
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  <link linkend="conventions-everyone">Conventions</link>
+	</para>
+
+	<note>
+	  <para>You should get your mentor to add you to the
+	    <quote>Additional Contributors</quote>
+	    (<filename>doc/en_US.ISO8859-1/articles/contributors/contrib.additional.sgml</filename>),
+	    if you are not already listed there.</para>
+	</note>
+      </listitem>
+
+      <listitem>
+	<para>
+	  <link linkend="developer.relations">Developer Relations</link>
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  <link linkend="ssh.guide">SSH Quick-Start Guide</link>
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  <link linkend="rules">The FreeBSD Committers' Big List of Rules</link>
+	<para>
+      </listitem>
+    </itemizedlist>
+
+  </sect1>
+
+  <sect1 id="perks">
+    <title>Perks of the Job</title>
+
+    <para>Unfortunately, there are not many perks involved with being a
+      committer.  Recognition as a competent software engineer is probably
+      the only thing that will be of benefit in the long run.  However,
+      there are at least some perks:</para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>Direct access to <hostid>cvsup-master</hostid></term>
+
+	<listitem>
+	  <para>As a committer, you may apply to &a.kuriyama; for direct access
+	    to <hostid role="fqdn">cvsup-master.FreeBSD.org</hostid>,
+	    providing the public key output from <command>cvpasswd
+	    <replaceable>yourusername</replaceable>@FreeBSD.org
+	    freefall.FreeBSD.org</command>.  Please note: you must
+	    specify <hostid>freefall.FreeBSD.org</hostid> on the
+	    <command>cvpasswd</command> command line even though the
+	    actual server is <hostid>cvsup-master</hostid>.  Access to
+	    <hostid>cvsup-master</hostid> should not be overused as it is
+	    a busy machine.</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>Free 4-CD and DVD Sets</term>
+
+	<listitem>
+	  <para>&os; committers can get a free 4-CD or DVD set at
+	    conferences from <ulink url="http://www.freebsdmall.com">
+	      &os; Mall, Inc.</ulink>.  The sets are no longer available
+	    as a subscription due to the high shipment costs to
+	    countries outside the USA.</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+
+  <sect1 id="misc">
+    <title>Miscellaneous Questions</title>
+
+    <qandaset>
+      <qandaentry>
+	<question>
+	  <para>Why are trivial or cosmetic changes to files on a vendor
+	    branch a bad idea?</para>
+	</question>
+
+	<answer>
+	  <itemizedlist>
+	    <listitem>
+	      <para>From now on, every new vendor release of that file will
+		need to have patches merged in by hand.</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>From now on, every new vendor release of that file will
+		need to have patches <emphasis>verified</emphasis> by hand.</para>
+	    </listitem>
+
+	    <listitem>
+	      <para>The <option>-j</option> option does not work very well.
+		Ask &a.obrien; for horror stories.</para>
+	    </listitem>
+	  </itemizedlist>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>How do I add a new file to a branch?</para>
+	</question>
+
+	<answer>
+	  <para>To add a file onto a branch, simply checkout or update
+	  to the branch you want to add to and then add the file using
+	  the add operation as you normally would.  This works
+	  fine for the <literal>doc</literal> and
+	  <literal>ports</literal> trees.  The <literal>src</literal>
+	  tree uses SVN and requires more care because of the
+	  <literal>mergeinfo</literal> properties.  See section 1.4.6
+	  of the <ulink url="http://wiki.freebsd.org/SubversionPrimer">
+	    Subversion Primer</ulink> for details.  Refer to <ulink
+	    url="http://wiki.freebsd.org/SubversionPrimer/Merging">
+	    SubversionPrimer/Merging</ulink> for details on how to
+	  perform an MFC.</para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>What <quote>meta</quote> information should I include in a
+	    commit message?</para>
+	</question>
+
+	<answer>
+	  <para>As well as including an informative message with each commit
+	    you may need to include some additional information as
+	    well.</para>
+
+	  <para>This information consists of one or more lines containing the
+	    key word or phrase, a colon, tabs for formatting, and then the
+	    additional information.</para>
+
+	  <para>The key words or phrases are:</para>
+
+	  <informaltable frame="none" pgwide="1">
+	    <tgroup cols="2">
+	      <tbody>
+		<row>
+		  <entry><literal>PR:</literal></entry>
+		  <entry>The problem report (if any) which is affected
+		    (typically, by being closed) by this commit.</entry>
+		</row>
+
+		<row>
+		  <entry><literal>Submitted by:</literal></entry>
+		  <entry>The name and e-mail address of the person that
+		    submitted the fix; for committers, just the username on
+		    the FreeBSD cluster.</entry>
+		</row>
+
+		<row>
+		  <entry><literal>Reviewed by:</literal></entry>
+		  <entry>The name and e-mail address of the person or people
+		    that reviewed the change; for committers, just the
+		    username on the FreeBSD cluster. If a patch was
+		    submitted to a mailing list for review, and the review
+		    was favorable, then just include the list name.</entry>
+		</row>
+
+		<row>
+		  <entry><literal>Approved by:</literal></entry>
+		  <entry>The name and e-mail address of the person or people
+		    that approved the change; for committers, just the
+		    username on the FreeBSD cluster. It is customary to get
+		    prior approval for a commit if it is to an area of the
+		    tree to which you do not usually commit.  In addition,
+		    during the run up to a new release all commits
+		    <emphasis>must</emphasis> be approved by the release
+		    engineering team.  If these are your first commits then
+		    you should have passed them past your mentor first, and
+		    you should list your mentor, as in
+		    ``<replaceable>username-of-mentor</replaceable>
+		    <literal>(mentor)</literal>''.
+		 </entry>
+		</row>
+
+		<row>
+		  <entry><literal>Obtained from:</literal></entry>
+		  <entry>The name of the project (if any) from which the code
+		    was obtained.</entry>
+		</row>
+
+		<row>
+		  <entry><literal>MFC after:</literal></entry>
+
+		  <entry>If you wish to receive an e-mail reminder to
+		    <acronym>MFC</acronym> at a later date, specify the
+		    number of days, weeks, or months after which an
+		    <acronym>MFC</acronym> is planned.</entry>
+		</row>
+
+		<row>
+		  <entry><literal>Security:</literal></entry>
+
+		  <entry>If the change is related to a security
+		    vulnerability or security exposure, include one or
+		    more references or a description of the
+		    issue.</entry>
+		</row>
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+
+	  <example>
+	    <title>Commit log for a commit based on a PR</title>
+
+	    <para>You want to commit a change based on a PR submitted by John
+	      Smith containing a patch.  The end of the commit message should
+	      look something like this.</para>
+
+	    <programlisting>...
+
+PR:                foo/12345
+Submitted by:	   John Smith &lt;John.Smith@example.com></programlisting>
+	  </example>
+
+	  <example>
+	    <title>Commit log for a commit needing review</title>
+
+	    <para>You want to change the virtual memory system.  You have
+	      posted patches to the appropriate mailing list (in this case,
+	      <literal>freebsd-arch</literal>) and the changes have been
+	      approved.</para>
+
+	    <programlisting>...
+
+Reviewed by:       -arch</programlisting>
+	  </example>
+
+	  <example>
+	    <title>Commit log for a commit needing approval</title>
+
+	    <para>You want to commit a change to a section of the tree with a
+	      MAINTAINER assigned.  You have collaborated with the listed
+	      MAINTAINER, who has told you to go ahead and commit.</para>
+
+	    <programlisting>...
+
+Approved by:	    <replaceable>abc</replaceable></programlisting>
+
+	    <para>Where <replaceable>abc</replaceable> is the account name of
+	      the person who approved.</para>
+	  </example>
+
+	  <example>
+	    <title>Commit log for a commit bringing in code from
+	      OpenBSD</title>
+
+	    <para>You want to commit some code based on work done in the
+	      OpenBSD project.</para>
+
+	    <programlisting>...
+
+Obtained from:      OpenBSD</programlisting>
+	  </example>
+
+	  <example>
+	    <title>Commit log for a change to &os.current; with a planned
+	      commit to &os.stable; to follow at a later date.</title>
+
+	    <para>You want to commit some code which will be merged from
+	      &os.current; into the &os.stable; branch after two
+	      weeks.</para>
+
+	    <programlisting>...
+
+MFC after:      <replaceable>2 weeks</replaceable></programlisting>
+
+	    <para>Where <replaceable>2</replaceable> is the number of days,
+	      weeks, or months after which an <acronym>MFC</acronym> is
+	      planned.  The <replaceable>weeks</replaceable> option may be
+	      <literal>day</literal>, <literal>days</literal>,
+	      <literal>week</literal>, <literal>weeks</literal>,
+	      <literal>month</literal>, <literal>months</literal>,
+	      or may be left off (in which case, days will be assumed).</para>
+	  </example>
+
+	  <para>In some cases you may need to combine some of these.</para>
+
+	  <para>Consider the situation where a user has submitted a PR
+	    containing code from the NetBSD project.  You are looking at the
+	    PR, but it is not an area of the tree you normally work in, so
+	    you have decided to get the change reviewed by the
+	    <literal>arch</literal> mailing list.  Since the change is
+	    complex, you opt to <acronym>MFC</acronym> after one month to
+	    allow adequate testing.</para>
+
+	  <para>The extra information to include in the commit would look
+	    something like</para>
+
+	  <programlisting>PR:                 foo/54321
+Submitted by:       John Smith &lt;John.Smith@example.com>
+Reviewed by:        -arch
+Obtained from:      NetBSD
+MFC after:          1 month</programlisting>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>How do I access <hostid
+	    role="fqdn">people.FreeBSD.org</hostid> to put up personal
+	    or project information?</para>
+	</question>
+
+	<answer>
+	  <para><hostid role="fqdn">people.FreeBSD.org</hostid> is the
+	    same as <hostid
+	    role="fqdn">freefall.FreeBSD.org</hostid>. Just create a
+	    <filename>public_html</filename> directory.  Anything you
+	    place in that directory will automatically be visible
+	    under <ulink url="http://people.FreeBSD.org/"></ulink>.</para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>Where are the mailing list archives stored?</para>
+	</question>
+
+	<answer>
+	  <para>The mailing lists are archived under <filename>/g/mail</filename>
+	    which will show up as <filename>/hub/g/mail</filename> with &man.pwd.1;.
+	    This location is accessible from any machine on the FreeBSD cluster.</para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+	<question>
+	  <para>I would like to mentor a new committer.  What process
+	    do I need to follow?</para>
+	</question>
+
+	<answer>
+	  <para>See the <ulink
+	    url="http://www.freebsd.org/internal/new-account.html">New
+	      Account Creation Procedure</ulink> document on the internal
+	    pages.</para>
+	</answer>
+      </qandaentry>
+    </qandaset>
+  </sect1>
+</article>

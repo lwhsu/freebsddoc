@@ -1,0 +1,567 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $Id: chapter.sgml,v 1.5 2003/01/29 06:47:56 statue Exp $
+
+     Translate into Chinese by ijliao@csie.nctu.edu.tw
+
+     English Version: 
+-->
+
+<chapter id="mail">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+        <firstname>Bill</firstname>
+        <surname>Lloyd</surname>
+        <contrib>Original work by </contrib>
+      </author>
+    </authorgroup>
+    <authorgroup>
+      <author>
+        <firstname>Jim</firstname>
+        <surname>Mock</surname>
+        <contrib>Rewritten by </contrib>
+        <!-- 2 Dec 1999 -->
+      </author>
+    </authorgroup>
+  </chapterinfo>
+
+  <title>電子郵件</title>
+  
+  <para>電子郵件系統的設定是許多 <link
+      linkend="bibliography">系統管理</link> 書籍的主題之一。
+    如果您要做的不止是為您所屬的網路設立一臺郵件主機的話，
+    您需要的是業界程度的支援。</para>
+  
+  <para>部份的電子郵件系統設定是控制於領域名稱系統 (DNS)
+    之下。如果您想要自己架設 DNS 主機的話，請仔細檢查您的
+    <filename>/etc/namedb</filename> 目錄；如果想要獲得更進一步的資訊，
+    請 <command>man -k named</command>。</para>
+      
+  <sect1>
+    <title>基礎資訊</title>
+    
+    <para>這些都是跟電子郵件的交換有關係的幾個主要程式。
+      所謂的 &ldquo;郵件主機&rdquo;
+      就是指負責您的機器或是您機器所屬網路的電子郵件收發的主機。</para>
+	
+    <sect2>
+      <title>使用者程式</title>
+      
+      <para>所謂的使用者程式就是例如 <application>elm</application>、
+	<application>pine</application>、<application>mail</application>
+	這些程式，或是更複雜一點的，例如 WWW 瀏覽器。
+	這些程式只是單純地經由呼叫 <command>sendmail</command> 程式或是經由
+	TCP 傳送，把所有的郵件傳遞工作交給 &ldquo;郵件主機&rdquo; 來處理。
+	</para>
+    </sect2>
+    
+    <sect2>
+      <title>郵件主機伺服端程式</title>
+      
+      <para>所謂的郵件主機伺服端程式通常是指那些在背景執行的
+	<command>sendmail</command>或是<command>smail</command>。
+	如果想要把它停掉，只要修改一下 <filename>/etc/rc.conf</filename>
+	裡的參數 (如果是 FreeBSD 2.2.2 以前的版本則要修改 
+	<filename>/etc/sysconfig</filename>)。除非您有什麼特殊的理由，
+	例如您正在建構一個 <link linkend="firewalls">Firewall</link>，
+	否則最好不要把它停掉。</para>
+	  
+      <para>有一件您必須特別注意的事是，<command>sendmail</command>
+	往往是一個站臺上存有潛在安全漏洞的地方。某些版本的
+	<command>sendmail</command> 程式有系統安全方面的問題。</para>
+      
+      <para><command>sendmail</command> 做的事有兩種，收信和發信。</para>
+      
+      <para>如果 <command>sendmail</command> 必需要從您的機器把信寄出去的話，
+	它會向 DNS 詢問您的收信者的信是由那部機器負責接收的。</para>
+	  
+      <para>如果它擔任的是傳遞信件的工作的話，<command>sendmail</command>
+	它會把信從本地端的郵件佇列中取出，經由 Internet
+	之後把信送給收信機器的 sendmail 程式。</para>
+    </sect2>
+    
+    <sect2>
+      <title>DNS &mdash; 領域名稱服務</title>
+      
+      <para>領域名稱系統以及它的伺服程 <command>named</command>
+	的資料庫中存放著主機名稱與IP 位址相互之間的對映表。
+	IP 位址被存放在 A 記錄中，而 MX
+	記錄存放的是負責收取您郵件的主機名稱。如果您沒有指定 MX 
+	記錄的話，電子郵件會直接遞送到您的主機上。</para>
+	  
+      <para>除非您自己管理您自己的 DNS 主機，否則您無法更動到 DNS 
+	上面的資料。如果您是經由 ISP 上網，請您直接向他們洽詢。</para>
+    </sect2>
+    
+    <sect2>
+      <title>POP 主機</title>
+      
+      <para>POP 程式從您的信箱中把郵件讀出來並將它傳送給您的瀏覽器。
+	如果您的主機上有提供POP 取信服務的話，您要做到下列兩件事：</para>
+	  
+      <procedure>
+	<step>
+	  <para>在 <filename>/usr/ports</filename> 或是 Packages Collection
+	    中取得 POP 程式，從 <ulink 
+	      URL="../ports/mail.html">Ports collection</ulink> 中可以得到。
+	    這份使用手冊對 <link linkend="ports">Ports</link>
+	    系統有完整的介紹。</para>
+	</step>
+	
+	<step>
+	  <para>修改 <filename>/etc/inetd.conf</filename> 
+	    使得系統可以載入POP 伺服器。</para>
+	</step>
+      </procedure>
+      
+      <para>您可以在 POP 軟體套件中找到使用方法，仔細地研讀它們吧。</para>
+    </sect2>
+  </sect1>
+  
+  <sect1>
+    <title>組態設定</title>
+    
+    <sect2>
+      <title>基礎</title>
+      
+      <para>只要您的 <filename>/etc/resolv.conf</filename>
+	檔設定妥當或是您本身提供了 DNS 服務，一旦您把FreeBSD
+	機器安裝好了，您就可以寄信出去了。
+	如果您想叫其他機器負責處理所有寄給您的信，有兩種方法：</para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para>安裝領域名稱伺服器 (<command>man -k named</command>) 
+	    並且擁有自己的領域名稱
+	    <hostid role="domainname">smallminingco.com
+	    </hostid></para>
+	</listitem>
+	
+	<listitem>
+	  <para>取得目前為您遞送郵件的 DNS 名稱，例如：
+	    <hostid role="fqdn">dorm6.ahouse.school.edu </hostid></para>
+	</listitem>
+      </itemizedlist>
+      
+      <para>不管您選用那一種方法，如果您想讓電子郵件直接送到您的機器上，
+	您的機器必須擁有完整的網際網路連線。您必須擁有一個不變的 IP 
+	位址，也就是說不得使用 PPP 的動態位址。如果您的機器位於防火牆內部，
+	那麼防火牆就必須把 smtp 的通訊轉送給您。設定
+	<filename>/etc/services</filename>：</para>
+
+      <programlisting>
+smtp	      25/tcp mail         #Simple Mail Transfer</programlisting>
+
+      <para>如果您想要令電子郵件直接寄到您的機器上，您必須確定 DNS 上的
+	MX 記錄有正確地指向您機器的位址，或是 DNS 上沒有您機器的 MX 記錄。
+	</para>
+      
+      <para>試試下面這些指令：</para>
+      
+      <screen>&prompt.root; <userinput>hostname</userinput>
+newbsdbox.freebsd.org
+&prompt.root; <userinput>host newbsdbox.freebsd.org</userinput>
+newbsdbox.freebsd.org has address 204.216.27.xx</screen>
+	    
+      <para>如果在您的機器上面執行出來的結果跟上面一樣的話，
+	直接寄信給<email>root@newbsdbox.freebsd.org</email> 
+	不會造成任何錯誤。</para>
+      
+      <para>但是如果您的執行結果像這樣：</para>
+      
+      <screen>&prompt.root; <userinput>host newbsdbox.freebsd.org</userinput>
+newbsdbox.FreeBSD.org has address 204.216.27.xx
+newbsdbox.FreeBSD.org mail is handled (pri=10) by freefall.FreeBSD.org</screen>
+	    
+      <para>所有寄到您的機器上面的電子郵件都會被送給 
+	<hostid>freefall</hostid> 上的同名使用者。</para>
+      
+      <para>這些資訊都記錄在您的領域名稱伺服器中，
+	而這部機器必須是列在您 <filename>/etc/resolv.conf</filename>
+	定中的主要名稱伺服器。</para>
+      
+      <para>負責記錄郵件寄送的 DNS 記錄是 MX (Mail eXchange 郵件交換)。
+	如果不指定任何 MX 記錄，則電子郵件將會被送往 Address 記錄的機器。
+	</para>
+	  
+      <para><hostid role="fqdn">freefall.FreeBSD.org</hostid>
+	的 MX 記錄如下：</para>
+      
+      <programlisting>
+freefall                       MX    30   mail.crl.net
+freefall                       MX    40   agora.rdrop.com
+freefall                       HINFO Pentium     FreeBSD
+freefall                       MX    10   freefall.FreeBSD.org
+freefall                       MX    20   who.cdrom.com
+freefall                       A     204.216.27.xx
+freefall                       CNAME www.FreeBSD.org</programlisting>
+	  
+      <para><hostid>freefall</hostid> 設定了許多 MX 記錄，
+	數字最小的機器是負責接收信件的，而其他的 MX 機器負責在
+	<hostid>freefall</hostid> 忙碌或關機的時候暫時把郵件佇放起來。</para>
+	  
+      <para>最好的使用方式是不同的 MX 機器有不同的網際網路連線方式。
+	ISP 或是其他友善的單位都可以提供這樣的服務。</para>
+	  
+      <para><command>dig</command>、<command>nslookup</command> 和
+	<command>host</command> 是您在做這方面設定時的好幫手。</para>
+    </sect2>
+    
+    <sect2 id="mail-domain">
+      <title>整個領域的郵件 (網路)</title>
+      
+      <para>如果您想要設立一整個網路的郵件主機，
+	您必須把所有寄給網路工作站的信件給重導向；換句話說，您必須把所有寄往
+	<hostid role="domainname">*.smallminingco.com </hostid>
+	的郵件都導向到某一部機器，也就是您的&ldquo;郵件主機&rdquo;。</para>
+	  
+      <para>而使用者就必須經由 POP 或是 telnet
+	的方式來拿回他們的郵件。</para>
+	  
+      <para>使用者的<emphasis>同名帳號</emphasis>在兩邊的機器上都必須存在，
+	請使用 <command>adduser</command> 這個程式來完成這個要求。
+	如果您把使用者的 <literal>shell</literal> 設成
+	<literal>/nonexistent</literal>，則這個使用者將無法登入主機。</para>
+	
+      <para>您要使用的郵件主機必須設計成能為每一臺工作站做郵件交換的工作。
+	這部份的設定是寫在 DNS 中 (也就是 BIND，named)。
+	請參閱網管書籍以獲得更進一步的資訊。</para>
+	  
+      <para>簡單來說，您只要在 DNS 主機中加入下列設定即可：</para>
+
+      <programlisting>
+pc24.smallminingco.com	A <replaceable>xxx.xxx.xxx.xxx</replaceable>		; Workstation ip
+                       MX  10 smtp.smallminingco.com	; Your mailhost</programlisting>
+	  
+      <para>除非您自己有執行 DNS 程式，否則您無法自行做上述更動。
+	如果您不想要自己執行DNS 程式，可以請您的 ISP 幫您做。</para>
+	  
+      <para>上面的設定會把寄往工作站的信重導向給郵件主機。
+	不管 A 記錄指到那裡，郵件一定會送到 MX 所指定的主機上去。</para>
+	  
+      <para>這個特性可以用來做虛擬郵件主機。</para>
+      
+      <para>範例</para>
+      
+      <para>我有一個顧客，他的領域名稱是 foo.bar；我想讓所有寄到
+	foo.bar 的信件都寄到我的主機 smtp.smalliap.com 上。
+	您必須在 DNS 中做如下設定：</para>
+
+      <programlisting>
+foo.bar                  MX  10	smtp.smalliap.com	; your mailhost</programlisting>
+
+      <para>如果您想要設定某個領域的郵件資訊的話，並不一定要提供 A 記錄。
+	也就是說，除非真的有一個 <filename>foo.bar</filename> 的 Address
+	記錄，否則 <command>ping foo.bar</command> 是無法正常工作的。</para>
+	  
+      <para>您必須告訴最後郵件主機的 <command>sendmail</command>
+	程式到底它應該接收那些機器的電子郵件。</para>
+	  
+      <para>把 <literal>pc24.smallminingco.com</literal> 加到您的
+	<filename>/etc/sendmail.cw</filename> 中 (如果您使用了 
+	<literal>FEATURE(use_cw_file)</literal> 的話)，或是在您的 
+	<literal>Cw myhost.smalliap.com</literal> 中加一行
+	<filename>/etc/sendmail.cf</filename>。</para>
+	  
+      <para>如果您想對 <command>sendmail</command> 做一些重大的改變的話，
+	您最好要安裝 <command>sendmail</command> 的原始程式。
+	原始程式裡面有很多文件可供參考。您可以在
+	<link linkend="sendmailuucp">UUCP 資訊</link>
+	這個節裡找到有關如何取得 <command>sendmail</command>
+	原始程式的資訊。</para>
+    </sect2>
+    
+    <sect2 id="sendmailuucp">
+      <title>設定 UUCP</title>
+      
+      <para><emphasis>從 FAQ 中借用過來的。</emphasis></para>
+      
+      <para>FreeBSD 所附的 <command>sendmail</command>
+	設定檔只適用於直接連接 Internet 的機器。
+	如果您的機器希望藉由 UUCP 來做信件交換的話，您必須另外安裝一個
+	<command>sendmail</command> 設定檔。</para>
+	  
+      <para>自己手動設定 <filename>/etc/sendmail.cf</filename> 
+	是基本教義派的行為。手動製作設定檔是一個更高抽象層次的行為；
+	Sendmail 第八版的一個重大改進就是可以使用 
+	<command>m4</command> 巨集來自動產生設定檔。
+	您可以使用這個目錄裡面的設定檔：
+	<filename>/usr/src/usr.sbin/sendmail/cf</filename></para>
+	  
+      <para>如果您在安裝系統時並沒有把所有的原始程式檔全部安裝進去，
+	有關 <command>sendmail</command> 
+	設定的一些相關檔案已經分出來放在另一個壓縮檔裡了。
+	假設您已經掛上 CD-ROM 了，您只要：</para>
+	  
+      <screen>&prompt.root; <userinput>cd /usr/src</userinput>
+&prompt.root; <userinput>tar -xvzf /cdrom/dists/src/ssmailcf.aa</userinput></screen>
+	  
+      <para>不要緊張，這只有數百 KB 而己。在 
+	<filename>cf</filename> 目錄中的 <filename>README</filename>
+	檔裡提供了對 m4 設定的簡單介紹。</para>
+	  
+      <para>我們建議您最好使用 <emphasis>mailertable</emphasis> 
+	的特性協助您使用 UUCP 來傳遞電子郵件。
+	<command>sendmail</command>
+	可以根據這個資料庫來決定電子郵件傳遞的路徑。</para>
+	  
+      <para>首先，您必須創造您自己的 <filename>.mc</filename> 檔。
+	您可以在 <filename>/usr/src/usr.sbin/sendmail/cf/cf</filename>
+	裡找到這些檔案。附近總有些例子可以拿來參考。
+	假設您的檔案叫做 <filename>foo.mc</filename>，
+	您只要這麼做就可以把它轉換成合法的 
+	<filename>sendmail.cf</filename> 檔：</para>
+      
+      <screen>&prompt.root; <userinput>cd /usr/src/usr.sbin/sendmail/cf/cf</userinput>
+&prompt.root; <userinput>make foo.cf</userinput></screen>
+	  
+      <para>如果您沒有 <filename>/usr/obj</filename> 這個目錄，您就：</para>
+	  
+      <screen>&prompt.root; <userinput>cp foo.cf /etc/sendmail.cf</userinput></screen>
+	  
+      <para>否則您就：</para>
+	  
+      <screen>&prompt.root; <userinput>cp /usr/obj/`pwd`/foo.cf /etc/sendmail.cf</userinput></screen>
+	  
+      <para>一個典型的 <filename>.mc</filename> 檔看起來像：</para>
+	  
+      <programlisting>
+include(`../m4/cf.m4')
+VERSIONID(`<replaceable>Your version number</replaceable>')
+OSTYPE(bsd4.4)
+
+FEATURE(nodns)
+FEATURE(nocanonify)
+FEATURE(mailertable)
+
+define(`UUCP_RELAY', <replaceable>your.uucp.relay</replaceable>)
+define(`UUCP_MAX_SIZE', 200000)
+
+MAILER(local)
+MAILER(smtp)
+MAILER(uucp)
+
+Cw    <replaceable>your.alias.host.name</replaceable>
+Cw    <replaceable>youruucpnodename.UUCP</replaceable></programlisting>
+	  
+      <para>當傳遞電子郵件時，<literal>nodns</literal> 及 
+	<literal>nocanonify</literal> 的目的是抑制 DNS 的使用。
+	因為某些奇怪的理由，我們必須使用 <literal>UUCP_RELAY</literal>
+	這個設定，不要問為什麼。您只要填入一個能夠處理 .UUCP 
+	虛擬網域位址的主機名稱即可；最恰當的填法就是把您 ISP
+	的郵件轉送主機的名字填進去。</para>
+	  
+      <para>一旦您做了這個設定，您還需要一個叫做
+	<filename>/etc/mailertable</filename> 的檔案。下面是一個典型的例子：
+	</para>
+      
+      <programlisting>
+#
+# makemap hash /etc/mailertable.db &lt; /etc/mailertable
+#
+horus.interface-business.de   uucp-dom:horus
+.interface-business.de        uucp-dom:if-bus
+interface-business.de         uucp-dom:if-bus
+.heep.sax.de                  smtp8:%1 horus.UUCP
+uucp-dom:horus                if-bus.UUCP
+uucp-dom:if-bus .	      uucp-dom:sax</programlisting>
+	  
+      <para>就像您所看到的，這是一個實際存在檔案的一部份。
+	前三行主要是在處理一些不經由預設郵件遞送路徑，
+	反而經由 UUCP 鄰居來做捷徑的特例。
+	下一行處理的是可以透過 SMTP 來送的區域乙太網路郵件。
+	最後是一些以 .UUCP 虛擬網域記名法所記錄的 UUCP 鄰居，
+	這是為了要用 <literal>uucp-neighbor!recipient</literal>
+	來蓋掉預設的規則。最後一行往往只有單一一個點，
+	把所有無法由上面幾條規則處理的郵件都送往您的某個 UUCP 鄰居，
+	此時它的身份就是您的郵件閘道器。所有 <literal>uucp-dom:</literal>
+	後面的節點名稱必須是一個合法的 UUCP 鄰居，您可以用 
+	<command>uuname</command> 指令去驗證其合法性。</para>
+	  
+      <para>剩下來的工作就是在使用它之前把它轉換成 DBM 格式的資料庫檔，
+	您最好把轉換所用的命令當作一個註解寫在 mailertable 的最上面。
+	您必須在每次改 <filename>mailertable</filename> 之後執行它。</para>
+	  
+      <para>最後一個提示：如果您不確定到底您的郵件遶送路徑派不派得上用場，
+	不要忘了 <command>sendmail</command> 的 <option>-bt</option>
+	選項。這個選項可以啟動 <command>sendmail</command> 的
+	&ldquo;位址測試模式&rdquo;；用法很簡單，只要先輸入一個
+	<literal>0</literal>，後面接上您要測試的郵件位址即可。
+	結果的最後一行會告訴您到底用的是那一個郵件代理程式、
+	是因為送到那裡所以才用那個代理程式、
+	還有到底您會寄到那個郵件位址去 (可能已經經過轉換)。
+	只要按 Control-D 就可以離開這個測試模式。</para>
+	  
+      <screen>&prompt.user; <userinput>sendmail -bt</userinput>
+ADDRESS TEST MODE (ruleset 3 NOT automatically invoked)
+Enter &lt;ruleset&gt; &lt;address&gt;
+<prompt>&gt;</prompt> <userinput>0 foo@interface-business.de</userinput>
+rewrite: ruleset  0   input: foo @ interface-business . de
+&hellip;
+rewrite: ruleset  0 returns: $# uucp-dom $@ if-bus $: foo &lt; @ interface-business . de</screen>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="mailfaq">
+    <title>FAQ</title>
+    
+    <para><emphasis>從 FAQ 中搬過來的。</emphasis></para>
+    
+    <sect2>
+      <title>什麼我必須在我的機器上用 FQDN 來表示其他機器呢？</title>
+      
+      <para>有時候您會發現您要找的機器是在另外一個領域裡面；
+	例如說，假設您位於 <hostid role="fqdn">foo.bar.edu</hostid>，
+	而您要找一台在 <hostid role="domainname">bar.edu</hostid> 中叫
+	<hostid>mumble</hostid> 的機器，您就必須用 
+	fully-qualified domain name <hostid
+	  role="fqdn">mumble.bar.edu</hostid> 而不是用
+	<hostid>mumble</hostid>。</para>
+	  
+      <para>照慣例來說，這在 BSD BIND resolver 中是可行的。
+	然後目前隨 FreeBSD附上的 <application>BIND</application> 
+	早已不為除了同一領域外的非 FQDN 提供縮寫的服務了。
+	因此這個不完整的主機名稱 <hostid>mumble</hostid> 可能是指
+	<hostid role="fqdn">mumble.foo.bar.edu</hostid>；如果不是的話，
+	系統就會往根領域搜尋。</para>
+	  
+      <para>這跟它前一版的行為是不一樣的，前一版會繼續找
+	<hostid role="domainname">mumble.bar.edu</hostid> 以及
+	<hostid role="domainname">mumble.edu</hostid>。
+	如果您想知道為什麼這種行為是不好的，甚至會造成安全方面的漏洞，
+	請您參閱 RFC 1535。</para>
+	  
+      <para>>如果您想要求一個良好的工作環境，您可以使用
+	  
+	<programlisting>
+search foo.bar.edu bar.edu</programlisting>
+	  
+	而不是前一版所用的
+	  
+	<programlisting>
+domain foo.bar.edu</programlisting>
+	  
+	把這一行放在 <filename>/etc/resolv.conf</filename> 中。
+	然而，請一定要確定這個搜尋的順序不會造成 RFC 1535 中所謂的 
+	&ldquo;boundary between local and public administration&rdquo;問題。
+	</para>
+    </sect2>
+    
+    <sect2>
+      <title>Sendmail 說 <errorname>mail loops back to
+	  myself</errorname></title>
+      
+      <para>下面是 sendmail FAQ 中的回答：</para>
+      
+      <programlisting>
+* 我得到了一個如下的訊息： "Local configuration error"
+
+553 relay.domain.net config error: mail loops back to myself
+554 &lt;user@domain.net&gt;... Local configuration error
+
+我要怎麼解決這個問題？
+
+您是否有問過寄到您領域 (如：domain.net) 的郵件是否由 MX
+記錄而被轉送到某特定的主機 (在這個例子中是 relay.domain.net)，
+而這個轉送的主機不認為它自己是 domain.net。
+請把 domain.net 加到 /etc/sendmail.cw 
+(如果您用 FEATURE(use_cw_file) 的話) 
+或是把 "Cw domain.net" 加到 /etc/sendmail.cf。</programlisting>
+	  
+      <para>sendmail FAQ 可以在 
+	<filename>/usr/src/usr.sbin/sendmail</filename> 裡找到，
+	如果您想要對您的郵件設定動任何手腳，我建議您先把它看過。</para>
+    </sect2>
+    
+    <sect2>
+      <title>我要怎麼做才能透過一個撥接上網的 PPP 主機使用電子郵件？</title>
+      
+      <para>您想要把區域網路上的 FreeBSD 主機連到網際網路上，而這臺 FreeBSD
+	主機將會成為這個區域網路的郵件閘道器。
+	這個 PPP 連線不必一直保持在連線狀態。</para>
+
+      <para>至少有兩個方法可以達到這個要求。</para>
+      
+      <para>另外的方法就是使用 UUCP。</para>
+      
+      <para>重點在於您要找到一個網路主機來為您的網域當次要 MX
+	主機。舉例來說：</para>
+
+      <programlisting>
+bigco.com.	      MX	10	bigco.com.
+                      MX        20      smalliap.com.</programlisting>
+	  
+      <para>您只能指定一部主機當做您的最終收信主機 
+	( 在 <literal>Cw bigco.com</literal> 的
+	<filename>/etc/sendmail.cf</filename>) 。
+	(譯註：此處指您不能同時把兩台以上機器的 MX 值都設成最小。)</para>
+	  
+      <para>當別人要寄信給您的時候，寄信端的 sendmail 程式會試著透過
+	modem 連線到您的機器上。因為您並非處於連線狀態，所以 
+	<command>sendmail</command> 送信就會得到一個逾時的錯誤。
+	此時 <command>sendmail</command> 就會自動把信送給次要 MX 主機，
+	如：您的 ISP。這次要 MX 主機會每 15 分鐘 
+	(視您在 <filename>/etc/rc.conf</filename> 的設定而定，如：
+	<literal>sendmail_flags = "-bd -q15m"</literal> )
+	把信送給主要 MX 主機，也就是您的機器。</para>
+	  
+      <para>您可能會想把下面這段設成每次登錄都會自動執行：</para>
+
+      <programlisting>
+#!/bin/sh
+# Put me in /usr/local/bin/pppbigco
+( sleep 60 ; /usr/sbin/sendmail -q ) &amp;
+/usr/sbin/ppp -direct pppbigco</programlisting>
+
+      <para>如果您想要為一般使用者設定登錄自動執行檔的話，
+	您最好用 <command>sendmail -qRbigco.com</command> 
+	而不是用上面那一段。這樣做會令
+	<command>sendmail</command> 馬上處理您郵件佇列中送往 
+	bigco.com 的所有郵件。</para>
+	  
+      <para>更講究的解法是參考下列這段。</para>
+      
+      <para>這段資料是從 freebsd-isp mailing list 中拿來的。</para>
+
+      <programlisting>
+&gt; 我們為顧客提供次要 MX 主機的服務。顧客每天都會上線好幾次並且自動把
+&gt; 信件取回主要 MX 主機 (當有他們的郵件時我們並沒有通知他們)。我們的
+&gt; mailqueue 程式每30 分鐘清一次郵件佇列。那段時間他們就必須上線
+&gt; 30 分鐘以確保他們的信件有送達他們的主要 MX 主機。
+&gt;
+&gt; 有任何指令可以啟動 sendmail 並令它把所有郵件寄出嗎？當然該使用者在
+&gt; 我們的機器上沒有 root 的權限。
+
+在 sendmail.cf 的 'privacy flags' 這段中，有這麼一個設定
+Opgoaway,restrictqrun
+
+為了要讓非 root 使用者也可以啟動佇列處理的程式，請把 restrictqrun 給去
+掉。您可能也必須要重新安排您的 MX 設定。我們是我們顧客的主要 MX 主機，
+而且我們還設定了這個：
+
+# If we are the best MX for a host, try directly instead of generating
+# local config error.
+OwTrue
+
+這樣一來，別的機器就不會去試著連往您的顧客的機器而會直接把信送給您。然
+後您再把信送給您的顧客就可以了。這個設定只對 "主機" 有效，所以您必須請
+您的顧客在 DNS 中把他們的郵件主機取名為 "customer.com" 或是
+"hostname.customer.com"。只需要在 DNS 中為 "customer.com" 多加一個 A 
+記錄就行了。</programlisting>
+    </sect2>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../handbook.sgml" "part" "chapter")
+     End:
+-->
+

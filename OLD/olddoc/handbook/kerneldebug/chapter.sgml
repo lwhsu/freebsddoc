@@ -1,0 +1,599 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/kerneldebug/chapter.sgml,v 1.9 2002/03/06 16:06:01 statue Exp $
+
+     Translate into Chinese by Biboman.bbs@BirdNest.infoX.Net
+
+     English Version: 1.31
+-->
+
+<chapter id="kerneldebug">
+  <title>Kernel 除錯</title>
+  
+  <para><emphasis>Contributed by &a.paul; and &a.joerg;</emphasis></para>
+  
+  <sect1>
+    <title>使用 <command>gdb</command> 來除錯 Kernel 的 Crash Dump</title>
+    
+    <para>假設您有足夠的 swap space 來存 crash dump，
+      這裡有如何利用 crash dump 來進行 kernel 除錯的一些步驟。
+      如果您有很多 swap partition，但是第一個 swap partition 太小，
+      不夠存 crash dump 的話，您可以設定您的 kernel 使用其它的 dump device
+      (在 <literal>config kernel</literal> 那行)，
+      或者可以用 &man.dumpon.8; 命令來指定。目前並不支援 dump 在非 swap 的
+      device，如 tape 上。
+      首先您要用 <command>config -g</command> 來設定您的 kernel。
+      參考 <link linkend="kernelconfig">Kernel Configuration</link>
+      有關設定 kernel 的細節。</para>
+                                                                                
+    <para>使用 &man.dumpon.8; 命令讓 kernel 知道 dump 到那個地方
+      (這必需要在該 partition 用 &man.swapon.8; 設定為 swap space
+      之後才能做)。通常這是在 <filename>/etc/rc.conf</filename> 和
+      <filename>/etc/rc</filename> 裡完成。
+      或者，您可以在 kernel config 檔案的 <literal>config</literal>
+      這行中寫死 <literal>dump</literal> 這個設定。
+      這是比較爛的方法，除非您希望留下 kernel 在 booting 時 crash 的 crash
+      dump。</para>
+
+    <note>
+      <para>底下提到 <command>gdb</command> 這個字時，
+        是指在 &ldquo;kernel debug mode&rdquo; 的 <command>gdb</command>。
+        您可以執行 <command>gdb</command> 再加上 <option>-k</option>
+        的選項，或者把 <command>gdb</command> 聯結到
+        <command>gdb</command>，並且執行 <command>gdb</command>，
+        無論如何，這不是原來的設定，所以您要這樣做。
+        這個特性在未來的 release 可能終止。</para>
+    </note>
+
+    <tip>
+      <para>如果你使用 FreeBSD 3 或是更早的版本，你必須複製一份除錯版本
+	的核心並精簡之，而不是安裝原本肥大的除錯版本核心：</para>
+
+      <screen>&prompt.root; <userinput>cp kernel kernel.debug</userinput>
+&prompt.root; <userinput>strip -g kernel</userinput></screen>
+
+      <para>這個步驟不是必須的，但是我們建議你這麼作。(在 FreeBSD 4 跟之
+	後的版本，make 指令會自動在核心編譯完成時執行這個步驟)當核心被精
+	簡之後─不論是自動是手動使用上面的指令─你可以像平常一樣，打
+	<command>make install</command> 來把它安裝好。</para>
+
+      <para>注意！舊版的 FreeBSD(3.1 之前但不含 3.1)預設使用 a.out 核心，
+	a.out 核心需要在實體記憶體中固定保留一塊空間給其符號表使用。未精
+	簡的核心會有一個很大的符號表，這會浪費許多記憶體空間。目前的
+	FreeBSD 版本使用 ELF 核心，所以這個問題不復存在。</para>
+    </tip>
+
+    <para>如果您在測試這樣的一個新 kerenl，如在 boot 提示時打這個新 kernel
+      的名字，不過卻跑不起來，這時您必須用另一個 kernel 來讓系統跑起來。
+      您用 <option>-s</option> 將系統 boot 到單人模式，然後依下列步驟操作：
+      </para>
+
+    <screen>&prompt.root; <userinput>fsck -p</userinput>
+&prompt.root; <userinput>mount -a -t ufs</userinput>       # so your file system for /var/crash is writable
+&prompt.root; <userinput>savecore -N /kernel.panicked /var/crash</userinput>
+&prompt.root; <userinput>exit</userinput>                  # ...to multi-user</screen>
+	  
+    <para>這讓 &man.savecore.8; 用另外一個 kernel 的 symbol name 來做 core
+      dump。否則，原來是用正在跑的 kernel，這很有可能會讓 dump 沒用，
+      因為 crash dump 跟 kernel 的 symbol 是不一樣的。</para>
+                                                                                
+    <para>這時，在 crash dump 完成後，到
+      <filename>/sys/compile/WHATEVER</filename> 並執行
+      <command>gdb</command>。在 <command>gdb</command> 做：
+
+      <screen><userinput>symbol-file kernel.debug</userinput>
+<userinput>exec-file /var/crash/kernel.0</userinput>
+<userinput>core-file /var/crash/vmcore.0</userinput></screen>
+	  
+      您就可以像除錯其它程式般的用 kernel 原始碼來除錯 crash dump。</para>
+
+    <para>底下是用 script 記錄的 <command>gdb</command> 運作過程。
+      為了方便閱讀，比較長的幾行都有換行，且加上上行號以利索引。
+      除此之外，這是在 pcvt console driver 發展時為了 trace 錯誤的真實例子。
+      </para>
+
+<screen> 1:Script started on Fri Dec 30 23:15:22 1994
+ 2:&prompt.root; <userinput>cd /sys/compile/URIAH</userinput>
+ 3:&prompt.root; <userinput>gdb -k kernel /var/crash/vmcore.1</userinput> 
+ 4:Reading symbol data from /usr/src/sys/compile/URIAH/kernel
+...done.
+ 5:IdlePTD 1f3000
+ 6:panic: because you said to!
+ 7:current pcb at 1e3f70
+ 8:Reading in symbols for ../../i386/i386/machdep.c...done.
+ 9:<prompt>(kgdb)</prompt> <userinput>where</userinput>
+10:#0  boot (arghowto=256) (../../i386/i386/machdep.c line 767)
+11:#1  0xf0115159 in panic ()
+12:#2  0xf01955bd in diediedie () (../../i386/i386/machdep.c line 698)
+13:#3  0xf010185e in db_fncall ()
+14:#4  0xf0101586 in db_command (-266509132, -266509516, -267381073)
+15:#5  0xf0101711 in db_command_loop ()
+16:#6  0xf01040a0 in db_trap ()
+17:#7  0xf0192976 in kdb_trap (12, 0, -272630436, -266743723)
+18:#8  0xf019d2eb in trap_fatal (...)
+19:#9  0xf019ce60 in trap_pfault (...)
+20:#10 0xf019cb2f in trap (...)
+21:#11 0xf01932a1 in exception:calltrap ()
+22:#12 0xf0191503 in cnopen (...)
+23:#13 0xf0132c34 in spec_open ()
+24:#14 0xf012d014 in vn_open ()
+25:#15 0xf012a183 in open ()
+26:#16 0xf019d4eb in syscall (...)
+27:<prompt>(kgdb)</prompt> <userinput>up 10</userinput>
+28:Reading in symbols for ../../i386/i386/trap.c...done.
+29:#10 0xf019cb2f in trap (frame={tf_es = -260440048, tf_ds = 16, tf_\
+30:edi = 3072, tf_esi = -266445372, tf_ebp = -272630356, tf_isp = -27\
+31:2630396, tf_ebx = -266427884, tf_edx = 12, tf_ecx = -266427884, tf\
+32:_eax = 64772224, tf_trapno = 12, tf_err = -272695296, tf_eip = -26\
+33:6672343, tf_cs = -266469368, tf_eflags = 66066, tf_esp = 3072, tf_\
+34:ss = -266427884}) (../../i386/i386/trap.c line 283)
+35:283                             (void) trap_pfault(&amp;frame, FALSE);
+36:<prompt>(kgdb)</prompt> <userinput>frame frame-&gt;tf_ebp frame-&gt;tf_eip</userinput>
+37:Reading in symbols for ../../i386/isa/pcvt/pcvt_drv.c...done.
+38:#0  0xf01ae729 in pcopen (dev=3072, flag=3, mode=8192, p=(struct p\
+39:roc *) 0xf07c0c00) (../../i386/isa/pcvt/pcvt_drv.c line 403)
+40:403             return ((*linesw[tp-&gt;t_line].l_open)(dev, tp));
+41:<prompt>(kgdb)</prompt> <userinput>list</userinput>
+42:398        
+43:399             tp-&gt;t_state |= TS_CARR_ON;
+44:400             tp-&gt;t_cflag |= CLOCAL;  /* cannot be a modem (:-) */
+45:401     
+46:402     #if PCVT_NETBSD || (PCVT_FREEBSD >= 200)
+47:403             return ((*linesw[tp-&gt;t_line].l_open)(dev, tp));
+48:404     #else
+49:405             return ((*linesw[tp-&gt;t_line].l_open)(dev, tp, flag));
+50:406     #endif /* PCVT_NETBSD || (PCVT_FREEBSD >= 200) */
+51:407     }
+52:<prompt>(kgdb)</prompt> <userinput>print tp</userinput>
+53:Reading in symbols for ../../i386/i386/cons.c...done.
+54:$1 = (struct tty *) 0x1bae
+55:<prompt>(kgdb)</prompt> <userinput>print tp-&gt;t_line</userinput>
+56:$2 = 1767990816
+57:<prompt>(kgdb)</prompt> <userinput>up</userinput>
+58:#1  0xf0191503 in cnopen (dev=0x00000000, flag=3, mode=8192, p=(st\
+59:ruct proc *) 0xf07c0c00) (../../i386/i386/cons.c line 126)
+60:       return ((*cdevsw[major(dev)].d_open)(dev, flag, mode, p));
+61:<prompt>(kgdb)</prompt> <userinput>up</userinput>
+62:#2  0xf0132c34 in spec_open ()
+63:<prompt>(kgdb)</prompt> <userinput>up</userinput>
+64:#3  0xf012d014 in vn_open ()
+65:<prompt>(kgdb)</prompt> <userinput>up</userinput>
+66:#4  0xf012a183 in open ()
+67:<prompt>(kgdb)</prompt> <userinput>up</userinput>
+68:#5  0xf019d4eb in syscall (frame={tf_es = 39, tf_ds = 39, tf_edi =\
+69: 2158592, tf_esi = 0, tf_ebp = -272638436, tf_isp = -272629788, tf\
+70:_ebx = 7086, tf_edx = 1, tf_ecx = 0, tf_eax = 5, tf_trapno = 582, \
+71:tf_err = 582, tf_eip = 75749, tf_cs = 31, tf_eflags = 582, tf_esp \
+72:= -272638456, tf_ss = 39}) (../../i386/i386/trap.c line 673)
+73:673             error = (*callp-&gt;sy_call)(p, args, rval);
+74:<prompt>(kgdb)</prompt> <userinput>up</userinput>
+75:Initial frame selected; you cannot go up.
+76:<prompt>(kgdb)</prompt> <userinput>quit</userinput>
+77:&prompt.root; <userinput>exit</userinput>
+78:exit
+79:
+80:Script done on Fri Dec 30 23:18:04 1994</screen>
+    <para>底下是註解：</para>
+    
+    <variablelist>
+      <varlistentry>
+	<term>line 6：</term>
+
+	<listitem>
+          <para>這個 dump 是進入 DDB 時產生的 (請看下面)，
+            所以 panic 的註解是 <quote>because you said to!</quote>，
+            還有一些稍長的 stack trace；最初進入 DDB 的原因是個 page fault
+            的 trap。</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>line 20：</term>
+
+	<listitem>
+          <para>這是函數 <function>trap()</function> 在 stack trace 裡的位置
+            。</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>line 36：</term>
+
+	<listitem>
+          <para>強迫使用另一個新的 trap frame；現在應該不需要這樣做了，
+            Stack frame 縱使在 trap 的狀況下也會指向正確的位置。
+            (我手邊現在沒有新的 core dump &lt;g&gt;，我的 kernel
+            已經很久沒有 panic 了。) 從第 403 行的原始碼看來，
+            有很大的可能是因為 &ldquo;tp&rdquo; 的 pointer access 亂掉了，
+            或者是陣列使用超過陣列的上下限。</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>line 52：</term>
+
+	<listitem>
+         <para>這個指標看來怪怪的，但剛好是個有效的 address。</para>
+	</listitem>
+      </varlistentry>
+      
+      <varlistentry>
+	<term>line 56：</term>
+
+	<listitem>
+          <para>不管怎樣，它是指向一堆沒用的東西，
+            所以我們已經找到我們的問題了！
+            (對那些不熟悉這些原始碼的人，<literal>tp-&gt;t_line</literal>
+            是指 console device 裡的 line discipline，
+            它應該是個小很多的整數。</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+  
+  <sect1>
+    <title>使用 DDD 來除錯 Crash Dump</title>
+    
+    <para>使用圖形模式的除錯器如 <command>ddd</command>來分析 kernel
+      crash dump 也是可以的。如平常使用一般，你只須在 <command>ddd</command>
+      指令後面加上 <option>-k</option> 參數，如：</para>
+
+    <screen>&prompt.root; <userinput>ddd -k /var/crash/kernel.0 /var/crash/vmcore.0</userinput></screen>
+    
+    <para>接著你應該可以從 <command>ddd</command> 的圖形模式下分析 crash
+      dump。</para>
+
+  </sect1>
+  
+  <sect1>
+    <title>對 dump 的事後分析</title>
+    
+    <para>如果您並不知道會有 kernel dump，所以您沒有用 <command>config -g
+      </command> 編譯您的 kernel，這時該怎麼做呢？
+      沒關係，不用怕，不是所有的東西都無用了。</para>
+                                                                                
+    <para>當然，您仍要啟動 crash dump。參考上面的選項來做這件事。</para>
+
+    <para>到您的 kernel compile 子目錄
+      (<filename>/usr/src/sys/<replaceable>arch</replaceable>/conf</filename>)
+      ，編輯您的設定檔。取消下列這行的註解 (如果不存在，就新增此行)</para>
+
+    <programlisting>makeoptions    DEBUG=-g                #Build kernel with gdb(1) debug symbols</programlisting>
+
+    <para>重建整個 kernel，由於 Makefile 的 time stamp 有改變，
+      所以還是會有一些其它的 object file 會被重建，
+      像 <filename>trap.o</filename> 如果您運氣不差，
+      新增的 <option>-g</option> 並沒有讓產生的碼有所改變，
+      您就可以用新的 kernel 裡的除錯資料來除錯原本出錯但沒有除錯資料的
+      kernel。您最少應該用 &man.size.1; 這個命令來比較一下新舊兩個 kernel。
+      如果兩者有差異，您可能就要放棄了。</para>
+                                                                                
+    <para>這時就可以按照前述的方法來檢驗 dump。
+      不過有些地方的除錯資料會不完整，像可能會在例子中的 stack trace
+      裡看不到某些函數的行號跟參數列。如果您需要更多的 debug symbols
+      和重複 <command>gdb</command> 操作過程直到您得到足夠的資料為止。
+      </para>
+                                                                                
+    <para>不保證這能完全運作，但在多數的狀況下還算不錯。</para>
+  </sect1>
+  
+  <sect1>
+    <title>用 DDB 對 kernel 做線上除錯</title>
+    
+    <para><command>gdb</command> 這樣一個能提供高層次使用介面的離線除錯器，
+      還是有些事情它不能做到。最重要的幾點就是設 breakpoint 跟單步執行您的
+      kernel 碼。</para>
+                                                                                
+    <para>如果您需要做到這樣低層的 kernel 除錯，有一個叫 DDB
+      的線上除錯器可以用。它允許您設 breakpoint，單步執行您的 kernel 函數，
+      檢驗跟改變 kernel 裡的變數值等等。不過，它不能讓您參考 kernel 的原始碼
+      ，且只能處理 global 跟 static 的 symbols，不像
+      <command>gdb</command> 有全部的除錯資料。</para>
+                                                                                
+    <para>要設定您的 kernel 內含 DDB，在您的設定檔內加上這行
+
+      <programlisting>options DDB</programlisting>
+
+      ，然後重建您的 kernel。(參考 <link
+        linkend="kernelconfig">Kernel Configuration</link> 裡有關設定
+      FreeBSD kernel 的細節。)</para>
+
+    <note>
+      <para>如果您只有舊版的 boot block，可能只有部份的 debug symbol
+        會被載入。更新您的 boot block，最近的幾版都會自動載入 DDB 的
+        symbol。)</para>
+    </note>
+                                                                                
+    <para>一但您那份含有 DDB 的 kernel 開始執行了，
+      您有數種進入 DDB 的方法。第一個，也是最簡單的一個方法就是在 boot
+      prompt 時加上 <option>-d</option> 這個 boot flag。
+      這時 kernel 在進行任何 device probing 前就會變成 debug mode 並進入 DDB
+      。所以您甚至可以對 device probe/attach 函數進行除錯。</para>
+                                                                                
+    <para>第二種場合就是用鍵盤上的 hot-key，通常是 Ctrl-Alt-ESC。
+      如果是用 syscons 的話，可以重設 hot-key，且有一些 map 已經四處流傳，
+      所以自己注意一下。有一個使用 serial console 時能用的選項可以讓您透過
+      conole line 上的 serial line BREAK 來進入 DDB (kernel 設定檔裡的
+      <literal>options BREAK_TO_DEBUGGER</literal>)。這不是原本的設定，
+      因為現在有很多 serial adapters 不必要的在像您拉扯線材時產生 BREAK。
+      </para>
+
+    <para>第三種方法就是當您有做設定時，任何的 panic 狀況會切進 DDB 裡。
+      就因為這個原因，設定一台沒人看管的機器用 DDB 是不智的。</para>
+                                                                                
+    <para>粗略的來說，DDB 的命令跟 gdb 部份命令有點類似。
+      首先您最需要的就是設定 breakpoint：</para>
+
+    <screen><userinput>b function-name</userinput>
+<userinput>b address</userinput></screen>
+	  
+    <para>沒有特別設定的話，數字都是用 16 進位的。為了要跟 symbol name
+      有所區分，用字元 <literal>a-f</literal> 當開頭的 16
+      進位數字要在前面加上 <literal>0x</literal> (對其它的數字，
+      您可以決定要用或不用的)。簡單的運算式是看得懂的，例如：
+      <literal>function-name + 0x103</literal>。</para>
+                                                                                
+    <para>要繼續執行已被中斷的 kernel，只要打：</para>
+                                                                                
+    <screen><userinput>c</userinput></screen>
+                                                                                
+    <para>想要看 stack trace，用：</para>
+    
+    <screen><userinput>trace</userinput></screen>
+    
+    <note>
+      <para>要注意的是當 DDB 是因為 hot-key 而進入的話，
+        kernel 正在處理 interrupt，所以 stack trace 對您可能沒什麼用處。
+        </para>
+    </note>
+    
+    <para>如果您要移除 breakpoint，用</para>
+    
+    
+    <screen><userinput>del</userinput>
+<userinput>del address-expression</userinput></screen>
+    
+    <para>第一種型式是當您在 breakpoint 遇到後馬上用，
+      會移除現在這個 breakpoint。第二種型式可以移除任何 breakpoint，
+      但您必須給定確切的 address，就像是您用下列指令所看到的：</para>
+    
+    <screen><userinput>show b</userinput></screen>
+    
+    <para>要單步執行您的 kernel，試著用：</para>
+    
+    <screen><userinput>s</userinput></screen>
+    
+    <para>這會一步步執行函數，但您可以讓 DDB 自己 trace 直到遇上機器的
+      return 碼，這時用：</para>
+    
+    <screen><userinput>n</userinput></screen>
+
+    <note>
+      <para>這跟 <command>gdb</command> 的 <command>next</command> 不一樣，
+        它比較像 <command>gdb</command> 的
+        <command>finish</command>。</para>
+    </note>
+    
+    <para>要看現在記憶體裡的資料，用 (例如)：
+      	  
+      <screen><userinput>x/wx 0xf0133fe0,40</userinput>
+<userinput>x/hd db_symtab_space</userinput>
+<userinput>x/bc termbuf,10</userinput>
+<userinput>x/s stringbuf</userinput></screen>
+	  
+      來做 word/halfword/byte 的存取，跟 hexadecimal/decimal/character/
+      格式的顯示，在逗號後的數字是您要顯示幾個 object。要顯示下面 0x10 個，
+      只要用：</para>
+	  
+    <screen><userinput>x ,10</userinput></screen>
+    
+    <para>同樣地，用
+
+      <screen><userinput>x/ia foofunc,10</userinput></screen>
+	  
+      可以反組譯 <function>foofunc</function> 的前 0x10 個指令，
+      然後按照它們相對於函數 <function>foofunc</function> 開頭的依序顯示。
+      </para>
+
+    <para>要更改記憶體的內容，用 write 命令：</para>
+    	  
+    <screen><userinput>w/b termbuf 0xa 0xb 0</userinput>
+<userinput>w/w 0xf0010030 0 0</userinput></screen>
+	  
+    <para>這個命令的 modifier
+      (<literal>b</literal>/<literal>h</literal>/<literal>w</literal>)
+      是指定您要寫入的資料大小，第一個緊接的表示式是所要寫入的 address，
+      剩餘的就被當作是要依序寫入後續記憶體的資料。</para>
+
+    <para>如果您需要知道暫存器的內容，用：</para>
+
+    <screen><userinput>show reg</userinput></screen>
+
+    <para>或者是，您可以顯示單一個暫存器的內容用類似
+
+      <screen><userinput>p $eax</userinput></screen>
+
+      跟更改它用：</para>
+
+    <screen><userinput>set $eax new-value</userinput></screen>
+	  
+    <para>如果您該從 DDB 中去呼叫某些 kernel 函數，只要用：</para>
+
+    <screen><userinput>call func(arg1, arg2, ...)</userinput></screen>
+    
+    <para>傳回值會被印出來。</para>
+    
+    <para>要像 &man.ps.1; 般的得到所有正在跑的 process 訊息，用：</para>
+    	  
+    <screen><userinput>ps</userinput></screen>
+    
+    <para>假設現在您知道為什麼您的 kernel 會有問題，然後想要 reboot 機器，
+      記得，您原來的問題可能嚴重到會讓您 kernel 的其它部份不如預期般運作，
+      採取下述的行動：</para>
+
+    <screen><userinput>panic</userinput></screen>
+	  
+    <para>再關機及重開您的系統會讓您的 kernel dump core，
+      所以您可以再來用 <command>gdb</command> 從高層次分析。
+      通常在這個命令後必須要跟著用 <command>continue</command>。
+      現在有 <command>panic</command> 命令會幫您做這些事。</para>
+    
+    <screen><userinput>call boot(0)</userinput></screen>
+    
+    <para>也算是個完整關機的好方法，它會 <function>sync()</function>
+      所有的磁碟機，最後再 reboot。只要跟 kernel 有關係的磁碟機跟 file
+      system 都沒有受損壞，這是一個算完整的關機。</para>
+    
+    <screen><userinput>call cpu_reset()</userinput></screen>
+    
+    <para>是最後的方法，就像您按 reset 鈕一樣。</para>
+
+    <para>如果您要一段簡短的指令說明，直接打：</para>
+    
+    <screen><userinput>help</userinput></screen>
+    
+    <para>無論如何，強列建議您在做 debug 時印一份 &man.ddb.4; 的 manual page
+      。記得當您在做 kernel 單步運作時，您很難能看到 on-line manual。
+      </para>
+  </sect1>
+  
+  <sect1>
+    <title>使用遠端 GDB 來線上除錯 Kernel</title>
+    
+    <para>這個功能從 FreeBSD 2.2 開始就有提供了，而且算是個很不錯的除
+      錯方式。</para>
+
+    <para>GDB 支援 <emphasis>遠端除錯</emphasis> 已經有好一段時間了。
+     這個模式經由序列埠使用一個簡單的協定來進行除錯。不像上面提到的其
+     他除錯方式，你需要兩台電腦才能使用此種方式進行除錯。其中主機提供
+     除錯環境，包括所有的原始碼與一份包含所有的符號的核心副本，而目的
+     機器上則執行與著與主機的核心非常接近的版本(但是精簡過除錯資訊)。
+    </para>
+
+    <para>你應該在核心設定檔中加入 <option>DDB</option> 選項，然後執行
+      <command>config -g</command> 指令，接著再編譯核心。這樣做會讓你
+      得到一個很肥大的核心，因為裡面包含了除錯的資訊。將這個核心拷貝到
+      目標機器上，執行 <command>strip -x</command> 來精簡除錯符號，然
+      後重開機，並在 boot 提示符號下輸入 <option>-d</option> 參數。從
+      主機的任何 sio 裝置連線到目標機器上─設有 "flags 080"─的 sio 裝
+      置。接著在除錯機器切換到核心編譯目錄，執行 <command>gdb</command>
+      :</para>
+
+    <screen>&prompt.user; <userinput>gdb -k kernel</userinput>
+GDB is free software and you are welcome to distribute copies of it
+ under certain conditions; type "show copying" to see the conditions.
+There is absolutely no warranty for GDB; type "show warranty" for details.
+GDB 4.16 (i386-unknown-freebsd),
+Copyright 1996 Free Software Foundation, Inc...
+<prompt>(kgdb)</prompt> </screen>
+	  
+    <para>執行以下指令來初始化遠端除錯連線(在此假設使用第一個序列埠來
+      進行除錯)：</para>
+
+    <screen><prompt>(kgdb)</prompt> <userinput>target remote /dev/cuaa0</userinput></screen>
+	  
+    <para>接著在目標機器上(在開始偵測裝置前就進入 DDB 模式那台機器)輸
+      入：</para>
+
+    <screen>Debugger("Boot flags requested debugger")
+Stopped at Debugger+0x35: movb	$0, edata+0x51bc
+<prompt>db&gt;</prompt> <userinput>gdb</userinput></screen>
+	  
+    <para>DDB 會回應</para>
+		  
+    <screen>Next trap will enter GDB remote protocol mode</screen>
+    
+    <para>每當你輸入 <command>gdb</command> 時，會在遠端 GDB 模式跟本地
+      DDB 模式之間切換。要立刻強迫切換到觸發動作，你只要打個
+      <command>s</command> 即可。你主機的 GDB 將會取得目標機器的核心的
+      控制權：</para>
+		  
+    <screen>Remote debugging using /dev/cuaa0
+Debugger (msg=0xf01b0383 "Boot flags requested debugger")
+    at ../../i386/i386/db_interface.c:257
+<prompt>(kgdb)</prompt></screen>
+		
+    <para>你可像使用其他 GDB 連線一樣來使用這個連線，包括全權存取原始碼、
+      在一個 Emacs 視窗內以 gud 模式執行之(另一個 Emacs 視窗會自動顯示原
+      始程式碼)等等。</para>
+
+  </sect1>
+  
+  <sect1>
+    <title>使用 GDB 來除錯可載入模組</title>
+    
+    <para>當除錯一個發生在模組內的 panic，
+      或是使用遠端 GDB 來除錯使用動態模組的機器，
+      你應該告知 GDB 如何獲得這些模組的符號資訊。</para>
+
+    <para>首先，你應該編譯好包含除錯資訊的模組：</para>
+
+    <screen>&prompt.root; <userinput>cd /sys/modules/linux</userinput>
+&prompt.root; <userinput>make clean; make COPTS=-g</userinput></screen>
+	  
+    <para>如果你使用遠端 GDB，你可以在特定機器上執行
+      <command>kldstat</command> 來找出這個模組在哪被載入：</para>
+
+    <screen>&prompt.root; <userinput>kldstat</userinput>
+Id Refs Address    Size     Name
+ 1    4 0xc0100000 1c1678   kernel
+ 2    1 0xc0a9e000 6000     linprocfs.ko
+ 3    1 0xc0ad7000 2000     warp_saver.ko
+ 4    1 0xc0adc000 11000    linux.ko
+</screen>
+
+    <para>If you are debugging a crash dump, you'll need to walk the
+      <literal>linker_files</literal> list, starting at
+      <literal>linker_files->tqh_first</literal> and following the
+      <literal>link.tqe_next</literal> pointers until you find the
+      entry with the <literal>filename</literal> you are looking for.
+      The <literal>address</literal> member of that entry is the load
+      address of the module.</para>
+    
+    <para>接著，你必須找出文字區段在模組中的位移量：</para>
+
+    <screen>&prompt.root; <userinput>objdump --section-headers /sys/modules/linux/linux.ko | grep text</userinput>
+  3 .rel.text     000016e0  000038e0  000038e0  000038e0  2**2
+ 10 .text         00007f34  000062d0  000062d0  000062d0  2**2</screen>
+
+    <para>區段 10 是在上面這個例子中，你想要的 <literal>.text</literal>
+      區段。第四個十六進位欄位是在這個檔案中，文字區段的位移量
+      (總共六個欄位)。在這個模組的載入記憶體增加這個位移量，
+      來獲得模組代碼的再定位記憶體。
+      在我們的例子中，我們得到 0xc0adc000 + 0x62d0 = 0xc0ae22d0。
+      在 GDB 中使用 <command>add-symbol-file</command> 
+      指令來告知除錯器關於這個模組：</para>
+
+    <screen><prompt>(kgdb)</prompt> <userinput>add-symbol-file /sys/modules/linux/linux.ko 0xc0ae22d0</userinput>
+add symbol table from file "/sys/modules/linux/linux.ko" at text_addr = 0xc0ae22d0?
+(y or n) <userinput>y</userinput>
+Reading symbols from /sys/modules/linux/linux.ko...done.
+<prompt>(kgdb)</prompt></screen>
+	  
+    <para>你現在應該存取所有在模組中的符號了。</para>
+  </sect1>
+      
+  <sect1>
+    <title>除錯一個 console driver</title>
+
+    <para>因為您需要一個 console driver 來跑 DDB，
+      所以 console driver 出問題時狀況會更複雜。
+      您如果記得可用 serial console (不管是更改 boot block，或是在
+      <prompt>Boot:</prompt> 時加上 <option>-h</option>) 的話，
+      把一臺標準的終端機插到第一個 serial port。
+      可以在任何的 console driver 上用，當然也可以在 serial console 上用。
+      </para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

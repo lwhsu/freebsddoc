@@ -1,0 +1,429 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/policies/chapter.sgml,v 1.7 2003/08/02 05:34:38 statue Exp $
+
+     Translated into Chinese by Yuan-Chen Cheng <ycheng@sinica.edu.tw>
+                                Kuang-che Wu <kcwu@csie.org>
+
+     English Version: 1.27
+-->
+
+<chapter id="policies">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+        <firstname>Poul-Henning</firstname>
+        <surname>Kamp</surname>
+        <contrib>Contributed by </contrib>
+      </author>
+    </authorgroup>
+  </chapterinfo>
+
+  <title>原始碼目錄樹的介紹及政策</title>
+  
+  <para>這一章記載者若干對於維護 FreeBSD 原始碼目錄樹的介紹及政策。</para>
+  
+  <sect1 id="policies-maintainer">
+    <title>Makefile 檔案中的 <makevar>MAINTAINER</makevar></title>
+    <indexterm><primary>ports maintainer</primary></indexterm>
+    
+    <para>June 1996.</para>
+    
+    <para>如果 FreeBSD 系統的某一個部分是由一個或是一群人負責維護，
+      那麼我們就會在涵蓋這一部分程式碼目錄架構的
+      <filename>Makefile</filename> 中加入
+
+      <programlisting>MAINTAINER= email-addresses</programlisting>
+
+      </para>
+
+    <para>其意義是說：</para>
+    
+    <para>維護者 (maintainer) 有權力以及義務維護該程式碼。
+      也就是說他負責修正錯誤、以及處理對於該程式碼提出的疑問報告，
+      若是由別的計畫維護的程式碼，則需負責追蹤版本的更新。</para>
+
+    <para>更動一個有維護者的目錄，必須在維護者檢視之後方能進行。
+      只有在維護者過了一段不能被忍受的時間後、
+      或是在許多封電子郵件之後都還沒有回應，
+      沒有維護者認可的修正才是被認同的。
+      即便如此，我們仍建議你盡可能能找個人來檢視你的修改。</para>
+
+    <para>在當事人不同意的情形下，指定他為程式的維護者當然是不被接受的。
+      另一方面來說，維護者不一定要是 committer，
+      同時由一組人共同擔任維護者也行。</para>
+  </sect1>
+  
+  <sect1 id="policies-contributed">
+    <sect1info>
+      <authorgroup>
+	<author>
+	  <firstname>Poul-Henning</firstname>
+	  <surname>Kamp</surname>
+	  <contrib>Contributed by </contrib>
+	</author>
+	<author>
+	  <firstname>David</firstname>
+	  <surname>O'Brien</surname>
+	</author>
+      </authorgroup>
+      <!-- June 1996 -->
+    </sect1info>
+
+    <title>捐助軟體</title>
+    
+    <indexterm><primary>contributed software</primary></indexterm>
+        
+    <para>在 FreeBSD 系統中有若干部份的軟體是由 FreeBSD 之外的計畫所維護的。
+      為了歷史上的理由，我們稱之為 <emphasis>捐助 (contributed)</emphasis>
+      軟體。例如 <command>perl</command>、<command>gcc</command> 以及 <command>patch</command>。</para>
+
+    <para>過去的數年間，有數個方法使用來處理這種型態的軟體，
+      各有其優缺點。這些方法中並沒有任何一個具有明顯的優勢。</para>
+
+    <para>在這樣的情形下，經過若干的討論之後，
+      下面的方式被選擇為未來引進此類軟體的 <quote>正式 (official)</quote>
+      方式。進一步來說，
+      我們強烈的認為現有的捐助軟體應該隨著時間改變成這樣的模式，
+      因為他跟舊有方式相比有明顯的優點，
+      包括能夠容易的由任何人取得此類軟體<quote>正式</quote>版本的修正檔案
+      (即使沒有該軟體 cvs 的存取權)。
+      這將使得捐助軟體的修正更容易回到該軟體主要開發人員的手中。</para>
+
+    <para>然而最後，問題還是回到真正處理這項工作的人。
+      如果使用這個模式對於該項軟體的處理是極度的不洽當，
+      在核心小組以及其他發展者的一致同意下，仍然可以有例外。
+      是否有在未來維護該軟體的可能是處理此類事件的關鍵因素。</para>
+
+    <note>
+      <para>由於 RCS 檔案格式若干不幸的設計上的極限以及
+        CVS 對於 vendor branches 的使用，
+        對於那些仍然在追隨 vendor branches 版本的檔案，
+        次要、不具意義、修飾性的更正是被
+        <emphasis>強烈制止</emphasis>的。
+        <quote>錯字的修正</quote> 在此被明顯的歸類到
+        <quote>修飾性</quote> 更正的類別，
+        不應該出現在版本編號 1.1.x.x 的檔案中。
+        CVS 倉庫因為一個字元的修正而造成的膨脹是非常戲劇化的。</para>
+    </note>
+    
+    <para><application>Tcl</application> 
+      內嵌式程式語言將會被用來說明這個模式的運用：</para>
+
+    <para><filename>src/contrib/tcl</filename> 
+      包含了由這個軟體的維護者發行的程式碼。程式碼中完全與 FreeBSD
+      無關的部分是可以被移除的。對 Tcl 來說，
+      <filename>mac</filename>，<filename>win</filename> 以及
+      <filename>compat</filename> 子目錄在 import 進 CVS 
+      之前就已經被刪去了。</para>
+
+    <para><filename>src/lib/libtcl</filename> 只包含了一個 "bmake 型態" 的
+      <filename>Makefile</filename>，該檔使用標準的
+      <filename>bsd.lib.mk</filename>
+      檔案中的規則來產生程式庫以及安裝文件。</para>
+
+    <para><filename>src/usr.bin/tclsh</filename> 只包含了一個
+      <command>bmake</command> 形態的
+      <filename>Makefile</filename>，該檔案會使用儲存在
+      <filename>bsd.prog.mk</filename> 檔案中標準的規則來產生及安裝
+      <command>tclsh</command> 程式以及相關的 man-page。</para>
+
+    <para><filename>src/tools/tools/tcl_bmake</filename> 包含了一組
+      在 Tcl 軟體需要升級時有用的 shell-scripts。
+      那些並不是所建立或是安裝得軟體的一部分。</para>
+
+    <para>這其中的重點是 <filename>src/contrib/tcl</filename> 
+      目錄是依照下列法則建立的：此目錄應該存有原先發行的程式碼
+      (在適當的 CVS vendor-branch 且未展開 RCS 關鍵字)
+      儘可能包含最少 FreeBSD 專用的修改。在 
+      <hostid>freefall</hostid> 上的 'easy-import' 
+      程式將會在你處理 import 時給你幫助，
+      但對於如何處理若仍有任何懷疑，你務必應該先問問別人，
+      而非愚蠢的就先試了再說而希望可以 <quote>試出來</quote>。
+      CVS 對於一個錯誤的 import 意外是不饒人的，
+      需要相當份量的努力才能在一個關鍵性的錯誤中回到原先的狀態。</para>
+    
+    <para>由於前面提過的 CVS 在處理 vendor branches 的設計上的限制，
+      對於由 vendor branches 發行的 <quote>正式 (official)</quote>
+      的 patches，應該將其 patch 到其原來的發行的程式碼上，
+      然後再次的 import 到該 vendor brench。正式的 patches
+      決對不應該作用在從 FreeBSD CVS 中取出 (check out)
+      的版本上然後再 commit 進 CVS，這樣會破壞 verndor branch 的一致性，
+      並且使得下次引進 (import) 新版本變得困難，因為會有衝突 (conflicts)。
+      </para>
+
+    <para>在許多的軟體中包含了許多為了與 FreeBSD 以外的系統相容的檔案，
+      為了節省硬碟空間而從原來的軟體程式碼中移去這些檔案是被允許的。
+      而那些包含有版權宣告以及版本相關的資訊及相關的文件檔案，
+      對於那些程式碼來說是有用的，這些檔案
+      <emphasis>不應該</emphasis> 被移去。</para>
+    
+    <para>所需要的 <command>bmake</command> <filename>Makefile</filename>
+      有時可以用一些工具自動地由各軟體的檔案目錄的產生，
+      這會使得這些軟體的升級變得更加得容易。如果有這樣的工具程式的話，
+      確定你有將這些工具(如果有必要的話)放入 <filename>src/tools</filename>
+      目錄中，這樣以後維護軟體的人們就可以使用。</para>
+
+    <para>在 <filename>src/contrib/tcl</filename> 目錄下，你應該加入
+      一個名叫 <filename>FREEBSD-upgrade</filename> 的檔案，
+      檔案中包括：</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>那些檔案在 import 前被移去</para>
+      </listitem>
+      
+      <listitem>
+	<para>原始的版本從何處取得，或正式的發行站台為何</para>
+      </listitem>
+      
+      <listitem>
+	<para>若有修正 patches 應該送回哪位原軟體作者。</para>
+      </listitem>
+      
+      <listitem>
+	<para>或許再加入若干針對 FreeBSD 所做修改的說明。</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>然而，請不要與原有的程式碼一起將 
+      <filename>FREEBSD-upgrade</filename> import 進 CVS。
+      你應該在最初的 import 之後，使用 <command>cvs add FREEBSD-upgrade ;
+      cvs ci</command>。由 <filename>src/contrib/cpio</filename>
+      目錄下取得的例子是這樣的：</para>
+
+    <programlisting>This directory contains virgin sources of the original distribution files
+on a "vendor" branch.  Do not, under any circumstances, attempt to upgrade
+the files in this directory via patches and a cvs commit.  New versions or
+official-patch versions must be imported.  Please remember to import with
+"-ko" to prevent CVS from corrupting any vendor RCS Ids.
+
+For the import of GNU cpio 2.4.2, the following files were removed:
+
+        INSTALL         cpio.info       mkdir.c             
+        Makefile.in     cpio.texi       mkinstalldirs
+
+To upgrade to a newer version of cpio, when it is available:
+        1. Unpack the new version into an empty directory.
+           [Do not make ANY changes to the files.]
+
+        2. Remove the files listed above and any others that don't apply to
+           FreeBSD.
+
+        3. Use the command:
+                cvs import -ko -m 'Virgin import of GNU cpio v&lt;version&gt;' \
+                        src/contrib/cpio GNU cpio_&lt;version&gt;
+
+           For example, to do the import of version 2.4.2, I typed:
+                cvs import -ko -m 'Virgin import of GNU v2.4.2' \
+                        src/contrib/cpio GNU cpio_2_4_2
+
+        4. Follow the instructions printed out in step 3 to resolve any
+           conflicts between local FreeBSD changes and the newer version.
+
+Do not, under any circumstances, deviate from this procedure.
+
+To make local changes to cpio, simply patch and commit to the main
+branch (aka HEAD).  Never make local changes on the GNU branch.
+
+All local changes should be submitted to "cpio@gnu.ai.mit.edu" for
+inclusion in the next vendor release.
+
+obrien@FreeBSD.org - 30 March 1997</programlisting>
+  </sect1>
+
+  <sect1 id="policies-encumbered">
+    <title>有負擔的 (Encumbered) 檔案</title>
+
+    <para>有時候在 FreeBSD 原始碼目錄檔案群中可能需要加入一些有負擔的檔案。
+      例如某個硬體裝置需要一組不具有原始碼的程式檔才能夠驅動，
+      此時我們稱這個程式檔是有負擔的 (Encumbered)。
+      下面的是在 FreeBSD 目錄檔案群中加入有負擔的檔案的原則：</para>
+
+    <orderedlist>
+      <listitem>
+        <para>任何沒有程式原始碼而直接由系統的 CPU
+          解譯或執行的檔案都是有負擔的檔案。</para>
+      </listitem>
+
+      <listitem>
+        <para>任何檔案其版權宣告比 BSD 或是 GNU
+          具有更多限制者的檔案是有負擔的檔案。</para>
+      </listitem>
+
+      <listitem>
+        <para>一個包含硬體需要的可下載的二進位資料檔案並非有負擔的，
+          除非符合條件 (1) 或 (2)。
+          這樣的檔案必須儲存在與硬體架構中立的 ASCII 格式
+          (建議使用 file2c 或是 uuencode)。</para>
+      </listitem>
+
+      <listitem>
+        <para>任何有負擔的檔案在放入 FreeBSD CVS
+          倉庫之前，需要通過 <link
+            linkend="staff-core">核心小組</link>
+          的認可。</para>
+      </listitem>
+
+      <listitem>
+        <para>有負擔的檔案放在 <filename>src/contrib</filename> 或是
+          <filename>src/sys/contrib</filename>。</para>
+      </listitem>
+
+      <listitem>
+        <para>整個軟體模組應該放在一起。沒有理由將他們切開，
+          除非與那些並非有負擔的軟體共用該檔案。</para>
+      </listitem>
+
+      <listitem>
+        <para>Object 檔案應命名為
+	  <filename><replaceable>arch</replaceable>/<replaceable>filename</replaceable>.o.uu></filename>。</para>
+      </listitem>
+
+      <listitem>
+        <para>系統核心用檔案：</para>
+
+        <orderedlist>
+          <listitem>
+            <para>必須在
+              <filename>conf/files.*</filename> 參考到該檔案
+              (為了簡化系統核心的建立)。</para>
+	  </listitem>
+
+          <listitem>
+            <para>應該要在 <filename>LINT</filename>使用到，但是由 <link
+              linkend="staff-core">核心小組</link> 依照情況來決定
+              該項目是否是否預設被開啟。當然 <link
+              linkend="staff-core">核心小組</link>
+              的決定可能會隨情況以及時間而有所改變。</para>
+          </listitem>
+
+          <listitem>
+            <para>由 <link linkend="staff-who">Release Engineer</link>
+              來決定是否進入正式發行版本(release)。</para>
+          </listitem>
+        </orderedlist>
+      </listitem>
+
+      <listitem>
+        <para>非系統核心檔案：</para>
+
+        <orderedlist>
+          <listitem>
+            <indexterm><primary>core team</primary></indexterm>
+            <para>由 <link linkend="staff-core">核心小組</link>
+              決定該檔案是否為 <command>make world</command>
+              的一部分。</para>
+          </listitem>
+         
+          <listitem>
+            <indexterm><primary>release engineer</primary></indexterm>
+            <para>由 <link linkend="staff-who">Release Engineer</link>
+              決定是否進入正式發行版本(release)。</para>
+          </listitem>
+        </orderedlist>
+      </listitem>
+    </orderedlist>
+  </sect1>
+  
+  <sect1 id="policies-shlib">
+    <sect1info>
+      <authorgroup>
+	<author>
+	  <firstname>Satoshi</firstname>
+	  <surname>Asami</surname>
+	  <contrib>Contributed by </contrib>
+	</author>
+	<author>
+	  <firstname>Peter</firstname>
+	  <surname>Wemm</surname>
+	</author>
+	<author>
+	  <firstname>David</firstname>
+	  <surname>O'Brien</surname>
+	</author>
+      </authorgroup>
+      <!-- 9 Dec 1996 -->
+    </sect1info>
+
+    <title>共享程式庫 (Shared Libraries)</title>
+
+    <para>如果你增加一組 port 或是其他軟體需要的共享程式庫，
+      下面的規則是其版本編號所需遵守的規則。
+      一般來說，這個編號與軟體版本的編號沒有任何關係。</para>
+
+    <para>下面是三個共享程式庫編號所需要遵守的原則：</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>從編號 <literal>1.0</literal> 開始</para>
+      </listitem>
+      
+      <listitem>
+	<para>如果版本改變但往前相容，在次編號異動
+          (在 ELF 系統中次編號是被忽略的)</para>
+      </listitem>
+      
+      <listitem>
+	<para>如果有不相容的改變，則在主編號異動</para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>舉例來說，增加新的函式或是修正程式錯誤應該是在次編號異動，
+      而刪除函式或是變更函式呼叫的語法則務必異動主編號。</para>
+    
+    <para>請務必在版本編號上遵守 主編號.次編號
+      (<replaceable>x</replaceable>.<replaceable>y</replaceable>)
+      格式。我們的 a.out
+      動態連結程式並不善於處理
+      <replaceable>x</replaceable>.<replaceable>y</replaceable>.<replaceable>z</replaceable>
+      形式的版本號碼。
+      任何在 <replaceable>y</replaceable> 之後的版本號碼
+      (也就是第三個數字) 在決定那個程式庫要動態連結時會完全被忽略。
+      假如有兩個共享程式只在<quote>細微</quote>的版本編號有所不同，
+      <command>ld.so</command> 會選擇數字比較大的那一個。
+      也就是說：如果你編譯程式時是和 <filename>libfoo.so.3.3.3</filename>
+      連結，連結程式只會記錄版本號碼 <literal>3.3</literal>，
+      而執行時會連結任何一個檔名開頭為
+      <replaceable>libfoo.so.3</replaceable>.<replaceable>(任何大於
+        3 的編號)</replaceable>.<replaceable>(數字最大那一個)
+        </replaceable> 的檔案。</para>
+    
+    <note>
+      <para><command>ld.so</command> 也會自動選擇
+        <quote>次</quote> 版本編號最大的程式庫。也就是說：
+        會選擇程式庫
+        <filename>libc.so.2.2</filename> 而非
+        <filename>libc.so.2.0</filename>，即使在程式編譯時是跟
+        <filename>libc.so.2.0</filename>進行連結的。</para>
+    </note>
+
+    <para>另外，我們的 ELF 動態連結程式則完全不處理次版本編號。
+      然而，你仍然應該要如同我們的 <filename>Makefile</filename>
+      那樣地指定主要及次要版本編號，依照系統的類別做合適的處理。</para>
+    
+    <para>對於非 port 的程式庫，我們的策略是只在不同次的正式發行版本
+      (release) 才變更版本編號。
+      另外，我們的策略是只在主要的 OS 正式版本更新時
+      (也就是說本版 X.0 到 (X+1).0 時) 才變更主要的共享程式庫版本。
+      當你變更了系統程式庫而導致需要變更版本編號時，檢查
+      <filename>Makefile</filename> 的 commit 紀錄。
+      確定一次正式發行之後的第一個會導致版本編號的改變，在
+      <filename>Makefile</filename> 中被確實地反映出來是
+      committer 的責任。</para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+
+

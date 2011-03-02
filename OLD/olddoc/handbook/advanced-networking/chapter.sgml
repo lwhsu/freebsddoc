@@ -1,0 +1,4340 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/advanced-networking/chapter.sgml,v 1.10 2003/08/02 05:34:31 statue Exp $
+
+     Translate into Chinese by forth@zbwei.net
+
+     English Version: 1.38
+-->
+
+<chapter id="advanced-networking">
+  <title>¶i¶¥ºô¸ô¨Ï¥Î</title>
+
+  <sect1>
+    <title>Synopsis</title>
+
+    <para>±µ¤U¨Óªº³¹¸`±N¥]§t¤@¨Ç±`¥Îªº Unix ¨t²Îªººô¸ôªA°È¡C
+      ·íµM³o¨ÇªA°È³£¬O©M FreeBSD ¦³Ãö«Yªº¡C</para>
+  </sect1>
+
+  <sect1 id="routing">
+    <title>¹h¹D»P¸ô®|</title>
+    
+    <para><emphasis>Contributed by &a.gryphon;. 6 October
+	1995.</emphasis></para>
+
+    <para>¬°¤FÅý¤@³¡¹q¸£¯à§ä¨ì¥t¤@³¡¹q¸£¡A¦]¦¹¥²»Ý­n¦³¤@ºØ¾÷¨î¡A
+      Åý³o³¡¹q¸£ª¾¹D¸Ó«ç»ò°µ¡A³o­Ó¾÷¨î´N¬O¸ô®|¿ï¾Ü(routing)¡C
+      ¤@­Ó¸ô®|(<quote>route</quote>)¬O¥Ñ¤@¹ï¦ì§}©Ò©w¸qªº¡G¤@­Ó
+      <quote>¥Ø¼Ð</quote>¥H¤Î¤@­Ó¹h¹D(<quote>gateway</quote>)¡C
+      ³o¹ï¦ì§}ªí¥Ü­n°e¨ì<emphasis>¥Ø¼Ð</emphasis>ªº«Ê¥]¡A
+      ¥²¶·¸g¹L<emphasis>¹h¹D</emphasis>¡C
+      ¥Ø¼Ð¤À¬°¤TºØÃþ«¬¡G¥D¾÷¡B¤lºô¸ô(subnet)©M¹w³]¸ô®|
+      (<quote>default route</quote>)¡C
+      ¦pªG¨S¦³¨ä¥¦ªº¸ô®|¥i¥H¨Ï¥Î¡A³o®É´N·|¨Ï¥Î¹w³]¸ô®|¡A
+      µy«á§Ú­Ì·|¹ï¹w³]¸ô®|§@¶i¤@¨Bªº»¡©ú¡C¦¹¥~¡A¹h¹D¤]¦³¤TºØÃþ«¬¡G
+      ¥D¾÷¡B¶Ç¿é¤¶­±(interface¡A¤]ºÙ¬° <quote>links</quote>) 
+      ©M¤A¤Óºô¸ôµwÅé¦ì§}¡C</para>
+
+    <sect2>
+      <title>½d¨Ò</title>
+      
+      <para>¬°¤F»¡©ú¤£¦PÃþ«¬ªº¸ô®|¿ï¾Ü¡A
+        §Ú­Ì±N¨Ï¥Î¥Ñ<command>netstat -r</command>«ü¥O¨ú±oªº¸ê®Æ§@¬°½d¨Ò¡G</para>
+	  
+      <screen>Destination      Gateway            Flags     Refs     Use     Netif Expire
+
+default          outside-gw         UGSc       37      418      ppp0
+localhost        localhost          UH          0      181       lo0
+test0            0:e0:b5:36:cf:4f   UHLW        5    63288       ed0     77
+10.20.30.255     link#1             UHLW        1     2421 
+foobar.com       link#1             UC          0        0 
+host1            0:e0:a8:37:8:1e    UHLW        3     4601       lo0
+host2            0:e0:a8:37:8:1e    UHLW        0        5       lo0 =>
+host2.foobar.com link#1             UC          0        0
+224              link#1             UC          0        0</screen>
+	  
+      <para>²Ä¤@¦æ¬O¹w³]¸ô¥Ñ(§Ú­Ì·|¦b¤U¤@¬q»¡©ú)¡A
+        ²Ä¤G¦æ«h¬O<hostid>localhost</hostid>¸ô®|¡C</para>
+	  
+      <para>¥Ñ<literal>Netif</literal>¥i¥Hª¾¹D<literal>localhost</literal>
+        ©Ò¨Ï¥Îªº¤¶­±¬O<devicename>lo0</devicename>¡A¤]´N¬Oloopback³]³Æ¡C
+        ³oªí¥Ü©Ò¦³ªº«Ê¥]¤£·|³Q°e¤Wºô¸ô¡A¦Ó¬O¦b¤º³¡³B²z¡C</para>
+
+      <para>±µ¤U¨Ó¬O<hostid role="mac">0:e0:...</hostid>³o¨Ç¦ì§}¡C
+        ³o¨Ç³£¬O¤A¤Óºô¸ôµwÅé¦ì§}¡AFreeBSD·|¦Û°ÊÃÑ§O¦b¦P¤@­Ó¤A¤Óºô¸ô¤¤ªº¥D¾÷
+        (¦p<hostid>test0</hostid>)¡A¨Ã¥B±N¥¦¥[¤J¸ô®|ªí¡AµM«á¸g¥Ñ
+        <devicename>ed0</devicename>³o­Ó¤¶­±ª½±µ»P¥¦³q°T¡A
+        ³oºØ¸ô®|³£·|¦³¤@­Ó«O¯d®É¶¡(<literal>Expire</literal>)¡A
+        ¦pªG»P¨º³¡¥D¾÷¶¡¤@ª½¨S¦³¥ô¦ó³q°T¡A¦b¶W¹L«O¯d®É¶¡¤§«á¡A
+        ³oµ§¸ô®|·|¦Û°Ê³Q§R°£¡C³o¨Ç¥D¾÷´N¬O¥Î¤@ºØºÙ¬°RIP
+        (Routing Information Protocol)ªº¾÷¨î¨ÓÃÑ§O¡A
+        ¸g¥ÑRIP§Ú­Ì¥i¥H±o¨ì»P¥»¦a¥D¾÷³q°Tªº³Ì¨Î¸ô®|¡C</para>
+      
+      <para>FreeBSD¤]·|´À¥»¦aºô¸ô³]©w¸ô®|
+        (<hostid role="ipaddr">10.20.30.255</hostid>¬Oºô¸ô
+        <hostid role="ipaddr">10.20.30</hostid>ªº¼s¼½¦ì§}¡A
+        <hostid role="domainname">foobar.com</hostid>«h¬Oºô°ì¦WºÙ)¡C
+        <literal>link#1</literal>¥Nªí¥D¾÷ªº²Ä¤@¤ù¤A¤Óºô¸ô¥d¡A
+        §A¤]³\¤]ª`·N¨ì¤F¡A³o¨Ç¸ô®|³£¨S¦³«ü©w¤¶­±¡C</para>
+
+      <para>¥D¾÷©M¥»¦aºô¸ôªº¸ô®|¬O¥Ñ<command>routed</command>³o­Ódaemon
+        ¦Û°Ê³]©wªº¡A¦pªG¨S¦³°õ¦æ<command>routed</command>¡A
+        ¨º´N¥u¦³ÀRºA¸ô®|¦s¦b¡C</para>
+
+      <para>¥Ñ¤A¤Óºô¸ô¦ì§}¥i¥Hª¾¹D<literal>host1</literal>³o¤@¦æ´N¬O§Ú­Ìªº¥D¾÷¡
+        ¦]¬°§Ú­Ìªº¥D¾÷¬Oµo°eºÝ¡AFreeBSDª¾¹D¸Ó¨Ï¥Îloopback¤¶­±
+        (<devicename>lo0</devicename>)¡A¦Ó«D°e¨ì¤A¤Óºô¸ô¤¶­±¡C</para>
+
+      <para><literal>host2</literal>³o¨â¦æ¬O¬°¤F¥Ü½d·í§Ú­Ì¨Ï¥Îifconfig
+        §O¦W®Éªºª¬ªp(³o»ò°µªº­ì¦]½Ð°Ñ¨£¤A¤Óºô¸ô³o­Ó³¡¥÷)¡C
+        <devicename>lo0</devicename>¤§«áªº
+        <literal>=&gt;</literal>²Å¸¹ªí¥Ü§Ú­Ì©Ò¨Ï¥Îªºloopback¬O­Ó§O¦W¡C
+        ³oºØ¸ô®|¥u¦³¦b¤ä´©§O¦Wªº¥D¾÷¤W·|³QÅã¥Ü¥X¨Ó¡A
+        ¨ä¥¦¥»¦a¥D¾÷¹ï³oºØ¸ô®|¥u·|Â²³æªºÅã¥Ü¤@¦æ<literal>link#1</literal>¡C
+	</para>
+	  
+      <para>³Ì«á¤@¦æ(¥Ø¼Ð¤lºô¸ô<literal>224</literal>)¬O¥Î©óMultiCasting¡A
+        §Ú­Ì·|¦A»¡©ú¡C</para>
+                                                                                
+      <para>¥t¥~´N¬O<literal>Flags</literal>©Ò¥Nªíªº·N«ä¡A
+        ¨C¤@­Ó¸ô®|ªºÄÝ©Ê³£¦b³o¸ÌÅã¥Ü¡A¤U­±ªºªí®æ¬O³o¨ÇÄÝ©ÊªºÂ²µu»¡©ú¡G</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <tbody>
+	    <row>
+	      <entry>U</entry>
+	      <entry>±Ò°Ê(Up)¡G¥Nªí¥¿±`¹B§@¡C</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>H</entry>
+	      <entry>¥D¾÷(Host)¡G³q¦V¤@³¡¥D¾÷ªº¸ô®|¡C</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>G</entry>
+	      <entry>¹h¹D(Gateway)¡G¥ô¦ó°e¨ì¥Ø¼Ðªº«Ê¥]³£·|¥ý³Q³o³¡¥D¾÷±µ¦¬¡A
+                µM«á¦A¥Ñ³o³¡¥D¾÷Âà°e¡C</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>S</entry>
+	      <entry>ÀRºA(Static)¡G³oºØ¸ô®|¬O¤H¤u³]©wªº¡A¨Ã«D¥Ñ¨t²Î¦Û°Ê²£¥Í¡C
+		</entry>
+	    </row>
+	      
+	    <row>
+	      <entry>C</entry>
+	      <entry>Clone¡G¥H¦¹¸ô®|¬°°òÂ¦²£¥Í·sªº¸ô®|¡A
+		³oºØ¸ô®|³q±`¥u¦b¥»¦aºô¸ô¨Ï¥Î¡C</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>W</entry>
+	      <entry>WasCloned¡Gªí¥Ü³o­Ó¸ô®|¬O¥HÄÝ©Ê¬°C(Clone)ªº¸ô®|¬°°òÂ¦¦Û°Ê²£¥Íªº¡C</entry>
+	    </row>
+	      
+	    <row>
+	      <entry>L</entry>
+	      <entry>Link¡G¸ô®|°Ñ¦Ò¨ì¤A¤Óºô¸ôµwÅé¡C</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </sect2>
+    
+    <sect2>
+      <title>¹w³]¸ô®|</title>
+      
+      <para>·í¥»¦a¥D¾÷»Ý­n»P»·ºÝ¥D¾÷³q³s®É¡A
+        ¥»¦a¥D¾÷·|¥ý¨ì¸ô®|ªí¸ÌÀY¥h´M§ä¬O§_¤w¸g¦³¥i¥H¨Ï¥Îªº¸ô®|¡A
+        ¦pªG»·ºÝ¥D¾÷¦ì©ó§Ú­Ì¤w¸gª¾¹Dªº¤lºô¸ô(Cloned routes)¡A
+        ¨t²Î´N·|ÀË¬d¬O§_¯à¸g¥Ñ³o±ø¸ô®|¶i¦æ³q³s¡C</para>
+
+      <para>¦pªG©Ò¦³¤wª¾¸ô®|³£µLªk¨Ï¥Î¡A¨t²Î¥u¦³¤@­Ó³Ì«áªº¿ï¾Ü¡G¹w³]¸ô®|¡C
+        ¹w³]¸ô®|¬O¤@ºØ¯S§Oªº¹h¹D¸ô®|(³q±`¤]¬O¨t²Î¤¤°ß¤@ªº¤@­Ó)¡A
+        ¦Ó¥B¤@©w·|¦ñÀHµÛ¤@­ÓÄÝ©Ê<literal>c</literal>¡A
+        ¦ì©ó°Ï°ìºô¸ô¤¤ªº¥D¾÷¥i¥H±N¹h¹D³]©w¦¨¥ô¦ó»P¥~¬Éª½±µ³q³sªº¾÷¾¹
+        (µL½×¬O¥ÎPPP©Î¬O¤@³¡»P±M½u³s±µªºµwÅé)¡C</para>
+	  
+      <para>¦pªG¤@³¡¾÷¾¹¬O³q©¹¥~¤¶ªº¹h¹D¡A¦Ó§A¤S±N³o³¡¾÷¾¹ªº¹w³]¸ô®|³]¬°¾÷¾¹¦Û¤
+        ³o­Ó®É­ÔISP(Internet Service Provider)ªº¹h¹D¾¹´N·|ÅÜ¦¨¹w³]¸ô®|¡C</para>
+                                                                                
+      <para>Åý§Ú­Ì¬Ý¬Ý¤@­Ó¹w³]¸ô®|ªº¨Ò¤l¡A³o¬O¤@­Ó±`¨£ªºª¬ªp¡G</para>
+
+      <literallayout>
+[Local2]  &lt;--ether--&gt;  [Local1]  &lt;--PPP--&gt; [ISP-Serv]  &lt;--ether--&gt;  [T1-GW]
+      </literallayout>
+
+      <para><hostid>Local1</hostid>»P<hostid>Local2</hostid>
+        ³o¨â³¡¥D¾÷³£©M§A¦b¦P¤@­Ó¦a¤è¡A¨Ã¥B¨Ï¥ÎÂI¹ïÂI³q°T¨ó©w(PPP)»PISP¬Û³s¡A
+        ³o®aISP¦³¥L­Ì¦Û¤vªº°Ï°ìºô¸ô¡A
+        ¥]¬A»P§A³s±µªº¦øªA¾¹¥H¤Î»Pºô»Úºô¸ô¬Û³sªºµwÅé¸Ë¸m(T1-GW)¡C</para>
+                                                                                
+      <para>³o¨â³¡¥D¾÷ªº¹w³]¸ô®|¦p¤U¡G</para>
+	  
+      <informaltable frame="none">
+	<tgroup cols="3">
+	  <thead>
+	    <row>
+	      <entry>¥D¾÷</entry>
+	      <entry>¹w³]¹h¹D</entry>
+	      <entry>¤¶­±</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>Local2</entry>
+	      <entry>Local1</entry>
+	      <entry>ethernet</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Local1</entry>
+	      <entry>T1-GW</entry>
+	      <entry>PPP</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+      
+      <para>¤@­Ó±`¨£ªº°ÝÃD¡F<quote>¬°¤°»ò±N¹w³]¸ô®|³]¦¨T1-GW¡A
+        ¦Ó¤£¬O§Ú­Ì©Ò³s±µªº¦øªA¾¹©O¡H</quote></para>
+
+      <para>§O§Ñ¤F¡A¬JµMPPP¤¶­±¨Ï¥Îªº¦ì§}¬OÄÝ©óISPªº°Ï°ìºô¸ô¡A
+        ¦b³o­Ó°Ï°ìºô¸ô¤¤©Ò¦³¥D¾÷ªº¸ô®|´N·|¦Û°Ê²£¥Í¡A
+        ¦]¦¹¦ÛµM¤]´N±o¨ìT1-GW³o³¡¾÷¾¹ªº¸ô®|¡A©Ò¥H¦h¾lªº³]©w¬O¤£»Ý­nªº¡C</para>
+
+      <para>¤@¯ë³£¬O§â<hostid role="ipaddr">...1</hostid>
+        ³o­Ó¦ì§}°µ¬°¥»¦aºô¸ôªº¹h¹D¦ì§}¡A¦]¦¹¡A
+        ¦pªG§Aªºclass-C¦ì§}¬O<hostid role="ipaddr">10.20.30</hostid>¡A
+        ¦ÓISP¬O¥Î<hostid role="ipaddr">10.9.9</hostid>¡A³o®É¹w³]¸ô®|´N¬O¡G
+	</para>
+	  
+      <literallayout>
+Local2 (10.20.30.2)             --&gt;  Local1 (10.20.30.1)
+Local1 (10.20.30.1, 10.9.9.30)  --&gt;  T1-GW (10.9.9.1)
+      </literallayout>
+    </sect2>
+    
+    <sect2>
+      <title>Dual homed¥D¾÷</title>
+      
+      <para>ÁÙ¦³¤@ºØ°t¸m¤è¦¡¬O§Ú­ÌÀ³¸Óª¾¹Dªº¡A
+        ¨º´N¬O¤@³¡³s±µ¨â­Ó¤£¦Pºô¸ôªº¥D¾÷¡A
+        §Þ³N¤W¨Ó¨Ó¡A¥ô¦ó°µ¬°¹h¹Dªº¾÷¾¹³£¥i¥Hµø¬°daul-homed¥D¾÷¡A
+        ¦ý¬O³o­Ó¦Wµü¶È¥Î¨Óªí¥Ü¦P®É³s±µ¨â­Ó°Ï°ìºô¸ôªº¾÷¾¹¡C</para>
+                                                                                
+      <para>Á|¨Ò¨Ó»¡¡A¤@³¡¾÷¾¹´¡¤F¨â¤ùºô¸ô¥d¡A
+        ¨â¤ùºô¸ô¥dªº¦ì§}³£¦b¤£¦Pªº¤lºô¸ô¤W¡F
+        ¥t¥~¤@­Ó¨Ò¤l´N¬O¡A¤@³¡¾÷¾¹¥u´¡¤F¤@¤ùºô¸ô¥d¡A¦ý¬O¥Î¤Fifconfig¥[¤W§O¦W¡C
+        ²Ä¤@­Ó¨Ò¤l¬O¦b¦P®É¨Ï¥Î¨â­Ó¹êÅé¤A¤Óºô¸ô®É¡A
+        ²Ä¤G­Ó¨Ò¤l¬O¥u¦³¤@­Ó¹êÅéºô¸ô¡A
+        ¦ý¬O¦bÅÞ¿è¤W¦³¨â­Ó¤lºô¸ô¡C</para>
+                                                                                
+      <para>¦¹¥~¡A
+        ¥i¥H³]©w¸ô®|ªíÅý¨C­Ó¤lºô¸ôª¾¹D³o»O¾÷¾¹¬O³q©¹¥t¤@­Ó¤lºô¸ôªº¹h¹D¡A
+        ±N¾÷¾¹°µ¬°¨â­Ó¤lºô¸ôªº¾ô±µ¾¹®É¡A³q±`·|¥Î³oºØ¤èªk¨Ó³]¸m«Ê¥]¹LÂo
+        (packet filtering)©Î¨¾¤õÀð(firewall)¡C</para>
+    </sect2>
+    
+    <sect2>
+      <title>¸ô®|¶Ç¼½(Routing propagation)</title>
+      
+      <para>§Ú­Ìª¾¹D¦p¦ó³]©w³q¦V¥~ÀYªº¸ô®|¡A
+        ¦ý¬OÁÙ¤£ª¾¹D§O¤H¬O«ç»ò§ä¨ì§Ú­Ìªº¡C</para>
+                                                                                
+      <para>§Ú­Ìª¾¹D¸g¥Ñ³]©w¸ô®|ªí¡A©Ò¦³°e¨ì¬Y¬q¦ì§}ªº«Ê¥]
+        (¦b½d¨Ò¤¤¬O¤@­Óclass-Cªººô¸ô)³£·|³Q°e¨ì¤@³¡¦ì©ó¥Ø¼Ðºô¸ôªº¯S©w¥D¾÷¡A
+        ±µµÛ³o³¡¥D¾÷·|±N«Ê¥]Âà°eµ¹¯u¥¿ªº±µ¦¬ªÌ¡C</para>
+                                                                                
+      <para>·í§A¬°¤lºô¸ô¨ú±o¤@¬q¦ì§}®É¡AISP·|³]©w¥L­Ìªº¸ô®|ªí¡A
+        ©Ò¥H©Ò¦³°eµ¹§Aªº«Ê¥]³£·|¸g¥ÑPPP°e¨ì§Aªººô¸ô¡C
+        ¦ý¬O¦ì©ó¨ä¥L°ê®aªº¹q¸£¬O¦p¦óª¾¹D­n±N«Ê¥]°eµ¹§AªºISP©O¡H</para>
+                                                                                
+      <para>¦³¤@­Ó¨t²Î(»PDNSªº¬[ºc«Ü¹³)¤£Â_ªº°O¿ý©Ò¦³¤À°tªº¦ì§}¡A
+        ¨Ã¥B¬°¥¦­Ì³]©wºô»Úºô¸ô°©·F(Internet Backbone)ªº³s±µÂI¡A
+        &ldquo;Backbone&rdquo;¬O­t³d¥þ²yºô»Úºô¸ô³q°Tªº°©·F½u¸ô¡A
+        ¨C¤@³¡¦ì©ó°©·F½u¸ô¤Wªº¾÷¾¹(backbone machine)³£«O¦s¤@¥÷¹ïÀ³ªí¡A
+        ¦³¤F³o¥÷¹ïÀ³ªí¡A«Ê¥]´N¥i¥H°e¨ì§AªºISP¡A³Ì«á¨ì¹F§Aªººô¸ô¡C</para>
+                                                                                
+      <para>¦¹¥~¡AISP¤]¥²¶·Åý°©·F½u¸ô¤Wªº¾÷¾¹ª¾¹D§A¬O¸g¥Ñ³o®aISP³s¤Wºô¸ôªº¡C
+        ³o­Óµ{§Ç´N¬O¸ô®|¶Ç¼½¡C</para>
+    </sect2>
+    
+    <sect2>
+      <title>¸Ñ¨M°ÝÃD</title>
+      
+      <para>¦³®É­Ô¸ô®|¶Ç¼½(routing propagation)¥X¤F°ÝÃD¡A
+        ¾É­P¬Y¨Ç¦a¤èªº¹q¸£µLªk»P§A³q³s¡A
+        ¤]³\&man.traceroute.8;³o­Ó³Ì¦³¥Îªº«ü¥O¥i¥HÀ°§A§ä¥X¸ô®|¬O¦b­þ¸Ì¤¤Â_¡A
+        ³o­Ó«ü¥O¦b§AµLªk»P»·ºÝ¥D¾÷³q³s®É¤@¼Ë¦³¥Î(¨Ò¦p·í&man.ping.8;¥¢±Ñ®É)¡C
+        </para>
+                                                                                
+      <para>&man.traceroute.8;³o­Ó«ü¥O¬O¥H§A­n³s±µªº»·ºÝ¥D¾÷°µ¬°°Ñ¼Æ¡A
+        &man.traceroute.8;·|±N«Ê¥]©Ò¸g¹Lªº¹h¹DÅã¥Ü¥X¨Ó¡A
+        µL½×³Ì«á¬O§_¯à¦¨¥\¨ì¹F»·ºÝ¥D¾÷¡C</para>
+                                                                                
+      <para>½Ð°Ñ¦Ò½u¤W¤â¥U(manual page)¨ú±o§ó¦hÃö©ó&man.traceroute.8;ªº¸ê°T¡C
+        </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="bridging">
+    <title>Bridging</title>
+
+    <para><emphasis>Written by Steve Peterson
+	<email>steve@zpfe.com</email></emphasis>.</para>
+
+    <sect2>
+      <title>Introduction</title>
+
+      <para>It is sometimes useful to divide one physical network (i.e., an
+	Ethernet segment) into two separate network segments, without having
+	to create IP subnets and use a router to connect the segments
+	together.  A device that connects two networks together in this
+	fashion is called a bridge. and a FreeBSD system with two network
+	interface cards can act as a bridge.</para>
+
+      <para>The bridge works by learning the MAC layer addresses (i.e.,
+	Ethernet addresses) of the devices on each of its network interfaces.
+	It forwards traffic between two networks only when its source and
+	destination are on different networks.</para>
+
+      <para>In many respects, a bridge is like an Ethernet switch with very
+	few ports.</para>
+    </sect2>
+
+    <sect2>
+      <title>Situations where bridging is appropriate</title>
+
+      <para>There are two common situations in which a bridge is used
+	today.</para>
+      
+      <sect3>
+	<title>High traffic on a segment</title>
+
+	<para>Situation one is where your physical network segment is
+	  overloaded with traffic, but you don't want for whatever reason to
+	  subnet the network and interconnect the subnets with a
+	  router.</para>
+
+	<para>Let's consider an example of a newspaper where the Editorial and
+	  Production departments are on the same subnetwork.  The Editorial
+	  users all use server A for file service, and the Production users
+	  are on server B.  An Ethernet is used to connect all users together,
+	  and high loads on the network are slowing things down.</para>
+
+	<para>If the Editorial users could be segregated on one network
+	  segment and the Production users on another, the two network
+	  segments could be connected with a bridge.  Only the network traffic
+	  destined for interfaces on the "other" side of the bridge would be
+	  sent to the other network, reducing congestion on each network
+	  segment.</para>
+      </sect3>
+
+      <sect3>
+	<title>Filtering/traffic shaping firewall</title>
+
+	<para>The second common situation is where firewall functionality is
+	  needed without IP Masquerading (NAT).</para>
+
+	<para>An example is a small company that is connected via DSL or ISDN
+	  to their ISP.  They have a 13 address global IP allocation for their
+	  ISP and have 10 PCs on their network.  In this situation, using a
+	  router-based firewall is difficult because of subnetting
+	  issues.</para>
+
+	<para>A bridge-based firewall can be configured and dropped into the
+	  path just downstream of their DSL/ISDN router without any IP
+	  numbering issues.</para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>Configuring a bridge</title>
+
+      <sect3>
+	<title>Network interface card selection</title>
+
+	<para>A bridge requires at least two network cards to function.
+	  Unfortunately, not all network interface cards as of FreeBSD 4.0
+	  support bridging.  Read &man.bridge.4; for details on the cards that
+	  are supported.</para>
+
+	<para>Install and test the two network cards before continuing.</para>
+      </sect3>
+
+      <sect3>
+	<title>Kernel configuration changes</title>
+
+	<para>To enable kernel support for bridging, add the</para>
+
+	<programlisting>options BRIDGE</programlisting>
+
+	<para>statement to your kernel configuration file, and rebuild your
+	  kernel.</para>
+      </sect3>
+
+      <sect3>
+	<title>Firewall support</title>
+
+	<para>If you are planning to use the bridge as a firewall, you will
+	  need to add the IPFIREWALL option as well.  Read <xref
+	    linkend="firewalls"> for general information on configuring the
+	  bridge as a firewall.</para>
+
+	<para>If you need to allow non-IP packets (such as ARP) to flow
+	  through the bridge, there is an undocumented firewall option that
+	  must be set. This option is
+	  <literal>IPFIREWALL_DEFAULT_TO_ACCEPT</literal>.  Note that this
+	  changes the default rule for the firewall to accept any packet.
+	  Make sure you know how this changes the meaning of your ruleset
+	  before you set it.</para>
+      </sect3>
+
+      <sect3>
+	<title>Traffic shaping support</title>
+
+	<para>If you want to use the bridge as a traffic shaper, you will need
+	  to add the <literal>DUMMYNET</literal> option to your kernel
+	  configuration.  Read &man.dummynet.4; for further
+	  information.</para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>Enabling the bridge</title>
+
+      <para>Add the line</para>
+
+      <programlisting>net.link.ether.bridge=1</programlisting>
+
+      <para>to <filename>/etc/sysctl.conf</filename> to enable the bridge at
+	runtime.  If you want the bridged packets to be filtered by ipfw, you
+	should also add</para>
+
+      <programlisting>net.link.ether.bridge_ipfw=1</programlisting>
+
+      <para>as well.</para>
+    </sect2>
+
+    <sect2>
+      <title>Performance</title>
+
+      <para>My bridge/firewall is a Pentium 90 with one 3Com 3C900B and one
+	3C905B.  The protected side of the network runs at 10mbps half duplex
+	and the connection between the bridge and my router (a Cisco 675) runs
+	at 100mbps full duplex.  With no filtering enabled, I've found that
+	the bridge adds about 0.4 milliseconds of latency to pings from the
+	protected 10mbps network to the Cisco 675.</para>
+    </sect2>
+
+    <sect2>
+      <title>Other information</title>
+
+      <para>If you want to be able to telnet into the bridge from the network,
+	it is OK to assign one of the network cards an IP address.  The
+	consensus is that assigning both cards an address is a bad
+	idea.</para>
+
+      <para>If you have multiple bridges on your network, there cannot be more
+	than one path between any two workstations.  Technically, this means
+	that there is no support for spanning tree link management.</para>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="nfs">
+    <title>NFS</title>
+
+    <para><emphasis>Written by &a.unfurl;, 4 March 2000.</emphasis></para>
+
+    <para>Among the many different file systems that FreeBSD supports is
+      a very unique type, the Network File System or NFS.  NFS allows you
+      to share directories and files on one machine with one or more other
+      machines via the network they are attached to.  Using NFS, users and
+      programs can access files on remote systems as if they were local
+      files.</para>
+
+    <para>NFS has several benefits:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Local workstations dont need as much disk space because
+	  commonly used data can be stored on a single machine and still
+	  remain accessible to everyone on the network.</para>
+      </listitem>
+
+      <listitem>
+	<para>There is no need for users to have unique home directories
+	  on every machine on your network.  Once they have an established
+	  directory that is available via NFS it can be accessed from
+	  anywhere.</para>
+      </listitem>
+
+      <listitem>
+	<para>Storage devices such as floppies and CD-ROM drives can be
+	  used by other machines on the network eliminating the need for
+	  extra hardware.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2>
+      <title>How It Works</title>
+
+      <para> NFS is composed of two sides &ndash; a client side and a
+	server side.  Think of it as a want/have relationship.  The client
+	<emphasis>wants</emphasis> the data that the server side
+	<emphasis>has</emphasis>.  The server shares its data with the
+	client.  In order for this system to function properly a few
+	processes have to be configured and running properly.</para>
+
+      <para>The server has to be running the following daemons:</para>
+
+      <itemizedlist>
+        <listitem>
+	  <para><command>nfsd</command> - The NFS Daemon which services
+	    requests from NFS clients.</para>
+	</listitem>
+
+        <listitem>
+	  <para><command>mountd</command> - The NFS Mount Daemon which
+	    actually carries  out requests that nfsd passes on to
+	    it.</para>
+	</listitem>
+
+	<listitem>
+	  <para><command>portmap</command> - The portmapper daemon which
+	    allows NFS clients to find out which port the NFS server is
+	    using.</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>The client side only needs to run a single daemon:</para>
+
+      <itemizedlist>
+        <listitem>
+	  <para><command>nfsiod</command> - The NFS async I/O Daemon which
+	    services requests from its NFS server.</para>
+	</listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2>
+      <title>Configuring NFS</title>
+
+      <para>Luckily for us, on a FreeBSD system this setup is a snap.  The
+	processes that need to be running can all be run at boot time with
+	a few modifications to your <filename>/etc/rc.conf</filename>
+	file.</para>
+
+      <para>On the NFS server make sure you have:</para>
+
+      <programlisting>portmap_enable="YES"
+nfs_server_enable="YES"
+nfs_server_flags="-u -t -n 4"
+mountd_flags="-r"</programlisting>
+
+      <para><command>mountd</command> is automatically run whenever the
+	NFS server is enabled.  The <option>-u</option> and
+	<option>-t</option> flags to <command>nfsd</command> tell it to
+	serve UDP and TCP clients.  The <option>-n 4</option> flag tells
+	<command>nfsd</command> to start 4 copies of itself.</para>
+
+      <para>On the client, make sure you have:</para>
+
+      <programlisting>nfs_client_enable="YES"
+nfs_client_flags="-n 4"</programlisting>
+
+      <para>Like <command>nfsd</command>, the <option>-n 4</option> tells
+	<command>nfsiod</command> to start 4 copies of itself.</para>
+
+      <para>The last configuration step requires that you create a file
+	called <filename>/etc/exports</filename>.  The exports file
+	specifies which file systems on your server will be shared
+	(a.k.a., <quote>exported</quote>) and with what clients they will
+	be shared.  Each line in the file specifies a file system to be
+	shared.  There are a handful of options that can be used in this
+	file but only a few will be mentioned here.  You can find out
+	about the rest in the &man.exports.5; man page.</para>
+
+      <para>Here are a few example <filename>/etc/exports</filename>
+	entries:</para>
+
+      <para>The following line exports <filename>/cdrom</filename> to
+	three silly machines that have the same domain name as the server
+	(hence the lack of a domain name for each) or have entries in your
+	<filename>/etc/hosts</filename> file.  The <option>-ro</option>
+	flag makes the shared file system read-only.  With this flag, the
+	remote system will not be able to make any changes to the the
+	shared file system.</para>
+
+      <programlisting>/cdrom -ro moe larry curly</programlisting>
+
+      <para>The following line exports <filename>/home</filename> to three
+	hosts by IP address.  This is a useful setup if you have a
+	private network but do not have DNS running.  The
+	<option>-alldirs</option> flag allows all the directories below
+	the specified file system to be exported as well.</para>
+
+      <programlisting>/home  -alldirs  10.0.0.2 10.0.0.3 10.0.0.4</programlisting>
+
+      <para>The following line exports <filename>/a</filename> to two
+	machines that have different domain names than the server.  The
+	<option>-maproot=0</option> flag allows
+        the root user on the remote system to write to the shared
+        file system as root.  Without the -maproot=0 flag even if
+        someone has root access on the remote system they won't
+        be able to modify files on the shared file system.</para>
+
+      <programlisting>/a  -maproot=0  host.domain.com box.example.com</programlisting>
+
+      <para>In order for a client to share an exported file system it must
+	have permission to do so.  Make sure your client is listed in your
+	<filename>/etc/exports</filename> file.</para>
+
+      <para>Now that you have made all these changes you can just reboot
+	and let FreeBSD start everything for you at boot time or you can
+	run the following commands as root:</para>
+
+      <para>On the NFS server:</para>
+
+      <screen>&prompt.root; <userinput>portmap</userinput>
+&prompt.root; <userinput>nfsd -u -t -n 4</userinput>
+&prompt.root; <userinput>mountd -r</userinput></screen>
+
+      <para>On the NFS client:</para>
+
+      <screen>&prompt.root; <userinput>nfsiod -n 4</userinput></screen>
+
+      <para>Now you should be ready to actually mount a remote file
+	system.  This can be done one of two ways.  In these examples the
+	server's name will be <literal>server</literal> and the client's
+	name will be <literal>client</literal>.  If you just want to
+	temporarily mount a remote file system or just want to test out
+	your config you can run a command like this as root on the
+	client:</para>
+
+      <screen>&prompt.root; <userinput>mount server:/home /mnt</userinput></screen>
+
+      <para>This will mount <filename>/home</filename> on the server on
+	<filename>/mnt</filename> on the client.  If everything is setup
+	correctly you should be able to go into /mnt on the client and see
+	all the files that are on the server.</para>
+
+      <para>If you want to permanently (each time you reboot) mount a
+	remote file system you need to add it to your
+	<filename>/etc/fstab</filename> file.  Here is an example
+	line:</para>
+
+      <programlisting>server:/home	/mnt	nfs	rw	0	0</programlisting>
+
+      <para>Read the &man.fstab.5; man page for more options.</para>
+    </sect2>
+
+    <sect2>
+      <title>Practical Uses</title>
+
+      <para>There are many very cool uses for NFS.  Some of the more common
+        ones are listed below.</para>
+
+      <itemizedlist>
+        <listitem>
+	  <para>Have several machines on a network and share a CD-ROM or
+	    floppy drive among them.  This is cheaper and often more
+	    convenient.</para>
+	</listitem>
+
+	<listitem>
+	  <para>With so many machines on a network, it gets old having your
+	    personal files strewn all over the place.  You can have a
+	    central NFS server that houses all user home directories and
+	    shares them with the rest of the machines on the LAN, so no
+	    matter where you log in you will have the same home
+	    directory.</para>
+	</listitem>
+
+	<listitem>
+	  <para>When you get to reinstalling FreeBSD on one of your
+	    machines, NFS is the way to go!  Just pop your distribution
+	    CD-ROM into your file server and away you go!</para>
+	</listitem>
+
+	<listitem>
+	  <para>Have a common <filename>/usr/ports/distfiles</filename>
+	    directory that all your machines share.  That way, when you go
+	    to install a port that you've already installed on a different
+	    machine, you do not have to download the source all over
+	    again!</para>
+	</listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2>
+      <title>Problems integrating with other systems</title>
+
+      <para><emphasis>Contributed by a.jlind;.</emphasis></para>
+
+      <para>¬Y¨Ç¥Î©óISA PC¨t²Îªº¤A¤Óºô¸ô¥d(Ethernet adapter)
+        ¥i¯à·|¾É­Pºô¸ôµo¥ÍÄY­«ªº°ÝÃD¡A¤×¨ä¬O¨Ï¥ÎNFSªº®É­Ô¡C
+        ³o­Ó°ÝÃD¨Ã«DFreeBSD¯S¦³ªº¡A¦ý¬OFreeBSD¦h¤Ö·|¨ü¨ì¼vÅT¡C</para>
+
+      <para>³o­Ó°ÝÃD´X¥GÁ`¬Oµo¥Í¦P®É¾Ö¦³(FreeBSD) 
+	PC¨t²Î»P°ª©Ê¯à¤u§@¯¸ªººô¸ô¤W¡A
+        ¨Ò¦pª¿¹Ï(Silicon Graphics, Inc.)
+        ©Mª@¶§(Sun Microsystems, Inc.)©Ò»s³yªº¤u§@¯¸¡C
+        ¤@¶}©l¡A«È¤áºÝ¦¨¥\ªº±¾¤WNFSÀÉ®×¨t²Î¡A¤@¨Ç¾Þ§@¤]³£¶¶§Qªº¹F¦¨¡A
+        ¦ý¬O¦øªA¾¹¬ðµM´N¹ï«È¤áºÝªº­n¨D²@µL¤ÏÀ³¡A
+        ¦ý¬O¨ä¥¦«È¤áºÝ«o¤´¯à¥¿±`¤u§@¡AµL½×³o¨Ç«È¤áºÝ¬OFreeBSD¨t²Î©Î¤u§@¯¸¡C
+        ¦b³\¦h¨t²Î¤W¡A¥u­n¥X²{³o­Ó°ÝÃD´NµLªk¥¿±`ªº±N«È¤áºÝÃö³¬¡A
+        ¦]¬°¨S¦³¿ìªk¸Ñ¨M³oºØ°ÝÃD¡A°ß¤@ªº¿ìªk´N¬O¤£Â_ªº­«¸m(reset)«È¤áºÝ¡C
+        </para>
+
+      <para>ÁöµMFreeBSD<quote>¥¿½T</quote>ªº¸Ñ¨M¤èªk¬O§ï¥Î©Ê¯à§ó¦nªººô¸ô¥d¡A
+        ¤£¹L¤]¦³¤@­ÓÂ²³æ¥i¦æªº¿ìªk¡G
+        ¦pªG§AªºFreeBSD¨t²Î¬O<emphasis>¦øªAºÝ</emphasis>¡A
+        ¦b±¾¤WNFS®É¥[¤W<option>-w=1024</option>³o­Ó°Ñ¼Æ¡F
+        ¦pªG¬O<emphasis>«È¤áºÝ</emphasis>¡A
+        «h¦b±¾¤WNFS®É¥[¤W<option>-r=1024</option>³o­Ó°Ñ¼Æ¡C
+        ³o¨Ç°Ñ¼Æ¥i¥H¥[¦b«È¤áºÝ<filename>fstab</filename>ÀÉ®×ªº²Ä¥|­ÓÄæ¦ì¡A
+        ©ÎµÛ¬Omount«ü¥Oªº°Ñ¼Æ<option>-o</option>«á­±¡C</para>
+                                                                                
+      <para>¦³®É«á·|¥X²{¥t¤@ºØ°ÝÃD¡A¦ý¬O¸g±`³Q»~»{¬°¬O§Ú­Ì¦b¤W­±©Ò´£¨ìªº°ÝÃD¡A
+        ·íNFS¦øªAºÝ©M«È¤áºÝ¦ì©ó¤£¦Pªººô¸ô®É¡A
+        °È¥²<emphasis>½T©w</emphasis>§Aªº¸ô¥Ñ¾¹·|¶Ç°e¥²­nªºUDP¸ê°T¡A
+        §_«h´NµLªk¨Ï¥ÎNFS¡C</para>
+                                                                                
+      <para>¦b±µ¤U¨Óªº½d¨Ò¤¤¡A<hostid>fastws</hostid>¬O¤@³¡°ª©Ê¯à¤u§@¯¸ªº¦WºÙ¡A
+        <hostid>freebox</hostid>¬O¤@³¡FreeBSD¨t²Î¡A¨Ã¥B¨Ï¥Î¸û®tªººô¸ô¥d¡A¥t¥~¡A
+        <filename>/sharedfs</filename>¬O³Q¶}©ñ(export)ªºNFSÀÉ®×¨t²Î
+        (½Ð°Ñ¦Ò <command>man exports</command>)¡A
+        ¦Ó<filename>/project</filename>
+        «h¬O¦b«È¤áºÝªºNFS±¾¤JÂI(mount point)¡C¦b©Ò¦³±¡ªp¤U¡A
+        §A¥i¥H¸ÕµÛ¨Ï¥ÎÃB¥~ªº°Ñ¼Æ¡A¨Ò¦p<option>hard</option>¡B
+        <option>soft</option>©M<option>bg</option></para>
+
+      <para>¥HFreeBSD¨t²Î(<hostid>freebox</hostid>)¬°«È¤áºÝªº½d¨Ò¡G
+        ¦bfreebox¤Wªº<filename>/etc/fstab</filename>ÀÉ®×¤¤¡G</para>
+
+      <programlisting>fastws:/sharedfs /project nfs rw,-r=1024 0 0</programlisting>
+
+      <para>As a manual mount command on <hostid>freebox</hostid>:</para>
+	  
+      <screen>&prompt.root; <userinput>mount -t nfs -o -r=1024 fastws:/sharedfs /project</userinput></screen>
+	  
+    <para>¥HFreeBSD¨t²Î¬°¦øªAºÝªº½d¨Ò¡G
+        ¦b<hostid>fastws</hostid>ªº<filename>/etc/fstab</filename>ÀÉ®×¤¤¡G
+	</para>
+
+      <programlisting>freebox:/sharedfs /project nfs rw,-w=1024 0 0</programlisting>
+
+      <para>¦b<hostid>fastws</hostid>¤Wª½±µ¨Ï¥Îmount«ü¥O¡G</para>
+
+      <screen>&prompt.root; <userinput>mount -t nfs -o -w=1024 freebox:/sharedfs /project</userinput></screen>
+	  
+      <para>´X¥G©Ò¦³16¦ì¤¸ªº¤A¤Óºô¸ô¥d¹ïÅª¨ú©Î¼g¤Jªº®e¶q³£¨S¦³­­¨î¡C</para>
+
+      <para>¦pªG§A¦³¿³½ì¡A³o­Ó³¡¥÷·|§i¶D§A¿ù»~µo¥Íªº®Éª¬ªp¡A
+        ¦P®É¤]·|»¡©úµLªk´_­ìªº­ì¦]¡CNFS¤@¯ë¬O¥H8K¬°¸ê®Æªº¶Ç¿é³æ¦ì¡A
+        ¦ý¬O¤A¤Óºô¸ôªº«Ê¥]³Ì¤j¬°1500¦ì¤¸²Õ¡A¦]¦¹NFS
+        ¶Ç°eªº¸ê®Æ·|³Q¤Á³Î¬°³\¦hªº¤A¤Óºô¸ô«Ê¥]¡A
+        ¦Ó±µ¦¬ºÝ¦b¥²¶·±µ¦¬¡B²Õ¦X«Ê¥]¡A¥æµ¹NFS¨t²Î¨Ã¥B°e¥X¦^À³
+        (<emphasis>acknowledge</emphasis>)¡A°ª©Ê¯à¤u§@¯¸¥i¥H±N¥]§tNFS
+        ¸ê®Æªº«Ê¥]¨Ì§Ç¨ú¥X(pump out)¡C¦ý¬O¦b¤ñ¸û§C¶¥ªººô¸ô¥d¤W¡A
+        ¸û±ß°e¥Xªº«Ê¥]¥i¯à·|¶]±o¤ñ¥ý°e¥Xªº«Ê¥]§Ö¡A¾É­PNFSªº¸ê®ÆµLªk­«·s²Õ¦X¡A
+        ·í¹O®É­È¨ì¹F«á¡A±µ¦¬ºÝ´N·|­n¨D¶Ç°eºÝ±N¸ê®Æ¦A°e¤@¦¸¡A
+        ¦ý¬O´£¨ÑNFSªA°Èªº¾÷¾¹·|±N¾ã­Ó8Kªº¸ê®Æ­«·s°e¥X¡A
+        ¦Ó¤W­±©Ò»¡ªº¾ã­Óµ{§Ç´N·|¦A­«½Æ¤@¦¸¡A³Ì«á¶i¤J¤@­Ó¤£·|°±¤îªº°j°é¡C</para>
+
+      <para>ÂÇµÛÅýNFSªº¸ê®Æ¶Ç¿é³æ¦ì¤p©ó¤A¤Óºô¸ô«Ê¥]¡A
+        §Ú­Ì¥i¥H«OÃÒ¨C­Ó«Ê¥]³£¥i¥H¥¿½Tªº³Q±µ¦¬¤Î¦^À³¡A¶i¦Ó¥²§K³o­Ó°ÝÃD¡C</para>
+                                                                                
+      <para>·í¤@³¡°ª©Ê¯àªº¤u§@¯¸¥H°ª³t±N¸ê®Æ°eµ¹PC¨t²Î®É¡A
+        §Y¨Ï³o³¡PC©Ò¥Îªº¬O¸û¦nªººô¸ô¥d¡A³oºØª¬ªp¤´¥i¯àµo¥Í¡C
+        ·íª¬ªpµo¥Í®É¡A³Q¼vÅTªºNFS¸ê®Æ·|³Q­«·s¶Ç°e¡A
+        ¤£¹L«Ê¥]·|¦³¤@©wªº¾÷·|³Q±µ¦¬¡B­«²Õ¡AµM«á°e¥X¦^À³¡C</para>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="diskless">
+    <title>µLºÏºÐ§@·~</title>
+    
+    <para><emphasis>Contributed by &a.martin;.</emphasis></para>
+    
+    <para>¦³¤F<filename>netboot.com</filename>/<filename>netboot.rom</filename>
+      ³o¨â­ÓÀÉ®×¡A«È¤áºÝ¤£»Ý­nºÏºÐ¾÷´N¯à¸g¥Ñºô¸ô±Ò°Ê¨Ã°õ¦æFreeBSD¡A
+      ¦Ó¥B±q2.0ª©¶}©l´N¥i¥H¨Ï¥Î¥»¦a¥æ´«°Ï¡A¦P®É¤´µM¯à¥HNFS°µ¬°¥æ´«°Ï¡C</para>
+
+    <para>¥Ø«e¤ä´©ªº¤A¤Óºô¸ô¥d¦³¡GWestern Digital/SMC 8003, 8013,
+      8216»P¬Û®e¥d¡FNE1000/NE2000»P¬Û®e¥d(¥²¶·­«·s½sÄ¶)</para>
+
+    <sect2>
+      <title>¦w¸Ë¨BÆJ</title>
+      
+      <procedure>
+	<step>
+	  <para>§ä¤@³¡¾÷¾¹§@¬°¦øªA¾¹¡A³o³¡¾÷¾¹ªººÏºÐ¥²¶·¦³¨¬°÷ªºªÅ¶¡¦s©ñ
+            FreeBSD 2.0¡A¨Ã¥B´£¨Ñbootp¡Btftp©MNFSªA°È¡C¸g¹L´ú¸Õªº¾÷¾¹¡G</para>
+	      
+	  <itemizedlist>
+	    <listitem>
+	      <para>°õ¦æHP-UX 9.04(¥H¤W)ªºHP9000/8xx(pre 9.04µLªk¨Ï¥Î)</para>
+	    </listitem>
+	    
+	    <listitem>
+	      <para>Sun/Solaris 2.3¡C(»Ý­n¥ý¨ú±obootp)</para>
+	    </listitem>
+	  </itemizedlist>
+	</step>
+
+	<step>
+	  <para>³]©wbootpªA°È´£¨Ñ«È¤áºÝIP¡B¹h¹D(gateway)©M¤lºô¸ô¾B¸n(netmask)¡C
+	    </para>
+	  
+	  <programlisting>diskless:\
+        :ht=ether:\
+        :ha=0000c01f848a:\
+        :sm=255.255.255.0:\
+        :hn:\
+        :ds=192.1.2.3:\
+        :ip=192.1.2.4:\
+        :gw=192.1.2.5:\
+        :vm=rfc1048:</programlisting>
+	</step>
+
+	<step>
+	  <para>³]©wTFTPªA°È(»PbootpªA°È¦P¤@»O¦øªA¾¹)´£¨Ñ±Ò°Ê¸ê°Tµ¹«È¤áºÝ¡A
+            ÀÉ¦Wªº®æ¦¡¬O
+            <filename>cfg.<replaceable>X.X.X.X</replaceable></filename>
+            (©Î<filename>/tftpboot/cfg.<replaceable>X.X.X.X</replaceable></filename>)¡A
+            ¨ä¤¤<replaceable>X.X.X.X</replaceable>¬O«È¤áºÝªºIP¦ì§}¡C
+            ÀÉ®×ªº¤º®e¥i¥H¬O¥ô¦ó¦³®Äªºnetboot«ü¥O¡A¦b2.0¤¤¡A
+            netboot¦³¤U¦Cªº«ü¥O¡G</para>
+
+	  <informaltable frame="none">
+	    <tgroup cols="2">
+	      <tbody>
+		<row>
+		  <entry>help</entry>
+		  <entry>Åã¥Ü»¡©ú</entry>
+		</row>
+		
+		<row>
+		  <entry>ip
+		    <option><replaceable>X.X.X.X</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©w«È¤áºÝIP¦ì§}</entry>
+		</row>
+		
+		<row>
+		  <entry>server
+		    <option><replaceable>X.X.X.X</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©wbootp/tftp¦øªA¾¹ªº¦ì§}</entry>
+		</row>
+		
+		<row>
+		  <entry>netmask
+		    <option><replaceable>X.X.X.X</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©w¤lºô¸ô¾B¸n</entry>
+		</row>
+
+		<row>
+		  <entry>hostname <replaceable>name</replaceable></entry>
+		  <entry>Åã¥Ü/³]©w¥D¾÷¦WºÙ</entry>
+		    </row>
+		
+		<row>
+		  <entry>kernel
+		    <option><replaceable>name</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©wkernel¦WºÙ</entry>
+		</row>
+		
+		<row>
+		  <entry>rootfs
+		    <option><replaceable>ip:/fs</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©w®ÚÀÉ®×¨t²Î(root filesystem)</entry>
+		</row>
+		
+		<row>
+		  <entry>swapfs
+		    <option><replaceable>ip:/fs</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©w¥æ´«°ÏÀÉ®×¨t²Î(swap filesystem)</entry>
+		</row>
+		
+		<row>
+		  <entry>swapsize
+		    <option><replaceable>size</replaceable></option></entry>
+		  <entry>Åã¥Ü/³]©w¥æ´«°ÏÀÉ®×¨t²Î(swap filesystem)</entry>
+		</row>
+		
+		<row>
+		  <entry>diskboot</entry>
+		  <entry>¨Ï¥ÎºÏºÐ¶}¾÷</entry>
+		</row>
+		
+		<row>
+		  <entry>autoboot</entry>
+		  <entry>Ä~Äò°õ¦æ±Ò°Êµ{§Ç</entry>
+		</row>
+		
+		<row>
+		  <entry>trans
+		    <option>on</option>|<option>off</option></entry>
+		  <entry>¶}±Ò/Ãö³¬transceiver¥\¯à</entry>
+		</row>
+		
+		<row>
+		  <entry>flags
+		    <option>b</option><option>c</option><option>d</option><option>h</option><option>s</option><option>v</option></entry>
+		  <entry>³]©w±Ò°ÊºX¼Ð</entry>
+		</row>
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	  
+	  <para>¤@­Ó¨å«¬ªº³]©wÀÉ¡G</para>
+
+	  <programlisting>rootfs 192.1.2.3:/rootfs/myclient
+swapfs 192.1.2.3:/swapfs
+swapsize 20000
+hostname myclient.mydomain</programlisting>
+
+	  <para>¤@­Ó¨Ï¥Î¥»¦a¥æ´«°Ïªº³]©wÀÉ¡G</para>
+
+	  <programlisting>rootfs 192.1.2.3:/rootfs/myclient
+hostname myclient.mydomain</programlisting>
+	</step>
+
+	<step>
+	  <para>½T©w§A±NNFS¦øªA¾¹¸Ì°µ¬°®Ú(¤Î¥æ´«°Ï)ÀÉ®×¨t²Îªº¥Ø¿ý¶}©ñµ¹«È¤áºÝ¡A
+            ¨Ã¥BÅý«È¤áºÝ¯à¥Hrootªº¨­¥÷¦s¨ú³o¨ÇÀÉ®×¨t²Î¡A¤@­Ó¥Î©óFreeBSDªº¨å«¬
+            <filename>/etc/exports</filename>ÀÉ¦p¤U¡G</para>
+	  
+	  <programlisting>/rootfs/myclient -maproot=0:0 myclient.mydomain
+/swapfs -maproot=0:0 myclient.mydomain</programlisting>
+
+	  <para>HP-UX«h¬O¡G</para>
+
+	  <programlisting>/rootfs/myclient -root=myclient.mydomain
+/swapfs -root=myclient.mydomain</programlisting>
+	</step>
+	      
+	<step>
+	  <para>¦pªG¨Ï¥ÎNFS(§¹¥þµLºÏºÐ§@·~)¡A½Ð¥Î<command>dd</command>
+            «ü¥O¬°«È¤áºÝ«Ø¥ß¥æ´«ÀÉ¡C¦pªG¦b<command>swapfs</command>«ü¥O
+            ¥[¤F°Ñ¼Æ<filename>/swapfs</filename>¡A¨Ã¥B«ü©w¤j¤p¬°20000¡A
+            ´N¹³¤W­±ªº½d¨Ò¡A«È¤áºÝªº¥æ´«ÀÉÀÉ¦W´N¬O
+            <filename>/swapfs/swap.<replaceable>X.X.X.X</replaceable></filename>¡A
+            ¦Ó<replaceable>X.X.X.X</replaceable>«h¬O«È¤áºÝªºIP¦ì§}¡C¨Ò¦p¡G
+            </para>
+		  
+	  <screen>&prompt.root; <userinput>dd if=/dev/zero of=/swapfs/swap.192.1.2.4 bs=1k count=20000</userinput></screen>
+		  
+	  <para>¦¹¥~¡A·í«È¤áºÝ¶}©l¨Ï¥Î¥æ´«ÀÉ¤§«á¡A
+            ¥æ´«ÀÉ¸Ì¥i¯à·|³Q¦s©ñ±Ó·Pªº¸ê®Æ¡A
+            ©Ò¥H°O±o¬°¥æ´«ÀÉ³]©wÅª¨ú¤Î¼g¤JªºÅv­­¡A¨¾¤î¥¼¸g³\¥iªº¦s¨ú¡G</para>
+		  
+	  <screen>&prompt.root; <userinput>chmod 0600 /swapfs/swap.192.1.2.4</userinput></screen>
+	</step>
+
+	<step>
+	  <para>¦b«È¤áºÝ°µ¬°®ÚÀÉ®×¨t²Îªº¥Ø¿ý¤¤(¦p¤W¨Ò¤¤ªº
+            <filename>/rootfs/myclient</filename>)±N®ÚÀÉ®×¨t²Î¸Ñ¶}¡C</para>
+	  
+	  <itemizedlist>
+	    <listitem>
+              <para>HP-UX¨t²Î¡GHP9000/800¨t¦Cªº¦øªA¾¹À³¸Ó°õ¦æHP-UX 9.04
+                ©Î§ó·sªºª©¥»¡A¸ûÂÂªºª©¥»µLªk¦bNFS¤W«Ø¥ß³]³ÆÀÉ¡C</para>
+	    </listitem>
+	    
+	    <listitem>
+              <para>¦b<filename>/rootfs/myclient</filename>¤¤¸Ñ¶}
+                <filename>/dev</filename>®É¡A
+                ª`·N¬Y¨Ç¨t²Î(HPUX)¤£·|«Ø¥ß³]³ÆÀÉ¡A¤£¹LFreeBSD¨S¦³°ÝÃD¡C
+                ¦]¦¹¦b²Ä¤@¦¸±Ò°Ê®É¥²¶·¶i¤J³æ¤@¨Ï¥ÎªÌ¼Ò¦¡
+                (¦b±Ò°Ê®É«öControl-CÁä)¡A
+                cd <filename>/dev</filename>µM«á°õ¦æ
+                <command>sh ./MAKEDEV all</command>«ü¥O¨Ó­×¥¿³o­Ó°ÝÃD¡C</para>
+	    </listitem>
+	  </itemizedlist>
+	</step>
+
+	<step>
+          <para>¦b«È¤áºÝ°õ¦æ<command>netboot.com</command>«ü¥O©Î¬O¥Î
+            <filename>netboot.rom</filename>ÀÉ®×»s§@EPROM¡C</para>
+	</step>
+      </procedure>
+    </sect2>
+    
+    <sect2>
+      <title>¦@¨É<filename>/</filename>©M<filename>/usr</filename>ÀÉ®×¨t²Î
+        </title>
+
+      <para>ÁöµM§Ú¥¿Åý¨C­Ó«È¤áºÝ¦@¨É­Ó§Oªº<filename>/usr</filename>©M
+        <filename>/</filename>ÀÉ®×¨t²Î¡A¦ý¬O¥Ø«e¨Ã¨S¦³¤½»{¥¿½Tªº°µ¥h¡A
+        ¦pªG¥ô¦ó¤H¹ï©ó¦@¨É<filename>/</filename>©M<filename>/usr</filename>
+        ÀÉ®×¨t²Î¦³§ó¦nªº«ØÄ³¡A½Ð³qª¾§Ú©Î&a.doc;¡C</para>
+    </sect2>
+    
+    <sect2>
+      <title>½sÄ¶netboot</title>
+      
+      <para>¦pªG­n¨Ï¥ÎNE1000/2000¡A¥²¶·­×§ï
+        <filename>/sys/i386/boot/netboot/Makefile</filename>
+        ¤¤ªº²ÕºA¨Ã¥B­«·s½sÄ¶¡C½Ð°Ñ¦ÒÀÉ®×¤¤ªºµù¸Ñ¡C</para>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="isdn">
+    <title>ISDN</title>
+    
+    <para><emphasis>Last modified by a.wlloyd;</emphasis>.</para>
+    
+    <para><ulink url="http://alumni.caltech.edu/~dank/isdn/">Dan Kegel's ISDN
+        Page</ulink>¬O­Ó¨ú±o±oISDN¸ê°Tªº¦n¦a¤è¡C</para>
+
+    <para>¤@­Ó¹ïISDN§Ö³t¥BÂ²³æªº»¡©ú¦p¤U¡G</para>
+    
+    <itemizedlist>
+      <listitem>
+        <para>¦pªG§A¦í¦b¼Ú¬w¡A«ØÄ³§A¬ã¨sISDN¥d³o­Ó³¡¥÷¡C</para>
+      </listitem>
+      
+      <listitem>
+        <para>¦pªG§A¥´ºâ¨Ï¥ÎISP´£¨Ñªº¼·±µ¦¡ISDN¡A«ØÄ³§A¦Ò¼{²×ºÝ°t±µ¾¹
+          (Terminal Adapter)¡A
+          ³o¼Ë¦b§ó´«ISP®É¥i¥H´£¨Ñ¨¬°÷ªºÆF¬¡©Ê¤Î»s³y³Ì¤Öªº°ÝÃD¡C</para>
+      </listitem>
+      
+      <listitem>
+        <para>¦pªG§A­n¸g¥ÑISDN±M½u±N¨â­Ó°Ï°ìºô¸ô³s¦b¤@°_¡B©Î¬O»PInternet³q³s¡A
+          «ØÄ³§A¦Ò¼{¿W¥ßªº¸ô¥Ñ¾¹(router)/¾ô±µ¾¹(bridge)¡C</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>¦¨¥»¬O¤@¶µ¤ÞÅT¿ï¾Üªº­«­n¦]¯À¡A¤U¦C¸ê®Æªº¶¶§Ç¬O«K©y¨ì©ù¶Q¡C</para>    
+    
+    <sect2>
+      <title>ISDN¥d</title>
+      
+      <para><emphasis>Contributed by &a.hm;.</emphasis></para>
+      
+      <para>¥»¸`¥D­nªº¹ï¶H¬O¦í¦b¤ä´©DSS1/Q.931 ISDN¼Ð·Çªº°ê®aªºISDN¨Ï¥ÎªÌ¡C
+	</para>
+
+      <para>¦ÛFreeBSD 2.2.xª©°_¡Aisdn4bsdÅX°Êµ{¦¡©Ò¤ä´©ªºPC ISDN¥d·U¨Ó·U¦h¡A
+        ÁöµMisdn4bsd¤´¦bµo®i¤¤¡A¦ý¬O¦³¥÷³ø§i»¡©ú¦b¼Ú¬wªº¨Ï¥ÎªÌ³£¯à¶¶§Qªº¨Ï¥Î
+        isdn4bsd¡C</para>
+
+      <para>³Ì·sª©¥»ªºisdn4bsd¥i¥H¦b
+        <ulink url="ftp://isdn4bsd@ftp.consol.de/pub/">
+        ftp://isdn4bsd@ftp.consol.de/pub/</ulink>¨ú±o
+        (½Ð¥H<username>isdn4bsd</username>
+        ¬°¨Ï¥ÎªÌ¦WºÙ¡A¨Ã¥B¥H§Aªº¹q¤l¶l¥ó¦a§}¬°±K½X¡A
+        ±µµÛ¶i¤J<filename>pub</filename>¥Ø¿ý)¡C</para>
+
+      <para>isdn4bsd¥i¥HÅý§A¸g¥ÑIP over raw HDLC©Î¦P¨BPPP»P¨ä¥¦ISDN¸ô¥Ñ¾¹³s±µ¡A
+        ¥t¥~¤]¥i¥H³s±µ¹q¸Üµª¿ý¾÷¡C</para>
+
+      <para>isdn4bsd¤ä´©¤F³\¦hISDN PC¥d¡A¤×¨ä¬O¨º¨Ç¥Î¤FSiemens ISDN´¹¤ù²Õ
+        (ISAC/HSCX)ªº¥d¡A¨ä¥¦´¹¤ù²Õ(Motorola¡BCologne Chip Designs)
+        ªº¤ä´©¥Ø«e¤´¦bµo®i¤¤¡C
+        ¦pªG·Q­nª¾¹D³Ì·sªº¤ä´©¦Cªí¡A½Ð¬Ý¤@¬Ý
+        <ulink url="ftp://isdn4bsd@ftp.consol.de/pub/README">README</ulink>
+        ³o­ÓÀÉ®×¡C</para>
+
+      <para>¦pªG§A¦³¿³½ìÅýisdn4bsd¤ä´©¨ä¥¦ISDN¨ó©w¡B
+        ISDN PC¥d©Î¬O¨ä¥¦¥\¯àªº¼W¥[¡A
+        ½Ð»P<email>hm@kts.org</email>³sµ¸¡C</para>
+
+      <para>¦³¤@­Ó¥Ñmajordomo©ÒºûÅ@ªº½u¤W°Q½×°Ï(mailing list)¡A
+        ¦pªG§A·Q¥[¤J°Q½×¡A½Ð±H¤@«Ê¹q¤l¶l¥ó¦Ü
+        <email>majordomo@FreeBSD.org</email>¨Ã¥B¥H¡G</para>
+      
+      <programlisting>subscribe freebsd-isdn</programlisting>
+
+      <para>°µ¬°«H¥ó¤º®e¡C</para>
+    </sect2>
+    
+    <sect2>
+      <title>ISDN²×ºÝ°t±µ¾¹(Terminal Adapter)</title>
+      
+      <para>¼Æ¾Ú¾÷(modem)¬Oµ¹¤@¯ëªº¹q¸Ü½u¥Îªº¡A¦P¼Ëªº¹D²z¡A
+        ²×ºÝ°t±µ¾¹(TA, Terminal Adapter)¬Oµ¹ISDN¥Îªº¡C</para>
+
+      <para>¤j³¡¥÷ªºTA¬O¥Î¼Ð·Çªºhayes¼Æ¾Ú¾÷AT«ü¥O¶°¡A
+        ©Ò¥H¥i¥H¥Î¨Ó¨ú¥N¤@¯ëªº¼Æ¾Ú¾÷¡C</para>
+	  
+      <para>¨ä¥»¤W¡ATA°£¤F³s½u³t«×¸û§Ö¡A¨ä¥¦¹B§@³£»P¼Æ¾Ú¾÷¾÷Ãþ¦ü¡A
+        ©Ò¥H³]©w<link linkend="ppp">PPP</link>ªº¨BÆJ»P¼Æ¾Ú¾÷§¹¥þ¤@¼Ë¡A
+        ¦ý¬O¾¨¶q§â¦ê¦C°ðªº³t«×½Õ¨ì³Ì°ª¡C</para>
+	  
+      <para>¨Ï¥ÎTA»PISP³s½uªºÀuÂI¤§¤@´N¬O°ÊºAPPP(Dynamic PPP)¡A
+        ÀHµÛ¥i¥H¨Ï¥ÎªºIP¦ì§}·U¨Ó·U¤Ö¡A¤j³¡¥÷ªºISP¤£Ä@·N¦A´£¨ÑÀRºAIP¦ì§}¡A
+        ¦Ó¤j³¡¥÷ªº¸ô¥Ñ¾¹¤]³£¨S¦³°ÊºA¨ú±oIPªº¥\¯à¡C</para>
+      
+      <para>TAªº¹B§@§¹¥þ¨Ì¿àPPPªºdaemon¡A©Ò¥H¦bFreeBSD¤W¥u­n±NPPP³]©w¦n¤F¡A
+        §A¥i¥H»´©öªº±N¼Æ¾Ú¾÷¤É¯Å¦¨ISDN¡A
+        ¦ý¬O§A¦b¨Ï¥ÎPPP»P¼Æ¾Ú¾÷®Éµo¥Íªº°ÝÃD¨ÌµM¦s¦b¡C</para>
+                                                                                
+      <para>¦pªG§A¹ï³s½uªºÃ­©w©Ê­n¨D«Ü°ª¡A¨º§AÀ³¸Ó¥Îkernel¼Ò¦¡ªº
+        <link linkend="ppp">PPP</link>¡A¦Ó«D¨Ï¥ÎªÌ¼Ò¦¡ªº
+        <link linkend="userppp">iijPPP</link>¡C</para>
+                                                                                
+      <para>¥Ø«e¤wª¾¦bFreeBSD¤U¥i¥H¥¿±`¤u§@ªºTA¦p¤U¡G</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>Motorola BitSurfer and Bitsurfer Pro</para>
+	</listitem>
+
+	<listitem>
+	  <para>Adtran</para>
+	</listitem>
+      </itemizedlist>
+      
+      <para>¤j³¡¤ÀªºTAÀ³¸Ó³£¯à¥¿±`ªº¹B§@¡A
+        TAªº¼t°Ó­Ì³£¾¨¶qÅý¥L­Ìªº²£«~¯à°÷±µ¨ü¼Ð·ÇªºAT«ü¥O¶°¡C</para>
+                                                                                
+      <para>¥~±µ¦¡TAªº°ÝÃD¤§¤@¬O¡A§A¥²¶·¨Ï¥Î¤@¤ù«~½è¨}¦nªº¦ê¦C°ð¥d¡A
+        ´¶³qªº¼Æ¾Ú¾÷¦P¼Ë¤]¦³³o­Ó°ÝÃD¡C</para>
+                                                                                
+      <para>½Ð°Ñ¦Òhandbook¤¤ <ulink 
+        url="../../articles/serial-uart/index.html">FreeBSD ¦ê¦C°ðµwÅé</ulink>
+        ³o­Ó³¡¥÷¨ú±o§ó¦hÃö©ó¦ê¦C³]³Æªº¸ê°T¡A¥H¤Î«D¦P¨B(asynchronous)»P¦P¨B
+        (synchronous)¦ê¦C°ð¤§¶¡ªº¤£¦P¡C</para>
+                                                                                
+      <para>¤@­Ó»P¼Ð·ÇPC¦ê¦C°ð³s±µ(«D¦P¨B)ªºTA¡A´Nºâ¬O¥Î128Kbs¶i¦æ³s½u¡A
+        ¶Ç¿é³t«×³Ì°ª¥u¦³115.2Kbs¡A¦pªG­n§¹¥þ§Q¥Î©Ò¦³ÀW¼e¡A
+        ´N¥²¶·§ï¥Î¦P¨B¦ê¦C¥d¡C</para>
+                                                                                
+      <para>¤£­n»{¬°¥u­n¶R¤º±µ¦¡TA´N¤£»Ý­n¾á¤ß¤W­z¦P¨B/«D¦P¨Bªº°ÝÃD¡A
+        ¤º±µ¦¡TA©Ò¥Îªº¤]¬O¼Ð·ÇPC¦ê¦C°ðªº´¹¤ù¡A¨Ï¥Î¤º±µ¦¡TA
+        ªº­ì¦]¥u¬O¤£¥²¦A¶R¤@±ø¦ê¦C½u¡A¤]¤£¥²¦A§ä¤@­Ó¹q·½´¡®y¡C</para>
+                                                                                
+      <para>¤@¤ù¦P¨B¦ê¦C¥d»PTA¤@°_¨Ï¥Î®Éªº³t«×¦Ü¤Ö¸ò¸ô¥Ñ¾¹¤@¼Ë§Ö¡A
+        §A¥i¥H¥ÎFreeBSD»PÂ²³æªº386¾÷¾¹°µ¬°¸ô¥Ñ¾¹¡A¤]³\§ó¦³¼u©Ê¡C</para>
+
+      <para>¿ï¾Üsync/TA©Î¸ô¥Ñ¾¹¬O¤@­ÓÄYÂÔªº°ÝÃD¡A¦b½u¤W°Q½×°Ï¸Ì¦³¤£¤Ö°Q½×¡A
+        «ØÄ³§A°Ñ¦Ò<ulink url="http://www.FreeBSD.org/search.html">archives
+        </ulink>¤¤ªº°Q½×¡C</para>
+    </sect2>
+    
+    <sect2>
+      <title>¿W¥ßªºISDN¾ô±µ¾¹(Bridge)/¸ô¥Ñ¾¹(Router)</title>
+      
+      <para>ISDN¾ô±µ¾¹©Î¸ô¥Ñ¾¹¨Ã«D¥u¯à¦bFreeBSD©Î¨ä¥¦§@·~¨t²Î¤W¨Ï¥Î¡A
+        ½Ð¾\Åªºô¸ô¬ÛÃö®ÑÄy¥H¨ú±o§ó¦hÃö©órouting©Mbridgingªº¸ê°T¡C</para>
+                                                                                
+      <para>¦b³o¸Ì¡A§Ú·|¥æ¤¬¨Ï¥Î¸ô¥Ñ¾¹©M¾ô±µ¾¹³o¨â­Ó¦Wµü¡C</para>
+                                                                                
+      <para>ÀHµÛ§C¶¥ISDN¸ô¥Ñ¾¹/¾ô±µ¾¹ªº¦¨¥»¤£Â_¤U­°¡A
+        ISDN¸ô¥Ñ¾¹/¾ô±µ¾¹ªº¨Ï¥Î·|·U¨Ó·U´¶¹M¡CISDN¸ô¥Ñ¾¹¬O¤@­Ó¤p²°¤l¡A
+        ¥i¥Hª½±µ»P§Aªº¤A¤Óºô¸ô(©Îºô¸ô¥d)³s±µ¡A
+        ¦P®É¦Û¦æºÞ²z»P¨ä¥¦¾ô±µ¾¹/¸ô¥Ñ¾¹¶¡ªº³s½u¡A
+        ¨Ã¥B¤]¾Ö¦³³B²zPPP©Î¨ä¥¦¨ó©wªº¯à¤O¡C</para>
+                                                                                
+      <para>¸ô¥Ñ¾¹ªº³t«×»·¤ñ¤@­Ó¼Ð·ÇªºTA§Ö¦h¤F¡A
+        ¦]¦¹¸ô¥Ñ¾¹¥i¥H¥R¤À§Q¥Î¦P¨BISDNªºÀW¼e¡C</para>
+                                                                                
+      <para>±Ä¥ÎISDN¸ô¥Ñ¾¹»P¾ô±µ¾¹ªº°ÝÃD¤§¤@´N¬O¤£¦P¼tµP¶¡¾÷¾¹ªº·¾³q¡A
+        ¦pªG§A¥´ºâ»PISP³s½u¡A«ØÄ³§A¥ý¸òISP°Q½×§Aªº»Ý¨D¡C</para>
+                                                                                
+      <para>¦pªG§A¥´±N¨â­Ó°Ï°ìºô¸ô¬Û³s¡A¨Ò¦p¡G±q®a¸Ì³s±µ¨ì¿ì¤½«Ç¡A
+        ³o¬O³Ì®e©ö¡B¦P®É¦¨¥»¤]³Ì§CªººûÅ@¤è®×¡C
+        ¬JµM­n¤¬¬Û³s½uªº¨âºÝ³£¬O¨Ï¥Î¬Û¦Pªº³]³Æ¡A
+        ³o¥i¥H½T©w³s½u±N·|¥¿±`ªº¹B§@¡C</para>
+
+      <para>¦pªG­n±N¦í®a©Î¤À¤½¥qªººô¸ô»PÁ`¤½¥q³s½u¡A¥i¥H¨Ï¥Î¤U­±ªº½d¨Ò¡C</para>
+	  
+      <example>
+	<title>¤À¤½¥q©Î¦í®aºô¸ô</title>
+
+        <para>¨Ï¥Î10 Base T¤A¤Óºô¸ô¡C¦pªG»Ý­nªº¸Ü¡A¥i¥H³z¹LAUI/10BT transceiver
+          ±N¸ô¥Ñ¾¹³s»Pºô¸ô½u(network cable)³s±µ¡C</para>
+
+	<!-- This should be a graphic -->
+	<programlisting>---Sun ¤u§@¯¸     
+|
+---FreeBSD box
+|
+---Windows 95 (Do not admit to owning it)
+|
+¿W¥ß¸ô¥Ñ¾¹
+   |
+ISDN BRI line</programlisting>
+
+	<para>¦pªG¦í®a/¤À¤½¥q¥u¦³¤@»O¹q¸£¡A§A¥i¥Hª½±µ¥ÎÂùµ±½u»P¸ô¥Ñ¾¹³s±µ¡C
+	  </para>
+      </example>
+      
+      <example>
+	<title>¿ì¤½«Ç©Î¨ä¥¦°Ï°ìºô¸ô</title>
+
+	<para>¨Ï¥ÎÂùµ±½uªº¤A¤Óºô¸ô¡C</para>
+
+	<!-- This should be a graphic -->
+	<programlisting>    -------Novell ¦øªA¾¹
+    | H |
+    |   ---Sun      
+    |   |
+    | U ---FreeBSD
+    |   |
+    |   ---Windows 95
+    | B |
+    |___---¿W¥ß¸ô¥Ñ¾¹
+                |
+        ISDN BRI line</programlisting>
+      </example>
+      
+      <para>¤j¦h¼Æ¸ô¥Ñ¾¹/¾ô±µ¾¹ªºÀuÂI¤§¤@´N¬O¥i¥H<emphasis>¦P®É</emphasis>
+        ¨Ï¥Î¨â­Ó<emphasis>¿W¥ß</emphasis>ªºPPP³s½u¡A
+        °£¤F¤Ö¼Æ¾Ö¦³¨â­Ó¦ê¦C°ðªºTA¥~¡A¤j³¡¥÷ªºTA³£¨S¦³³oºØ¯à¤O¡A
+        ¤d¸U¤£­n©Mchannel bonding©MMPPµ¥ªF¦è²V²c¤F¡C</para>
+                                                                                
+      <para>³o¬O¤@¶µ«D±`¦³¥Îªº¥\¯à¡A
+        ¦pªG§A¥u·Q¥Î¨ä¤¤¤@­ÓISDN½u¸ô»Pºô»Úºô¸ô³s½u¡A
+        ³o®É¸ô¥Ñ¾¹´N¥i¥H­t°_ºÞ²z¤§³d¡AÅý¤@­ÓB channel(64Kbs)»Pºô»Úºô¸ô³s½u¡A
+        ¦Ó¥t¤@­ÓB channel«h¥Î¨Ó±µÅ¥¹q¸Ü¡A
+        ©Î¬O»P²Ä¤@­ÓB channel°µdynamically bound(MPPµ¥) ¥H¼W¥[ÀW¼e¡C</para>
+
+      <para>¤A¤Óºô¸ô¾ô±µ¾¹¤£¦ý¯à¥ÎIP³q°T¡A¦P®É¤]¯à¨Ï¥ÎIPX/SPX
+        ©Î¨ä¥¦§A³ßÅwªº³q°T¨ó©w¡C</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="nis">
+    <title>NIS/YP</title>
+
+    <para><emphasis>Written by &a.unfurl;, 21 January 2000, enhanced
+      with parts and comments from Eric Ogren
+      <email>eogren@earthlink.net</email> and Udo Erdelhoff
+      <email>ue@nathan.ruhr.de</email> in June 2000.</emphasis></para>
+
+    <sect2>
+      <title>What is it?</title>
+  
+      <para>NIS, which stands for Network Information Services, was
+        developed by Sun Microsystems to centralize administration of Unix
+        (originally SunOS) systems.  It has now essentially become an
+        industry standard; all major Unices (Solaris, HP-UX, AIX, Linux,
+        NetBSD, OpenBSD, FreeBSD, etc) support NIS.</para>
+
+      <para>NIS was formerly known as Yellow Pages (or yp), but due to
+        copyright violations, Sun was forced to change the name.</para>
+
+      <para>It is a RPC-based client/server system that allows a group
+	of machines within an NIS domain to share a common set of
+	configuration files.  This permits a system administrator to set
+	up NIS client systems with only minimal configuration data and
+	add, remove or modify configuration data from a single
+	location.</para>
+
+      <para>It is similar to Windows NT's domain system; although the
+        internal implementation of the two aren't at all similar,
+        the basic functionality can be compared.</para>
+    </sect2>
+  
+    <sect2>
+      <title>Terms/processes you should know</title>
+
+      <para>There are several terms and several important user processes
+        that you will come across when
+        attempting to implement NIS on FreeBSD, whether you are trying to
+        create an NIS server or act an NIS client:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>The NIS domainname</emphasis>. An NIS master
+            server and all of its clients (including its slave servers) have
+            a NIS domainname. Similar to an NT domain name, the NIS
+            domainname does not have anything to do with DNS.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>portmap</emphasis>. <command>portmap</command>
+            must be running in order to enable RPC (Remote Procedure Call, a
+            network protocol used by NIS). If <command>portmap</command> is
+            not running, it will be impossible to run an NIS server, or to
+            act as an NIS client.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>ypbind</emphasis>. <command>ypbind</command>
+            &ldquo;binds&rdquo; an NIS client to its NIS server.
+            It will take the NIS domainname from the system, and
+            using RPC, connect to the server. <command>ypbind</command> is
+            the core of client-server communication in an NIS environment; if
+            <command>ypbind</command> dies on a client machine, it will not
+            be able to access the NIS server.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>ypserv</emphasis>. <command>ypserv</command>,
+            which should only be running on NIS servers, is the NIS server
+            process itself. If ypserv dies, then the server will no longer be
+            able to respond to NIS requests (hopefully, there is a slave
+            server to take over for it).</para>
+
+          <note><para>There are some implementations of NIS (but not the
+            FreeBSD one), that don't try to reconnect to another server
+            if the server it used before dies.  Often, the only thing
+            that helps in this case is to restart the server process (or
+            even the whole server) or the <command>ypbind</command> process
+            on the client.</para></note>
+        </listitem>
+        <listitem>
+          <para><emphasis>rpc.yppasswdd</emphasis>.
+            <command>rpc.yppasswdd</command>, another process that should
+            only be running on NIS master servers, is a daemon that will
+            allow NIS clients to change their NIS passwords.
+            If this daemon is not running, users will have to login to the
+            NIS master server and change their passwords there.</para>
+        </listitem>
+
+        <!-- XXX Missing: rpc.ypxfrd (not important, though) May only run
+             on the master -->
+      </itemizedlist>
+    </sect2>
+
+    <sect2>
+      <title>How does it work?</title>
+        
+      <para>There are three types of hosts in an NIS environment; master
+	servers, slave servers, and clients.  Servers act as a central
+	repository for host configuration information.  Master servers
+	hold the authoritative copy of this information, while slave
+	servers mirror this information for redundancy.  Clients rely on
+	the servers to provide this information to them.</para>
+
+      <para>Information in many files can be shared in this manner.  The
+	<filename>master.passwd</filename>, <filename>group</filename>,
+	and <filename>hosts</filename> files are commonly shared via NIS.
+	Whenever a process on a client needs information that would
+	normally be found in these files locally, it makes a query to the
+	server it is bound to, to get this information.</para>
+
+      <sect3>
+        <title>Machine types</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>A <emphasis>NIS master server</emphasis>.
+              This server, analogous to a Windows
+              NT primary domain controller, maintains the files used by all
+              of the NIS clients.  The <filename>passwd</filename>,
+              <filename>group</filename>, and other various files used by the
+              NIS clients live on the master server.</para>
+       
+            <note><para>It is possible for one machine to be an NIS
+              master server for more than one NIS domain.  However, this will
+              not be covered in this introduction, which assumes a relatively
+              small-scale NIS environment.</para></note>
+          </listitem>
+          <listitem>
+            <para><emphasis>NIS slave servers</emphasis>.
+              Similar to NT's backup domain
+              controllers, NIS slave servers maintain copies of the NIS
+              master's data files.  NIS slave servers provide the redundancy,
+              which is needed in important environments. They also help
+              to balance the load of the master server:  NIS Clients always
+              attach to the NIS server, whose response they get first, and
+              this includes slave-server-replies.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>NIS clients</emphasis>. NIS clients, like most
+              NT workstations, authenticate against the NIS server (or the NT
+              domain controller in the NT Workstation case) to log on.</para>
+          </listitem>
+        </itemizedlist>
+      </sect3>
+    </sect2>
+    
+    <sect2>
+      <title>Using NIS/YP</title>
+
+      <para>This section will deal with setting up a sample NIS
+        environment.</para>
+
+      <note><para>This section assumes that you are running FreeBSD 3.3
+        or later.  The instructions given here will
+        <emphasis>probably</emphasis> work for any version of FreeBSD greater
+        than 3.0, but there are no guarantees that this is
+        true.</para></note>
+
+  
+      <sect3>
+        <title>Planning</title>
+  
+        <para>Let's assume that you are the administrator of a small
+          university lab.  This lab, which consists of 15 FreeBSD machines,
+          currently has no centralized point of administration;  each machine
+          has its own <filename>/etc/passwd</filename> and
+          <filename>/etc/master.passwd</filename>.  These files are kept in
+          sync with each other only through manual intervention;
+          currently, when you add a user to the lab, you must run
+          <command>adduser</command> on all 15 machines.
+          Clearly, this has to change, so you have decided to convert the
+          lab to use NIS, using two of the machines as servers.</para>
+
+        <para>Therefore, the configuration of the lab now looks something
+          like:</para>
+
+        <informaltable>
+          <tgroup cols="3">
+            <thead>
+              <row>
+                <entry>Machine name</entry>
+                <entry>IP address</entry>
+                <entry>Machine role</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry><hostid>ellington</hostid></entry>
+                <entry><hostid role="ipaddr">10.0.0.2</hostid></entry>
+                <entry>NIS master</entry>
+              </row>
+              <row>
+                <entry><hostid>coltrane</hostid></entry>
+                <entry><hostid role="ipaddr">10.0.0.3</hostid></entry>
+                <entry>NIS slave</entry>
+              </row>
+              <row>
+                <entry><hostid>basie</hostid></entry>
+                <entry><hostid role="ipaddr">10.0.0.4</hostid></entry>
+                <entry>Faculty workstation</entry>
+              </row>
+              <row>
+                <entry><hostid>bird</hostid></entry>
+                <entry><hostid role="ipaddr">10.0.0.5</hostid></entry>
+                <entry>Client machine</entry>
+              </row>
+              <row>
+                <entry><hostid>cli[1-11]</hostid></entry>
+                <entry><hostid role="ipaddr">10.0.0.[6-17]</hostid></entry>
+                <entry>Other client machines</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+        <para>If you are setting up a NIS scheme for the first time, it
+	  is a good idea to think through how you want to go about it.  No
+	  matter what the size of your network, there are a few decisions
+	  that need to be made.</para>
+  
+        <sect4>
+          <title>Choosing a NIS Domain Name</title>
+  
+          <para>This might not be the <quote>domainname</quote> that you
+	    are used to.  It is more accurately called the
+	    <quote>NIS domainname</quote>.  When a client broadcasts its
+	    requests for info, it includes the name of the NIS domain
+	    that it is part of.  This is how multiple servers on one
+	    network can tell which server should answer which request.
+	    Think of the NIS domainname as the name for a group of hosts
+	    that are related in someway way.</para>
+  
+	  <para>Some organizations choose to use their Internet domainname
+	    for their NIS domainname. This is not recommended as it can
+	    cause confusion when trying to debug network problems.  The
+	    NIS domainname should be unique within your network and it is
+	    helpful if it describes the group of machines it represents.
+	    For example, the Art department at Acme Inc. might be in the
+	    "acme-art" NIS domain.  For this example, assume you have
+            chosen the name <emphasis>test-domain</emphasis>.</para>
+
+          <para>However, some operating systems (notably SunOS) use their
+            NIS domain name as their Internet domain name.
+            If one or more machines on your network have this restriction,
+            you <emphasis>must</emphasis> use the Internet domain name as
+            your NIS domain name.</para>
+        </sect4>
+  
+        <sect4>
+          <title>Physical Server Requirements</title>
+            
+	  <para>There are several things to keep in mind when choosing a
+	    machine to use as a NIS server.  One of the unfortunate things
+	    about NIS is the level of dependency the clients have on the
+	    server.  If a client cannot contact the server for its NIS
+	    domain, very often the machine becomes unusable.  The lack of
+	    user and group information causes most systems to temporarily
+	    freeze up.  With this in mind you should make sure to choose a
+	    machine that won't be prone to being rebooted regularly, or
+	    one that might be used for development.  The NIS server should
+	    ideally be a stand alone machine whose sole purpose in life is
+	    to be an NIS server.  If you have a network that is not very
+	    heavily used, it is acceptable to put the NIS server on a
+	    machine running other services, just keep in mind that if the
+	    NIS server becomes unavailable, it will affect
+	    <emphasis>all</emphasis> of your NIS clients adversely.</para>
+        </sect4>
+      </sect3>
+
+      <sect3>
+        <title>NIS Servers</title>
+
+	<para> The canonical copies of all NIS information are stored on
+	  a single machine called the NIS master server.  The databases
+	  used to store the information are called NIS maps.  In FreeBSD,
+	  these maps are stored in
+	  <filename>/var/yp/[domainname]</filename> where
+	  <filename>[domainname]</filename> is the name of the NIS domain
+	  being served.  A single NIS server can support several domains
+	  at once, therefore it is possible to have several such
+	  directories, one for each supported domain.  Each domain will
+	  have its own independent set of maps.</para>
+
+	<para>NIS master and slave servers handle all NIS requests with
+	  the <command>ypserv</command> daemon.  <command>Ypserv</command>
+	  is responsible for receiving incoming requests from NIS clients,
+	  translating the requested domain and map name to a path to the
+	  corresponding database file and transmitting data from the
+	  database back to the client.</para>
+
+        <sect4>
+	  <title>Setting up a NIS master server</title>
+
+	  <para>Setting up a master NIS server can be relatively straight
+	    forward, depending on your needs.  FreeBSD comes with support
+            for NIS out-of-the-box.  All you need is to add the following
+            lines to <filename>/etc/rc.conf</filename>, and FreeBSD will
+            do the rest for you.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><programlisting>nisdomainname="test-domain"</programlisting>
+                This line will set the NIS domainname to
+                <emphasis>test-domain</emphasis>
+                upon network setup (e.g. after reboot).</para>
+            </listitem>
+            <listitem>
+              <para><programlisting>nis_server_enable="YES"</programlisting>
+                This will tell FreeBSD to start up the NIS server processes
+                when the networking is next brought up.</para>
+            </listitem>
+            <listitem>
+              <para><programlisting>nis_yppasswdd_enable="YES"</programlisting>
+                This will enable the <command>rpc.yppasswdd</command>
+                daemon, which, as mentioned above, will allow users to
+                change their NIS password from a client machine.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Now, everything you have to do is to run the command
+            <command>/etc/netstart</command> as superuser.  It will
+            setup everything for you, using the values you defined in
+            <filename>/etc/rc.conf</filename>.</para>
+        </sect4>
+
+        <sect4>
+          <title>Initializing the NIS maps</title>
+
+          <para>The <emphasis>NIS maps</emphasis> are database files,
+            that are kept in the <filename>/var/yp</filename> directory.
+            They are generated from configuration files in the
+            <filename>/etc</filename> directory of the NIS master, with one
+            exception: the <filename>/etc/master.passwd</filename> file.
+            This is for a good reason; you don't want to propagate
+            passwords to your root and other administrative accounts to
+            all the servers in the NIS domain.  Therefore, before we
+            initialize the NIS maps, you should:</para>
+
+          <screen>
+&prompt.root; <userinput>cp /etc/master.passwd /var/yp/master.passwd</userinput>
+&prompt.root; <userinput>cd /var/yp</userinput>
+&prompt.root; <userinput>vi master.passwd</userinput>
+          </screen>
+
+          <para>You should remove all entries regarding system accounts
+            (bin, tty, kmem, games, etc), as well as any accounts that you
+            don't want to be propagated to the NIS clients (for example
+            root and any other UID 0 (superuser) accounts).</para>
+
+          <note><para>Make sure the
+            <filename>/var/yp/master.passwd</filename> is neither group
+            nor world readable (mode 600)!  Use the
+            <command>chmod</command> command, if appropriate.</para></note>
+
+          <para>When you have finished, it's time to initialize the NIS
+            maps!  FreeBSD includes a script named
+            <command>ypinit</command> to do this for you
+            (see its man page for more information).  Note that this
+            script is available on most UNIX OSs, but not on all.
+            On Digital Unix/Compaq Tru64 Unix it is called
+            <command>ypsetup</command>.
+            Because we are generating maps for an NIS master, we are
+            going to pass the <option>-m</option> option to
+            <command>ypinit</command>.
+            To generate the NIS maps, assuming you already performed
+            the steps above, run:</para>
+
+          <screen>
+ellington&prompt.root; <userinput>ypinit -m test-domain</userinput>
+Server Type: MASTER Domain: test-domain
+Creating an YP server will require that you answer a few questions.
+Questions will all be asked at the beginning of the procedure.
+Do you want this procedure to quit on non-fatal errors? [y/n: n] <userinput>n</userinput>
+Ok, please remember to go back and redo manually whatever fails.
+If you don't, something might not work.
+At this point, we have to construct a list of this domains YP servers.
+rod.darktech.org is already known as master server.
+Please continue to add any slave servers, one per line. When you are
+done with the list, type a &lt;control D&gt;.
+master server   :  ellington
+next host to add:  <userinput>coltrane</userinput>
+next host to add:  <userinput>^D</userinput>
+The current list of NIS servers looks like this:
+ellington
+coltrane
+Is this correct?  [y/n: y] <userinput>y</userinput>
+
+[..output from map generation..]
+
+NIS Map update completed.
+ellington has been setup as an YP master server without any errors.
+          </screen>
+
+          <para><command>ypinit</command> should have created
+            <filename>/var/yp/Makefile</filename> from
+            <filename>/var/yp/Makefile.dist</filename>.
+            When created, this file assumes that you are operating
+            in a single server NIS environment with only FreeBSD
+            machines.  Since <emphasis>test-domain</emphasis> has
+            a slave server as well, you must edit
+            <filename>/var/yp/Makefile</filename>:</para>
+
+          <screen>
+ellington&prompt.root; <userinput>vi /var/yp/Makefile</userinput>
+          </screen>
+
+          <para>You should comment out the line that says `NOPUSH =
+            "True"' (if it is not commented out already).</para>
+        </sect4>
+
+        <sect4>
+	  <title>Setting up a NIS slave server</title>
+
+	  <para>Setting up an NIS slave server is even more simple than
+	    setting up the master.  Log on to the slave server and edit the
+            file <filename>/etc/rc.conf</filename> as you did before.
+            The only difference is that we now must use the
+            <option>-s</option> option when running <command>ypinit</command>.
+            The <option>-s</option> option requires the name of the NIS
+            master be passed to it as well, so our command line looks
+            like:</para>
+
+  <screen>
+coltrane&prompt.root; <userinput>ypinit -s ellington test-domain</userinput>
+
+Server Type: SLAVE Domain: test-domain Master: ellington
+
+Creating an YP server will require that you answer a few questions.
+Questions will all be asked at the beginning of the procedure.
+
+Do you want this procedure to quit on non-fatal errors? [y/n: n]  <userinput>n</userinput>
+
+Ok, please remember to go back and redo manually whatever fails.
+If you don't, something might not work. 
+There will be no further questions. The remainder of the procedure
+should take a few minutes, to copy the databases from ellington.
+Transferring netgroup...
+ypxfr: Exiting: Map successfully transferred
+Transferring netgroup.byuser...
+ypxfr: Exiting: Map successfully transferred
+Transferring netgroup.byhost...
+ypxfr: Exiting: Map successfully transferred
+Transferring master.passwd.byuid...
+ypxfr: Exiting: Map successfully transferred
+Transferring passwd.byuid...
+ypxfr: Exiting: Map successfully transferred
+Transferring passwd.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring group.bygid...
+ypxfr: Exiting: Map successfully transferred
+Transferring group.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring services.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring rpc.bynumber...
+ypxfr: Exiting: Map successfully transferred
+Transferring rpc.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring protocols.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring master.passwd.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring networks.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring networks.byaddr...
+ypxfr: Exiting: Map successfully transferred
+Transferring netid.byname...
+ypxfr: Exiting: Map successfully transferred
+Transferring hosts.byaddr...
+ypxfr: Exiting: Map successfully transferred
+Transferring protocols.bynumber...
+ypxfr: Exiting: Map successfully transferred
+Transferring ypservers...
+ypxfr: Exiting: Map successfully transferred
+Transferring hosts.byname...
+ypxfr: Exiting: Map successfully transferred
+
+coltrane has been setup as an YP slave server without any errors. 
+Don't forget to update map ypservers on ellington.</screen>
+        
+	  <para>You should now have a directory called 
+	    <filename>/var/yp/test-domain</filename>.  Copies of the NIS
+	    master server's maps should be in this directory.  You will
+	    need to make sure that these stay updated.  The following
+	    <filename>/etc/crontab</filename> entries on your slave 
+	    servers should do the job:</para>
+
+	  <programlisting>20      *       *       *       *       root   /usr/libexec/ypxfr passwd.byname
+21      *       *       *       *       root   /usr/libexec/ypxfr passwd.byuid</programlisting>
+
+	  <para>These two lines force the slave to sync its maps with
+	    the maps on the master server.  Although this is
+	    not mandatory, because the master server
+	    tries to make sure any changes to it's NIS maps are
+	    communicated to it's slaves, the password
+	    information is so vital to systems that depend on the server,
+	    that it is a good idea to force the updates.  This is more
+	    important on busy networks where map updates might not always
+	    complete.</para>
+
+          <para>Now, run the command <command>/etc/netstart</command> on the
+            slave server as well, which again starts the NIS server.</para>
+	</sect4>
+      </sect3>
+
+      <sect3>
+        <title>NIS Clients</title>
+	
+	<para> An NIS client establishes what is called a binding to a
+	  particular NIS server using the
+	  <command>ypbind</command> daemon.
+	  <command>ypbind</command> checks the system's default
+	  domain (as set by the <command>domainname</command> command),
+	  and begins broadcasting RPC requests on the local network.
+	  These requests specify the name of the domain for which
+	  <command>ypbind</command> is attempting to establish a binding.
+	  If a server that has been configured to serve the requested
+	  domain receives one of the broadcasts, it will respond to
+	  <command>ypbind</command>,  which will record the server's
+	  address.  If there are several servers available (a master and
+	  several slaves, for example), <command>ypbind</command> will
+	  use the address of the first one to respond.  From that point
+	  on, the client system will direct all of its NIS requests to
+	  that server.  <command>Ypbind</command> will
+	  occasionally <quote>ping</quote> the server to make sure it is
+	  still up and running.  If it fails to receive a reply to one of
+	  its pings within a reasonable amount of time,
+	  <command>ypbind</command> will mark the domain as unbound and
+	  begin broadcasting again in the hopes of locating another
+	  server.</para>
+
+	<sect4>
+	  <title>Setting up an NIS client</title>
+	  
+	  <para>Setting up a FreeBSD machine to be a NIS client is fairly
+	    straight forward.</para>
+	
+	  <itemizedlist>
+	    <listitem>
+	      <para>Edit the file <filename>/etc/rc.conf</filename> and
+                add the following lines in order to set the NIS domainname
+                and start <command>ypbind</command> upon network
+                startup:</para>
+
+	      <programlisting>nisdomainname="test-domain"
+nis_client_enable="YES"</programlisting>
+	    </listitem>
+
+	    <listitem>
+	      <para>To import all possible password entries from the NIS
+		server, add this line to your
+		<filename>/etc/master.passwd</filename> file, using
+		<command>vipw</command>:</para>
+
+	      <programlisting>+:::::::::</programlisting>
+
+	      <note>
+		<para>This line will afford anyone with a valid account in
+		  the NIS server's password maps an account.  There are
+		  many ways to configure your NIS client by changing this
+		  line.  See the <link linkend="netgroups">netgroups
+		  part</link> below for more information.
+                  For more detailed reading see O'Reilly's book on
+		  <literal>Managing NFS and NIS</literal>.</para>
+	      </note>
+	    </listitem>
+
+	    <listitem>
+	      <para>To import all possible group entries from the NIS
+		server, add this line to your
+		<filename>/etc/group</filename> file:</para>
+
+	      <programlisting>+:*::</programlisting>
+	    </listitem>
+	  </itemizedlist>
+
+	  <para>After completing these steps, you should be able to run
+	    <command>ypcat passwd</command> and see the NIS server's
+	    passwd map.</para>
+	</sect4>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>NIS Security</title>
+
+      <para>In general, any remote user can issue an RPC to ypserv and
+	retrieve the contents of your NIS maps, provided the remote user
+	knows your domainname.  To prevent such unauthorized transactions,
+	ypserv supports a feature called securenets which can be used to
+	restrict access to a given set of hosts.  At startup, ypserv will
+	attempt to load the securenets information from a file called
+	<filename>/var/yp/securenets</filename>.</para>
+	
+      <note>
+	<para>This path varies depending on the path specified with the
+	  <option>-p</option> option.  This file contains entries that
+	  consist of a network specification and a network mask separated
+	  by white space.  Lines starting with <quote>#</quote> are
+	  considered to be comments.  A sample securenets file might look
+	  like this:</para>
+      </note>
+
+      <programlisting># allow connections from local host -- mandatory
+127.0.0.1     255.255.255.255
+# allow connections from any host
+# on the 192.168.128.0 network
+192.168.128.0 255.255.255.0
+# allow connections from any host
+# between 10.0.0.0 to 10.0.15.255
+# this includes the machines in the testlab
+10.0.0.0      255.255.240.0</programlisting>
+
+      <para>If ypserv receives a request from an address that matches one
+	of these rules, it will process the request normally.  If the
+	address fails to match a rule, the request will be ignored and a
+	warning message will be logged.  If the
+	<filename>/var/yp/securenets</filename> file does not exist,
+	ypserv will allow connections from any host.</para>
+
+      <para>The ypserv program also has support for Wietse Venema's
+	<application>tcpwrapper</application> package.  This allows the
+	administrator to use the tcpwrapper configuration files for access
+	control instead of <filename>/var/yp/securenets</filename>.</para>
+
+      <note>
+        <para>While both of these access control mechanisms provide some
+          security, they, like the privileged port test, are
+          vulnerable to <quote>IP spoofing</quote> attacks.  All
+          NIS-related traffic should be blocked at your firewall.</para>
+
+        <para>Servers using <filename>/var/yp/securenets</filename>
+          may fail to serve legitimate NIS clients with archaic TCP/IP
+          implementations.  Some of these implementations set all
+          host bits to zero when doing broadcasts and/or fail to
+          observe the subnet mask when calculating the broadcast
+          address.  While some of these problems can be fixed by
+          changing the client configuration, other problems may force
+          the retirement of the client systems in question or the
+          abandonment of <filename>/var/yp/securenets</filename>.</para>
+
+        <para>Using <filename>/var/yp/securenets</filename> on a
+          server with such an archaic implementation of TCP/IP is a
+          really bad idea and will lead to loss of NIS functionality
+          for large parts of your network.</para>
+
+        <para>The use of the <application>tcpwrapper</application>
+          package increases the latency of your NIS server.  The
+          additional delay may be long enough to cause timeouts in
+          client programs, especially in busy networks or with slow
+          NIS servers.  If one or more of your client systems
+          suffers from these symptoms, you should convert the client
+          systems in question into NIS slave servers and force them
+          to bind to themselves.</para>
+      </note>
+    </sect2>
+
+    <sect2>
+      <title>Barring some users from logging on</title>
+
+      <para>In our lab, there is a machine <hostid>basie</hostid> that is
+        supposed to be a faculty only workstation. We don't want to take this
+         machine out of the NIS domain, yet the <filename>passwd</filename>
+       file on the master NIS server contains accounts for both faculty and
+        students. What can we do?</para>
+
+      <para>There is a way to bar specific users from logging on to a
+        machine, even if they are present in the NIS database. To do this,
+        all you must do is add
+        <emphasis>-<replaceable>username</replaceable></emphasis> to the end of
+        the <filename>/etc/master.passwd</filename> file on the client
+        machine, where <replaceable>username</replaceable> is the username of
+        the user you wish to bar from logging in. This should preferably be
+        done using <command>vipw</command>, since <command>vipw</command>
+        will sanity check your changes to
+        <filename>/etc/master.passwd</filename>, as well as
+        automatically rebuild the password database when you
+        finish editing. For example, if we wanted to bar user
+        <emphasis>bill</emphasis> from logging on to <hostid>basie</hostid>
+        we would:</para>
+
+        <screen>
+basie&prompt.root; <userinput>vipw</userinput>
+<userinput>[add -bill to the end, exit]</userinput>
+vipw: rebuilding the database...
+vipw: done
+
+basie&prompt.root; <userinput>cat /etc/master.passwd</userinput>
+
+root:[password]:0:0::0:0:The super-user:/root:/bin/csh
+toor:[password]:0:0::0:0:The other super-user:/root:/bin/sh
+daemon:*:1:1::0:0:Owner of many system processes:/root:/sbin/nologin
+operator:*:2:5::0:0:System &:/:/sbin/nologin
+bin:*:3:7::0:0:Binaries Commands and Source,,,:/:/sbin/nologin
+tty:*:4:65533::0:0:Tty Sandbox:/:/sbin/nologin
+kmem:*:5:65533::0:0:KMem Sandbox:/:/sbin/nologin
+games:*:7:13::0:0:Games pseudo-user:/usr/games:/sbin/nologin
+news:*:8:8::0:0:News Subsystem:/:/sbin/nologin
+man:*:9:9::0:0:Mister Man Pages:/usr/share/man:/sbin/nologin
+bind:*:53:53::0:0:Bind Sandbox:/:/sbin/nologin
+uucp:*:66:66::0:0:UUCP pseudo-user:/var/spool/uucppublic:/usr/libexec/uucp/uucico
+xten:*:67:67::0:0:X-10 daemon:/usr/local/xten:/sbin/nologin
+pop:*:68:6::0:0:Post Office Owner:/nonexistent:/sbin/nologin
+nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/sbin/nologin
++:::::::::
+-bill
+
+basie&prompt.root;</screen>
+    </sect2>
+
+    <sect2 id="netgroups">
+      <title>Using netgroups</title>
+
+      <para><emphasis>The netgroups part was contributed by
+	Udo Erdelhoff <email>ue@nathan.ruhr.de</email> in July
+	2000.</emphasis></para>
+
+      <para>The method shown in the previous chapter works reasonably
+        well if you need special rules for a very small number of
+        users and/or machines.  On larger networks, you
+        <emphasis>will</emphasis> forget to bar some users from logging
+        onto sensitive machines, or you may even have to modify each
+        machine separately, thus loosing the main benefit of NIS,
+        <emphasis>centralized</emphasis> administration.</para>
+
+      <para>The NIS developers' solution for this problem is called
+        <emphasis>netgroups</emphasis>.  Their purpose and semantics
+        can be compared to the normal groups used by Unix file
+        systems.  The main differences are the lack of a numeric id
+        and the ability to define a netgroup by including both user
+        accounts and other netgroups.</para>
+
+      <para>Netgroups were developed to handle large, complex networks
+        with hundreds of users and machines.  On one hand, this is
+        a Good Thing if you are forced to deal with such a situation.
+        On the other hand, this complexity makes it almost impossible to
+        explain netgroups with really simple examples.  The example
+        used in the remainder of this chapter demonstrates this
+        problem.</para>
+
+      <para>Let us assume that your successful introduction of NIS in
+        your laboratory caught your superiors' interest.  Your next
+        job is to extend your NIS domain to cover some of the other
+        machines on campus.  The two tables contain the names of the
+        new users and new machines as well as brief descriptions of
+        them.</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>User Name(s)</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+   
+          <tbody>
+            <row>
+              <entry>alpha, beta</entry>
+              <entry>Normal employees of the IT department</entry>
+            </row>
+            
+            <row>
+              <entry>charlie, delta</entry>
+              <entry>The new apprentices of the IT department</entry>
+            </row>
+            
+            <row>
+              <entry>echo, foxtrott, golf, ...</entry>
+              <entry>Ordinary employees</entry>
+            </row>
+            
+            <row>
+              <entry>able, baker, ...</entry>
+              <entry>The current interns</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <informaltable>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>Machine Name(s)</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+   
+          <tbody>
+            <row>
+              <!--  Names taken from "Good Omens" by Neil Gaiman and Terry
+                    Pratchett.  Many thanks for a brilliant book.  --> 
+              <entry>war, death, famine, pollution</entry>
+              <entry>Your most important servers.  Only the IT
+                employees are allowed to log onto these
+                machines.</entry>
+            </row>
+            <row>
+              <!-- gluttony was omitted because it was too fat ;-) -->
+              <entry>pride, greed, envy, wraith, lust, sloth</entry>
+              <entry>Less important servers.  All members of the IT
+                department are allowed to login onto these machines.</entry>
+            </row>
+            
+            <row>
+              <entry>one, two, three, four, ...</entry>
+              <entry>Ordinary workstations.  Only the
+                <emphasis>real</emphasis> employees are allowed to use
+                these machines.</entry>
+            </row>
+            
+            <row>
+              <entry>trashcan</entry>
+              <entry>A very old machine without any critical data.
+                Even the intern is allowed to use this box.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>If you tried to implement these restrictions by separately
+        blocking each user, you would have to add one
+        -<replaceable>user</replaceable> line to each system's passwd
+        for each user who is not allowed to login onto that system.
+        If you forget just one entry, you could be in trouble.  It may
+        feasible to do this correctly during the initial setup,
+        however you <emphasis>will</emphasis> eventually forget to add
+        the lines for new users during day-to-day operations.  After
+        all, Murphy was an optimist.</para>
+
+      <para>Handling this situation with netgroups offers several
+        advantages.  Each user need not be handled separately;
+        you assign a user to one or netgroup and allow or forbid
+        logins for all members of the netgroup.  If you add a new
+        machine, you will only have to define login restrictions for
+        netgroups.  If a new user is added, you will only have to add
+        the user to one or more netgroups.  Those changes are
+        independent of each other; no more <quote>for each combination
+        of user and machine do...</quote> If your NIS setup is planned
+        carefully, you will only have to modify exactly one central
+        configuration file to grant or deny access to machines.</para>
+        
+      <para>The first step is the initialization of the NIS map
+        netgroup.  FreeBSD's ypinit does not create this map by
+        default, but its NIS implementation will support it once it has
+        been created.  To create an empty map, simply type</para>
+
+      <screen>
+ellington&prompt.root; <userinput>vi /var/yp/netgroup</userinput>
+      </screen>
+
+      <para>and start adding content.  For our example, we need at
+         least four netgroups: IT employees, IT apprentices, normal
+         employees and interns.</para>
+
+      <programlisting>IT_EMP  (,alpha,test-domain)    (,beta,test-domain)
+IT_APP  (,charlie,test-domain)  (,delta,test-domain)
+USERS   (,echo,test-domain)     (,foxtrott,test-domain) \
+        (,golf,test-domain)
+INTERNS (,able,test-domain)     (,baker,test-domain)</programlisting>
+
+      <para><literal>IT_EMP</literal>, <literal>IT_APP</literal> etc.
+        are the names of the netgroups.  Each bracketed group adds
+        one or more user accounts to it.  The three fields inside a
+        group are:</para>
+        
+      <orderedlist> 
+        <listitem>
+          <para>The name of the host(s) where the following items are
+            valid.  If you do not specify a hostname, the entry is
+            valid on all hosts.  If you do specify a hostname, you
+            will a realm of darkness, horror and utter confusion.</para>
+        </listitem>
+
+        <listitem>
+          <para>The name of the account that belongs to this
+            netgroup.</para>
+        </listitem>
+
+        <listitem>
+          <para>The NIS domain for the account.  You can import
+            accounts from other NIS domains into your netgroup if you
+            are one of unlucky fellows with more than one NIS
+            domain.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Each of these fields can contain wildcards.  See
+        &man.netgroup.5; for details.</para>
+        
+      <note>
+        <para>Netgroup names longer than 8 characters should not be
+          used, especially if you have machines running other
+          operating systems within your NIS domain.  The names are
+          case sensitive; using capital letters for your netgroup
+          names is an easy way to distinguish between user, machine
+          and netgroup names.</para>
+
+        <para>Some NIS clients (other than FreeBSD) cannot handle
+          netgroups with a large number of entries.  For example, some
+          older versions of SunOS start to cause trouble if a netgroup
+          contains more than 15 <emphasis>entries</emphasis>.  You can
+          circumvent this limit by creating several sub-netgroups with
+          15 users or less and a real netgroup that consists of the
+          sub-netgroups:</para>
+
+        <programlisting>BIGGRP1  (,joe1,domain)  (,joe2,domain)  (,joe3,domain) [...]
+BIGGRP2  (,joe16,domain)  (,joe17,domain) [...]
+BIGGRP3  (,joe32,domain)  (,joe33,domain)
+BIGGROUP  BIGGRP1 BIGGRP2 BIGGRP3</programlisting>
+
+        <para>You can repeat this process if you need more than 225
+          users within a single netgroup.</para>
+      </note>
+
+      <para>Activating and distributing your new NIS map is
+        easy:</para>
+
+      <screen>
+ellington&prompt.root; <userinput>cd /var/yp</userinput>
+ellington&prompt.root; <userinput>make</userinput>
+      </screen>
+
+      <para>This will generate the three NIS maps
+        <filename>netgroup</filename>,
+        <filename>netgroup.byhost</filename> and
+        <filename>netgroup.byuser</filename>.  Use &man.ypcat.1; to
+        check if your new NIS map are available:</para>
+
+      <screen>
+ellington&prompt.user; <userinput>ypcat -k netgroup</userinput>
+ellington&prompt.user; <userinput>ypcat -k netgroup.byhost</userinput>
+ellington&prompt.user; <userinput>ypcat -k netgroup.byuser</userinput>
+      </screen>
+
+      <para>The output of the first command should resemble the
+        contents of <filename>/var/yp/netgroup</filename>.  The second
+        command will not produce output if you have not specified
+        host-specific netgroups.  The third command can be used to
+        get the list of netgroups for a user.</para>
+
+      <para>The client setup is quite simple.  To configure the server
+        <replaceable>war</replaceable>, you only have to start
+        &man.vipw.8; and replace the line</para>
+        
+      <programlisting>+:::::::::</programlisting>
+      
+      <para>with</para>
+
+      <programlisting>+@IT_EMP:::::::::</programlisting>
+
+      <para>Now, only the data for the users defined in the netgroup
+        <replaceable>IT_EMP</replaceable> is imported into
+        <replaceable>war</replaceable>'s password database and only
+        these users are allowed to login.</para>
+
+      <para>Unfortunately, this limitation also applies to the ~
+        function of the shell and all routines converting between user
+        names and numerical user ids.  In other words, cd
+        ~<replaceable>user</replaceable> will not work, <command>ls
+        -l</command> will show the numerical id instead of the
+        username and <command>find . -user joe -print</command> will
+        fail with <quote>No such user</quote>.  To fix this, you will
+        have to import all user entries <emphasis>without
+        allowing them to login onto your servers</emphasis>.</para>
+
+      <para>This can be achieved by adding another line to 
+        <filename>/etc/master.passwd</filename>.  This line should
+        contain <literal>+:::::::::/sbin/nologin</literal>, meaning
+        <quote>Import all entries but replace the shell with
+        <filename>/sbin/nologin</filename> in the imported
+        entries</quote>.  You can replace any field
+        in the passwd entry by placing a default value in your
+        <filename>/etc/master.passwd</filename>.</para>
+
+      <!-- Been there, done that, got the scars to prove it - ue -->
+      <warning>
+        <para>Make sure that the line
+        <literal>+:::::::::/sbin/nologin</literal> is placed after 
+        <literal>+@IT_EMP:::::::::</literal>.  Otherwise, all user
+        accounts imported from NIS will have /sbin/nologin as their
+        login shell.</para>
+      </warning>
+
+      <para>After this change, you will only have to change one NIS
+        map if a new employee joins the IT department.  You could use
+        a similar approach for the less important servers by replacing
+        the old <literal>+:::::::::</literal> in their local version
+        of <filename>/etc/master.passwd</filename> with something like
+        this:</para>
+
+      <programlisting>+@IT_EMP:::::::::
++@IT_APP:::::::::
++:::::::::/sbin/nologin</programlisting>
+
+      <para>The corresponding lines for the normal workstations
+        could be:</para>
+
+      <programlisting>+@IT_EMP:::::::::
++@USERS:::::::::
++:::::::::/sbin/nologin</programlisting>
+
+      <para>And everything would be fine until there is a policy
+        change a few weeks later:  The IT department starts hiring
+        interns.  The IT interns are allowed to use the normal
+        workstations and the less important servers; and the IT
+        apprentices are allowed to login onto the main servers.  You
+        add a new netgroup IT_INTERN, add the new IT interns to this
+        netgroup and start to change the config on each and every
+        machine...  As the old saying goes:  <quote>Errors in
+        centralized planning lead to global mess</quote>.</para>
+
+      <para>NIS' ability to create netgroups from other netgroups can
+        be used to prevent situations like these.  One possibility
+        is the creation of role-based netgroups.  For example, you
+        could create a netgroup called
+        <replaceable>BIGSRV</replaceable> to define the login
+        restrictions for the important servers, another netgroup
+        called <replaceable>SMALLSRV</replaceable> for the less
+        important servers and a third netgroup called
+        <replaceable>USERBOX</replaceable> for the normal
+        workstations.  Each of these netgroups contains the netgroups
+        that are allowed to login onto these machines.  The new
+        entries for your NIS map netgroup should look like this:</para>
+
+      <programlisting>BIGSRV    IT_EMP  IT_APP
+SMALLSRV  IT_EMP  IT_APP  ITINTERN
+USERBOX   IT_EMP  ITINTERN USERS</programlisting>
+
+      <para>This method of defining login restrictions works
+        reasonably well if you can define groups of machines with
+        identical restrictions.  Unfortunately, this is the exception
+        and not the rule.  Most of the time, you will need the ability
+        to define login restrictions on a per-machine basis.</para>
+
+      <para>Machine-specific netgroup definitions are the other
+        possibility to deal with the policy change outlined above.  In
+        this scenario, the <filename>/etc/master.passwd</filename> of
+        each box contains two lines starting with ``+''.  The first of
+        them adds a netgroup with the accounts allowed to login onto
+        this machine, the second one adds all other accounts with
+        <filename>/sbin/nologin</filename> as shell.  It is a good
+        idea to use the ALL-CAPS version of the machine name as the
+        name of the netgroup.  In other words, the lines should look
+        like this:</para>
+
+      <programlisting>+@<replaceable>BOXNAME</replaceable>:::::::::
++:::::::::/sbin/nologin</programlisting>
+
+      <para>Once you have completed this task for all your machines,
+        you will not have to modify the local versions of
+        <filename>/etc/master.passwd</filename> ever again.  All
+        further changes can be handled by modifying the NIS map.  Here
+        is an example of a possible netgroup map for this
+        scenario with some additional goodies.</para>
+
+      <programlisting># Define groups of users first
+IT_EMP    (,alpha,test-domain)    (,beta,test-domain)
+IT_APP    (,charlie,test-domain)  (,delta,test-domain)
+DEPT1     (,echo,test-domain)     (,foxtrott,test-domain)
+DEPT2     (,golf,test-domain)     (,hotel,test-domain)
+DEPT3     (,india,test-domain)    (,juliet,test-domain)
+ITINTERN  (,kilo,test-domain)     (,lima,test-domain)
+D_INTERNS (,able,test-domain)     (,baker,test-domain)
+#
+# Now, define some groups based on roles
+USERS     DEPT1   DEPT2     DEPT3
+BIGSRV    IT_EMP  IT_APP
+SMALLSRV  IT_EMP  IT_APP    ITINTERN
+USERBOX   IT_EMP  ITINTERN  USERS
+#
+# And a groups for a special tasks
+# Allow echo and golf to access our anti-virus-machine
+SECURITY  IT_EMP  (,echo,test-domain)  (,golf,test-domain)
+#
+# machine-based netgroups
+# Our main servers
+WAR       BIGSRV
+FAMINE    BIGSRV
+# User india needs access to this server
+POLLUTION  BIGSRV  (,india,test-domain)
+#
+# This one is really important and needs more access restrictions
+DEATH     IT_EMP
+#
+# The anti-virus-machine mentioned above
+ONE       SECURITY
+#
+# Restrict a machine to a single user
+TWO       (,hotel,test-domain)
+# [...more groups to follow]</programlisting>
+
+      <para>If you are using some kind of database to manage your user
+        accounts, you should be able to create the first part of the
+        map with your database's report tools.  This way, new users
+        will automatically have access to the boxes.</para>
+
+      <para>One last word of caution: It may not always be advisable
+        to use machine-based netgroups.  If you are deploying a couple
+        dozen or even hundreds of identical machines for student labs,
+        you should use role-based netgroups instead of machine-based
+        netgroups to keep the size of the NIS map within reasonable
+        limits.</para>
+    </sect2>
+
+    <sect2>
+      <title>Important things to remember</title>
+
+      <para>There are still a couple of things that you will need to do
+        differently now that you are in an NIS environment.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Every time you wish to add a user to the lab, you
+            must add it to the master NIS server <emphasis>only</emphasis>,
+            and <emphasis>you must remember to rebuild the NIS
+            maps</emphasis>.  If you forget to do this, the new user will
+            not be able to login anywhere except on the NIS master.
+            For example, if we needed to add a new user
+            &ldquo;jsmith&rdquo; to the lab, we would:</para>
+
+          <screen>
+&prompt.root; <userinput>pw useradd jsmith</userinput>
+&prompt.root; <userinput>cd /var/yp</userinput>
+&prompt.root; <userinput>make test-domain</userinput></screen>
+
+          <para>You could also run <command>adduser jsmith</command> instead
+            of <command>pw useradd jsmith</command>.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>Keep the administration accounts out of the NIS
+            maps</emphasis>. You don't want to be propagating administrative
+            accounts and passwords to machines that will have users that
+            shouldn't have access to those accounts.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>Keep the NIS master and slave
+            secure, and minimize their downtime</emphasis>.
+            If somebody either hacks or simply turns off
+            these machines, they have effectively rendered many people without
+            the ability to login to the lab.</para>
+
+          <para>This is the chief weakness of any centralized administration
+            system, and it is probably the most important weakness. If you do
+            not protect your NIS servers, you will have a lot of angry
+            users!</para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2>
+      <title>NIS v1 compatibility</title>
+
+      <para> FreeBSD's <application>ypserv</application> has some support
+	for serving NIS v1 clients.  FreeBSD's NIS implementation only
+	uses the NIS v2 protocol, however other implementations include
+	support for the v1 protocol for backwards compatibility with older
+	systems.  The <application>ypbind</application> daemons supplied
+	with these systems will try to establish a binding to an NIS v1
+	server even though they may never actually need it (and they may
+	persist in broadcasting in search of one even after they receive a
+	response from a v2 server).  Note that while support for normal
+	client calls is provided, this version of ypserv does not handle
+	v1 map transfer requests; consequently, it can not be used as a
+	master or slave in conjunction with older NIS servers that only
+	support the v1 protocol.  Fortunately, there probably are not any
+	such servers still in use today.</para>
+    </sect2>
+
+    <sect2>
+      <title>NIS servers that are also NIS clients</title>
+
+      <para> Care must be taken when running ypserv in a multi-server
+	domain where the server machines are also NIS clients.  It is
+	generally a good idea to force the servers to bind to themselves
+	rather than allowing them to broadcast bind requests and possibly
+	become bound to each other.  Strange failure modes can result if
+	one server goes down and others are dependent upon on it.
+	Eventually all the clients will time out and attempt to bind to
+	other servers, but the delay involved can be considerable and the
+	failure mode is still present since the servers might bind to each
+	other all over again.</para>
+
+      <para>You can force a host to bind to a particular server by running
+	<command>ypbind</command> with the <option>-S</option>
+	flag.</para>
+    </sect2>
+
+    <sect2>
+      <title>libscrypt v.s. libdescrypt</title>
+
+      <para>One of the most common issues that people run into when trying
+	to implement NIS is crypt library compatibility.  If your NIS
+	server is using the DES crypt libraries, it will only support
+	clients that are using DES as well. To check which one your server
+	and clients are using look at the symlinks in
+	<filename>/usr/lib</filename>.  If the machine is configured to
+	use the DES libraries, it will look something like this:</para>
+
+      <screen>
+&prompt.user; <userinput>ls -l /usr/lib/*crypt*</userinput>
+lrwxrwxrwx  1 root  wheel     13 Jul 15 08:55 /usr/lib/libcrypt.a@ -> libdescrypt.a
+lrwxrwxrwx  1 root  wheel     14 Jul 15 08:55 /usr/lib/libcrypt.so@ -> libdescrypt.so
+lrwxrwxrwx  1 root  wheel     16 Jul 15 08:55 /usr/lib/libcrypt.so.2@ -> libdescrypt.so.2
+lrwxrwxrwx  1 root  wheel     15 Jul 15 08:55 /usr/lib/libcrypt_p.a@ -> libdescrypt_p.a
+-r--r--r--  1 root  wheel  13018 Nov  8 14:27 /usr/lib/libdescrypt.a
+lrwxr-xr-x  1 root  wheel     16 Nov  8 14:27 /usr/lib/libdescrypt.so@ -> libdescrypt.so.2
+-r--r--r--  1 root  wheel  12965 Nov  8 14:27 /usr/lib/libdescrypt.so.2
+-r--r--r--  1 root  wheel  14750 Nov  8 14:27 /usr/lib/libdescrypt_p.a</screen>
+
+      <para>If the machine is configured to use the standard FreeBSD MD5
+	crypt libraries they will look something like this:</para>
+
+      <screen>
+&prompt.user; <userinput>ls -l /usr/lib/*crypt*</userinput>
+lrwxrwxrwx  1 root  wheel     13 Jul 15 08:55 /usr/lib/libcrypt.a@ -> libscrypt.a
+lrwxrwxrwx  1 root  wheel     14 Jul 15 08:55 /usr/lib/libcrypt.so@ -> libscrypt.so
+lrwxrwxrwx  1 root  wheel     16 Jul 15 08:55 /usr/lib/libcrypt.so.2@ -> libscrypt.so.2
+lrwxrwxrwx  1 root  wheel     15 Jul 15 08:55 /usr/lib/libcrypt_p.a@ -> libscrypt_p.a
+-r--r--r--  1 root  wheel   6194 Nov  8 14:27 /usr/lib/libscrypt.a
+lrwxr-xr-x  1 root  wheel     14 Nov  8 14:27 /usr/lib/libscrypt.so@ -> libscrypt.so.2
+-r--r--r--  1 root  wheel   7579 Nov  8 14:27 /usr/lib/libscrypt.so.2
+-r--r--r--  1 root  wheel   6684 Nov  8 14:27 /usr/lib/libscrypt_p.a</screen>
+
+      <para>If you have trouble authenticating on an NIS client, this
+        is a pretty good place to start looking for possible problems.
+        If you want to deploy an NIS server for a heterogenous
+        network, you will probably have to use DES on all systems
+        because it is the lowest common standard.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="dhcp">
+    <title>DHCP</title>
+
+    <para><emphasis>Written by &a.gsutter;, March 2000.</emphasis></para>
+    <para><emphasis>Translated by "Li-Chun" &lt;redeye@redbsd.redeyekinda.org&gt;, July 2003</emphasis></para> 
+
+    <sect2>
+      <title>¤°»ò¬O DHCP?</title>
+
+      <para>DHCP ¬O°ÊºA¥D¾÷³W¹º°t¸m¨óÄ³ªºÁY¼g(Dynamic Host Configuration 
+        Protocol)¡A³o­Ó·N«ä´N¬O¨t²Î¥i¥H³sµ²¤Wºô¸ô¨Ã¥BÀò±o©Ò»Ýªº¸ê°T¡A
+	¥H¹F¨ìºô¸ô¤Wªº°T®§¥æ¬y¥\¯à¡CFreeBSD ¨Ï¥Î ISC (Internet Software 
+	Consortium) DHCP ¨Ó°õ¦æ³o¶µ¤u§@¡A¦]¦¹©Ò¦³°õ¦æ¤W - ¯S®í³W¹º
+	(implementation-specific)ªº¸ê°T¦b¨t²Î¤W³£¬O¨Ï¥Î ISC ®M¥ó¡C</para>
+    </sect2>
+
+    <sect2>
+      <title>³o­Ó³¹¸`ªº¤º®e</title>
+
+      <para>³o­Ó³¹¸`¥D­n±Ô­z¤F ISC DHCP¨t²Î ¦b³QªA°ÈºÝ(client-side)
+        »P¦øªAºÝ(server-side)ªºµ²ºc²Õ¦¨¡C³QªA°ÈºÝªºµ{¦¡ ¡V dhclient ¡V
+	¤w¸g³Q¾ã¦X¦b FreeBSD ªº¨t²Î¤¤¡A¦øªAºÝªº³¡¤À¥Ø«e¥i¥H¦b port ¶°¤¤§ä¨ì¡A
+	¦ì¸m¬°  <filename role="package">net/isc-dhcp3</filename> ¡C
+	&man.dhclient.8;¡B&man.dhcp-options.5; »P &man.dhclient.conf.5; 
+	Â²¤¶ºô­¶¡A¤]¤w¸g¼W¥[¶i°Ñ¦Ò¸ê®Æ©³¤U¡A³o¨Ç³£¬O«D±`¦³¥Îªº¸ê°T¡C</para>
+    </sect2>
+
+    <sect2>
+      <title>DHCP ¬O«ç»ò¹B§@ªº</title>
+
+      <para>·í dhclient µ{¦¡±Ò°Êªº®É­Ô¡A¥D¾÷´N¦¨¤FDHCPªº³QªA°ÈºÝ¡A
+        ¥D¾÷·|¹ï¦øªAºÝ°õ¦æ¼½©ñ½Ð¨D¥H¨ú±o³W¹º°t¸mªº¬ÛÃö°T®§¡C¦b¹w³]¤¤¡A
+	³o¨Ç»Ý¨D·|³z¹LUDP port 68 ¨Ó¶Ç°e¡A¦øªAºÝ«h³z¹LUDP port 67 
+	¨ÓµªÂÐ¬ÛÃö»Ý¨D¡A¦øªAºÝ©Ò´£¨Ñªº°T®§¥]¬A¤F IP ¦ì§}¥H¤Î¨ä¥Lªººô¸ô°T®§¦p¡G
+	ºô¸ô¾B¸n(netmask)¡B¸ô¥Ñ¾¹(router)»P DNS ¦øªA¾¹µ¥¬ÛÃö°T®§¡C
+	©Ò¦³ªº³o¨Ç°T®§¨Ó¦Û©óDHCPªºµo©ñ«´¬ù¸Ì(lease)¨Ã¥B¬O¶È¦³¦Xªkªº½T¤Á®É®Ä
+	(°t¸m¨Ó¦Û©óDHCP¦øªAºÝªº³W¹º»Pºû«ù)¡C¦b³o¼Ëªº¤è¦¡¤¤¡A
+	¥¢±¼®É®Äªº³QªA°ÈºÝIP¦ì§}¦b¤@¬q®É¶¡¤º¨S¦³¦A³sµ²¡A
+	´N·|³Q¦Û°Ê­«·s¦^¦¬µ¹¨ä¥Lªº³QªA°ÈºÝ¹q¸£¨Ï¥Î¡C</para>
+
+      <para>DHCP ³QªA°ÈºÝ¯à°÷±q¦øªA¥D¾÷¸ÌÀò±o¤j¶q¸ê°T¡A
+        ³o¨Ç¸Ô²Óªº¸ê®Æ¤º®e¥i¥H¦b &man.dhcp-options.5; ¤¤§ä¨ì¡C</para>
+    </sect2>
+
+    <sect2>
+      <title>FreeBSD ªº¾ã¦X</title>
+
+      <para>FreeBSD §Q¥Î <command>dhclient</command> µ{¦¡§¹¥þªº¾ã¦X¤F
+        ISC DHCP ³QªA°ÈºÝ¡A·í±zªºFreeBSD ¥D¾÷¦¨¬°DHCP³QªA°ÈºÝ®É¡A
+	FreeBSDª½±µ¤ä´©´£¨Ñ¥]¬A¤F¦w¸Ë»P°ò¥»¨t²Î«Øºc¡A
+	±z§¹¥þ¤£»Ý­nÁA¸Ñ³o¨Çºô¸ô³W¹º¬ÛÃöª¾ÃÑªº²Ó¸`´N¥i¥H¦b´£¨ÑDHCP
+	¦øªA¥\¯àªººô¸ô¤W¶¶§Qªº¹B¦æ¡C
+	<command>dhclient</command> ³o­Óµ{¦¡±q 3.2 ª©¸Ì´N¤w¸g³Q¥]§t¦b©Ò¦³ 
+	FreeBSD ªº®M¥ó¤¤¡C</para>
+
+        <para>DHCPªº§ó¯à¦b <application>sysinstall</application> ¸Ì´N¦³¤ä´©¡A
+	  ·í±z§Q¥Îsysinstall ªº¤è¦¡¨Ó³W¹º°t¸mºô¸ô®É¡A
+	  ²Ä¤@­Ó°ÝÃD´N¬O¡yDo you want to try DHCP configuration of this 
+	  interface?¡z (±z¥´ºâ¥Î DHCP ¨Ó³W¹º°t¸m³o­Óºô¸ô¤¶­±¶Ü¡H)¡A
+	  ·í±z¦^µª¡y¬O¡zªº®É­Ô´N·|±Ò°Êdhclient µ{¦¡¡A°²¦p³o¼Ëªº³]©w¦¨¥\«á¡A
+	  ºô¸ô°t¸m©Ò»Ý­nªº¬ÛÃö°T®§´N·|³Q¦Û°ÊªºÂ^¨ú»P§Q¥Î¡C</para>
+
+        <para>³o¸Ì¦³¨â¥ó¨Æ§A¥²¶·¥h§@¡A
+	  ¦p¦¹¤~¯à½T«O DHCP ªº¥\¯à¦b¨t²Î¤¤¯à¶¶§Q±Ò°Ê¡G</para>
+	  
+	<itemizedlist>
+	  <listitem>
+            <para>½T»{ <devicename>bpf</devicename> ¸Ë¸m(bpf device)
+             ¦b±zªº®Ö¤ß(kernel)½sÄ¶¸Ì¤w¸g¥[¤J¡A
+	     ±z¥²¶·¥[¤J <literal>pseudo-device bpf</literal> 
+	     ¨ì±zªº®Ö¤ß®æ¦¡ÀÉ®×¤¤¡AµM«á­«·s½sÄ¶®Ö¤ß¡C
+	     °²¦p±z·Q­n§ó¶i¤@¨BÁA¸Ñ®Ö¤ß½sÄ¶¡A½Ð°Ñ¦Ò
+	     <xref linkend="kernelconfig">¡C</para>
+	    <para><devicename>bpf</devicename> ¸Ë¸m­ì¥»´N¬OFreeBSD©Ò´£¨Ñ
+	      <filename>GENERIC</filename> ®Ö¤ßªº¤@³¡¥÷¡A
+	      ©Ò¥H°²¦p±z¤£´¿½sÄ¶¹L­Ó¤H¤Æªº®Ö¤ß¡A
+	      ±z´N¤£»Ý­n¦A¥h§@®Ö¤ß½sÄ¶ªº¤u§@¥HÀò±oDHCPªº¶¶§Q°õ¦æ¡A
+	      ¦]¬°¨º¬O¥»¨Ó´N¦s¦bªº¥\¯à¡C</para>
+	    <note>
+	      <para>¹ï¨º¨Ç¯S§Oª`·N¦w¥þ©Êªº¨Ï¥ÎªÌ¡A±z¥²¶·Äµ§i¥L­Ì 
+	        <devicename>bpf</devicename> 
+		¬O¤@­Ó³Q¤¹³\«Ê¥]ºÊ´ú¨Ó¨Ïºô¸ô¶¶§Q¹B§@ªº¸Ë¸m
+		(ÁöµM»¡¥²¶·­n¬Orootªº¨­¥÷¤~¯à³o¼Ë°õ¦æ)¡C
+	        <devicename>bpf</devicename> <emphasis>¬O</emphasis>
+		DHCP¥\¯à¸Ì¥²¶·ªº­n¥ó¡A
+		°²¦p±z«D±`­«µø±zªººô¸ô¦w¥þ©Ê¡A
+		¦Ó±z¤S¹w´Á¦b¥¼¨Ó¬Y¨Ç®É­Ô·|¥[¤JDHCPªººô¸ô¤¤¡A
+		«ØÄ³±z¤£­n±N <devicename>bpf</devicename> 
+		¥[¤J±zªº®Ö¤ß¤¤©Î³\¬O¤ñ¸û¦X¾Aªº¡C</para>
+	    </note>
+	  </listitem>
+          <listitem>
+            <para>½s¿è±zªº <filename>/etc/rc.conf</filename> 
+	      ÀÉ¨Ï¥¦¥]§t¥H¤Uªº¤º®e¡G</para>
+
+            <programlisting>ifconfig_fxp0="DHCP"</programlisting>
+
+            <note>
+              <para>½Ð½T©w¨ú¥N <literal>fxp0</literal>0 
+	        ªººô¸ô¤¶­±¬O±z©Ò§Æ±æÀò±o°ÊºA°t¸mªººô¥d¥N½X¡A
+		°²¦p±z·Q¶i¤@¨BÁA¸Ñ¡A¥i¥H°Ñ¦ÒSection 6.8 ªº¤º®e¡C</para>
+            </note>
+
+            <para>°²¦p±z¦b¤£¦Pªº¦ì¸m°õ¦æ <command>dhclient</command> µ{¦¡¡A
+	      ©Î¬O°²¦p±z§Æ±æ¯à¯à³q¹Lªþ¥[ªººX¼Ð(flags)¥H°õ¦æ 
+	      <command>dhclient</command> µ{¦¡¡A¨º±z´N¥²¶·¦b 
+	      <filename>/etc/rc.conf</filename> ¸Ì¤]¥[¤W¥H¤Uªº¤º®e¡G</para>
+
+            <programlisting>dhcp_program="/sbin/dhclient"
+dhcp_flags=""</programlisting>
+          </listitem>
+        </itemizedlist>
+
+        <para>DHCP¦øªA¾¹¡A»Ý­n°õ¦æªº¬O <command>dhcpd</command> µ{¦¡¡A
+	¬OÄÝ©ó <filename role="package">net/isc-dhcp3</filename> ªº¤@³¡¥÷¡A
+	±z¥i¥H¦b ports ªº¦¬¶°°Ï¸Ì§ä¨ì¥¦¡C³o­Ó port ¥]§t¤F§¹¾ãªº ISC DHCP 
+	®M¥ó¡A¥Ñ³QªA°ÈºÝ(client)¡B¦øªA¾¹ºÝ(server)¡BÂà»¼°T®§¤¤Ä~(relay agent)
+        ¥H¤Î¬ÛÃö¤å¥ó(documentation)©Òºc¦¨¡C</para>
+    </sect2>
+
+    <sect2>
+      <title>ÀÉ®×</title>
+
+      <itemizedlist>
+        <listitem><para><filename>/etc/dhclient.conf</filename></para>
+          <para><command>dhclient</command> µ{¦¡ªº°õ¦æ»Ý­n¤@­Ó³W¹º°t¸mÀÉ¡A
+	    ¨º´N¬O <filename>/etc/dhclient.conf</filename> ¡C
+	    ³q±`³o­ÓÀÉ¸Ì¶È¶È¥]§t¤F¬ÛÃöªºµù¸Ñ¡AÅýµ{¦¡¥i¥H°õ¦æªº±ø²z¤À©ú¡B
+	    ¤£©ìªd±a¤ô¡CÃö©ó³o­ÓÀÉ®×ªº±Ô­z¡A±z¥i¥H¨ì &man.dhclient.conf.5; 
+	    ºô­¶¸ÌÀò¨ú§¹¾ãªº¸ê°T¡C</para>
+        </listitem>
+
+        <listitem><para><filename>/sbin/dhclient</filename></para>
+          <para><command>dhclient</command> ÀÉ¬O­ÓÀRºA³sµ²ÀÉ¡A
+	    ³Q³W¹º³]©w©ó  <filename>/sbin</filename> ¸ê®Æ§¨©³¤U¡C
+	    ±z¥i¥H¨ì &man.dhclient.8; ºô­¶¸Ì´£¨Ñ¤F§ó¦h¬ÛÃö 
+	    <command>dhclient</command> ªº¸ê°T¡C</para>
+        </listitem>
+
+        <listitem><para><filename>/sbin/dhclient-script</filename></para>
+          <para><command>dhclient-script</command> ³o­ÓÀÉ®×¸Ì±Ô­zªº¬O
+	  FreeBSD¯S©wªº DHCP ³QªA°ÈºÝªº°t¸m³W¹º³]©w¡C
+	  ±z¥i¥H¨ì &man.dhclient-script.8;ºô­¶¸ÌÀò¨ú§¹¾ãªº¸ê°T¡A
+	  ¦ý¬O±z¤£»Ý­n¹ï¸Ì­±ªº¸ê°T¥[¥H­×§ï¥H§K§«®`¥¿±`¥\¯àªº¥¿½T¹B¦æ¡C</para>
+        </listitem>
+
+        <listitem><para><filename>/var/db/dhclient.leases</filename></para>
+          <para>DHCPªº³QªA°ÈºÝ·|±N¦³®Äªº¬ÛÃö°T®§µo©ñ«´¬ù¸ê®Æ«O¦s¦b³o­ÓÀÉ®×¸Ì¡A
+	    ¨t²Î·|¥H log ªº¼Ò¦¡±N°T®§°O¿ý¤U¨Ó¡C
+	    ±z¥i¥H¨ì&man.dhclient.leases.5;
+	    ºô­¶¸ÌÀò¨ú¶i¤@¨B¸ÓÀÉ®×ªº¸ê°T¡C</para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2>
+      <title>¶i¶¥¾\Åª¸ê°T</title>
+
+      <para>DHCP ¨óÄ³§¹¾ãªº»¡©ú¦b
+        <ulink url="http://www.freesoft.org/CIE/RFC/2131/">RFC 2131</ulink>
+        ¤¤¡A¾ã­Ó·s»D©Êªº¸ê·½¤]³Q³]©w¦b
+        <ulink url="http://www.dhcp.org/">dhcp.org</ulink>ºô¯¸¤¤¡C
+    </sect2>
+
+    <sect2 id="network-dhcp-server">
+      <title>¦w¸Ë»P°t¸m DHCP ¦øªA¾¹</title>
+
+      <sect3>
+        <title>³o­Ó³¹¸`ªº¤º®e</title>
+
+	<para>³o­Ó³¹¸`´£¨Ñ¤F¦p¦ó¦bFreeBSD¨t²Î¤¤³W¹º°t¸m DHCP ¦øªA¾¹ªº¬ÛÃö¸ê°T¡AÅýDHCP§Q¥ÎISC (Internet Software Consortium)ªº³W¹º¨Ó¹B§@¦øªA¾¹ªº¥\¯à¡C</para>
+	
+	<para>DHCP ¦øªA¾¹ªº¥\¯à¤£¬OFreeBSD ¸Ì¹w³]´£¨ÑªºªA°È¶µ¥Ø¡A¦]¦¹±z»Ý­n¸g¹L¦w¸Ë  <filename role="package">net/isc-dhcp3</filename> port ªº¹Lµ{¨ÓÅý¨t²Î´£¨ÑDHCPªºªA°È¡C±z¥i¥H¦b <xref linkend="ports"> ¸Ì§ä¨ì¦p¦ó¨Ï¥Î ports ¦¬¶°®M¥óªº¬ÛÃö¸ê°T¡C</para>
+      </sect3>
+
+      <sect3>
+        <title>DHCP ¦øªA¾¹ªº¦w¸Ë</title>
+	<indexterm>
+	  <primary>DHCP</primary>
+	  <secondary>installation</secondary>
+        </indexterm>
+	<para>¬°¤F³W¹º±zªºFreeBSD ¨t²Î¦¨¬° DHCP ¦øªA¾¹¡A±z»Ý­n½T»{ &.man.bpf4; ¸Ë¸m¤w¸g½sÄ¶¦b±zªº®Ö¤ß¸Ì¡C±z¥²¶·¥[¤J <literal>pseudo-device bpf</literal> ¨ì±zªº®Ö¤ß®æ¦¡ÀÉ®×¤¤¡AµM«á­«·s½sÄ¶®Ö¤ß¡C°²¦p±z·Q­n§ó¶i¤@¨BÁA¸Ñ®Ö¤ß½sÄ¶¡A½Ð°Ñ¦Ò <xref linkend="kernelconfig">¡C</para>
+
+	<para><devicename>bpf</devicename> ¸Ë¸m­ì¥»´N¬OFreeBSD©Ò´£¨Ñ <filename>GENERIC</filename> ®Ö¤ßªº¤@³¡¥÷¡A©Ò¥H±z¤£»Ý­n¦A¥h§@®Ö¤ß½sÄ¶ªº¤u§@¥HÀò±oDHCPªº¶¶§Q°õ¦æ¡A¦]¬°¨º¬O¥»¨Ó´N¦s¦bªº¥\¯à¡C</para>
+
+	<note><para>¹ï¨º¨Ç¯S§Oª`·N¦w¥þ©Êªº¨Ï¥ÎªÌ¡A±z¥²¶·Äµ§i¥L­Ì <devicename>bpf</devicename> ¬O¤@­Ó³Q¤¹³\«Ê¥]ºÊ´ú¨Ó¨Ïºô¸ô¶¶§Q¹B§@ªº¸Ë¸m(ÁöµM»¡°õ¦æ³o¼Ëªºµ{¦¡»Ý­n¦³¯S§O¨­¥÷ªº¨Ï¥ÎªÌ¤~¯àÀò¨ú¸ê°T)¡C<devicename>bpf</devicename> ¬ODHCP¥\¯à¸Ì¥²¶·ªº­n¥ó¡A°²¦p±z«D±`­«µø±zªººô¸ô¦w¥þ©Ê¡A¯ÂµM¬O¦]¬°±z¹w´Á¦b¥¼¨Ó¬Y¨Ç®É­Ô·|¥[¤JDHCPªººô¸ô¤¤¡A«ØÄ³±z¤£­n±N <devicename>bpf</devicename> ¥[¤J±zªº®Ö¤ß¤¤©Î³\¬O¤ñ¸û¦X¾Aªº¡C</para></note>
+
+	<para>±µ¤U¨Ó±z»Ý­n§@ªº¨Æ±¡´N¬O½s¿è <filename>dhcpd.conf</filename> ªº¼Ë«~ÀÉ¡A³o­ÓÀÉ®×¦b¦w¸Ë <filename role="package">net/isc-dhcp3</filename> port ªº®É­Ô´N·|²£¥Í¡C¹w³]¤¤³o­ÓÀÉ®×³]©w¬° <filename>/usr/local/etc/dhcpd.conf.sample</filename>¡A¦b±z­n½s¿è³o­ÓÀÉ®×«e½Ð¥ý½Æ»s¦¨ <filename>/usr/local/etc/dhcpd.conf</filename> «á¦A¶i¦æ½s¿è¡C</para>
+      </sect3>
+
+      <sect3>
+        <title>³W¹º°t¸m DHCP ¦øªA¾¹</title>
+	<indexterm>
+	  <primary>DHCP</primary>
+	  <secondary>dhcpd.conf</secondary>
+	</indexterm>
+	<para><filename>dhcpd.conf</filename> ÀÉ¥]§t¤F¹ï©ó¤lºô¸ô(subnets)»P¥D¾÷ªº«Å§i(declarations)¡A¨Ã¥B¥]§t¤F¤j¦h®e©ö¸ÑÄÀªº±Ô­z¡A¤º®eªº³W¹º¦p¥H¤U½d¨Ò¡G</para>
+        <programlisting>option domain-name "example.com";<co id="domain-name">
+option domain-name-servers 192.168.4.100;<co id="domain-name-servers">
+option subnet-mask 255.255.255.0;<co id="subnet-mask">
+
+default-lease-time 3600;<co id="default-lease-time">
+max-lease-time 86400;<co id="max-lease-time">
+ddns-update-style none;<co id="ddns-update-style">
+
+subnet 192.168.4.0 netmask 255.255.255.0 {
+  range 192.168.4.129 192.168.4.254;<co id="range">
+  option routers 192.168.4.1;<co id="routers">
+}
+
+host mailhost {
+  hardware ethernet 02:03:04:05:06:07;<co id="hardware">
+  fixed-address mailhost.example.com;<co id="fixed-address">
+}</programlisting>
+
+        <calloutlist>
+          <callout arearefs="domain-name">
+	    <para>³o­Ó¿ï¶µ³]©w¤Fºô°ìªº¦WºÙ¡A´£¨Ñµ¹³QªA°ÈºÝªº¹q¸£·í¦¨¹w³]ªº·j´Mºô°ì¡C±z¥i¥H¨ì &man.resolv.conf.5; ºô­¶¸Ì¡A¨º¸Ì¦³§ó¦hªº¸ê°TÃö©ó³o¶µ³]©wªº·N¸q¡C</para>
+          </callout>
+
+	  <callout arearefs="domain-name-servers">
+	    <para>³o­Ó¿ï¶µ³]©w§Q¥Î³r¸¹¨Ó¤À¹j DNS ¦øªA¾¹ªº¦ì¸m(°²¦p±z´£¨Ñ¦h­ÓDNS¦øªA¾¹¦ì¸m)¡A¨ä¸ê°T´£¨Ñµ¹¤lºô°ì¤W³QªA°ÈºÝ¹q¸£ª¾¹D¥i¨Ï¥Îªº DNS ¦øªA¾¹¦ì¸m©Ò¦b¡C</para>
+	  </callout>
+
+	  <callout arearefs="subnet-mask">
+	    <para>³o­Ó¤lºô¸ô¾B¸n±N´£¨Ñµ¹³QªA°ÈºÝªº¹q¸£©Ò¨Ï¥Î¡C</para>
+	  </callout>
+
+	  <callout arearefs="default-lease-time">
+	    <para>³o¸Ì³]©w¤F³QªA°ÈºÝªº¹q¸£Àò±oDHCP ªA°Èªº«´¬ù¦³®Ä®É¶¡¦³¦hªø¡A¦Ó¦øªA¾¹³o¸Ì³W¹ºªº¥¿¬O¦³®Äµo©ñ«´¬ùªº®É¶¡ªø«×(¥H¬í­pºâ)¡C</para>
+	  </callout>
+
+	  <callout arearefs="max-lease-time">
+	    <para>³o¸Ì³W¹º¤FDHCP¦øªA¾¹±N´£¨Ñ¦øªA¥\¯àªº³Ì¤j®É¶¡´Á­­¡CÁöµM³o¸Ì³W¹ºªº¬O³Ì¤j«´¬ùÄÀ©ñ®É®Ä¡A¦ý·í³QªA°ÈºÝªº¹q¸£½Ð¨D¶W¹L¤F¹w´Áªº«´¬ù³W¹º¡A³o­ÓÄÀ©ñªº«´¬ùÁÙ¬O·|¦A³Q¤½¥¬¥X¨Ó¡C</para>
+	  </callout>
+
+	  <callout arearefs="ddns-update-style">
+	    <para>³o­Ó¿ï¶µ³]©w¤F DHCP ¦øªA¾¹¦bµo©ñªº«´¬ù³Q±µ¨ü©ÎÄÀ©ñªº¦P®É±N¹Á¸Õ§ó·s DNS ªº³]©w¡C¦b ISC ªº³W¹º³]¸m¤¤¡A³o­Ó¿ï¶µ¬O<emphasis>¥²³Æ</emphasis>ªº±ø¥ó¡C</para>
+	  </callout>
+
+	  <callout arearefs="range">
+	    <para>³o¤@¦æ»¡©ú¤F±N´£¨Ñµ¹¤lºô¸ô³Q¦øªAºÝ¹q¸£©Ò¨Ï¥Îªº IP ¦ì§}½d³ò¡A¨ä¶¡ªº¦ì§}±N°t©ñµ¹­Ó§O¨Ï¥ÎDHCPªA°Èªº¹q¸£§Q¥Î¡C</para>
+	  </callout>
+
+	  <callout arearefs="routers">
+	    <para>«Å§i¹w³]ªº³q¹D(gateway)µ¹¤lºô°ìªº¹q¸£¨Ï¥Î¡C´N¬O´£¨ÑDHCPªA°È¸Óºô¥dªº IP ¦ì§}¡C</para>
+	  </callout>
+
+	  <callout arearefs="hardware">
+	    <para>³o¸Ì³]©wªº¬O¤lºô¸ô¤Wªº¬Y±i¹q¸£ºô¥d MAC ¦ì§}¡A(¦p¦¹¤@¨ÓDHCP¦øªA¾¹´N¥i¥H¿ëÃÑ¸Ó¥D¾÷¡A·í¸Ó¥D¾÷¦³¯S©w»Ý¨Dªº®É­Ô¤£·|¿ù¸m)¡C</para>
+	  </callout>
+
+	  <callout arearefs="fixed-address">
+	    <para>¯S§O«ü©w³o¥x¥D¾÷°t©ñ¤©¬Û¦Pªº IP ¦ì§}¡Cª`·N¸Ó¥D¾÷¦WºÙ¥²¶·¬OµL»~ªº¡A¦]¬°DHCP¦øªA¾¹·|¥D°Êµù¸Ñ¸Ó¥D¾÷ªº¦WºÙ¡A¦bÂkÁÙ¸Ó IP ¦ì§}µ¹¦øªA¾¹«e³£±N¤£·|§ïÅÜ¡C</para>
+	  </callout>
+        </calloutlist>
+
+	<para>·í±z§¹¦¨¤F <filename>dhcpd.conf</filename> ªº½s¿è¡A±z´N¥i¥H¥H·Ó¤U­±ªº«ü¥Ü¶i¦æ DHCP ¦øªA¾¹¥\¯àªº±Ò°Ê¡G</para>
+
+	<screen>&prompt.root; <userinput>/usr/local/etc/rc.d/isc-dhcpd.sh start</userinput></screen>
+
+	<para>·í§A¦b¥¼¨Ó­n±NDHCP¦øªA¾¹³W¹º°t¸m§@²§°Ê®É¡A½Ðª`·N¤@¶µ«Ü­«­nªº¨Æ±¡¡A´N¬O°²¦p±zµo°e¤F <literal>SIGHUP</literal> ³o­Ó°T®§µ¹ <application>dhcpd</application>¡A¨º±N¤£·|²£¥Í±z¹w´Á©Ò»Ý­nªº³]©wµ²ªG¡A¦øªA¾¹¨Ã¤£·|¦A¥hÅª¨ú±z©Ò³]©wªº·s³W¹º°t¸m¡A³o»P¤j¦h¼Æ¨ä¥LªºªA°È(daemon)¥\¯à¬O¤@­Pªº¡C±z¥²¶·µo°e¤@­Ó <literal>SIGTERM</literal> °T®§¨Ó°±¤î¸ÓªA°Èªº¶i¦æ¡AµM«á­«·s±Ò°Ê¥H¤Wªº©R¥OÅýDHCPªº¦øªA¥\¯à¦A¥Í®Ä¡AÄ~Äò´£¨ÑªA°È¡C</para>
+      </sect3>
+
+      <sect3>
+        <title>ÀÉ®×</title>
+          <indexterm>
+            <primary>DHCP</primary>
+            <secondary>configuration files</secondary>
+          </indexterm>
+        <itemizedlist>
+          <listitem><para><filename>/usr/local/sbin/dhcpd</filename></para>
+	    <para>dhcpd ÀÉ¬O­ÓÀRºA³sµ²ÀÉ¡A¦s¦b©ó <filename>/usr/local/sbin</filename> ¸ê®Æ§¨·í¤¤¡C¦b dhcpd(8) Â²¤¶ªººô­¶¦b¦w¸Ë port ®É¤]·|³Q¦w¸Ë¡A¸Ì­±´£¨Ñ¤F§ó¦hÃö©ó <application>dhcpd</application> ªº¬ÛÃö¸ê°T¡C</para>
+          </listitem>
+
+	  <listitem><para><filename>/usr/local/etc/dhcpd.conf</filename></para>
+	  <para>dhcpd µ{¦¡ªº°õ¦æ»Ý­n¤@­Ó³W¹º°t¸mÀÉ¡A¨º´N¬O <filename>/usr/local/etc/dhcpd.conf</filename>¡A<filename>dhcpd.conf</filename> ¦b±Ò°Ê DHCP µo©ñµ¹³QªA°ÈºÝªºªA°È«e´N·|³QÅª¨ú¡C³o­ÓÀÉ®×¸Ì¥²¶·¥]§t©Ò¦³»Ý­n´£¨Ñ³QªA°ÈºÝ©Ò»Ýªº©Ò¦³¸ê°T¡A¨Ì´`µÛ³o¨Ç¸ê°T¨Ó¹B§@¦øªA¾¹ªº¥\¯à¡CÃö©ó³o­ÓÀÉ®×ªº±Ô­z¡A¦b¦w¸Ë port ®É¤]¦P®É¥Í¦¨¤F dhcpd.conf(5) ºô­¶¡A±z¥i¥H¨ì¸Óºô­¶¸ÌÀò¨ú§¹¾ãªº¸ê°T¡C</para>
+	  </listitem>
+
+	  <listitem><para><filename>/var/db/dhcpd.leases</filename></para>
+	  <para>DHCPªº¦øªAµ{¦¡·|±N¦³®Äªº¬ÛÃö°T®§µo©ñ«´¬ù¸ê®Æ«O¦s¦b³o­ÓÀÉ®×¸Ì¡A¨t²Î·|¥H log ªº¼Ò¦¡±N°T®§°O¿ý¤U¨Ó¡C±z¥i¥H¨ì dhclient.leases(5) ºô­¶¸ÌÀò¨ú¶i¤@¨B¸ÓÀÉ®×ªº¸ê°T¡C</para>
+	  </listitem>
+
+	  <listitem><para><filename>/usr/local/sbin/dhcrelay</filename></para>
+	  <para><filename>dhcrelay</filename> ÀÉ¨Ï¥Î¦b¶i¶¥ªºÀô¹Ò¤¤¡A·í DHCP ¦øªA¾¹Âà°e³QªA°ÈºÝªº»Ý¨D¨ì¥t¥~¤@­Ó³Q¤À¶}ªººô¸ô DHCP ¦øªA¾¹®É´N»Ý­n³o­ÓÀÉ®×ªºµù¸Ñ¡C±z¥i¥H¦b dhcrelay(8) Â²¤¶ºô­¶¸Ì§ä¨ì port ©Ò´£¨Ñªº§ó¦h¸Ô²Óªº¸ê°T¡C</para>
+	  </listitem>
+        </itemizedlist>
+      </sect3>
+    </sect2> 
+  </sect1>
+
+<sect1 id="dns">
+<title>DNS</title>
+<para><emphasis>Written by Chern Lee <email>clee@serenivision.com</email>, April 12, 2001.
+      </emphasis>
+</para>
+
+<sect2>
+  <title>Overview</title>
+  <para>FreeBSD utilizes, by default, a version of BIND (Berkeley Internet Name
+    Domain), which is the most common implementation of the DNS protocol.  DNS
+    is the protocol through which names are mapped to ips, and vice
+    versa.  For example, a query for www.freebsd.org will send back a reply
+    for the IP address of The FreeBSD Project's webpage, whereas, a query for
+    ftp.freebsd.org will return the IP of the corresponding ftp
+    machine.  Likewise, the opposite can happen.  A query for an ip address
+    can resolve its hostname.
+  </para>
+
+  <para>DNS is coordinated across the Internet through a somewhat complex system
+    of authoritative root name servers, and other smaller-scale nameservers
+    who host and relay individual domain information.
+  </para>
+
+  <para>
+    This document refers to BIND 8.x, as it is the most current, stable 
+    version used in FreeBSD.
+  </para>
+
+  <para>
+    RFC1034 and RFC1035 dictates the DNS protocol.
+  </para>
+
+  <para>
+    Currently, BIND is maintained by the <ulink url="http://www.isc.org">
+    Internet Software Consortium (www.isc.org)</ulink>
+  </para>
+</sect2>
+
+<sect2>
+  <title>Terminology Used</title>
+
+  <para><emphasis>zone</emphasis> - Each individual domain, subdomain, 
+    or 'area' dictated by DNS is considered a zone.
+  </para>
+
+  <para>Examples of zones:
+  </para>
+  <itemizedlist>
+    <listitem>
+      <para>. is the root zone</para>
+    </listitem>
+    <listitem>
+     <para>org. is a zone under the root zone</para>
+    </listitem>
+    <listitem>
+      <para>foobardomain.org is a zone under the org. zone</para>
+    </listitem>
+    <listitem>
+      <para>foo.foobardomain.org. is a subdomain, a zone under the 
+        foobardomain.org. zone
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        1.2.3.in-addr.arpa is a zone referencing all ips which fall under 
+        the 3.2.1.* ip space.
+      </para>
+    </listitem>
+  </itemizedlist>
+
+  <para><emphasis>named, bind, name server</emphasis> - these are all common
+    names for the BIND name server package within FreeBSD.
+  </para>
+
+  <para><emphasis>resolver</emphasis> - a network process by which a system 
+    queries a nameserver for answers
+  </para>
+
+  <para><emphasis>root zone</emphasis> - literally, a '.', refers to the root,
+    or beginning zone.  All zones fall under this, as do all files in fall 
+    under the root directory.  It is the beginning of the Internet zone
+    hierarchy
+  </para>
+
+  <para><emphasis>origin</emphasis> - refers to the point of start for the
+    particular zone
+  </para>
+
+  <para><emphasis>forward dns</emphasis> - mapping of hostnames to ip addresses
+  </para>
+
+  <para><emphasis>reverse dns</emphasis> - the opposite, mapping of ip
+    addresses to hostnames
+  </para>
+</sect2>
+
+<sect2>
+  <title>Reasons to run a name server</title>
+  <itemizedlist>
+      <listitem>
+        <para>
+          You need your machine to host DNS information to the world
+        </para> 
+        <itemizedlist>
+          <listitem>
+            <para>An authoritative nameserver replies exclusively 
+              to requests.
+            </para>
+          </listitem>
+          <listitem>
+            <para>For example, you register foobardomain.org and wish to assign
+              hostnames to its proper ip addresses.
+            </para>
+          </listitem>
+          <listitem>
+            <para>A slave nameserver, which replies to queries for a 
+              domain when the primary is down or inaccessible.
+            </para>
+          </listitem>
+          <listitem>
+            <para>The above two can also be done with in-addr.arpa, ip to 
+              hostname entries
+            </para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>
+          You wish your machine to act as a local relay of DNS 
+          information
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para>DNS traffic has been measured to be about 5% or more of 
+              the total Internet traffic.
+            </para>
+          </listitem>
+          <listitem>
+             <para>A local DNS server may have some added benefit by 
+               providing a local cache of DNS information.
+             </para>
+           </listitem>
+          <listitem>
+             <para>
+               For example, when one queries for www.freebsd.org, their 
+               resolver goes out to (usually) your ISP's name server, and 
+               retreives the query.
+             </para>
+          </listitem>
+          <listitem>
+            <para>
+              With a local, caching DNS server, the query only has to be 
+              made once to the outside world.  Every additional query will 
+              not have to go outside of the local network, since the 
+              information is cached.
+            </para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+  </itemizedlist>
+</sect2>
+
+<sect2>
+<title>How it works</title>
+  <para>
+  A DNS server in FreeBSD relies on the BIND daemon.  This daemon is
+  called 'named' for obvious reasons.
+  </para>
+
+  <para><command>named</command> - the bind daemon</para>
+  <para><command>ndc</command> - name daemon control program</para>
+
+  <para>
+  <filename>/etc/namedb</filename> - directory where all the bind information
+    resides
+  </para>
+  <para>
+  <filename>/etc/namedb/named.conf</filename> - daemon configuration file
+  </para>
+
+  <para>
+    zone files are usually contained within the <filename>/etc/namedb</filename>
+    directory, and contain the  information (query answers from your site)
+    served by your name server.
+  </para>
+</sect2>
+
+<sect2>
+  <title>Starting BIND</title>
+  <para>
+    Since bind is installed by default, configuring it all is relatively
+    simple.
+  </para>
+  <para>
+    To ensure the named daemon is started at boot, put the following
+    modifications in your <filename>/etc/rc.conf</filename>
+  </para>
+  <programlisting>named_enable="YES"</programlisting>
+  <para>To start the daemon manually (after configuring it)</para>
+  <screen>&prompt.root; <userinput>ndc start</userinput></screen>
+</sect2>
+
+<sect2>
+  <title>Configuration files</title>
+  <sect3>
+    <title>make-localhost</title>
+      <para>Be sure to
+      </para>
+      <screen>
+        &prompt.root; <userinput>cd /etc/namedb
+        &prompt.root; sh make-localhost</userinput>
+      </screen> 
+      <para>to properly create your local reverse dns zone file in
+        <filename>/etc/namedb/localhost.rev</filename>.
+      </para>
+  </sect3>
+
+  <sect3>
+      <title><filename>/etc/namedb/named.conf</filename></title>
+
+      <programlisting>
+// $FreeBSD: doc/zh/big5/handbook/advanced-networking/chapter.sgml,v 1.10 2003/08/02 05:34:31 statue Exp $
+//
+// Refer to the named(8) man page for details.  If you are ever going
+// to setup a primary server, make sure you've understood the hairy
+// details of how DNS is working.  Even with simple mistakes, you can
+// break connectivity for affected parties, or cause huge amount of
+// useless Internet traffic.
+
+options {
+        directory "/etc/namedb";
+
+// In addition to the "forwarders" clause, you can force your name
+// server to never initiate queries of its own, but always ask its
+// forwarders only, by enabling the following line:
+//
+//      forward only;
+
+// If you've got a DNS server around at your upstream provider, enter
+// its IP address here, and enable the line below.  This will make you
+// benefit from its cache, thus reduce overall DNS traffic in the
+Internet.
+/*
+        forwarders {
+                127.0.0.1;
+        };
+*/
+      </programlisting>
+
+      <para>
+        Just as the comment says, if you want to benefit from your uplink's 
+        cache, you can enable this section of the config file.
+
+        Normally, your nameserver will recursively query different nameservers 
+        until it finds the answer it is looking for.  Having this enabled will
+        have it automatically see if your uplink's (or whatever provided) ns 
+        has the requested query.
+      
+        If your uplink has a heavily trafficked, fast nameserver, enabling 
+        this properly could work to your advantage.
+
+        127.0.0.1 will *NOT* work here; change this to the ip of a nameserver 
+        at your uplink.
+      </para>
+
+      <programlisting>
+        /*
+         * If there is a firewall between you and nameservers you want
+         * to talk to, you might need to uncomment the query-source
+         * directive below.  Previous versions of BIND always asked
+         * questions using port 53, but BIND 8.1 uses an unprivileged
+         * port by default.
+         */
+        // query-source address * port 53;
+
+        /*
+         * If running in a sandbox, you may have to specify a different
+         * location for the dumpfile.
+         */
+        // dump-file "s/named_dump.db";
+};
+
+// Note: the following will be supported in a future release.
+/*
+host { any; } {
+        topology {
+                127.0.0.0/8;
+        };
+};
+*/
+
+// Setting up secondaries is way easier and the rough picture for this
+// is explained below.
+//
+// If you enable a local name server, don't forget to enter 127.0.0.1
+// into your /etc/resolv.conf so this server will be queried first.
+// Also, make sure to enable it in /etc/rc.conf.
+
+zone "." {
+        type hint;
+        file "named.root";
+};
+
+zone "0.0.127.IN-ADDR.ARPA" {
+        type master;
+        file "localhost.rev";
+};
+
+zone
+"0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.IP6.INT" {
+        type master;
+        file "localhost.rev";
+};
+
+// NB: Do not use the IP addresses below, they are faked, and only
+// serve demonstration/documentation purposes!
+//
+// Example secondary config entries.  It can be convenient to become
+// a secondary at least for the zone where your own domain is in.  Ask
+// your network administrator for the IP address of the responsible
+// primary.
+//
+// Never forget to include the reverse lookup (IN-ADDR.ARPA) zone!
+// (This is the first bytes of the respective IP address, in reverse
+// order, with ".IN-ADDR.ARPA" appended.)
+//
+// Before starting to setup a primary zone, better make sure you fully
+// understand how DNS and BIND works, however.  There are sometimes
+// unobvious pitfalls.  Setting up a secondary is comparably simpler.
+//
+// NB: Don't blindly enable the examples below. :-)  Use actual names
+// and addresses instead.
+//
+// NOTE!!! FreeBSD runs bind in a sandbox (see named_flags in rc.conf).
+// The directory containing the secondary zones must be write accessible
+// to bind.  The following sequence is suggested:
+//
+//      mkdir /etc/namedb/s
+//      chown bind.bind /etc/namedb/s
+//      chmod 750 /etc/namedb/s
+
+/*
+zone "domain.com" {
+        type slave;
+        file "s/domain.com.bak";
+        masters {
+                192.168.1.1;
+        };
+};
+
+zone "0.168.192.in-addr.arpa" {
+        type slave;
+        file "s/0.168.192.in-addr.arpa.bak";
+        masters {
+                192.168.1.1;
+        };
+};
+*/
+      </programlisting>
+      <para>
+        These are example slave entries, read below to see more.
+      </para>
+      <para>
+        For each new domain added to your nameserver, you must add one of 
+        these entries to your <filename>named.conf</filename>
+      </para>
+      <para>
+       The simplest zone entry, can look like
+      </para>
+      <programlisting>
+zone "foobardomain.org" {
+	type master;
+	file "foorbardomain.org";
+};
+      </programlisting>
+
+      <para>For a master entry with the zone information within 
+        foobardomain.org, or
+      </para>
+
+      <programlisting>
+zone "foobardomain.org" {
+	type slave;
+	file "foobardomain.org";
+};
+      </programlisting>
+
+      <para>
+        for a slave.  Note that slave zones automatically query the listed
+        master (authoritative) name servers for the zone file.
+      </para>
+    </sect3>
+
+    <sect3>
+      <title>Zone files</title>  
+      <para>
+        An example master 'foobardomain.org' (existing within 
+        /etc/namedb/foobardomain.org) is as follows:
+      </para>
+
+      <programlisting>
+$TTL 3600
+
+foobardomain.org. IN SOA ns1.foobardomain.org. admin.foobardomain.org. (
+                        5               ; Serial
+                        10800           ; Refresh
+                        3600            ; Retry
+                        604800          ; Expire
+                        86400 )         ; Minimum TTL
+
+; DNS Servers
+@       IN NS           ns1.foobardomain.org.
+@       IN NS           ns2.foobardomain.org.
+
+; Machine Names
+localhost       IN A    127.0.0.1
+ns1             IN A    3.2.1.2
+ns2             IN A    3.2.1.3
+mail            IN A    3.2.1.10
+@               IN A    3.2.1.30
+
+; Aliases
+www             IN CNAME        @
+
+; MX Record
+@               IN MX   10      mail.foobardomain.org.
+      </programlisting>
+
+      <para>
+        Note that every hostname ending in a '.' is an exact hostname, whereas
+        everything without a trailing '.' is referenced to the origin.  For 
+        example, www is transalated into www + origin.  In our ficitious zone 
+        file, our origin is foobardomain.org, so www would be 
+        www.foobardomain.org.
+      </para>
+
+      <para>
+        The format of this file follows:
+      </para>
+      <programlisting>recordname      IN recordtype  value</programlisting>
+
+      <para>
+        The most commonly used DNS records:
+      </para>
+      <para><emphasis>SOA</emphasis> - start of zone authority</para>
+      <para><emphasis>NS</emphasis> - an authoritative nameserver</para>
+      <para><emphasis>A</emphasis> - A host address</para>
+      <para><emphasis>CNAME</emphasis> - the canonical name for an alias</para>
+      <para><emphasis>MX</emphasis> - mail exchange</para>
+      <para><emphasis>PTR</emphasis> - a domain name pointer (used in reverse 
+        dns)</para>
+      <programlisting>
+foobardomain.org. IN SOA ns1.foobardomain.org. admin.foobardomain.org. (
+                        5               ; Serial
+                        10800           ; Refresh after 3 hours
+                        3600            ; Retry after 1 hour
+                        604800          ; Expire after 1 week
+                        86400 )         ; Minimum TTL of 1 day
+      </programlisting>
+      <para>
+        <emphasis>foobardomain.org.</emphasis> - the domain name, also the 
+          origin for this zone file.
+      </para>
+      <para><emphasis>ns1.foobardomain.org.</emphasis> - the 
+        primary/authoritative nameserver for this zone
+      </para>
+      <para><emphasis>admin.foobardomain.org.</emphasis> - the responsible
+        person for this zone, e-mail address with @ replaced. 
+        (admin@foobardomain.org becomes admin.foobardomain.org)
+      </para>
+      <para>
+      <emphasis>5</emphasis> - the serial number of the file.  this must be
+        incremented each time the zone file is modified.  Nowadays, many 
+        admins prefer a yyyymmddrr format for the serial number.  2001041002
+        would mean last modified 04/10/2001, the latter 02 being the second
+        time the zone file has been modified this day.  The serial number is
+        important as it alerts slave nameservers for a zone when it is updated.
+      </para>
+
+      <programlisting>
+@       IN NS           ns1.foobardomain.org.
+      </programlisting>
+      <para>
+        This is an NS entry.  Every nameserver that is going to reply
+        authoritatively for the zone must have one of these entries.  The @ 
+        is seen here could have been 'foobardomain.org.' The @ transalates to 
+        the origin.
+      </para>
+
+      <programlisting>
+localhost       IN A    127.0.0.1
+ns1             IN A    3.2.1.2
+ns2             IN A    3.2.1.3
+mail            IN A    3.2.1.10
+@               IN A    3.2.1.30
+      </programlisting>
+      <para>
+        The A record indicates machine names.  As seen above, 
+        ns1.foobardomain.org would resolve to 3.2.1.2.  Again, the origin 
+        symbol, @, is used here, thus meaning foobardomain.org would resolve 
+        to 3.2.1.30.
+      </para>
+
+      <programlisting>
+www             IN CNAME        @
+      </programlisting>
+      <para>
+        The canonical name record is usually used for giving aliases to a 
+        machine.  In the example, www is aliased to the machine addressed to 
+        the origin, or foobardomain.org (3.2.1.30).  CNAMEs can be used to 
+        provide alias hostnames, or round robin one hostname among multiple
+        machines.
+      </para>
+
+      <programlisting>
+@               IN MX   10      mail.foobardomain.org.
+      </programlisting>
+
+      <para>
+        The MX record indictes which mail servers are responsible for handling 
+        incoming mail for the zone.  mail.foobardomain.org is the hostname of 
+        the mail server, and 10 being the priority of that mailserver.
+      </para>
+
+      <para>
+        One can have several mailservers, with priorities of 3, 2, 1.  A mail
+        server attempting to deliver to foobardomain.org would first try the
+        highest priority MX, then the second highest, etc, until the mail can
+        be properly delivered.
+      </para>
+
+      <para>
+        For in-addr.arpa zone files (reverse dns), the same format is used,
+        except with PTR entries instead of A or CNAME.
+      </para>
+
+      <programlisting>
+$TTL 3600
+
+1.2.3.in-addr.arpa. IN SOA ns1.foobardomain.org. admin.foobardomain.org. (
+                        5               ; Serial
+                        10800           ; Refresh
+                        3600            ; Retry
+                        604800          ; Expire
+                        3600 )          ; Minimum
+
+@       IN NS   ns1.foobardomain.org.
+@       IN NS   ns2.foobardomain.org.
+
+2       IN PTR  ns1.foobardomain.org.
+3       IN PTR  ns2.foobardomain.org.
+10      IN PTR  mail.foobardomain.org.
+30      IN PTR  foobardomain.org. 
+      </programlisting>
+      <para>
+       This file gives the proper ip to hostname mappings of our above
+       ficticious domain.
+      </para>
+  </sect3>
+</sect2>
+
+<sect2>
+  <title>Caching Name Server</title>
+  <para>
+    A caching nameserver is simply a nameserver that is not authoritative for
+    any zones.  It simply asks queries of its own, and remembers them for 
+    later use.  To set one up, just configure the name server as usual, omitting any inclusions of zones.
+  </para>
+</sect2>
+
+<sect2>
+  <title>How to use the nameserver</title>
+
+  <para>If setup properly, the nameserver should be accessible through the
+    network and locally.  <filename>/etc/resolv.conf</filename> must contain 
+    a nameserver entry with the local ip so it will query the local name 
+    server first.
+  </para>
+
+  <para>
+    To access it over the network, the machine must have the nameserver's ip 
+    set properly in its own nameserver configuration options.
+  </para>
+</sect2>
+
+<sect2>
+  <title>Security</title>
+
+  <para>Although BIND is the most common implementation of DNS, there is 
+    always the issue of security.  Possible and exploitable security holes 
+    are sometimes found.
+  </para>
+
+  <para>
+    It is a good idea to subscribe to <ulink url="http://www.cert.org">CERT</ulink>
+     and
+    <ulink url="http://www.freebsd.org/handbook/eresources.html#ERESOURCES-MAIL">freebsd-announce</ulink>
+    to stay up to date with the current Internet and FreeBSD security issues.
+  </para>
+
+  <para>
+    If a problem arises, keeping your sources up to date and having a fresh 
+    build of named can't hurt.
+  </para>
+</sect2>
+
+<sect2>
+  <title>Further Reading</title>
+  <para>
+  &man.ndc.8; &man.named.8; &man.named.conf.5;
+  </para>
+
+  <para>
+  Official ISC BIND Page
+  <ulink url="http://www.isc.org/products/BIND/">http://www.isc.org/products/BIND/</ulink>
+  </para>
+
+  <para>
+  BIND FAQ
+  <ulink url="http://www.nominum.com/resources/faqs/bind-faqs.html">
+  http://www.nominum.com/resources/faqs/bind-faqs.html</ulink>
+  </para>
+
+  <para>
+  <ulink url="http://www.oreilly.com/catalog/dns4/">O'Reilly DNS and BIND 4th Edition</ulink>
+  </para>
+
+  <para>
+  <ulink url="http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1034.txt">RFC1034 - Domain Names - 
+    Concepts and Facilities</ulink>
+  </para>
+
+  <para>
+  <ulink url="http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1035.txt">RFC1035 - Domain Names - 
+   Implementation and Specification</ulink>
+  </para>
+</sect2>
+
+</sect1>
+
+
+  <sect1 id="network-inetd">
+    <sect1info>
+      <authorgroup>
+        <author>
+          <firstname>Chern</firstname>
+          <surname>Lee</surname>
+          <contrib>Contributed by </contrib>
+        </author>
+      </authorgroup>
+    </sect1info>
+
+    <title>The <application>inetd</application> <quote>Super-Server</quote></title>
+
+    <sect2 id="network-inetd-overview">
+      <title>Overview</title>
+
+      <para>&man.inetd.8; is referred to as the <quote>Internet
+	  Super-Server</quote> because it manages connections for several
+	daemons.  Programs that provide network service are commonly
+	known as daemons.  <application>inetd</application> serves as a
+	managing server for other daemons.  When a connection is
+	received by <application>inetd</application>, it determines
+	which daemon the connection is destined for, spawns the
+	particular daemon and delegates the socket to it.  Running one
+	instance of <application>inetd</application> reduces the overall
+	system load as compared to running each daemon individually in
+	stand-alone mode.</para>
+
+      <para>Primarily, <application>inetd</application> is used to
+	spawn other daemons, but several trivial protocols are handled
+	directly, such as <application>chargen</application>,
+	<application>auth</application>, and
+	<application>daytime</application>.</para>
+
+      <para>This section will cover the basics in configuring
+	<application>inetd</application> through its command-line
+	options and its configuration file,
+	<filename>/etc/inetd.conf</filename>.</para>
+    </sect2>
+
+    <sect2 id="network-inetd-settings">
+      <title>Settings</title>
+
+      <para><application>inetd</application> is initialized through
+	the <filename>/etc/rc.conf</filename> system.  The
+	<literal>inetd_enable</literal> option is set to
+	<quote>NO</quote> by default, but is often times turned on by
+	<application>sysinstall</application> with the medium security
+	profile.  Placing:
+	<programlisting>inetd_enable="YES"</programlisting> or
+	<programlisting>inetd_enable="NO"</programlisting> into
+	<filename>/etc/rc.conf</filename> can enable or disable
+	<application>inetd</application> starting at boot time.</para>
+
+      <para>Additionally, different command-line options can be passed
+	to <application>inetd</application> via the
+	<literal>inetd_flags</literal> option.</para>
+    </sect2>
+
+    <sect2 id="network-inetd-cmdline">
+      <title>Command-Line Options</title>
+
+      <para><application>inetd</application> synopsis:</para>
+
+      <para><option>     inetd [-d] [-l] [-w] [-W] [-c maximum] [-C rate] [-a address | hostname]
+           [-p filename] [-R rate] [configuration file]</option></para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>-d</term>
+
+	  <listitem>
+	    <para>Turn on debugging.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-l</term>
+
+	  <listitem>
+	    <para>Turn on logging of successful connections.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-w</term>
+
+	  <listitem>
+	    <para>Turn on TCP Wrapping for external services (on by
+	      default).</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-W</term>
+
+	  <listitem>
+	    <para>Turn on TCP Wrapping for internal services which are
+	      built into <application>inetd</application> (on by
+	      default).</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-c maximum</term>
+
+	  <listitem>
+	    <para>Specify the default maximum number of simultaneous
+	      invocations of each service; the default is unlimited.
+	      May be overridden on a per-service basis with the
+	      <option>max-child</option> parameter.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-C rate</term>
+
+	  <listitem>
+	    <para>Specify the default maximum number of times a
+	      service can be invoked from a single IP address in one
+	      minute; the default is unlimited.  May be overridden on a
+	      per-service basis with the
+	      <option>max-connections-per-ip-per-minute</option>
+	      parameter.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-R rate</term>
+
+	  <listitem>
+	    <para>Specify the maximum number of times a service can be
+	      invoked in one minute; the default is 256.  A rate of 0
+	      allows an unlimited number of invocations.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-a</term>
+
+	  <listitem>
+	    <para>Specify one specific IP address to bind to.
+	      Alternatively, a hostname can be specified, in which case
+	      the IPv4 or IPv6 address which corresponds to that
+	      hostname is used.  Usually a hostname is specified when
+	      <application>inetd</application> is run inside a
+	      &man.jail.8;, in which case the hostname corresponds to
+	      the &man.jail.8; environment.</para>
+
+	    <para>When hostname specification is used and both IPv4
+	      and IPv6 bindings are desired, one entry with the
+	      appropriate protocol type for each binding is required for
+	      each service in <filename>/etc/inetd.conf</filename>.  For
+	      example, a TCP-based service would need two entries, one
+	      using <quote>tcp4</quote> for the protocol and the other using
+	      <quote>tcp6</quote>.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-p</term>
+
+	  <listitem>
+	    <para>Specify an alternate file in which to store the
+	      process ID.</para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>These options can be passed to
+	<application>inetd</application> using the
+	<literal>inetd_flags</literal> option in
+	<filename>/etc/rc.conf</filename>.  By default,
+	<literal>inetd_flags</literal> is set to <quote>-wW</quote>,
+	which turns on TCP wrapping for
+	<application>inetd</application>'s internal and external
+	services.  For novice users, these parameters usually do not need
+	to be modified or even entered in
+	<filename>/etc/rc.conf</filename>.</para>
+
+      <note>
+	<para>An external service is a daemon outside of
+	  <application>inetd</application>, which is invoked when a
+	  connection is received for it.  On the other hand, an internal
+	  service is one that <application>inetd</application> has the
+	  facility of offering within itself.</para>
+      </note>
+
+    </sect2>
+
+    <sect2 id="network-inetd-conf">
+      <title><filename>inetd.conf</filename></title>
+
+      <para>Configuration of <application>inetd</application> is
+	controlled through the <filename>/etc/inetd.conf</filename>
+	file.</para>
+
+      <para>When a modification is made to
+	<filename>/etc/inetd.conf</filename>,
+	<application>inetd</application> can be forced to re-read its
+	configuration file by sending a HangUP signal to the
+	<application>inetd</application> process as shown:</para>
+
+      <example id="network-inetd-hangup">
+	<title>Sending <application>inetd</application> a HangUP Signal</title>
+
+	<screen>&prompt.root; <userinput>kill -HUP `cat /var/run/inetd.pid`</userinput></screen>
+      </example>
+
+      <para>Each line of the configuration file specifies an
+	individual daemon.  Comments in the file are preceded by a
+	<quote>#</quote>.  The format of
+	<filename>/etc/inetd.conf</filename> is as follows:</para>
+
+      <programlisting>service-name
+socket-type
+protocol
+{wait|nowait}[/max-child[/max-connections-per-ip-per-minute]]
+user[:group][/login-class]
+server-program
+server-program-arguments</programlisting>
+
+      <para>An example entry for the <application>ftpd</application> daemon
+	using IPv4:</para>
+
+      <programlisting>ftp     stream  tcp     nowait  root    /usr/libexec/ftpd       ftpd -l</programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term>service-name</term>
+
+	  <listitem>
+	    <para>This is the service name of the particular daemon.
+	      It must correspond to a service listed in
+	      <filename>/etc/services</filename>.  This determines which
+	      port <application>inetd</application> must listen to.  If
+	      a new service is being created, it must be placed in
+	      <filename>/etc/services</filename>
+	      first.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>socket-type</term>
+
+	  <listitem>
+	    <para>Either <literal>stream</literal>,
+	      <literal>dgram</literal>, <literal>raw</literal>, or
+	      <literal>seqpacket</literal>.  <literal>stream</literal>
+	      must be used for connection-based, TCP daemons, while
+	      <literal>dgram</literal> is used for daemons utilizing the
+	      UDP transport protocol.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>protocol</term>
+
+	  <listitem>
+	    <para>One of the following:</para>
+
+	    <informaltable>
+	      <tgroup cols="2">
+		<thead>
+		  <row>
+		    <entry>Protocol</entry>
+		    <entry>Explanation</entry>
+		  </row>
+		</thead>
+		<tbody>
+		  <row>
+		    <entry>tcp, tcp4</entry>
+		    <entry>TCP IPv4</entry>
+		  </row>
+		  <row>
+		    <entry>udp, udp4</entry>
+		    <entry>UDP IPv4</entry>
+		  </row>
+		  <row>
+		    <entry>tcp6</entry>
+		    <entry>TCP IPv6</entry>
+		  </row>
+		  <row>
+		    <entry>udp6</entry>
+		    <entry>UDP IPv6</entry>
+		  </row>
+		  <row>
+		    <entry>tcp46</entry>
+		    <entry>Both TCP IPv4 and v6</entry>
+		  </row>
+		  <row>
+		    <entry>udp46</entry>
+		    <entry>Both UDP IPv4 and v6</entry>
+		  </row>
+		</tbody>
+	      </tgroup>
+	    </informaltable>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>{wait|nowait}[/max-child[/max-connections-per-ip-per-minute]]</term>
+
+	  <listitem>
+	    <para><option>wait|nowait</option> indicates whether the
+	      daemon invoked from <application>inetd</application> is
+	      able to handle its own socket or not.
+	      <option>dgram</option> socket types must use the wait
+	      option, while stream socket daemons, which are usually
+	      multi-threaded, should use <option>nowait</option>.
+	      <option>wait</option> usually hands off multiple sockets
+	      to a single daemon, while <option>nowait</option> spawns a
+	      child daemon for each new socket.</para>
+
+	    <para>The maximum number of child daemons
+	      <application>inetd</application> may spawn can be set using
+	      the <option>max-child</option> option.  If a limit of ten
+	      instances of a particular daemon is needed, a
+	      <literal>/10</literal> would be placed after
+	      <option>nowait</option>.</para>
+
+	    <para>In addition to <option>max-child</option>, another
+	      option limiting the maximum connections from a single
+	      place to a particular daemon can be enabled.
+	      <option>max-connections-per-ip-per-minute</option> does
+	      just this.  A value of ten here would limit any particular
+	      IP address connecting to a particular service to ten
+	      attempts per minute.  This is useful to prevent
+	      intentional or unintentional resource consumption and
+	      Denial of Service (DoS) attacks to a machine.</para>
+
+	    <para>In this field, <option>wait</option> or
+	      <option>nowait</option> is mandatory.
+	      <option>max-child</option> and
+	      <option>max-connections-per-ip-per-minute</option> are
+	      optional.</para>
+
+	    <para>A stream-type multi-threaded daemon without any
+	      <option>max-child</option> or
+	      <option>max-connections-per-ip-per-minute</option> limits
+	      would simply be: <literal>nowait</literal></para>
+
+	    <para>The same daemon with a maximum limit of ten daemons
+	      would read: <literal>nowait/10</literal></para>
+
+	    <para>Additionally, the same setup with a limit of twenty
+	      connections per IP address per minute and a maximum
+	      total limit of ten child daemons would read:
+	      <literal>nowait/10/20</literal></para>
+
+	    <para>These options are all utilized by the default
+	      settings of the <application>fingerd</application> daemon,
+	      as seen here:</para>
+
+	    <programlisting>finger stream  tcp     nowait/3/10 nobody /usr/libexec/fingerd fingerd -s</programlisting>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>user</term>
+
+	  <listitem>
+	    <para>The user is the username that the particular daemon
+	      should run as.  Most commonly, daemons run as the
+	      <username>root</username> user.  For security purposes, it is
+	      common to find some servers running as the
+	      <username>daemon</username> user, or the least privileged
+	      <username>nobody</username> user.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>server-program</term>
+
+	  <listitem>
+	    <para>The full path of the daemon to be executed when a
+	      connection is received.  If the daemon is a service
+	      provided by <application>inetd</application> internally,
+	      then <option>internal</option> should be
+	      used.</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>server-program-arguments</term>
+
+	  <listitem>
+	    <para>This works in conjunction with
+	      <option>server-program</option> by specifying the
+	      arguments, starting with argv[0], passed to the daemon on
+	      invocation.  If <application>mydaemon -d</application> is
+	      the command line, <literal>mydaemon -d</literal> would be
+	      the value of <option>server program arguments</option>.
+	      Again, if the daemon is an internal service, use
+	      <option>internal</option> here.</para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2 id="network-inetd-security">
+      <title>Security</title>
+
+      <para>Depending on the security profile chosen at install, many
+	of <application>inetd</application>'s daemons may be enabled by
+	default.  If there is no apparent need for a particular daemon,
+	disable it!  Place a <quote>#</quote> in front of the daemon in
+	question, and send a <link linkend="network-inetd-hangup">hangup signal
+	  to inetd</link>.
+	Some daemons, such as <application>fingerd</application>, may
+	not be desired at all because they provide an attacker with too
+	much information.</para>
+
+      <para>Some daemons are not security-conscious and have long, or
+	non-existent timeouts for connection attempts.  This allows an
+	attacker to slowly send connections to a particular daemon, thus
+	saturating available resources.  It may be a good idea to place
+	<option>ip-per-minute</option> and <option>max-child</option>
+	limitations on certain daemons.</para>
+
+      <para>By default, TCP wrapping is turned on.  Consult the
+	&man.hosts.access.5; manual page for more information on placing
+	TCP restrictions on various <application>inetd</application>
+	invoked daemons.</para>
+    </sect2>
+
+    <sect2 id="network-inetd-misc">
+      <title>Miscellaneous</title>
+
+      <para><application>daytime</application>,
+	<application>time</application>,
+	<application>echo</application>,
+	<application>discard</application>,
+	<application>chargen</application>, and
+	<application>auth</application> are all internally provided
+	services of <application>inetd</application>.</para>
+
+      <para>The <application>auth</application> service provides identity
+	(ident, identd) network services, and is configurable to a certain
+	degree.</para>
+
+      <para>Consult the &man.inetd.8; manual page for more in-depth
+	information.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="network-plip">
+    <title>Parallel Line IP (PLIP)</title>
+
+    <indexterm><primary>PLIP</primary></indexterm>
+    <indexterm><primary>Parallel Line IP</primary></indexterm>
+
+    <para>PLIP lets us run TCP/IP between parallel ports.  It is
+      useful on machines without network cards, or to install on
+      laptops.  In this section, we will discuss:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Creating a parallel (laplink) cable.</para>
+      </listitem>
+
+      <listitem>
+	<para>Connecting two computers with PLIP.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="network-create-parallel-cable">
+      <title>Creating a Parallel Cable</title>
+
+      <para>You can purchase a parallel cable at most computer supply
+        stores.  If you cannot do that, or you just want to know how
+        it is done, the following table shows how to make one out of a normal parallel
+        printer cable.</para>
+
+      <table>
+	<title>Wiring a Parallel Cable for Networking</title>
+
+	<tgroup cols="5">
+	  <thead>
+	    <row>
+	      <entry>A-name</entry>
+
+	      <entry>A-End</entry>
+
+	      <entry>B-End</entry>
+
+	      <entry>Descr.</entry>
+
+	      <entry>Post/Bit</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><literallayout>DATA0
+-ERROR</literallayout></entry>
+
+	      <entry><literallayout>2
+15</literallayout></entry>
+
+	      <entry><literallayout>15
+2</literallayout></entry>
+
+	      <entry>Data</entry>
+
+	      <entry><literallayout>0/0x01
+1/0x08</literallayout></entry>
+	    </row>
+
+	    <row>
+	      <entry><literallayout>DATA1
++SLCT</literallayout></entry>
+
+	      <entry><literallayout>3
+13</literallayout></entry>
+
+	      <entry><literallayout>13
+3</literallayout></entry>
+
+	      <entry>Data</entry>
+
+	      <entry><literallayout>0/0x02
+1/0x10</literallayout></entry>
+	    </row>
+
+	    <row>
+	      <entry><literallayout>DATA2
++PE</literallayout></entry>
+
+	      <entry><literallayout>4
+12</literallayout></entry>
+
+	      <entry><literallayout>12
+4</literallayout></entry>
+
+	      <entry>Data</entry>
+
+	      <entry><literallayout>0/0x04
+1/0x20</literallayout></entry>
+	    </row>
+
+	    <row>
+	      <entry><literallayout>DATA3
+-ACK</literallayout></entry>
+
+	      <entry><literallayout>5
+10</literallayout></entry>
+
+	      <entry><literallayout>10
+5</literallayout></entry>
+
+	      <entry>Strobe</entry>
+
+	      <entry><literallayout>0/0x08
+1/0x40</literallayout></entry>
+	    </row>
+
+	    <row>
+	      <entry><literallayout>DATA4
+BUSY</literallayout></entry>
+
+	      <entry><literallayout>6
+11</literallayout></entry>
+
+	      <entry><literallayout>11
+6</literallayout></entry>
+
+	      <entry>Data</entry>
+
+	      <entry><literallayout>0/0x10
+1/0x80</literallayout></entry>
+	    </row>
+
+	    <row>
+	      <entry>GND</entry>
+
+	      <entry>18-25</entry>
+
+	      <entry>18-25</entry>
+
+	      <entry>GND</entry>
+
+	      <entry>-</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect2>
+
+    <sect2 id="network-plip-setup">
+      <title>Setting Up PLIP</title>
+
+      <para>Get a laplink cable.</para>
+
+      <para>Confirm that both computers have a kernel with &man.lpt.4; driver
+	support.</para>
+
+      <screen>&prompt.root; <userinput>grep lp /var/run/dmesg.boot</userinput>
+lpt0 at 0x378-0x37f irq 7 on isa
+lpt0: Interrupt-driven
+lp0: TCP/IP capable interface</screen>
+
+      <para>Plug in the laplink cable into the parallel interface on
+	both computers.</para>
+
+      <para>Configure the network interface parameters for <devicename>lp0</devicename> on both
+	sites as <username>root</username>.  For example, if you want connect
+	the host <hostid>host1</hostid> with <hostid>host2</hostid>:</para>
+
+      <programlisting>                 host1 &lt;-----&gt; host2
+IP Address    10.0.0.1      10.0.0.2</programlisting>
+
+      <para>Configure the interface on <hostid>host1</hostid> by doing:</para>
+
+      <screen>&prompt.root; <userinput>ifconfig lp0 10.0.0.1 10.0.0.2</userinput></screen>
+
+      <para>Configure the interface on host2 by doing:</para>
+
+      <screen>&prompt.root; <userinput>ifconfig lp0 10.0.0.2 10.0.0.1</userinput></screen>
+
+
+      <para>You now should have a working connection.  Please read the
+        manual pages &man.lp.4; and &man.lpt.4; for more details.</para>
+
+      <para>You should also add both hosts to
+	<filename>/etc/hosts</filename>:</para>
+
+      <programlisting>127.0.0.1               localhost.my.domain localhost
+10.0.0.1                host1.my.domain host1
+10.0.0.2                host2.my.domain</programlisting>
+
+      <para>To confirm the connection works, go to each host and ping
+	the other.  For example, on <hostid>host1</hostid>:</para>
+
+          <screen>&prompt.root; <userinput>ifconfig lp0</userinput>
+lp0: flags=8851&lt;UP,POINTOPOINT,RUNNING,SIMPLEX,MULTICAST&gt; mtu 1500
+        inet 10.0.0.1 --&gt; 10.0.0.2 netmask 0xff000000
+&prompt.root; <userinput>netstat -r</userinput>
+Routing tables
+
+Internet:
+Destination        Gateway          Flags     Refs     Use      Netif Expire
+host2              host1              UH          4   127592       lp0
+&prompt.root; <userinput>ping -c 4 host2</userinput>
+PING host2 (10.0.0.2): 56 data bytes
+64 bytes from 10.0.0.2: icmp_seq=0 ttl=255 time=2.774 ms
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=255 time=2.530 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=255 time=2.556 ms
+64 bytes from 10.0.0.2: icmp_seq=3 ttl=255 time=2.714 ms
+
+--- host2 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 2.530/2.643/2.774/0.103 ms</screen>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="network-ipv6">
+    <sect1info>
+      <authorgroup>
+	<author>
+	  <firstname>Aaron</firstname>
+	  <surname>Kaplan</surname>
+	  <contrib>Originally Written by </contrib>
+	</author>
+      </authorgroup>
+      <authorgroup>
+	<author>
+	  <firstname>Tom</firstname>
+	  <surname>Rhodes</surname>
+	  <contrib>Restructured and Added by </contrib>
+	</author>
+      </authorgroup>
+    </sect1info>
+
+    <title>IPv6</title>
+    <para>IPv6 (also know as IPng <quote>IP next generation</quote>) is
+      the new version of the well known IP protocol (also know as
+      <acronym>IPv4</acronym>).  Like the other current *BSD systems,
+      FreeBSD includes the <acronym>KAME</acronym> IPv6 reference implementation.
+      So your FreeBSD system comes with all you will need to experiment with IPv6.
+      This section focuses on getting IPv6 configured and running.</para>
+
+    <para>In the early 1990s, people became aware of the rapidly
+      diminishing address space of IPv4.  Given the expansion rate of the
+      Internet there were two major concerns:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Running out of addresses.  Today this is not so much of a concern
+	  anymore since private address spaces
+	  (<hostid role="ipaddr">10.0.0.0/8</hostid>,
+	  <hostid role="ipaddr">192.168.0.0/24</hostid>,
+	  etc.) and Network Address Translation (<acronym>NAT</acronym>) are
+	  being employed.</para>
+      </listitem>
+
+      <listitem>
+	<para>Router table entries were getting too large.  This is
+	  still a concern today.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>IPv6 deals with these and many other issues:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>128 bit address space.  In other words theoretically there are
+	  340,282,366,920,938,463,463,374,607,431,768,211,456 addresses
+	  available.  This means there are approximately
+	  6.67 * 10^27 IPv6 addresses per square meter on our planet.</para>
+      </listitem>
+
+      <listitem>
+	<para>Routers will only store network aggregation addresses in their routing
+	  tables thus reducing the average space of a routing table to 8192
+	  entries.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>There are also lots of other useful features of IPv6 such as:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>Address autoconfiguration (RFC2462)</para>
+      </listitem>
+
+      <listitem>
+	<para>Anycast addresses (<quote>one-out-of many</quote>)</para>
+      </listitem>
+
+      <listitem>
+	<para>Mandatory multicast addresses</para>
+      </listitem>
+
+      <listitem>
+	<para>IPsec (IP security)</para>
+      </listitem>
+
+      <listitem>
+	<para>Simplified header structure</para>
+      </listitem>
+
+      <listitem>
+	<para>Mobile <acronym>IP</acronym></para>
+      </listitem>
+
+      <listitem>
+	<para>IPv4-to-IPv6 transition mechanisms</para>
+      </listitem>
+    </itemizedlist>
+
+
+    <para>For more information see:</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>IPv6 overview at <ulink url="http://www.sun.com">Sun.com</ulink></para>
+      </listitem>
+
+      <listitem>
+	<para><ulink url="http://www.ipv6.org">IPv6.org</ulink></para>
+      </listitem>
+
+      <listitem>
+	<para><ulink url="http://www.kame.net">KAME.net</ulink></para>
+      </listitem>
+
+      <listitem>
+	<para><ulink url="http://www.6bone.net">6bone.net</ulink></para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2>
+      <title>Background on IPv6 Addresses</title>
+      <para>There are different types of IPv6 addresses: Unicast, Anycast and
+	Multicast.<para>
+
+      <para>Unicast addresses are the well known addresses.  A packet sent
+	to a unicast address arrives exactly at the interface belonging to
+	the address.</para>
+
+      <para>Anycast addresses are syntactically indistinguishable from unicast
+	addresses but they address a group of interfaces.  The packet destined for
+	an anycast address will arrive at the nearest (in router metric)
+	interface.  Anycast addresses may only be used by routers.</para>
+
+      <para>Multicast addresses identify a group of interfaces.  A packet destined
+	for a multicast address will arrive at all interfaces belonging to the
+	multicast group.</para>
+
+	<note><para>The IPv4 broadcast address (usually xxx.xxx.xxx.255) is expressed
+	  by multicast addresses in IPv6.</para></note>
+
+      <para>Reserved IPv6 addresses:</para>
+
+<screen>ipv6-address 	prefixlength(Bits)	description	Notes
+
+	::			128 Bits			unspecified cf. 0.0.0.0 in IPv4 address
+	::1			128 Bits			loopback address cf. 127.0.0.1 in IPv4
+	::00:xx:xx:xx:xx	96 Bits				embedded IPv4	The lower 32 bits are the
+								address	IPv4 address. Also called
+								<quote>IPv4 compatible IPv6
+								address</quote>
+	::ff:xx:xx:xx:xx	96 Bits		IPv4 mapped     The lower 32 bits are the
+						IPv6 address	IPv4 address. For hosts
+								which do not support IPv6
+	fe80:: - feb::		10 Bits		link-local	cf. loopback address in
+						IPv4
+	fec0:: - fef::		10 Bits		site-local
+	ff::			8 Bits		multicast
+	001 (base 2)		3 Bits		global unicast	All global unicast
+								addresses are assigned from
+								this pool. The first 3 Bits
+								are <quote>001</quote>.</screen>
+
+    </sect2>
+
+    <sect2>
+      <title>Reading IPv6 Addresses</title>
+      <para>The canonical form is represented as: x:x:x:x:x:x:x:x, each
+	<quote>x</quote> being a 16 Bit hex value.  For example
+	<hostid role="ip6addr">FEBC:A574:382B:23C1:AA49:4592:4EFE:9982</hostid></para>
+
+      <para>Often an address will have long substrings of all zeros
+	therefore each such substring can be abbreviated by <quote>::</quote>.
+	For example <hostid role="ip6addr">fe80::1</hostid>
+	corresponds to the canonical form
+	<hostid role="ip6addr">fe80:0000:0000:0000:0000:0000:0000:0001</hostid></para>
+
+      <para>A third form is to write the last 32 Bit part in the
+	well known (decimal) IPv4 style with dots <quote>.</quote>
+	as separators.  For example
+	<hostid role="ip6addr">2002::10.0.0.1</hostid>
+	corresponds to the (hexadecimal) canonical representation
+	<hostid role="ip6addr">2002:0000:0000:0000:0000:0000:0a00:0001</hostid>
+	which in turn is equivalent to
+	writing <hostid role="ip6addr">2002::a00:1</hostid></para>
+
+      <para>By now the reader should be able to understand the following:</para>
+
+      <screen>&prompt.root; <userinput>ifconfig</userinput></screen>
+
+      <programlisting>rl0: flags=8943&lt;UP,BROADCAST,RUNNING,PROMISC,SIMPLEX,MULTICAST&gt; mtu 1500
+         inet 10.0.0.10 netmask 0xffffff00 broadcast 10.0.0.255
+         inet6 fe80::200:21ff:fe03:8e1%rl0 prefixlen 64 scopeid 0x1
+         ether 00:00:21:03:08:e1
+         media: Ethernet autoselect (100baseTX )
+         status: active</programlisting>
+
+      <para><hostid role="ip6addr">fe80::200:21ff:fe03:8e1%rl0</hostid>
+	is an auto configured link-local address.  It includes the
+	scrambled Ethernet MAC as part of the auto configuration.</para>
+
+      <para>For further information on the structure of IPv6 addresses
+	see RFC2373.</para>
+    </sect2>
+
+    <sect2>
+      <title>Getting Connected</title>
+
+      <para>Currently there are four ways to connect to other IPv6 hosts and networks:</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>Join the experimental 6bone</para>
+	</listitem>
+
+	<listitem>
+	  <para>Getting an IPv6 network from your upstream provider.  Talk to your
+	    Internet provider for instructions.</para>
+	</listitem>
+
+	<listitem>
+	  <para>Tunnel via 6-to-4</para>
+	</listitem>
+
+	<listitem>
+	  <para>Use the freenet6 port if you are on a dial-up connection.</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>Here we will talk on how to connect to the 6bone since it currently seems
+	to be the most popular way.</para>
+
+      <para>First take a look at the 6bone site and find a 6bone connection nearest to
+	you.  Write to the responsible person and with a little bit of luck you
+	will be given instructions on how to set up your connection.  Usually this
+	involves setting up a GRE (gif) tunnel.</para>
+
+      <para>Here is a typical example on setting up a &man.gif.4; tunnel:</para>
+
+      <screen>&prompt.root; <userinput>ifconfig gif0 create</userinput>
+&prompt.root; <userinput>ifconfig gif0</userinput>
+gif0: flags=8010&lt;POINTOPOINT,MULTICAST&gt; mtu 1280
+&prompt.root; <userinput>ifconfig gif0 tunnel <replaceable>MY_IPv4_ADDR</replaceable>  <replaceable>HIS_IPv4_ADDR</replaceable></userinput>
+&prompt.root; <userinput>ifconfig gif0 inet6 alias <replaceable>MY_ASSIGNED_IPv6_TUNNEL_ENDPOINT_ADDR</replaceable></userinput></screen>
+
+      <para>Replace the capitalized words by the information you received from the
+	upstream 6bone node.</para>
+
+      <para>This establishes the tunnel.  Check if the tunnel is working by &man.ping6.8;
+	'ing ff02::1%gif0.  You should receive two ping replies.</para>
+
+	<note><para>In case you are intrigued by the address ff02:1%gif0, this is a
+	  multicast address.  %gif0 states that the multicast address at network
+	  interface gif0 is to be used.  Since we <command>ping</command> a multicast address the
+	  other endpoint of the tunnel should reply as well).</para></note>
+
+      <para>By now setting up a route to your 6bone uplink should be rather
+	straightforward:</para>
+
+      <screen>&prompt.root; <userinput>route add -inet6 default -interface gif0</userinput>
+&prompt.root; <userinput>ping6 -n <replaceable>MY_UPLINK</replaceable></userinput></screen>
+
+      <screen>&prompt.root; <userinput>traceroute6 www.jp.FreeBSD.org</userinput>
+(3ffe:505:2008:1:2a0:24ff:fe57:e561) from 3ffe:8060:100::40:2, 30 hops max, 12 byte packets
+     1  atnet-meta6  14.147 ms  15.499 ms  24.319 ms
+     2  6bone-gw2-ATNET-NT.ipv6.tilab.com  103.408 ms  95.072 ms *
+     3  3ffe:1831:0:ffff::4  138.645 ms  134.437 ms  144.257 ms
+     4  3ffe:1810:0:6:290:27ff:fe79:7677  282.975 ms  278.666 ms  292.811 ms
+     5  3ffe:1800:0:ff00::4  400.131 ms  396.324 ms  394.769 ms
+     6  3ffe:1800:0:3:290:27ff:fe14:cdee  394.712 ms  397.19 ms  394.102 ms</screen>
+
+      <para>This output will differ from machine to machine.  By now you should be
+	able to reach the IPv6 site <ulink url="http://www.kame.net">www.kame.net</ulink>
+	and see the dancing tortoise - that is if you have a IPv6 enabled browser such as
+	<filename role="package">mozilla</filename>.</para>
+
+    </sect2>
+
+    <sect2>
+      <title>DNS in the IPv6 World</title>
+      <para>There are two new types of DNS records for IPv6:</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>AAAA records,</para>
+	</listitem>
+
+	<listitem>
+	  <para>A6 records</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>Using AAAA records is straightforward.  Assign your hostname to the new
+	IPv6 address you just got by adding:</para>
+
+      <programlisting>MYHOSTNAME           AAAA    MYIPv6ADDR</programlisting>
+
+      <para>To your primary zone DNS file.  In case you do not serve your own
+	<acronym>DNS</acronym> zones ask your <acronym>DNS</acronym> provider.
+	Current versions of <application>bind</application> (version 8.3 and 9)
+	support AAAA records.</para>
+    </sect2>
+  </sect1>
+
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

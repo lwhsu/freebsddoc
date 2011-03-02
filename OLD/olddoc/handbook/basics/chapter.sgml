@@ -1,0 +1,470 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/basics/chapter.sgml,v 1.6 2001/05/27 00:35:58 statue Exp $
+
+     Translate into Chinese by  alex867@ms23.hinet.net
+				ijliao@dragon2.net
+
+     English Version: 1.24
+-->
+
+<chapter id="basics">
+  <title>Unix 上的基本資訊</title>
+  
+  <sect1>
+    <title>概要</title>
+
+    <para><emphasis>Rewritten by Chris Shumway
+      <email>cshumway@osd.bsdi.com</email>, 10 Mar 2000.</emphasis></para>
+
+   <para>接下來的這一章將含蓋 FreeBSD 這個作業系統的基本指令與功能。
+   如果你剛接觸 FreeBSD ，在你尋求幫助前請先明確的讀完這一個章節。</para>
+  </sect1>
+
+  <sect1 id="permissions">
+    <title>權限</title>
+
+    <para>FreeBSD　，他的歷史是根於 BSD UNIX ，有著幾個重要基礎的 UNIX 觀念
+      。最首要的，也是最明顯的， FreeBSD 是一個多使用者的作業系統。這個
+      系統能夠完全不關聯的同時處理數個工作。系統能夠正確平均的和其他使用
+      者共享，管理對硬體裝置的請求，週邊，記憶體，CPU 處理時間。</para>
+
+    <para>因為系統能夠支援多使用者，所以系統會設定誰可以讀，寫和執行的權限
+    　在每一個資源上。這些權限以三個八位元的型態儲存著，一個表示檔案的擁有
+    　者，一個表示檔案所屬的群組，一個表十其他的任何人。這數字以下列方式表
+    　現:</para>
+
+    <informaltable frame="none">
+      <tgroup cols="3">
+	<thead>
+	  <row>
+	    <entry>數值</entry>
+	    <entry>權限</entry>
+	    <entry>目錄列表</entry>
+	  </row>
+	</thead>
+
+	<tbody>
+	  <row>
+	    <entry>0</entry>
+	    <entry>不可讀取，不可寫入，不可執行</entry>
+	    <entry><literal>---</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>1</entry>
+	    <entry>不可讀取，不可寫入，可執行</entry>
+	    <entry><literal>--x</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>2</entry>
+	    <entry>不可讀取，可寫入，不可執行</entry>
+	    <entry><literal>-w-</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>3</entry>
+	    <entry>不可讀取，可寫入，可執行</entry>
+	    <entry><literal>-wx</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>4</entry>
+	    <entry>可讀取，不可寫入，不可執行</entry>
+	    <entry><literal>r--</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>5</entry>
+	    <entry>可讀取，不可寫入，可執行</entry>
+	    <entry><literal>r-x</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>6</entry>
+	    <entry>可讀取，可寫入，不可執行</entry>
+	    <entry><literal>rw-</literal></entry>
+	  </row>
+
+	  <row>
+	    <entry>7</entry>
+	    <entry>可讀取，可寫入，可執行</entry>
+	    <entry><literal>rwx</literal></entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>將目錄詳細列出用 <command>ls -l</command>，會列出一列檔案的擁有者
+    　，群組和其他人的權限。 我們來看如何分析它:</para>
+
+    <screen>-rw-r--r--</screen>
+
+    <para>第一個字，從左到右，是一個特殊的字，他告訴我們這是一個一般的檔案，
+    　一個目錄，一個特殊字元或是block device，一個 socket ，或是任何其他特別
+      的pseudo-file device。接下來三個字是<literal>rw-</literal>是檔案擁有者
+      的權限。在接下來的三個字是<<literal>r--</literal>是檔案所屬群組的權限。
+      最後三個字是<literal>r--</literal>是其他人的權限。以這一個檔案為例，他
+      的權限設定是擁有者可以讀寫這個檔案，群組可以讀取，其他使用者也只能讀取
+      這個檔案。根據上面的表格，用數字表示這個檔案其三部分的權限應該是<literal>644</literal>
+    　</para>
+
+    <para>這樣很好，但是系統如何對裝置控制權限？事實上 FreeBSD 將大部分的硬體
+    　裝置是唯一個可以開啟，讀取和寫入的檔案，就像其他的檔案一般。這些特殊的
+    　裝置檔案被儲存在 <filename>/dev</filename>這個目錄。</para>
+
+    <para>目錄一樣也被視為檔案一樣。他們有讀寫和執行的權限。目錄的執行權限有
+    　著和一般檔案些許不同的意義。當一個目錄是被標示可以執行的，那表示它可以
+    　被進入搜尋，舉個例子，列出目錄的功能可以在這樣的目錄進行。</para>
+
+    <para>還有更多權限設定，但是他們大多用在特殊狀況下如一個 setuid　的執行檔
+    　和 sticky directories。如果想要得知有關檔案權限和如何設定的更多資訊，
+    　請務必去看&man.chmod.1; man page。</para>
+  </sect1>
+
+  <sect1 id="dirstructure">
+    <title>目錄結構</title>
+
+    <para>FreeBSD　用它的檔案系統來決定許多基本的系統操作，檔案的階層結構是
+    　非常重要的。您可以由&man.hier.7;得知 man page 提供了完整的目錄結構的
+    　敘述，我們在這裡將不重複說明。請查閱&man.hier.7; 已獲得更多資訊。</para>
+      
+    <para>最重要的莫過於整個目錄的根目錄，就是 / 目錄。這個目錄是在開機的
+    　時候掛上系統的而且它包含了開機時候必要的基本系統。這個根目錄也包含了
+    　每一個你想掛上系統的其他檔案。</para>
+
+    <para>mount point 是一個能讓多加入的檔案系統接上根目錄檔案系統的目錄。
+    　標準的　mount point　包含了<filename>/usr</filename>， <filename>/var</filename>，
+      <filename>/mnt</filename>， 和 <filename>/cdrom</filename>。
+      這些目錄經常被紀錄在<filename>/etc/fstab</filename>這一個檔案裡。<filename>/etc/fstab</filename>
+      是一個紀錄系統上的多樣檔案系統和mount points　的表格。大部分的檔案系
+      統在　<filename>/etc/fstab</filename>會依據這一個script &man.rc.8;在開機的時候被
+      自動掛上，除非加上<option>noauto</option>這個選項。請查閱&man.fstab.5; 說明頁以了解
+      <filename>/etc/fstab</filename>所用的格式和他包含的選項。</para>
+  </sect1>
+
+  <sect1 id="shells">
+    <title>Shells</title>
+
+    <para>在 FreeBSD裡，有一大堆每天進行的工作是在一個命令列的介面下完成的
+    　，而那就叫做 shell 。 一個 shell　的主要工作就是取得您輸入的指令並
+    　解執行它。有很多的 shell 也擁有幫助我們完成每天的工作的內建功能像是
+    　檔案管理，檔案全域樣式，命令列編輯，巨集指令，和環境變數。 FreeBSD
+      也內含了幾個 shell ，如 sh，Bourne Shell，和 csh，the C-shell。許多
+      其他的 shell 在 FreeBSD Ports Collection 可以找到且他們的功能也更強
+      大，如 tcsh 和 bash 。</para>
+
+    <para>你用哪一種 shell ? 這就要取決於你的喜好。 如果你是一個　C 語言
+    　程式設計師，你使用 C-like 的 shell 會感到更舒適，如 tcsh。如果你是
+    　從 Linux 轉過來的或是你是一個 UNIX 命令列的新手，你應該試試 bash 。
+    　這點告訴我們每一個 shell 都有其獨特的特性，他們有可能適合或不適合你
+    　的工作環境，你必須選一個你要用的 shell 。</para>
+
+    <para>shell 的其中一個共通特性是檔案名稱自動補齊功能。 只要打前幾個你
+    　要的檔名或是指令，你可以按 TAB 鍵來自動補齊其餘的檔名或是指令。這裡
+    　有一個例子。假設你有兩個檔案叫做<filename>foobar</filename> 和 <filename>foo.bar</filename>
+      。你要刪除 <filename>foo.bar</filename>。然後你在鍵盤上打:
+       <command>rm fo[TAB].[TAB]</command>.</para>
+
+    <para>shell 會顯示 <command>rm
+      foo[BEEP].bar</command>.</para>
+
+    <para>[BEEP] 是 console 的嗶聲，是 shell 告訴我們它無法完成全部的檔名
+    　因為有超過一個的檔案符合。<filename>foobar</filename>和<filename>foo.bar</filename>
+      都是 <literal>fo</literal>開頭的，但是他只能完成到 <literal>foo</literal>。
+      如果你打 <literal>.</literal>，然後再按一次 TAB 鍵，這時候 shell 就會為你完
+      成其餘的檔名。</para>
+
+    <para>另一個 shell 的功能是環境變數。環境變數是一個儲存在 shell 空間的變數對
+      這個空間能夠被任何程式用 shell 所呼叫，而且因此包含了很多程式的設定組態。
+      這裡是一些常用的環境變數和他們所代表的意義的列表:</para>
+
+    <informaltable frame="none">
+      <tgroup cols="2">
+	<thead>
+	  <row>
+	    <entry>變數</entry>
+	    <entry>詳細說明</entry>
+	  </row>
+	</thead>
+
+	<tbody>
+	  <row>
+	    <entry><envar>USER</envar></entry>
+	    <entry>現在登入的使用者名稱。</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>PATH</envar></entry>
+	    <entry>以冒號分隔的目錄列表以便尋找執行檔的路徑。</entry>
+	    
+	  </row>
+
+	  <row>
+	    <entry><envar>DISPLAY</envar></entry>
+	    <entry>X11 顯示連接的網路名稱,如果有的話</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>SHELL</envar></entry>
+	    <entry>目前用的 shell 。</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>TERM</envar></entry>
+	    <entry>使用者終端的名稱。  用來決定終端機的能力</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>TERMCAP</envar></entry>
+	    <entry>
+	    Database entry of the terminal escape codes to perform
+	      various terminal functions.</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>OSTYPE</envar></entry>
+	    <entry>作業系統的種類，如 FreeBSD</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>MACHTYPE</envar></entry>
+	    <entry>現在系統所用的CPU。</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>EDITOR</envar></entry>
+	    <entry>使用者喜好的編輯器。</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>PAGER</envar></entry>
+	    <entry>使用者喜好的文字呼叫器。</entry>
+	  </row>
+
+	  <row>
+	    <entry><envar>MANPATH</envar></entry>
+	    <entry>以冒號分隔的目錄以便尋找線上手冊。</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>在不同的 shell 底下環境變設的設定看起來有些許的不同。舉個例子
+    　，在 C-Style 的 shell 像是 tcsh 和 csh ，你會用<command>setenv</command>
+      去設定和觀看你的環境變數。而在 Bourne shells像是sh和bash，你會用
+      <command>set</command> 和 <command>export</command>去設定和觀看
+      你現在的環境變數。再舉個例子，要去設定或是修改 <envar>EDITOR</envar>
+      這個環境變數，在 csh 和 tcsh下要將編輯器設定為<filename>/usr/local/bin/emacs</filename>
+      的指令會是:</para>
+
+    <screen>&prompt.user; <userinput>setenv EDITOR /usr/local/bin/emacs</userinput></screen>
+
+    <para>而在 Bourne shells　則是:</para>
+
+    <screen>&prompt.user; <userinput>export EDITOR="/usr/local/bin/emacs"</userinput></screen>
+
+    <para>你也可以在命令列用<literal>$</literal>放在變數的前面來取得環境變數
+    　。像是， <command>echo $TERM</command>就會顯示出<envar>$TERM</envar>的
+    　設定值，因為 shell 取得了<envar>$TERM</envar>並把他傳給 echo 顯示出來。</para>
+
+    <para>Shell 裡有很多特殊字元代表著一些資料我們叫他做　meta-characters。
+    　最常用的就是<literal>*</literal>這個字元，他代表檔名的任何字元。
+    　這一些 meta-characters會被用在檔案名稱的全域樣式。舉例來說，鍵入
+      <command>echo *</command>是和<command>ls</command>有同樣的效果因
+      為 shell 將所有符合<command>*</command>的檔案傳到命令列給 echo 
+      顯示出來。</para>
+
+    <para>為了防止這些特殊的字元被 shell 轉譯，我們可以在前面放一個
+    　反斜線(<literal>\</literal>)讓他們跳脫出來。<command>echo $TERM</command>
+      會顯示出你所設定的終端機。而<command>echo \$TERM</command>就會直接
+      顯示出 <envar>$TERM</envar>　這幾個字。</para>
+
+    <sect2 id="changing-shells">
+      <title>改變你的 shell</title>
+
+      <para>改變你的 shell最簡單的方法就是用<command>chsh</command>指令。
+      　執行<command>chsh</command>將會進入你在環境變數中所設定的編輯器
+        <envar>EDITOR</envar>裡;如果你沒有設定，你將會進入<command>vi</command>
+        。改變<quote>Shell:</quote>這一行的對應值。</para>
+
+      <para>你也可以用<command>chsh</command>的參數<option>-s</option>;
+        這樣你就可以設定你的 shell而不用任何的編輯器。例如，你想要將 shell
+        改變到 bash，只要依照下面這樣做:</para>
+	
+      <screen>&prompt.user; <userinput>chsh -s /usr/local/bin/bash</userinput></screen>
+
+      <para>執行 <command>chsh</command>而不加參數並且編輯也可以達到一向的作用。</para>
+
+      <note>
+	<para>你要使用的 shell <emphasis>必須</emphasis>列在<filename>/etc/shells</filename>
+	　裡面。如果你從<link linkend="ports">ports collection</link>安裝一個 shell
+	  ，那這個動作就不用再重複。如果你是手動自己安裝一個 shell，那
+	  你就必須再手動做一次。</para>
+     
+      <para>舉個例子，如果你手動安裝 <command>bash</command>並且裝到<filename>/usr/local/bin</filename>
+      　裡面，你就必須:</para>
+
+      <screen>&prompt.root; <userinput>echo &quot;/usr/local/bin/bash&quot; &gt;&gt; /etc/shells</userinput></screen>
+
+       <para>然後重新再執行<command>chsh</command>。</para>
+     </note>
+   </sect2>
+  </sect1>
+
+  <sect1 id="editors">
+    <title>編輯器</title>
+
+    <para>在 FreeBSD有許多設定是藉著編輯一個文字檔完成的。也因此，去熟
+    　悉一個文字編輯器是很好的。 FreeBSD原本就有幾個文字編輯器，也有許
+    　多可以在　ports collection裡面找到。</para>
+
+    <para>最簡單學習的文字編輯器叫做<application>ee</application>，他是
+    　標轉的簡易編輯器。要開始使用<application>ee</application>，就在命令列上
+    　打這個指令<command>ee filename</command>，<literal>filename</literal>就是
+    　你想要編輯的檔案名稱。例如，要編輯 <filename>/etc/rc.conf</filename>
+      就打<command>ee /etc/rc.conf</command>。在 ee裡面，所有的功能操作方式都
+      顯示在最上面。這個跳脫符號 <literal>^</literal>表示鍵盤上的控制建(Control)
+      ，所以 ^e就表示按 contorl加上 <literal>e</literal>。要離開<application>ee</application>
+      ，就按　escape鍵，然選擇離開編輯器。此時如果你的檔案有修改過，編輯器會
+      提醒你要存檔。</para>
+
+    <para>FreeBSD 也內附了幾個強大的文字編輯器，如基本系統的<application>vi</application>
+      和　FreeBSD ports collectionu 裡面的<application>emacs</application>
+      與 <application>vim</application>。這些編輯器提供更強大的功能但是也比
+      較難去學習。然而如果你將會從事很多文字編輯工作，那麼學習更強大的編輯器
+      <application>vim</application> 或 <application>emacs</application>
+      將再以後會為您省下更多的時間。</para>
+  </sect1>
+
+  <sect1>
+    <title>取得進一步的資訊...</title>
+
+    <sect2 id="basics-man">
+      <title>線上使用手冊</title>
+
+      <para>在使用 FreeBSD 的時候，最詳盡的使用說明文件莫過於
+        <emphasis>man pages</emphasis> 了。
+        幾乎系統裡的每個程式都附有一份簡短的參考手冊，
+        說明這個程式的基本功能以及這個程式的參數使用說明。
+        我們可以透過 <command>man</command> 這個指令來閱讀這些使用手冊。
+        <command>man</command> 這個指令的用法十分簡單：</para>
+
+      <screen>&prompt.user; <userinput>man <replaceable>command</replaceable></userinput></screen>
+
+      <para><literal>command</literal> 是你要學習的指令名稱。例如，要學習
+      <command>ls</command>就打:</para>
+
+      <screen>&prompt.user; <userinput>man ls</userinput></screen>
+
+      <para>這些線上說明文件可以分成下列數個章節：</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>使用者指令。</para>
+	</listitem>
+
+	<listitem>
+	  <para>系統呼叫以及錯誤代號。</para>
+	</listitem>
+
+	<listitem>
+	  <para>C 語言函式庫。</para>
+	</listitem>
+
+	<listitem>
+	  <para>裝置驅動程式。</para>
+	</listitem>
+
+	<listitem>
+	  <para>檔案格式。</para>
+	</listitem>
+
+	<listitem>
+	  <para>遊戲與其他娛樂。</para>
+	</listitem>
+
+	<listitem>
+	  <para>其他資訊</para>
+	</listitem>
+
+	<listitem>
+	  <para>系統維護指令。</para>
+	</listitem>
+
+	<listitem>
+	  <para>核心程式發展用。</para>
+	</listitem>
+      </orderedlist>
+
+      <para>在某些情況下，同樣的主題可能出現在使用手冊的不同章節。舉例來說，
+        系統裡面有 <command>chmod</command> 這個指令，也有
+        <function>chmod()</function> 這個系統呼叫。當發生這種事情的時候，
+        我們就向 <command>man</command> 指定我們所要查詢的章節：</para>
+
+      <screen>&prompt.user; <userinput>man 1 chmod</userinput></screen>
+
+      <para>這樣會把使用者指令裡的 <command>chmod</command> 
+        的線上手冊列出來。一般來說，
+        我們會在寫文件時把參考到某特定章節線上手冊的章節號碼寫在括號裡，
+        所以 &man.chmod.1; 指的就是 <command>chmod</command> 這個指令，
+        而 &man.chmod.2; 則是代表系統呼叫。</para>
+
+      <para>如果您已經知道指令的名稱，只是不知道要如何使用的話，
+        那就比較好辦；問題就出在如果您不知道您要使用那個指令的時候，
+        您要怎麼辦呢？這個時候您就可以利用 <command>man</command> 
+        的搜尋功能，它會從 man page 的 <emphasis>descriptions</emphasis>
+        部份找尋您要搜尋的關鍵字；您只要使用 <option>-k</option>
+        選項：</para>
+
+      <screen>&prompt.user; <userinput>man -k mail</userinput></screen>
+
+      <para>當您使用上述指令時，會把 descriptions 中含有 
+        <quote>mail</quote> 這個關鍵字的指令全部列出來。事實上，這和
+        <command>apropos</command> 這個指令的功能是一樣的。</para>
+
+      <para>您在 <filename>/usr/bin</filename> 中可以看到一些很有趣的指令，
+        可是對這些指令的功能您往往沒有半點頭緒。這個時候您只要鍵入：</para>
+
+	<screen>&prompt.user; <userinput>cd /usr/bin</userinput>
+&prompt.user; <userinput>man -f *</userinput></screen>
+
+	<para>或是</para>
+
+	<screen>&prompt.user; <userinput>cd /usr/bin</userinput>
+&prompt.user; <userinput>whatis *</userinput></screen>
+
+	<para>這兩個指令的功能是相同的。</para>
+    </sect2>
+
+    <sect2 id="basics-info">
+      <title>GNU 的 Info Files</title>
+
+      <para>有很多 FreeBSD 的應用程式以及工具是從自由軟體基金會 (FSF) 來的。
+        除了 man page 以外，這些程式提供了另外一種更具有彈性的超文件說明
+        <literal>info</literal> ；您可以用 <command>info</command>
+        這個指令來閱讀它們，如果您安裝了 <command>emacs</command> ，
+        您也可以利用 <command>emacs</command> 的 info 模式來閱讀。</para>
+
+      <para>要使用 &man.info.1; 這個指令，您只需鍵入：</para>
+
+      <screen>&prompt.user; <userinput>info</userinput></screen>
+
+      <para>想要獲得簡易使用介紹請按 <userinput>h</userinput> ；
+        想要獲得命令說明請按 <userinput>?</userinput> 。</para>
+    </sect2>
+  </sect1>
+</chapter>
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

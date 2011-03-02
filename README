@@ -1,0 +1,535 @@
+About freebsddoc:
+
+``freebsddoc'' forcus on the Traditional Chinese translation of FreeBSD
+Document Project(doc, www).
+
+For the latest translation, please checkout via git from:
+git clone git://github.com/chinsan/freebsddoc.git
+
+en_US.ISO8859-1/
+|-- Makefile
+|-- articles
+|   |-- 5-roadmap
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   `-- extra.css
+|   |-- Makefile
+|   |-- Makefile.inc
+|   |-- bsdl-gpl
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- building-products
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- casestudy-argentina.com
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- checkpoint
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- committers-guide
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- compiz-fusion
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- console-server
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- contributing
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- contributing-ports
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- contributors
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   |-- chapter.decl
+|   |   |-- contrib.386bsd.sgml
+|   |   |-- contrib.additional.sgml
+|   |   |-- contrib.committers.sgml
+|   |   |-- contrib.committers.sgml~
+|   |   |-- contrib.corealumni.sgml
+|   |   |-- contrib.develalumni.sgml
+|   |   |-- contrib.develinmemoriam.sgml
+|   |   |-- contrib.ent
+|   |   `-- contrib.portmgralumni.sgml
+|   |-- cvs-freebsd
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- cvsup-advanced
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- dialup-firewall
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- diskless-x
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- euro
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- explaining-bsd
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- fbsd-from-scratch
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   |-- stage_1.conf.default
+|   |   |-- stage_1.sh
+|   |   |-- stage_2.conf.default
+|   |   |-- stage_2.sh
+|   |   `-- stage_3.mk
+|   |-- filtering-bridges
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- fonts
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- formatting-media
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- freebsd-questions
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- geom-class
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- hats
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- hubs
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- ipsec-must
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- java-tomcat
+|   |-- laptop
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- linux-comparison
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- mailing-list-faq
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- mh
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- multi-os
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- nanobsd
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- new-users
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- p4-primer
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- pam
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   |-- converse.c
+|   |   |-- pam_unix.c
+|   |   `-- su.c
+|   |-- portbuild
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- pr-guidelines
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- problem-reports
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- programming-tools
+|   |-- pxe
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   |-- dhcpd.conf
+|   |   |-- install.cfg
+|   |   |-- loader.rc
+|   |   |-- pkgmaker.sh
+|   |   |-- post
+|   |   `-- pre
+|   |-- rc-scripting
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- relaydelay
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- releng
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   `-- extra.css
+|   |-- releng-packages
+|   |   |-- Makefile
+|   |   |-- article.sgml
+|   |   `-- extra.css
+|   |-- serial-uart
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- smp
+|   |-- solid-state
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- storage-devices
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- version-guide
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- vinum
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- vm-design
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   |-- wp-toolbox
+|   |   |-- Makefile
+|   |   `-- article.sgml
+|   `-- zip-drive
+|       |-- Makefile
+|       `-- article.sgml
+|-- books
+|   |-- Makefile
+|   |-- Makefile.inc
+|   |-- arch-handbook
+|   |   |-- Makefile
+|   |   |-- book.sgml
+|   |   |-- boot
+|   |   |   `-- chapter.sgml
+|   |   |-- chapters.ent
+|   |   |-- driverbasics
+|   |   |   `-- chapter.sgml
+|   |   |-- isa
+|   |   |   `-- chapter.sgml
+|   |   |-- jail
+|   |   |   `-- chapter.sgml
+|   |   |-- kobj
+|   |   |   `-- chapter.sgml
+|   |   |-- locking
+|   |   |   `-- chapter.sgml
+|   |   |-- mac
+|   |   |   `-- chapter.sgml
+|   |   |-- mac.ent
+|   |   |-- newbus
+|   |   |   `-- chapter.sgml
+|   |   |-- pccard
+|   |   |   `-- chapter.sgml
+|   |   |-- pci
+|   |   |   `-- chapter.sgml
+|   |   |-- scsi
+|   |   |   `-- chapter.sgml
+|   |   |-- smp
+|   |   |   `-- chapter.sgml
+|   |   |-- sound
+|   |   |   `-- chapter.sgml
+|   |   |-- sysinit
+|   |   |   `-- chapter.sgml
+|   |   |-- usb
+|   |   |   `-- chapter.sgml
+|   |   `-- vm
+|   |       `-- chapter.sgml
+|   |-- bibliography
+|   |   |-- Makefile
+|   |   `-- book.sgml
+|   |-- corp-net-guide
+|   |   |-- Makefile
+|   |   |-- book.sgml
+|   |   `-- freebsd.dsl
+|   |-- design-44bsd
+|   |   |-- Makefile
+|   |   |-- book.sgml
+|   |   `-- freebsd.dsl
+|   |-- dev-model
+|   |   |-- Makefile
+|   |   |-- book.sgml
+|   |   `-- chapters.ent
+|   |-- developers-handbook
+|   |   |-- Makefile
+|   |   |-- bibliography
+|   |   |-- book.sgml
+|   |   |-- boot
+|   |   |-- chapters.ent
+|   |   |-- dma
+|   |   |-- driverbasics
+|   |   |-- introduction
+|   |   |   `-- chapter.sgml
+|   |   |-- ipv6
+|   |   |   `-- chapter.sgml
+|   |   |-- isa
+|   |   |-- jail
+|   |   |-- kernelbuild
+|   |   |   `-- chapter.sgml
+|   |   |-- kerneldebug
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- kobj
+|   |   |-- l10n
+|   |   |   `-- chapter.sgml
+|   |   |-- locking
+|   |   |-- mac
+|   |   |-- newbus
+|   |   |-- pccard
+|   |   |-- pci
+|   |   |-- policies
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- scsi
+|   |   |-- secarch
+|   |   |-- secure
+|   |   |   `-- chapter.sgml
+|   |   |-- sockets
+|   |   |   `-- chapter.sgml
+|   |   |-- sound
+|   |   |-- sysinit
+|   |   |-- testing
+|   |   |   `-- chapter.sgml
+|   |   |-- tools
+|   |   |   `-- chapter.sgml
+|   |   |-- usb
+|   |   |-- vm
+|   |   `-- x86
+|   |       `-- chapter.sgml
+|   |-- faq
+|   |   |-- Makefile
+|   |   `-- book.sgml
+|   |-- fdp-primer
+|   |   |-- Makefile
+|   |   |-- book.sgml
+|   |   |-- chapter.decl
+|   |   |-- chapters.ent
+|   |   |-- doc-build
+|   |   |   `-- chapter.sgml
+|   |   |-- examples
+|   |   |   `-- appendix.sgml
+|   |   |-- overview
+|   |   |   `-- chapter.sgml
+|   |   |-- psgml-mode
+|   |   |   `-- chapter.sgml
+|   |   |-- see-also
+|   |   |   `-- chapter.sgml
+|   |   |-- sgml-markup
+|   |   |   `-- chapter.sgml
+|   |   |-- sgml-primer
+|   |   |   `-- chapter.sgml
+|   |   |-- structure
+|   |   |   `-- chapter.sgml
+|   |   |-- stylesheets
+|   |   |   `-- chapter.sgml
+|   |   |-- the-faq
+|   |   |-- the-handbook
+|   |   |-- the-website
+|   |   |   `-- chapter.sgml
+|   |   |-- tools
+|   |   |   `-- chapter.sgml
+|   |   |-- translations
+|   |   |   `-- chapter.sgml
+|   |   `-- writing-style
+|   |       `-- chapter.sgml
+|   |-- handbook
+|   |   |-- Makefile
+|   |   |-- advanced-networking
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- appendix.decl
+|   |   |-- audit
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- backups
+|   |   |-- basics
+|   |   |   |-- Makefile
+|   |   |   |-- chapter.sgml
+|   |   |   |-- disk-layout.kil
+|   |   |   |-- example-dir1.dot
+|   |   |   |-- example-dir2.dot
+|   |   |   |-- example-dir3.dot
+|   |   |   |-- example-dir4.dot
+|   |   |   `-- example-dir5.dot
+|   |   |-- bibliography
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- book.sgml
+|   |   |-- boot
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- chapter.decl
+|   |   |-- chapters.ent
+|   |   |-- colophon.sgml
+|   |   |-- config
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- configuration
+|   |   |-- contrib
+|   |   |-- cutting-edge
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- desktop
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- disks
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- eresources
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- firewalls
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- geom
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- hw
+|   |   |-- install
+|   |   |   |-- Makefile
+|   |   |   |-- chapter.sgml
+|   |   |   |-- disk-layout.kil
+|   |   |   |-- example-dir1.dot
+|   |   |   |-- example-dir2.dot
+|   |   |   |-- example-dir3.dot
+|   |   |   |-- example-dir4.dot
+|   |   |   `-- example-dir5.dot
+|   |   |-- internals
+|   |   |-- introduction
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- jails
+|   |   |   `-- chapter.sgml
+|   |   |-- kernelconfig
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- kerneldebug
+|   |   |-- kernelopts
+|   |   |-- l10n
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- linuxemu
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- mac
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- mail
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- mirrors
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- multimedia
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- nanobsd
+|   |   |-- network-servers
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- pgpkeys
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- policies
+|   |   |-- ports
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- ppp-and-slip
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- preface
+|   |   |   `-- preface.sgml
+|   |   |-- printing
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- quotas
+|   |   |-- security
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- serialcomms
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- sound
+|   |   |-- staff
+|   |   |-- txtfiles.ent
+|   |   |-- users
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- vinum
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   |-- virtualization
+|   |   |   |-- Makefile
+|   |   |   `-- chapter.sgml
+|   |   `-- x11
+|   |       |-- Makefile
+|   |       `-- chapter.sgml
+|   |-- pmake
+|   |   |-- Makefile
+|   |   |-- answers
+|   |   |   `-- chapter.sgml
+|   |   |-- basics
+|   |   |   `-- chapter.sgml
+|   |   |-- book.sgml
+|   |   |-- chapters.ent
+|   |   |-- glossary
+|   |   |   `-- glossary.sgml
+|   |   |-- gods
+|   |   |   `-- chapter.sgml
+|   |   |-- intro
+|   |   |   `-- chapter.sgml
+|   |   |-- legalnotice.sgml
+|   |   `-- shortcuts
+|   |       `-- chapter.sgml
+|   |-- porter-handbook
+|   |-- porters-handbook
+|   |   |-- Makefile
+|   |   |-- book.sgml
+|   |   `-- freebsd.dsl
+|   `-- ppp-primer
+|-- flyer
+|   |-- Makefile
+|   `-- flyer.tex
+|-- share
+|   |-- images
+|   |   `-- callouts
+|   |-- mk
+|   |   `-- doc.local.mk
+|   `-- sgml
+|       |-- authors.ent
+|       |-- bookinfo.ent
+|       |-- catalog
+|       |-- freebsd.dsl
+|       |-- glossary
+|       |   `-- freebsd-glossary.sgml
+|       |-- l10n.ent
+|       |-- legalnotice.sgml
+|       |-- mailing-lists.ent
+|       |-- newsgroups.ent
+|       |-- teams.ent
+|       `-- trademarks.sgml
+|-- slides
+|   |-- 20050513-bsdcan-slides
+|   |   |-- Makefile
+|   |   `-- slides.xml
+|   |-- Makefile
+|   |-- README
+|   |-- common
+|   |   |-- freebsd-5.3.xml
+|   |   |-- freebsd-dev-model.xml
+|   |   |-- freebsd-linux-license.xml
+|   |   |-- freebsd-more-information.xml
+|   |   |-- freebsd-organization.xml
+|   |   |-- freebsd-recent-releases.xml
+|   |   |-- freebsd-release-process.xml
+|   |   |-- freebsd-users.xml
+|   |   `-- what-is-freebsd.xml
+|   `-- freebsd-general
+|       |-- Makefile
+|       `-- slides.xml
+`-- tutorials
+    |-- ddwg
+    |-- disklessx
+    |-- ppp
+    `-- upgrade
+
+197 directories, 327 files

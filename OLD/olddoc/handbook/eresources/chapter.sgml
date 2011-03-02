@@ -1,0 +1,1314 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $Id: chapter.sgml,v 1.10 2003/02/06 03:44:46 statue Exp $
+
+     Translate into Chinese by Kang-min Liu <gugod@gugod.org>
+
+     English Version:
+-->
+
+<appendix id="eresources">
+  <title>網際網路上的資源</title>
+  
+  <para><emphasis>Contributed by &a.jkh;.</emphasis></para>
+  
+  <para>進展飛快的 FreeBSD 使得現有的印刷、平面媒體跟不上它的最新進度！
+    反而電子版的資源，也許有時並不是最好，但通常是唯一一個跟上最新進展
+    的方式。 FreeBSD 來自於自願者的努力，而使用者群也通常扮演著 &ldquo;
+    技術支援部門 &rdquo; 的角色。只要使用 電子郵件和 USENET 新聞群組
+    就可以很快速地找到他們。</para>
+      
+  <para>以下描述了和 FreeBSD 使用者共同體搭上線的主要方式。若你還
+    知道其他這裡沒有列出的資源，請告知 &a.doc; ，以便將它們加入
+    於此。</para>
+  
+  <sect1 id="eresources-mail">
+    <title>Mailing lists</title>
+    
+    <para>雖然大部份的 FreeBSD 研發人員都有看 USENET，我們也不能保證我們永遠可以
+      及時得知您的問題。特別是，如果您只將問題發表在
+      <literal>comp.unix.bsd.freebsd.*</literal> 其中之一個群組上。
+      建議您將問題發到適當的 mailing list 上，不但可以同時讓 FreeBSD 研發人員
+      和其他的讀者看到，通常也可以得到一個較好的（最起碼會比較快）的
+      回應。</para>
+	
+    <para>本文件的最末是各個不同的 Mailing List 的使用條文。<emphasis>
+      在訂閱其中任何一個 list 之前，請先閱讀使用條文。</emphasis>
+      現在訂閱這些 list 的人們每天都會收到上百封關於 FreeBSD 的信件。
+      設立 list 的使用條文有助於維護討論品質。
+      否則這些討論此 project 的 list 終將失去其效用。</para>
+	
+    <para>全部的 mailing lists 記錄都可以在 FreeBSD WWW 伺服器
+      <ulink url="http://www.FreeBSD.org/search.html">FreeBSD World
+        Wide Web server</ulink> 上找到。
+      此伺服器提供了很棒的關鍵字搜尋功能，可讓您找到常用問答集 (FAQ)
+      的解答。而在 mailing lists 上發問之前，也請先搜尋是否已有解答。</para>
+    
+    <sect2 id="eresources-summary">
+      <title>List summary</title>
+      
+      <para><emphasis>一般的 list ：</emphasis>
+        以下的 list 都是一般性的，而且大家可以自由地訂閱，
+        我們也鼓勵大家訂閱：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>List 名稱</entry>
+	      <entry>目的</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>freebsd-advocacy</entry>
+	      <entry>FreeBSD 福音主義</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-announce</entry>
+	      <entry>重要事件及計劃的里程碑</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-bugs</entry>
+	      <entry>發現 bug 時的報告處</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-chat</entry>
+	      <entry>和技術性項無關的 FreeBSD 討論區</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-current</entry>
+	      <entry>討論 Current 版本的 FreeBSD</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-isp</entry>
+	      <entry>使用 FreeBSD 的網路服務供應者發行物</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-jobs</entry>
+	      <entry>FreeBSD 工作既協商機會</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-newbies</entry>
+	      <entry>FreeBSD 新手的討論區</entry>
+	    </row>
+
+	    <row>
+	      <entry>freebsd-policy</entry>
+	      <entry>FreeBSD 核心團隊方針討論區。份量小，而且是唯讀的。</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-questions</entry>
+		  <entry>使用問題及技術性的支援</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-stable</entry>
+	      <entry>討論 Stable 版本的 FreeBSD</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+	  
+      <para><emphasis>技術性的 mailing list:</emphasis>以下的
+        mailing lists 是用來討論技術性的問題的。在加入訂閱及討論之前，
+        請務必仔細閱讀每個 lists 的綱領，
+        因為它們的討論內容都是很嚴謹地被限制著的。</para>
+      
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>List</entry>
+	      <entry>目的</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>freebsd-afs</entry>
+	      <entry>將 AFS 移植到 FreeBSD</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-alpha</entry>
+	      <entry>將 FreeBSD 移植到 Alpha 工作站</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-doc</entry>
+	      <entry>FreeBSD 文件撰寫</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-database</entry>
+	      <entry>討論在 FreeBSD 下發展及使用的資料庫</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-emulation</entry>
+	      <entry>在 FreeBSD 上模擬其他系統，如 Linux/DOS/Windows</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-fs</entry>
+	      <entry>檔案系統</entry>
+	    </row>
+		
+	    <row>
+	      <entry>freebsd-hackers</entry>
+	      <entry>一般性技術討論</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-hardware</entry>
+	      <entry>一般性的硬體討論區</entry>
+	    </row>
+
+	    <row>
+	      <entry>freebsd-ipfw</entry>
+	      <entry>關於 IP firewall 程式碼的技術性討論區</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-isdn</entry>
+	      <entry>ISDN 開發人員</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-java</entry>
+	      <entry>給 Java 開發人員以及移植 JDKs 到 FreeBSD。</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-mobile</entry>
+	      <entry>關於可攜式電腦的討論</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-mozilla</entry>
+	      <entry>移植 mozilla 到 FreeBSD 上</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-net</entry>
+	      <entry>網路討論和 TCP/IP 原始程式碼</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-platforms</entry>
+	      <entry>將 FreeBSD 移植到非 Intel 架構的平台上</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-ports</entry>
+	      <entry>討論 ports 軟件收集</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-scsi</entry>
+	      <entry>SCSI 子系統</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-security</entry>
+	      <entry>系統安全</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-small</entry>
+	      <entry>在嵌入式系統上使用 FreeBSD</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-smp</entry>
+	      <entry>討論 SMP/ASMP (對稱/非對稱多工處理) </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-sparc</entry>
+	      <entry>移植 FreeBSD 到 Sparc 系統上</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-tokenring</entry>
+	      <entry>在 FreeBSD 中加入 Token Ring 的支援</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+      
+      <para><emphasis>限制訂閱的 lists:</emphasis>
+        以下的 lists 是針對某些特定要求的讀者而設，
+        而且並不適合被當成是一般公開的討論區。
+        您最好先在某一技術討論區參與討論後再選擇訂閱這些限制訂閱的
+        mailing-lists。
+        因為如此一來您可以了解到在這些討論區發言所須的禮儀。</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>List</entry>
+	      <entry>目的</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>freebsd-admin</entry>
+	      <entry>系統管理</entry>
+	    </row>
+		
+	    <row>
+	      <entry>freebsd-arch</entry>
+	      <entry>系統結構與設計<entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-core</entry>
+	      <entry>FreeBSD 核心開發成員</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-hubs</entry>
+	      <entry>架設 FreeBSD 映射站台的人們<entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-install</entry>
+	      <entry>安裝程式開發部門</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-security-notifications</entry>
+	      <entry>系統安全通告</entry>
+	    </row>
+	    
+	    <row>
+	      <entry>freebsd-user-groups</entry>
+	      <entry>使用者群的協調</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+      
+      <para><emphasis>CVS lists:</emphasis>
+        以下的 lists 是給對 FreeBSD 原生碼的變更記錄有興趣的人看的。
+        而且他們是 <emphasis>唯讀</emphasis> 的 lists ，
+        您不能發 e-mail 給它們。 </para>
+
+      <informaltable frame="none">
+	<tgroup cols="3">
+	  <thead>
+	    <row>
+	      <entry>List</entry>
+	      <entry>Source area</entry>
+	      <entry>描述</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>cvs-all</entry>
+	      <entry>/usr/src</entry>
+	      <entry>所有對原生碼改變的記錄</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </sect2>
+    
+    <sect2 id="eresources-subscribe">
+      <title>如何訂閱</title>
+      
+      <para>所有的 mailing list 都是在<hostid
+	  role="fqdn">FreeBSD.ORG</hostid> 
+	  這台主機上維護，
+	  假設要在某個 list 上發問，
+	  只要寄電子郵件到
+	&lt;<replaceable>listname</replaceable>@FreeBSD.ORG&gt;.
+	您的問題就會送到所有訂閱 mailing list 的伙伴信箱裡了。</para>
+	  
+      <para>欲訂閱某 mailing list ， 送封 email 給 &a.majordomo; 並在本文中
+      填上下列內容
+	
+	<programlisting>
+subscribe &lt;listname&gt; [&lt;optional address&gt;]</programlisting>
+
+	比如說，您要訂
+	<literal>freebsd-announce</literal> ，
+	這個 mailing list ， 那麼您就這麼做：
+	</para>
+
+      <screen>&prompt.user; <userinput>mail majordomo@FreeBSD.ORG</userinput>
+subscribe freebsd-announce
+^D</screen>
+	   
+      <para>
+      如果說您想用不同的名字訂閱， 或是您想讓 FreeBSD 的 mailing list
+      接上當地的 mailing list (如果說您那麼的站台有不少志同道合的伙伴，
+      這樣子會很方便，而且我們非常樂意您這麼做)，那麼您可以如此做：
+      </para>
+      
+      <screen>&prompt.user; <userinput>mail majordomo@FreeBSD.ORG</userinput>
+subscribe freebsd-announce local-announce@somesite.com
+^D</screen>
+	    
+      <para>您也可以取消訂閱這些 mailing list，看看這個 list 裡面總共
+      有多少人，或是看一下所有的 mailing list 總表。只要在寄給 majordomo
+      的信裡加上不同的控制指令就行了。以下這個指令可以列出所有 majordomo
+      接受的指令： </para>
+
+      <screen>&prompt.user; <userinput>mail majordomo@FreeBSD.ORG</userinput>
+help
+^D</screen>
+
+      <para>再次，我們要求您一定要在討論技術性的 mailing list 上保持一定的
+      水準。如果您只關心 &ldquo; 高層消息 &rdquo; 的話，那我們建議您訂閱
+      freebsd-announce ，這個的 list 的訂論量是最少的</para>
+    </sect2>
+    
+    <sect2 id="eresources-charters">
+      <title>Mailing list 的規章</title>
+
+      <para><emphasis>所有的</emphasis>FreeBSD mailing lists 都有一些
+        基本規定，參與討論的人都要嚴格地遵守。違反者將收到兩封由 
+        FreeBSD Postmaster <email>postmaster@FreeBSD.org</email> 寄出
+        的警告信函。若仍有違反，違反者的 email 將被 FreeBSD mailing
+        list 系統過濾掉，無法再發表文章。對於此，我們深感遺憾，但是此
+        一規定是必要的，因為今日的 Internet 已經是個非常的雜亂粗糙的環
+        境，但許多人似乎未能察覺它的某些結構的確是很脆弱的。<para>
+
+      <para>上路須知：</para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para>無論在那個 mailing list 上發表文章，都必須要遵守規則，
+	  好比說，在技術性質的 mailing list 上就要討論關於技術方面的事。
+	  無關的閒聊或是漫罵只會降低討論的水準，同時也是無法原諒的。
+	  而 freebsd-chat <email>freebsd-chat@FreeBSD.org</email>
+	  這個無特定主題的 mailing list 可以讓您自由的發表意見。
+	  所以請切記，遵守各個不同 mailing list 的規則<para>
+	</listitem>
+
+	<listitem>
+	  <para>一篇文章不應同時在兩個以上的 mailing list 上
+	  發表，除非很明顯的必要，但最多只能同時在兩處發表。
+	  對於大多數的 mailing list 而言，已有為數不少的訂閱
+	  者是重疊的。除非其主題十分的深奧 (像是 "-stable
+	  &amp; -scsi") ，否則實無必要同時在多個 mailing
+	  list 上發表文章。注意，假使有任何一封信息在 Cc 給
+	  了其他的 mailing list (也就是，這是封寄到兩個以上
+	  mailing list 的信)，務必將其清除之後再行寄出。
+	  <emphasis>對於自己所發出的多處轉貼的文章，你
+	  <emphasis>仍然</emphasis>需負起責任，無論始作俑者
+	  是誰。</emphasis></para>
+	</listitem>
+	      
+	<listitem>
+	  <para>任何人身攻擊以及言語上的褻瀆 (於討論的場合之
+	  中) 都是完全禁止的，對於使用者以及研發者來說都相同。
+	  雖然沒有明確的實施相關的懲治，但引用或者重貼私人信
+	  件這類明顯違反網路禮儀之事並不被贊同。<emphasis>然
+	  而</emphasis> ，仍有極少數的實例顯示此類的內容仍然
+	  符合規章，但視情況可能會被施以警告 (或者禁令)。
+	  </para>
+	</listitem>
+	
+	<listitem>
+	  <para>嚴格禁止廣告與 FreeBSD 無關的商品與服務。倘
+	  若該信息的寄件者很明顯的以 spam 大量廣告，將馬上被
+	  禁止發表任何文章。</para>
+	</listitem>
+      </itemizedlist>
+      
+      <para><emphasis>個別的 list 規章:</emphasis></para>
+      
+      <variablelist>
+	<varlistentry>
+	  <term>FREEBSD-AFS</term>
+
+	  <listitem>
+	    <para><emphasis>Andrew File System</emphasis></para>
+	    
+	    <para>將 AFS 從 CMU/Transarc 移植過來</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-ADMIN</term>
+	  
+	  <listitem>
+	    <para><emphasis>系統管理方面之議題</emphasis></para>
+	    
+	    <para>此 mailing list 純粹用來討論<hostid
+		role="domainname">FreeBSD.org</hostid>相關的
+		議題以及問題的報告或是專案資源的濫用。這是一
+		個對外封閉的 mailing list ，但任何人仍可利用
+		我們的系統對我們提出問題。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-ANNOUNCE</term>
+	  
+	  <listitem>
+	    <para><emphasis>重要的事件 / 里程碑</emphasis></para>
+
+	    <para>這個 mailing list 是給只注意 FreeBSD 比較
+	    重要的事件的人看的。其中包括了 snapshot 及
+	    release 的公告，新 FreeBSD 的能力。也可能會有徵
+	    求自願者之類的事項。這是個流量很小，運作嚴謹的
+	    mailing list 。 </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-ARCH</term>
+	  
+	  <listitem>
+	    <para><emphasis>系統結構與設計</emphasis></para>
+
+	    <para>這也是個受限 mailing list ，且討論將集中在
+	    技術方面，管理員認為只有相當少數信息會是要給所有
+	    訂閱者看的。以下是幾個適當主題的範例： </para>
+
+	    <itemizedlist>
+	      <listitem>
+	        <para> 如何改良目前的編造系統 (build system) 使其可以同時編
+		  造許多不同的系統？</para>
+	      </listitem>
+	      
+	      <listitem>
+		<para>要在 VFS 裡改些什麼東西才能讓 Heidemann 層運作？</para>
+	      </listitem>
+
+	      <listitem>
+	        <para>要如何更動驅動程式的介面讓我們可以更巧妙的在不同的匯
+		  流排和軟硬體架構上使用使用 ame 裝置？</para>
+	      </listitem>
+
+	      <listitem>
+		<para>要怎樣寫網路裝置的驅動程式？</para>
+	      </listitem>
+	    </itemizedlist>
+	    
+	    <para>管理員仍保留了小幅修改信息的權利（拼字檢察，
+	    文法校正，字詞修飾）。這個 mailing list 的信件量
+	    會維持在少量，甚至也可能需要延遲某個主題，直到目
+	    前正在進行的討論已經得到解決為止。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-BUGS</term>
+	  
+	  <listitem>
+	    <para><emphasis>蟲報告</emphasis></para>
+	    
+	    <para>這是專門用來報告 FreeBSD 的蟲的 mailing
+	    list。但你應該使用 &man.send-pr.1; 命令或者 <ulink
+	    URL="http://www.FreeBSD.org/send-pr.html"> 網頁
+	    介面</ulink>來進行。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-CHAT</term>
+	  
+	  <listitem>
+	    <para><emphasis>關於 FreeBSD 社區的非技術性事項</emphasis></para>
+
+	    <para>這個 mailing list 充斥了其他 mailing list 
+	    沒有的非技術性的資訊。包括了關於飛人喬丹看起來像
+	    不像卡通裡面的白鼬，或者是否應該使用大寫字母，誰
+	    喝咖啡喝得太兇了，那兒釀造的啤酒最好喝，又，是誰
+	    在他們的地下室裡釀造啤酒等等諸如此類的問題。偶爾
+	    出現的重要事件（像是週末派對，婚禮，生日，找到新
+	    的工作等等）可以在技術性的 mailing list 上發表，
+	    不過延伸下去的討論應該移至 -chat 這個 mailing
+	    list 上。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-CORE</term>
+	  
+	  <listitem>
+	    <para><emphasis>FreeBSD 核心小組</emphasis></para>
+	    
+	    <para>這是個內部的 mailing list ， 給核心小組的
+	      成員專用。唯有當一個 FreeBSD 相關的問題需要經
+	      過裁定或者相當嚴密的審查時，才可送信至這個
+	      mailing list 。 </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-CURRENT</term>
+		
+	  <listitem>
+	    <para><emphasis>討論使用 FreeBSD-current</emphasis></para>
+
+	    <para>這是個給 freebsd-current 使用者的 mailing
+	    list. 其中包括了使用者該注意的新特色，以及跟上-
+	    current 所必要的指令步驟。任何使用 
+	    &ldquo;current&rdquo; 的人都一定要訂閱這個
+	    mailing list 。這是個嚴格限制在技術主題的 
+	    mailing list </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-CURRENT-DIGEST</term>
+	  
+	  <listitem>
+	    <para><emphasis>討論使用
+		FreeBSD-current</emphasis></para>
+
+	    <para>這是 freebsd-current mailing list 的文摘。
+	    一個文摘大約是 40kB 大小，包括了所有寄至
+	    freebsd-current mailing list 的信息。這是個
+	    <emphasis>唯讀</emphasis>的 mailing list。你不應
+	    該寄信到這個 mailing list 裡面。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-DOC</term>
+		
+	  <listitem>
+	    <para><emphasis>文件計畫</emphasis></para>
+
+	    <para>這個 mailing list 所討論的是替 FreeBSD 撰
+	    寫文件的計畫。其成員將被認為是 &ldquo;FreeBSD 文
+	    件計畫 &rdquo; 的一員。這是一個開放的 mailing
+	    list ，歡迎加入並且提供協助！</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-FS</term>
+	  
+	  <listitem>
+	    <para><emphasis>檔案系統</emphasis></para>
+	    
+	    <para>關於 FreeBSD 所使用之檔案系統的討論皆在此，
+	    這也是一個嚴格限制的技術性 mailing list 。</para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>FREEBSD-IPFW</term>
+	  
+	  <listitem>
+	    <para>IP Firewall</para>
+
+	    <para>這個 mailing list 裡所討論的是關於 FreeBSD
+	    裡面 IP firewall 的的程式碼的重新設計。這也是一個
+	    嚴格限制的技術性 mailing list。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-ISDN</term>
+		
+	  <listitem>
+	    <para><emphasis>ISDN 通訊</emphasis></para>
+	    
+	    <para>這個 mailing list 是給發展 FreeBSD ISDN 方
+	    面的人們討論用的。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-JAVA</term>
+		
+	  <listitem>
+	    <para><emphasis>Java 方面的發展</emphasis></para>
+	    
+	    <para>這個 mailing list 是給發展 FreeBSD 上 Java
+	    應用程式以及移植與維護 JDK 的人們討論用的。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-HACKERS</term>
+	  
+	  <listitem>
+	    <para><emphasis>技術性討論區</emphasis></para>
+	    
+	    <para>這是個任何關於 FreeBSD 技術都可討論的
+	    mailing list，也是個主要為技術性的討論區，給主要
+	    在 FreeBSD 上工作的人們提出問題與討論解決方案的
+	    一個地方。歡迎每個人參與各種技術性的討論。這也是
+	    一個嚴格限制的技術性 mailing list。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-HACKERS-DIGEST</term>
+	  
+	  <listitem>
+	    <para><emphasis>技術性討論區</emphasis></para>
+
+	    <para>這是 freebsd-hackers mailing list 的文摘。
+	    一個文摘大約是 40kB 大小，包括了所有寄至
+	    freebsd-hackers mailing list 的信息。這是個
+	    <emphasis>唯讀</emphasis>的 mailing list。你不應
+	    該寄信到這個 mailing list 裡面。</para>
+	  </listitem>
+	</varlistentry>
+	      
+	<varlistentry>
+	  <term>FREEBSD-HARDWARE</term>
+	  
+	  <listitem>
+	    <para><emphasis>FreeBSD 硬體支援的一般討論區</emphasis></para>
+
+	    <para>任何關於可以跑 FreeBSD 的硬體方面的問題皆
+	    可在此討論，像是購不購買的建議。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-INSTALL</term>
+	  
+	  <listitem>
+	    <para><emphasis>安裝方面的討論</emphasis></para>
+	    
+	    <para>這個 mailing list 是用來討論在未來的版本之
+	    中的安裝程式的發展，目前已經關閉。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-ISP</term>
+	  
+	  <listitem>
+	    <para><emphasis>關於 ISP 的討論 </emphasis></para>
+	    
+	    <para>關於使用 FreeBSD 的 ISP 可在此討論。這也是
+	    一個嚴格限制的技術性 mailing list。 </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-NEWBIES</term>
+	  
+	  <listitem>
+	    <para><emphasis>新手上路</emphasis></para>
+		
+	    <para>我們包含了所有新手們還不知道的主題，有：獨
+	    立的學習以及解決問題的技巧、懂得尋找使用各種資源
+	    以及在別處求助、如何來使用 mailing list 以及該用
+	    那個 mailing list、一般的閒聊、犯錯、吹牛、分享
+	    新點子、故事、道德性的（非技術方面的）支援、並在
+	    FreeBSD 社區裡成為主動積極的角色。我們提供我們的
+	    問題與麻煩至 freebsd-questions ，並且利用
+	    freebsd-newbies 與其他幹了同樣事情的新手相識。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-PLATFORMS</term>
+		
+	  <listitem>
+	    <para><emphasis>移植到非 Intel 平台上</emphasis></para>
+
+	    <para>跨平台的討論區，關於非 Intel 平台的一般性
+	    的討論與提議，這也是一個嚴格限制的技術性 
+	    mailing list。 </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>FREEBSD-POLICY</term>
+	  
+	  <listitem>
+	    <para>核心小組決策</para>
+
+	    <para>這是個小幅流量，且唯獨的 mailing list。提
+	    供給核心小組討論決議政策。</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-PORTS</term>
+	  
+	  <listitem>
+	    <para><emphasis>討論
+		&ldquo;ports&rdquo;</emphasis></para>
+
+	    <para>關於 FreeBSD &ldquo;ports
+	      collection&rdquo;
+	      (<filename>/usr/ports</filename>)， 的討論。提
+	      議新進的 ports ，ports collection 架構更改以及
+	      一般的協調。這也是一個嚴格限制的技術性 mailing
+	      list。 </para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-QUESTIONS</term>
+		
+	  <listitem>
+	    <para><emphasis>使用者的發問</emphasis></para>
+
+	    <para>這個 mailing list 是發問專用的。通常您不該在技術導向的
+	    mailing list 上問 &ldquo;How To&rdquo; 問題，也就是「要怎樣才能
+	    如如何如何」這種問題，除非您認為這個問題很具技術性</para>
+
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-QUESTIONS-DIGEST</term>
+	  
+	  <listitem>
+	    <para><emphasis>使用者的發問</emphasis></para>
+	    
+	    <para>這是 freebsd-questions 這個 mailing list 的文摘集。當 
+	      freebsd-questions 上面的信息累計到了 40KB 左右時會一併送出。 
+	      </para>
+
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-SCSI</term>
+	  
+	  <listitem>
+	    <para><emphasis>SCSI 系統</emphasis></para>
+	    
+	    <para>給開發 FreeBSD SCSI 系統的成員討論所用的 mailing list。
+	    這是個嚴格限制技術性的 mailing list 。</para>
+
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-SECURITY</term>
+	  
+	  <listitem>
+	    <para><emphasis>系統安全</emphasis></para>
+	    
+	    <para>關於 FreeBSD 系統安全的各種議題 (DES, Kerberos, 各種已知
+	    安全漏洞和修補方法等等)。這是個嚴格限制技術性的 mailing list 。
+	    </para>
+
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-SECURITY-NOTIFICATIONS</term>
+	  
+	  <listitem>
+	    <para><emphasis>系統安全通告</emphasis>
+	      通告新發現的 FreeBSD 系統安全漏洞以及修補方法。注意這不是個討
+	      論用的 mailing list，請到 freebsd-security 討論</para>
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-SMALL</term>
+	    
+	  <listitem>
+	    <para>討論小型的、嵌入式的 FreeBSD 安裝。這是個嚴格限制技術性的
+	    mailing list 。</para>
+
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-STABLE</term>
+		
+	  <listitem>
+	    <para><emphasis> FreeBSD-stable 的使用討論</emphasis></para>
+	    
+	    <para>給 freebsd-stable 使用者的討論空間。內容包括了，新進入
+	    -stable 的功能或者會影響使用者的地方、應該要注意的事項以及
+	    要持續在 -stable 所不得不了解的事情等等。任何有使用
+	    &ldquo;stable$rdquo; 的人都應該要訂閱者個 list。 這是個嚴格限制
+	    技術性的 mailing list 。</para>
+
+	  </listitem>
+	</varlistentry>
+	
+	<varlistentry>
+	  <term>FREEBSD-USER-GROUPS</term>
+	  
+	  <listitem>
+	    <para><emphasis>使用者群的協調</emphasis></para>
+
+	    <para>這是給每個當地 FreeBSD 社群的大老們來討論的地方，與排定的
+	    核心成員討論各種相互的活動。此 mailing list 內容應限制在討論
+	    各使用者群之間的計畫大綱等等事項。這是個非公開的 list。</para>
+
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="eresources-news">
+    <title>Usenet 新聞群組</title>
+
+    <para>除了兩個 FreeBSD 的新聞群組以外，尚有許許多多其他關於 FreeBSD 的
+    新聞群組。也有些是關於使用者群的討論。某些新聞群組也有<ulink
+    URL="http://minnie.cs.adfa.oz.au/BSD-info/bsdnews_search.html"> 關鍵字
+    搜尋</ulink> 可用。感謝 Warren Toomey
+    <email>wkt@cs.adfa.oz.au</email>.</para>
+        
+    <sect2>
+      <title>BSD 新聞群組</title>
+      
+      <itemizedlist>
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.bsd.freebsd.announce">comp.unix.bsd.freebsd.announce</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.bsd.freebsd.misc">comp.unix.bsd.freebsd.misc</ulink></para>
+	</listitem>
+      </itemizedlist>
+    </sect2>
+    
+    <sect2>
+      <title>其餘的 Unix 新聞群組</title>
+      
+      <itemizedlist>
+	<listitem>
+	  <para><ulink URL="news:comp.unix">comp.unix</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.questions">comp.unix.questions</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.admin">comp.unix.admin</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.programmer">comp.unix.programmer</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.shell">comp.unix.shell</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.user-friendly">comp.unix.user-friendly</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.security.unix">comp.security.unix</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.sources.unix">comp.sources.unix</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.advocacy">comp.unix.advocacy</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.misc">comp.unix.misc</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.bugs.4bsd">comp.bugs.4bsd</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.bugs.4bsd.ucb-fixes">comp.bugs.4bsd.ucb-fixes</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.unix.bsd">comp.unix.bsd</ulink></para>
+	</listitem>
+      </itemizedlist>
+    </sect2>
+    
+    <sect2>
+      <title>X 視窗</title>
+      
+      <itemizedlist>
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x.i386unix">comp.windows.x.i386unix</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x">comp.windows.x</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x.apps">comp.windows.x.apps</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x.announce">comp.windows.x.announce</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x.intrinsics">comp.windows.x.intrinsics</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x.motif">comp.windows.x.motif</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.windows.x.pex">comp.windows.x.pex</ulink></para>
+	</listitem>
+	
+	<listitem>
+	  <para><ulink
+	      URL="news:comp.emulators.ms-windows.wine">comp.emulators.ms-windows.wine</ulink></para>
+	</listitem>
+      </itemizedlist>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="eresources-web">
+    <title>World Wide Web 伺服器</title>
+    
+    <itemizedlist>
+      <listitem>
+	<para><ulink
+	    URL="http://www.FreeBSD.ORG/">http://www.FreeBSD.ORG/</ulink>
+	  &mdash; 官方網站</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.au.FreeBSD.org/FreeBSD/">http://www.au.FreeBSD.org/FreeBSD/</ulink> &mdash; 澳大利亞/1.</para>
+	    </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.au.FreeBSD.org/FreeBSD/">http://www2.au.FreeBSD.org/FreeBSD/</ulink> &mdash; Australia/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www3.au.FreeBSD.org/FreeBSD/">http://www3.au.FreeBSD.org/FreeBSD/</ulink> &mdash; 澳大利亞/3.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.br.FreeBSD.org/www.freebsd.org/">http://www.br.FreeBSD.org/www.freebsd.org/</ulink> &mdash; 巴西/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.br.FreeBSD.org/www.freebsd.org/">http://www2.br.FreeBSD.org/www.freebsd.org/</ulink> &mdash; 巴西/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www3.br.FreeBSD.org/">http://www3.br.FreeBSD.org/</ulink> &mdash; 巴西/3.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.bg.FreeBSD.org/">http://www.bg.FreeBSD.org/</ulink> &mdash; 保加利亞.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.ca.FreeBSD.org/">http://www.ca.FreeBSD.org/</ulink> &mdash; 加拿大/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://FreeBSD.kawartha.com/">http://FreeBSD.kawartha.com/</ulink> &mdash; 加拿大/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.dk.FreeBSD.org/">http://www.dk.FreeBSD.org/</ulink> &mdash; 丹麥.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.ee.FreeBSD.org/">http://www.ee.FreeBSD.org/</ulink> &mdash; 愛沙尼亞.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.fi.FreeBSD.org/">http://www.fi.FreeBSD.org/</ulink> &mdash; 芬蘭.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.fr.FreeBSD.org/">http://www.fr.FreeBSD.org/</ulink> &mdash; 法國.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.de.FreeBSD.org/">http://www.de.FreeBSD.org/</ulink> &mdash; 德國/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www1.de.FreeBSD.org/">http://www1.de.FreeBSD.org/</ulink> &mdash; 德國/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.de.FreeBSD.org/">http://www.de.FreeBSD.org/</ulink> &mdash; 德國/3.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.hu.FreeBSD.org/">http://www.hu.FreeBSD.org/</ulink> &mdash; 匈牙利.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.is.FreeBSD.org/">http://www.is.FreeBSD.org/</ulink> &mdash; 冰島.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.ie.FreeBSD.org/">http://www.ie.FreeBSD.org/</ulink> &mdash; 愛爾蘭.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.jp.FreeBSD.org/www.freebsd.org/">http://www.jp.FreeBSD.org/www.freebsd.org/</ulink> &mdash; 日本.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.kr.FreeBSD.org/">http://www.kr.FreeBSD.org/</ulink> &mdash; 韓國.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://rama.asiapac.net/freebsd/">http://rama.asiapac.net/freebsd/</ulink> &mdash; 馬來西亞.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.nl.FreeBSD.org/">http://www.nl.FreeBSD.org/</ulink> &mdash; 荷蘭.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.no.FreeBSD.org/">http://www.no.FreeBSD.org/</ulink> &mdash; 挪威.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.pt.FreeBSD.org/">http://www.pt.FreeBSD.org/</ulink> &mdash; 葡萄牙/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.pt.FreeBSD.org/">http://www2.pt.FreeBSD.org/</ulink> &mdash; 葡萄牙/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www3.pt.FreeBSD.org/">http://www3.pt.FreeBSD.org/</ulink> &mdash; 葡萄牙/3.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.ro.FreeBSD.org/">http://www.ro.FreeBSD.org/</ulink> &mdash; 羅馬尼亞.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.ru.FreeBSD.org/">http://www.ru.FreeBSD.org/</ulink> &mdash; 俄羅斯/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.ru.FreeBSD.org/">http://www2.ru.FreeBSD.org/</ulink> &mdash; 俄羅斯/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www3.ru.FreeBSD.org/">http://www3.ru.FreeBSD.org/</ulink> &mdash; 俄羅斯/3.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    url="http://www4.ru.FreeBSD.org/">http://www4.ru.FreeBSD.org/</ulink> &mdash; 俄羅斯/4.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.sk.FreeBSD.org/">http://www.sk.FreeBSD.org/</ulink> &mdash; 斯洛伐克共和國.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.si.FreeBSD.org/">http://www.si.FreeBSD.org/</ulink> &mdash; 斯拉維尼亞.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.es.FreeBSD.org/">http://www.es.FreeBSD.org/</ulink> &mdash; 西班牙.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.za.FreeBSD.org/">http://www.za.FreeBSD.org/</ulink> &mdash; 南非/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.za.FreeBSD.org/">http://www2.za.FreeBSD.org/</ulink> &mdash; 南非/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.se.FreeBSD.org/www.freebsd.org/">http://www.se.FreeBSD.org/www.freebsd.org/</ulink> &mdash; 瑞典.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.tr.FreeBSD.org/">http://www.tr.FreeBSD.org/</ulink> &mdash; 土耳其.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.ua.FreeBSD.org/">http://www.ua.FreeBSD.org/</ulink> &mdash; 烏克蘭/1.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.ua.FreeBSD.org/">http://www2.ua.FreeBSD.org/</ulink> &mdash; 烏克蘭/2.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www.uk.FreeBSD.org/">http://www.uk.FreeBSD.org/</ulink> &mdash; 英國.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://freebsd.advansys.net/">http://freebsd.advansys.net/</ulink> &mdash; 美國/印地安納.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www6.FreeBSD.org/">http://www6.FreeBSD.org/</ulink> &mdash; 美國/奧勒岡州.</para>
+      </listitem>
+      
+      <listitem>
+	<para><ulink
+	    URL="http://www2.FreeBSD.org/">http://www2.FreeBSD.org/</ulink> &mdash; 美國/德州.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="eresources-email">
+    <title>Email Addresses</title>
+
+    <para> 以下的使用者群提供了與 FreeBSD 相關的 email 給其成員使用。但若遭
+      到濫用，其管理者仍保有撤回 email 的權利。 </para>
+
+    <informaltable>
+      <tgroup cols="3">
+        <thead>
+	  <row>
+	    <entry>網域</entry>
+	    <entry>方式</entry>
+	    <entry>使用者群</entry>
+	    <entry>管理員</entry>
+          </row>
+	</thead>
+	  
+	<tbody>
+	  <row>
+	    <entry>ukug.uk.FreeBSD.org</entry>
+	    <entry>只提供轉寄</entry>
+	    <entry><email>freebsd-users@uk.FreeBSD.org</email></entry>
+	    <entry>Josef L. Karthauser
+	      <email>joe@uk.FreeBSD.org</email></entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+  </sect1>
+
+  <sect1 id="eresources-shell">
+    <title>Shell Accounts</title>
+
+    <para>以下的使用者群提供了公開主機帳號供給主動支持 FreeBSD 計畫的人們。
+      但若遭到濫用，其管理者仍保有撤回此帳號的權利。 </para>
+
+    <informaltable>
+      <tgroup cols="4">
+	<thead>
+	  <row>
+	    <entry>主機</entry>
+	    <entry>存取方式</entry>
+	    <entry>可用的設備</entry>
+	    <entry>管理員</entry>
+          </row>
+	</thead>
+	  
+	<tbody>
+	  <row>
+	    <entry>storm.uk.FreeBSD.org</entry>
+	    <entry>ssh only</entry>
+	    <entry>唯讀 cvs, 個人網頁空間, email</entry>
+	    <entry>&a.brian</entry>
+          </row>
+	</tbody>
+      </tgroup>
+    </informaltable>
+  </sect1>
+</appendix>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../appendix.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../handbook.sgml" "part" "appendix")
+     End:
+-->
+

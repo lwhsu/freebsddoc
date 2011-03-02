@@ -1,0 +1,474 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/boot/chapter.sgml,v 1.3 2001/05/22 08:41:25 statue Exp $
+
+     Translate into Chinese by zombit <zombit@kimo.com>
+
+     English Version: 1.1
+-->
+
+<chapter id="boot">
+  <title>FreeBSD 的開機流程</title>
+
+  <sect1 id="boot-synopsis">
+    <title>概述</title>
+  
+    <para>FreeBSD 預設使用三個階段的開機流程，基本上需要用到三個程式
+      (兩個 <link linkend="boot-blocks">boot blocks</link>, 和
+      <link linkend="boot-loader">loader</link>)。
+      每一個程式都需要靠著上一個程式的配合才能完成整個開機程序。</para>
+
+    <para>接著 kernel 載入，開始偵測硬體裝置和初始化。一但整個 kernel 載入完成之後，
+      kernel 會藉著呼叫 &man.init.8; 來把系統的控制權交給使用者，
+      init(8) 會先確定磁碟不是在使用中的狀態，接著開始使用者層的資源配置，
+      並掛載所要使用的分割區，設定網路卡，再開始啟動 FreeBSD 所需的起始程序。</para>
+  </sect1>
+
+  <sect1 id="boot-blocks">
+    <title>開機磁區：開機步驟的一和二</title>
+
+    <para><firstterm>開機</firstterm> 指的是電腦開始偵測硬體裝置並初始化，
+      好讓程式開始執行。</para>
+
+    <para>這牽涉到了一個特殊的唯讀晶片，這個晶片將決定進一步的開機程序，
+      通常是送訊號至其他晶片作訊號的調節，及記憶體測試，設定硬體週置，
+      並提供一個機制去設定各種的硬體詳細組態。</para>
+
+    <para>在標準的個人電腦上，這通常是 BIOS (掌管整個開機流程)，和 CMOS 
+      (儲存各項設定) ，BIOS 和 CMOS 必須要偵測到磁碟機，
+      並要知道可以載入作業系統的程式是放在磁碟機的哪個位置。</para>
+      
+    <para>這個章節不會解釋第一階段的開機流程，而將重點放在這個磁碟機上的系統載入程式。</para>
+      
+    <para>開機磁區負責找到 boot loader (通常是這樣)，並執行它，
+      這必須要了解要如何在檔案系統中找到它，
+      要怎麼執行，和要如何做一些適當的設定讓這程式正常執行。</para>
+      
+    <sect2 id="boot-boot0">
+      <title>boot0</title>
+      
+      <para>這通常是最前面的一個開機磁區，稱為 boot0，儲存在
+	<firstterm>Master Boot Record</firstterm>，
+        這個區域也就是 BIOS 所要去搜尋和執行的，
+	這裡所需要儲存的資訊為一個可以開機的區域列表。</para>
+
+      <para>boot0 所佔的容量很小，因為放在 <abbrev>MBR</abbrev> 
+        的程式無法超過 512 bytes.</para>
+                
+      <para>顯示如下表：</para>      
+
+      <example id="boot-boot0-example">
+        <title>boot0 的顯示畫面</title>
+
+        <screen>
+F1 DOS
+F2 FreeBSD
+F3 Linux
+F4 ??
+F5 Drive 1
+
+Default: F2</screen>
+      </example>
+    </sect2>
+  
+    <sect2 id="boot-boot1">
+      <title>boot1</title>
+
+      <para>boot1 位於開機磁區上的開機磁軌裡，這裡就是 
+	<link linkend="boot-boot0">boot0</link> 或是任何其他存放於 
+	<abbrev>MBR</abbrev> 的程式所要尋找以繼續完成開機程序的地方。</para>
+
+      <para>boot1 也是很小，因為容量無法超過 512 bytes，不過這對 FreeBSD 
+	<firstterm>disklabel</firstterm> 的而言已經足夠。
+        <firstterm>disklabel</firstterm> 是用來儲存 slice 的相關訊息，
+	並去找到和執行 <link linkend="boot-boot2">boot2。</link></para>
+    </sect2>
+  
+    <sect2 id="boot-boot2">
+      <title>boot2</title>
+      
+      <para>boot2 比較高階，boot2 必須要在 FreeBSD 的檔案系統上找到檔案，
+        並提供一個介面去選擇 kernel 或 loader 來執行。</para>
+
+      <para>因為 <link linkend="boot-loader">loader</link> 比 boot2 
+        又更加高級，而且易於設定，所以 boot2 通常會執行它，
+        不過之前 boot2 設定是直接執行 kernel。</para>
+
+      <example id="boot-boot2-example">
+        <title>boot2 的畫面</title>
+        
+        <screen>&gt;&gt; FreeBSD/i386 BOOT
+Default: 0:wd(0,a)/kernel
+boot:</screen>
+      </example>
+    </sect2>
+  </sect1>
+
+  <sect1 id="boot-loader">
+    <title>Loader：開機步驟之三</title>
+      
+    <para>loader 是三個步驟的最後一個，loader 必須放在檔案系統裡，
+      通常是在 <filename>/boot/loader</filename>。</para>
+
+    <note>
+      <para>雖然 <filename>/boot/boot0</filename>、
+	<filename>/boot/boot1</filename>、和 <filename>/boot/boot2</filename> 
+	的確存在，但是他們並不是在 <abbrev>MBR</abbrev>、開機磁軌和 disklabel 
+	中的正本。</para>
+    </note>
+        
+    <para>Loader 提供了一個容易的設定方法，並使用簡易的內建命令，
+      loader 的背後是由一個強大的命令解譯程式 (使用較複雜的命令集) 組成的。</para> 
+
+    <sect2 id="boot-loader-flow">
+      <title>Loader 的執行流程</title>    
+
+      <para>在初始化的過程中，loader 會偵測終端機和磁碟機，
+	並開始設置所要開啟的磁碟，設定變數對應，
+        接著命令解譯程式啟動，開始解譯 loader 所傳遞的命令。</para>
+
+      <para>loader will then read
+        <filename>/boot/loader.rc</filename>, which by default reads
+        in <filename>/boot/defaults/loader.conf</filename> which
+        sets reasonable defaults for variables and reads
+        <filename>/boot/loader.conf</filename> for local changes to
+        those variables.  <filename>loader.rc</filename> then acts
+        on these variables, loading whichever modules and kernel are
+        selected.</para>
+
+      <para>最後，loader 預設花 10 秒等待任何按鍵的輸入，如果沒有，
+	就開始載入 kernel。如果有，
+	就啟動一個提示符號讓使用者輸入那些易懂的命令，藉此可以調整變數，
+        載入/卸載 module，最後決定要開機還是重開機。</para>
+        
+      <para>較深入的技術探討可以在 &man.loader.8; 找到。</para>
+    </sect2>
+    
+    <sect2 id="boot-loader-commands">
+      <title>Loader 的內建命令</title>
+      
+      <para>這些命令集包括了：</para>
+      
+      <variablelist>
+        <varlistentry>
+          <term>autoboot <replaceable>seconds</replaceable></term>
+          
+          <listitem>
+            <para>如果在所給的秒數之間沒被按鍵中斷的話就接著載入 kernel，
+              這將會由所給的秒數開始倒數，預設的秒數為 10 秒。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>boot
+            <optional><replaceable>-options</replaceable></optional>
+            <optional><replaceable>kernelname</replaceable></optional></term>
+            
+          <listitem>
+            <para>直接配合所給的參數載入核心。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>boot-conf</term>
+
+          <listitem>
+            <para>在要開機時，使用自動的變數配置模組，
+              這只在你先用 <command>unload</command> 時才有意義，並改變一些變數，
+              通常是 <envar>kernel</envar>。</para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>help
+            <optional><replaceable>topic</replaceable></optional></term>
+
+          <listitem>
+            <para>顯示來自 <filename>/boot/loader.help</filename> 的求助訊息，
+              如果所給的主題 (topic) 是 <literal>index</literal>，
+	      那就顯示所有的主題列表。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>include <replaceable>filename</replaceable>
+            &hellip;</term>
+
+          <listitem>
+            <para>執行所給的檔案，這檔案將被讀入並一行一行地被執行，
+            一但有錯誤發生就直接停止這個 inlucde 命令。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>load <optional><option>-t</option>
+            <replaceable>type</replaceable></optional>
+            <replaceable>filename</replaceable></term>
+            
+          <listitem>
+            <para>載入 kernel，kernel 模組或所先指定檔案類型，再接著檔名，
+              任何接在檔案之後的參數都將會傳給此檔來執行。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ls <optional><option>-l</option></optional>
+            <optional><replaceable>path</replaceable></optional></term>
+            
+          <listitem>
+            <para>列出在路徑中的檔案，如果沒有指定路徑將顯示根目錄的檔案列表
+              如果有附加 <option>-l</option> 參數，那麼將一起顯示檔案容量。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>lsdev <optional><option>-v</option></optional></term>
+
+          <listitem>
+            <para>列出所有可以載入 module 的裝置，如果有指定 <option>-v</option> 參數，
+                那麼更詳細的資訊會一起列出。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>lsmod <optional><option>-v</option></optional></term>
+
+          <listitem>
+            <para>顯示已被載入的 module，如果有指定 <option>-v</option> 參數，那麼更詳細的資訊會一起列出。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>more <replaceable>filename</replaceable></term>
+
+          <listitem>
+            <para>顯示所指定的檔案內容，並在每 <varname>LINES</varname> (環境變數) 暫停。</para>
+          </listitem> 
+        </varlistentry>
+
+        <varlistentry>
+          <term>reboot</term>
+          
+          <listitem>
+            <para>直接重開機。</para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>set <replaceable>variable</replaceable></term>
+          <term>set
+            <replaceable>variable</replaceable>=<replaceable>value</replaceable></term>
+
+          <listitem>
+            <para>設定 loader 的環境變數。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>unload</term>
+
+          <listitem>
+            <para>卸載所有被載入的 module。</para>            
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2 id="boot-loader-examples">
+      <title>Loader 的使用範例</title>
+
+      <para>底下是一些實際的 loader 使用範例。</para>      
+
+      <itemizedlist>
+        <listitem>
+          <para>單純的載入 kernel，不過將進入單人模式：</para>
+
+          <screen><userinput>boot -s</userinput></screen>
+        </listitem>
+
+        <listitem>
+          <para>卸載通常要載入的 kernel 和 module，接著載入另一個 kernel：</para>
+
+          <screen><userinput>unload</userinput>
+  <userinput>load <replaceable>kernel.old</replaceable></userinput></screen>
+
+          <para>你可以使用 <filename>kernel.GENERIC</filename>，
+            這是安裝光碟上的通用 kernel，或是 <filename>kernel.old</filename>，
+            這是你上一個安裝的 kernel (如果你有升級或重新配置你自己的 kernel 的話)。</para>
+
+          <note>
+            <para>照著下列的步驟可以配合原先的 module 來載入其他的 kernel：</para>
+
+            <screen><userinput>unload</userinput>
+<userinput>set kernel="<replaceable>kernel.old</replaceable>"</userinput>
+<userinput>boot-conf</userinput></screen>
+          </note>
+        </listitem>
+
+        <listitem>
+          <para>載入核心配置的 script 檔 (這是一個自動的 script 檔案，
+            用來執行你在 kernel 開機階段所要執行的命令)：</para>
+
+          <screen><userinput>load -t userconfig_script
+            <replaceable>/boot/kernel.conf</replaceable></userinput></screen>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+  </sect1>
+
+  <sect1 id="boot-kernel">
+    <title>開機階段的 kernel 調節</title>
+
+    <para>一但 kernel 經由 <link linkend="boot-loader">loader</link> 
+      (一般而言) 或 <link linkend="boot-boot2">boot2</link>
+      (略過執行 loader)，kernel 將會檢查它的開機旗標，如果有，
+      就開始依照旗標做一些必要的調節。</para>
+
+    <sect2 id="boot-kernel-bootflags">
+      <title>Kernel 的開機旗標</title>
+
+      <para>底下是最常用的開機旗標：</para>
+
+      <variablelist id="boot-kernel-bootflags-list">
+        <varlistentry>
+          <term><option>-a</option></term>
+
+          <listitem>
+            <para>在 kernel 初始化階段，訊問要使用哪一個裝置當 root 檔案系統。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-C</option></term>
+
+          <listitem>
+            <para>從光碟機開機。</para>            
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-c</option></term>
+
+          <listitem>
+            <para>執行 UserConfig，開機階段的 kernel 配置檔。</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-s</option></term>
+
+          <listitem>
+            <para>進入單人模式。</para>            
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-v</option></term>
+
+          <listitem>
+            <para>在 kernel 啟動時顯示較多的訊息。</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>要知道更多的開機旗標請參閱 &man.boot.8;。</para>         
+      </note>
+    </sect2>
+
+<!--    <sect2 id="boot-kernel-userconfig">
+      <title>UserConfig: The boot-time kernel configurator</title>
+                                                                                
+      <para> </para>
+    </sect2> -->
+  </sect1>
+
+  <sect1 id="boot-init">
+    <title>Init：進行系統控制權轉移</title>    
+    
+    <para>一但 kernel 完成載入後，kernel 就將控制權交給使用者層的命令 
+      <command>init</command>，通常放置在 <filename>/sbin/init</filename>，
+      或是 <command>loader</command> 的環境變數 <envar>init_path</envar> 
+      所指定的位置。</para>
+
+    <sect2 id="boot-autoreboot">
+      <title>自動 reboot 啟動程序</title>      
+      
+      <para>這個程序將會確定系統將要使用的檔案系統是存在的，如果不存在，
+        那麼 <command>fsck</command> 就不能正常的被執行去修復磁碟機，
+        接著 <command>init</command> 將把系統切換成 <link linkend="boot-singleuser">單人模式</link>，
+        系統管理者就可以在這時候直接處理這錯誤。</para>
+    </sect2>
+
+    <sect2 id="boot-singleuser">
+      <title>單人模式</title>      
+      
+      <para>要進入這個模式可以經由 <link linkend="boot-autoreboot">自動 reboot 啟動程序</link>
+      ，或是在開機階段設置 <option>-s</option> 參數，或者設定 <envar>boot_single</envar> 的變數給 <command>loader</command>。</para>
+      
+      <para>或在 <link linkend="boot-multiuser">多人模式</link> 之下，執行 <command>shutdown</command>，
+      不加 reboot (<option>-r</option>) 或 halt (<option>-h</option>) 參數，也可以進入 <link linkend="boot-singleuser">單人模式</link>。</para>
+      
+      <para>如果系統主控台 <literal>console</literal> 在 <filename>/etc/ttys</filename> 之中是設定成 <literal>insecure</literal> 的，
+      那麼在進入 <link linkend="boot-singleuser">單人模式</link> 時，系統就會要求輸入 root 的密碼。</para>
+
+      <example id="boot-insecure-console">
+        <title>在 /etc/ttys 中設定一個 console 為 insecure</title>
+
+        <programlisting># name  getty                           type    status          comments
+#
+# This entry needed for asking password when init goes to single-user mode
+# If you want to be asked for password, change "secure" to "insecure" here
+console none                            unknown off insecure</programlisting>
+      </example>
+
+      <note>
+        <para>一個 <literal>insecure</literal> 的 console 代表你認定你的 console 的安全等級是 insecure 的，
+          並且想確定有人想進入單人模式時都要輸入 root 的密碼才行，請注意，insecure 不代表你的 console 是 inscure 的，
+          而是，如果你要多一點的安全防護，請選擇 <literal>insecure</literal>，而不是 <literal>secure</literal>。</para>
+      </note>
+    </sect2>
+    
+    <sect2 id="boot-multiuser">
+      <title>多人模式</title>
+      
+      <para>如果 <command>init</command> 無誤地找到了你的檔案系統，
+        或結束了 <link linkend="boot-singleuser">單人模式</link>，
+        系統就會進入多人模式，並開始系統的資源配置。</para>
+
+      <sect3 id="boot-rc">
+        <title>系統資源配置 (rc)</title>
+        
+        <para>開始系統資源配置時，系統將先執行預設的配置檔 <filename>/etc/defaults/rc.conf</filename>，
+          和系統的詳細配置 <filename>/etc/rc.conf</filename>，接著依照 <filename>/etc/fstab</filename> 來掛載檔案系統，
+          再啟動網路服務，和其他的系統監控程式 (daemon)，最後，執行部份程式的起始 script 檔。</para>
+          
+        <para>&man.rc.8; 是個參考資源設定系統的好地方，同理，直接查閱
+        那些 scripts 也是個好方法。</para>          
+
+      </sect3>
+    </sect2>
+  </sect1>
+
+  <sect1 id="boot-shutdown">
+    <title>關機程序</title>    
+    
+    <para>藉由 <command>shutdown</command> 可以控制系統進行關機，
+      <command>init</command> 將會執行 <filename>/etc/rc.shutdown</filename> 
+      這個 script 檔，接著送出終止 (terminate) 信號給所有的程序，
+      在此時如果有無法終止的程序，那麼就送出 kill 的信號。</para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

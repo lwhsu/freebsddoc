@@ -1,0 +1,26 @@
+<!--
+     The FreeBSD Simplified Chinese Documentation Project
+
+     $FreeBSD: doc/zh_CN.GB2312/share/sgml/authors-in-author-tag.ent,v 1.3 2010/02/12 23:30:09 delphij Exp $
+
+     Names to be inserted into <author>...</author>.
+     XXX So far DocBook does NOT allow <email>...</email> in them.
+-->
+
+<!ENTITY author.cn.delphij "<firstname>Àî</firstname><surname>öÎ</surname>">
+
+<!ENTITY author.cn.intron "<firstname>intron@intron.ac</firstname>">
+
+<!ENTITY author.cn.spellar "<firstname>spellar</firstname><surname>@SMTH</surname>">
+
+<!ENTITY author.cn.coolcoold "<firstname>coolcoold</firstname>">
+
+<!ENTITY author.cn.jerome "<firstname>Shi</firstname><surname>Jerome</surname>">
+
+<!ENTITY author.cn.stoneboy "<firstname>Jokhva</firstname>">
+
+<!ENTITY author.cn.susn "<firstname>susn</firstname><surname>@NewSMTH</surname>">
+
+<!ENTITY author.cn.suntosun "<firstname>sunlecn@gmail.com</firstname>">
+
+<!ENTITY author.cn.siziki "<firstname>Àî</firstname><surname>ÐÂ</surname><affiliation><address><email>leehsin@gmail.com</email></address></affiliation>">

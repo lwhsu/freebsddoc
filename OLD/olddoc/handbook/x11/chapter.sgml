@@ -1,0 +1,2291 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/x11/chapter.sgml,v 1.8 2003/08/02 05:34:41 statue Exp $
+
+     Translate into Chinese by ijliao@dragon2.net
+     			       terry@taipeitimes.com
+
+     English Version: 1.14
+-->
+
+<chapter id="x11">
+  <title>X µøµ¡¨t²Î</title>
+  <para><emphasis>¥»³¹¨ú¦Û &a.grog; ªº®Ñ¤¤¡A<ulink
+    url="http://www.wccdrom.com/titles/freebsd/bsdcomp_bkx.phtml">The
+    Complete FreeBSD</ulink>, ¨Ã¥B«O¯d­ìµÛ§@Åv¡C 
+    ¥Ñ &a.jim; ©Ò½s­×¡AXFree86 ªº¦r«¬«h¬O¥Ñ &a.murray; ©ÒµÛ¡C
+  </emphasis></para>
+
+  <sect1>
+    <title>¤jºõ</title>
+    <para>
+      ±µ¤U¨Ó±N¤¶²Ð¡AX11 ªº¦w¸Ë¤Î³]©w¡A¦p¶·ª¾¹D§ó¦h¦³Ãö X11 ¦b±z¨t²Î¤Wªº¸ê°T¡A¤ÎÅãµø¥d¤ä´©ªº±¡§Î
+      ½Ð¬d¾\<ulink url="http://www.xfree86.org/">XFree86</ulink>ºô¯¸¡C
+    </para>
+  </sect1>
+
+  <sect1 id="x-overview">
+    <title>ºõ­n</title>
+
+    <para>FreeBSD ¤w§t¦³ XFree86 ¡A¤ä´© intel ¬[ºcªº UNIX ¡C¦¹³¹¸`±N»¡©ú¦p¦ó³]©w±zªº
+      XFree86 ¦øªA¾¹¡A¥D­nªº¸ê®Æ¬O¥Ñ FreeBSD ©Òµo¦æªºª©¥»¤º®e¦Ó¨Ó¡A¯S§O¬O¦b
+      <filename>/usr/X11R6/lib/X11/doc</filename> ¥Ø¿ý¤Uªº README.FreeBSD
+      ¤Î README.Config¡C
+
+      ¦p±z¦³µo²{¥ô¦ó¤£²Å¦Xªº¦a¤è¡A¨º»òÀÉ®×ªº¤º®e¬O¤ñ³o¤@½g»¡©ú·s¡C¥t¥~±z¥i¦bÀÉ®×
+      <filename>/usr/X11R6/lib/X11/doc/RELNOTES</filename> ¤¤§ä¨ì¥Ø«eª©¥»¦³Ãö¤£¦P
+      §@·~¨t²Îªºª`·N»¡©ú¡C
+    </para>
+
+    <para>
+      X ¨Ï¥Î³\¦hªº°O¾ÐÅé¡A¬°¤F¯à°õ¦æ X ¡A±zªº¨t²Î³Ì¤Ö¥²¶·¦³ 8 MB ªº°O¾ÐÅé¡A
+      ¹ê»Ú³Ì¦n¤]¦³ 16MB ¥ª¥kªº°O¾ÐÅé¡AÂÇ¥Ñ¼W¥[°O¾ÐÅé¡A¥i¼W¥[°õ¦æªº®Ä¯à¡C
+      ¦pªG±z¸g±`¨Ï¥Î X ¡A°O¾ÐÅé¼W¥[¨ì 128 MB «á¡A±z¥i¨£®Ä¯àÅãµÛªº¼W¥[¡C
+    </para>
+
+    <para>
+      ±µ¤U¨Ó³¹¸`¡AÁÙ¦³³\¦h¦³¥Îªº­«­n¸ê°T¡A¦ý±z¥i¯à¥u¬O·Q±Ò°Ê X server ¦Ó¤w¡C
+      ½Ðª`·N¡F
+    </para>
+
+      <warning>
+	<para>
+          ¿ù»~ªº¦w¸Ë¥i¯à¿NÃa¿Ã¹õ©Î¬OÅã¥Ü¥d¡C
+        </para>
+      </warning>
+
+      <para>
+        µM¦Ó¡A°²¦p±z·Q§ë¾÷¡A¦Ó±z¦³¼Ð·Çªº¥þ±mÅã¥Ü¥d¤Î¤£¿ùªºÅã¥Ü¾¹¡A¨º¦³¥i¯à¤£¥Î
+        Åª³o­Ó³¹¸`¡A´N¥i¥H±Ò°Ê X server ¤F¡C
+      </para>
+  </sect1>
+
+  <sect1 id="x-install">
+    <title>¦w¸Ë XFree86</title>
+
+    <para>
+      ¦w¸Ë XFree86 ³ÌÂ²³æªº¤èªk´N¬O¦b§@·~¨t²Î¦w¸Ë®É¥Î sysinstall µ{¦¡¡A©Î¬O«á¨Ó¨Ï¥Î
+      «ü¥O <command>/stand/sysinstall</command> ¦w¸Ë ¡C¦b±µ¤U¨Óªº³¹¸`¤¤¡A§Ú­Ì±N¤¶²Ð
+      ³o¼Ë­n¦p¦óªº¦w¸Ë¡A¨Ã¥B»¡¤@¤U¦p¦ó¦Û¦æ¤â°Ê¦w¸Ë X11 ¡C
+
+    </para>
+
+    <sect2>
+      <title>XFree86 ªºÀÉ®×°t¸m</title>
+
+      <para>
+        XFree86 °t¸m¬Û·í¦hªºÀÉ®×¡A±µ¤U¨Ó³¹¸`¡A§Ú­Ì±N·|»¡©ú¨º¨Ç¬O»Ý­n¦w¸Ëªº¡A©Î¬O±z¤£ª¾¹D¦p¦ó¿ï¾Ü¡A
+        ¦ý¬O¦³ 200MB ªººÏºÐ³Ñ¾lªÅ¶¡¡A¨º¥þ³¡¦w¸Ë¤]¥i¥H¡C
+      </para>
+
+      <para>
+        ¦Ü¤Ö¥²¶·¦w¸Ë¤U­±ªí®æ¤§¤@¡A²Å¦XÅã¥Ü¥dªºÀÉ®×¡C°õ¦æ®É±N»Ý­n¦Ü¤Ö 10Mb ªº°O¾ÐÅé¡A¦øªA¾¹«h»Ý­n 1.7 ¨ì 3 MB 
+        ªº°O¾ÐÅé¡C
+ 
+      </para>
+
+      <para>¤Uªí¬O©Ò»Ýªº¤¸¥ó¡C
+      </para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>Xbin.tgz</filename></entry>
+	      <entry>©Ò¦³ X «È¤áºÝªºÀ³¥Îµ{¦¡¤Î¨ç¦¡®w¡C
+              </entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xfnts.tgz</filename></entry>
+	      <entry> misc ©M 75 dpi ªº¦r«¬¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xlib.tgz</filename></entry>
+	      <entry>¸ê®ÆÀÉ®×¤Î°õ¦æ®É©Ò»Ý¨ç¦¡¡C
+              </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </sect2>
+
+    <sect2>
+      <title>X ¦øªA¾¹</title>
+
+      <para>
+        ¬°¤F¹F¦¨¤W­z»¡ªº¡A±z¦Ü¤Ö»Ý¤@­Ó X ªº¦øªA¾¹¡A¨º±N¦û±¼¬ù 3 MB ªººÏºÐªÅ¶¡¡C
+        ¥D­n¦]¿ï¾Ü¤£¦PªºÅã¥Ü¥d¦Ó¦³©Ò¤£¦P¡A¹w³]ªº X ¦øªA¾¹¬O¡A
+	<filename>/usr/X11R6/bin/X</filename>, ¦Ó¥L¬O¤@­Óµ{¦¡ªºÀÉ®×³sµ²¨ì
+	<filename>/usr/X11R6/bin/XF86_xxxx</filename>¡C
+        ±z¥i¥H¦b¦w¸Ë¥úºÐªº <filename>/cdrom/XF86336/Servers</filename>¡A§ä¨ì¤ä´©¼Ð·Ç PC ¬[ºcªº X µ{¦¡
+        ¦b <filename>/cdrom/XF86336/PC98-Servers</filename>¡A§ä¨ì¤ä´©¤é¥» PC98 ¬[ºcªº X µ{¦¡¡C
+        ©Î¬O¤]¥i¥H¸g¥Ñ FTP ºô¯¸¨ú±o¡C
+	<ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/XF86336/Servers/">ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/XF86336/Servers/</ulink> ©Î¬O 
+        <ulink url="ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/XF86336/PC98-Servers/">ftp://ftp.FreeBSD.org/pub/FreeBSD/releases/i386/&rel.current;-RELEASE/XF86336/PC98-Servers/</ulink></para>
+
+      <para>¦b¼Ð·Ç PC ¬[ºc¤U¥i¥Îªº X ¦øªA¾¹¡G</para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>X8514.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â IBM 8514 «¬¡A©Î¬O§¹¥þ¬Û®e¡C
+		</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XAGX.tgz</filename></entry>
+	      <entry>8 ¤Î 16-bit ÃC¦â AGX ¤Î XGA ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XI128.tgz</filename></entry>
+	      <entry>8 ¤Î 16-bit  ÃC¦â I128 ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XMa32.tgz</filename></entry>
+	      <entry>8 ¤Î 16-bit ÃC¦â ATI Mach32 ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XMa64.tgz</filename></entry>
+	      <entry>8, 16, ¤Î 32-bit ÃC¦â ATI Mach64
+		ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XMa8.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â ATI Mach8 ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XMono.tgz</filename></entry>
+	      <entry>1-bit monochrome for VGA, Super-VGA, Hercules, and
+		others.</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XP9K.tgz</filename></entry>
+	      <entry>8, 16, ¤Î 32-bit ÃC¦â Weitek P9000  ªºÅã¥Ü¥d
+		(Diamond Viper)¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XS3.tgz</filename></entry>
+	      <entry>8, 16, ¤Î 32-bit ÃC¦â S3 ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XS3V.tgz</filename></entry>
+	      <entry>8 ¤Î 16-bit ÃC¦â S3 ViRGE ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XSVGA.tgz</filename></entry>
+	      <entry>&gt;=8-bit ÃC¦â¡A¤ä´© Super-VGA ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XVG16.tgz</filename></entry>
+	      <entry>4-bit ÃC¦â¡A¤ä´© VGA and Super-VGA ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>XW32.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© ET4000/W32¡A /W32i¡A /W32p¡A ©M
+		ET6000 ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para> ¦b¤é¥»ªº PC98 ¬[ºc¤U¥i¥Îªº X ¦øªA¾¹¡G
+      </para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>X9GAN.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© PC98 GA-98NB/WAP  ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9GA9.tgz</filename></entry>
+	      <entry>8, 16, ©M 32-bit ÃC¦â¡A¤ä´© PC98 S3 GA-968
+		ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9480.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© PC98 PEGC</entry>
+	    </row>
+
+	    <row>
+  	      <entry><filename>X9NKV.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© PC98 NEC-CIRRUS/EPSON NKV/NKV2
+		ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9WBS.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© PC98 WAB-S ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9WEP.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© PC98 WAB-EP ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9WSN.tgz</filename></entry>
+	      <entry>8-bit ÃC¦â¡A¤ä´© PC98 WSN-A2F ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9EGC.tgz</filename></entry>
+	      <entry>4-bit  ÃC¦â¡A¤ä´© PC98 EGC.</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9TGU.tgz</filename></entry>
+	      <entry>8 ©M 16-bit  ÃC¦â¡A¤ä´© PC98 Trident Cyber9320/9680
+		ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9NS3.tgz</filename></entry>
+	      <entry>8 ©M 16-bit ÃC¦â¡A¤ä´© PC98 NEC S3 ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9SPW.tgz</filename></entry>
+	      <entry>8 ©M 16-bit ÃC¦â¡A¤ä´© PC98 S3 PW/PCSKB
+		ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>X9LPW.tgz</filename></entry>
+	      <entry>8 ©M 16-bit ÃC¦â¡A¤ä´© PC98 S3 PW/LB ªºÅã¥Ü¥d¡C</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>
+        ¨C¤@­Ó X ¦øªAµ{¦¡³£¦³»¡©úªº¤å¥ó¡A¥]§t¸Ô²Ó¤ä´©ªºÅã¥Ü´¹¤ù¡A©M¯S©w»¡©ú¡C
+      </para>
+
+      <para>¦P®É¤]¦³´£¨Ñ¤@¨ÇªºÀÉ®×µ¹ X ªº¶}µo¤H­û¡G
+      </para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>Xprog.tgz</filename></entry>
+	      <entry>³]©w <filename>lib*.a</filename>¡A©M«È¤áºÝ½s¿è
+		<filename>*.h</filename> ©Ò»ÝªºÀÉ®×¡C
+              </entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xctrb.tgz</filename></entry>
+	      <entry>Contributed sources.</entry>
+	    </row>
+
+	    <row>
+  	      <entry><filename>Xlk98.tgz</filename></entry>
+	      <entry><quote>link kit</quote>¡A¤é¥» PC98 ¬[ºc¤U¡A«Ø¥ß¦øªA¾¹ªº³sµ²¤u¨ã¡C
+	      </entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xlkit.tgz</filename></entry>
+	      <entry><quote>link kit</quote>¡A¦b¼Ð·Ç PC ¬[ºc¤U¡A«Ø¥ß¦øªA¾¹ªº³sµ²¤u¨ã¡C
+              </entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xsrc-1.tgz</filename></entry>
+	      <entry>²Ä¤@³¡¥÷§¹¾ãªºµ{¦¡½X¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xsrc-2.tgz</filename></entry>
+	      <entry>²Ä¤G³¡¥÷§¹¾ãªºµ{¦¡½X¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xsrc-3.tgz</filename></entry>
+	      <entry>²Ä¤T³¡¥÷§¹¾ãªºµ{¦¡½X¡C</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <note>
+	<para>±z±N»Ý­n <filename>Xprog.tgz</filename>
+          ¦pªG±z¦³­n¦w¸Ë X ¦b ports ¤Uªº³nÅé¡C</para>
+      </note>
+
+      <para>XFree86 ¦P®É¤]¥]§t¤F¤@¨Çªþ¥[ªº³¡¥÷¡A¹³¬O»¡©ú¤å¥ó¡A¦w¸Ëµ{¦¡¡C
+      </para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>Xdoc.tgz</filename></entry>
+	      <entry>»¡©úÀÉ¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xjdoc.tgz</filename></entry>
+	      <entry>¤é¤å»¡©úÀÉ¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xps.tgz</filename></entry>
+	      <entry>PostScript ÀÉ®×®æ¦¡ªº»¡©úÀÉ¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xhtml.tgz</filename></entry>
+	      <entry>HTML ÀÉ®×®æ¦¡ªº»¡©úÀÉ¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xman.tgz</filename></entry>
+	      <entry>X ¨t²Îªº»¡©ú¤å¥ó(Ä¶µù¡Gman pages)¡C.</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xcfg.tgz</filename></entry>
+	      <entry>­Ó§O³]©w <command>xinit</command> ©M
+		<command>xdm</command> °õ¦æ®É³]©wªºÀÉ®×¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xset.tgz</filename></entry>
+	      <entry><filename>X86Setup</filename> µ{¦¡; 
+                ¬O¹Ï§Î¤¶­±ªº³]©w¤u¨ã¡A¦Ó <filename>xf86config</filename>
+		«h¬O¤å¦r¤¶­±¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xjset.tgz</filename></entry>
+	      <entry><filename>XF86Setup</filename> ¤é¤åª©¦b¼Ð·Ç PC ¬[ºc¤Uªº³]©w¤u¨ã¡C
+              </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para><filename>XF86Setup</filename> ¬O¹Ï§Î¼Ò¦¡ªº³]©w¤u¨ã¡A¦ý±z¤]³\·|³ßÅw¼Ð·Çªº³]©w¤u¨ã 
+            <filename>xf86config</filename>¡C¹ï <filename>xf86config</filename>±z¤£»Ý­n¯S§OªºÀÉ®×;
+            ¥¦¤w¸g¥]§t¦b <filename>Xbin.tgz</filename>¤§¤¤¡C</para>
+      <para>
+        ²Ä¤@¦¸¦w¸Ë®É¡A±z±N»Ý­n
+        <filename>Xcfg.tgz</filename> ¨Ó«Ø¥ß±zªº°_©l³]©wÀÉ¡A­n¦w¸Ë§ó·sª©¥»®É¡A
+        ¤£­n¥Î¥¦¡A§_«h·|ÂÐ»\­ì¦³ªº³]©wÀÉ¡C
+      </para>
+
+      <para>
+        ¦b XFree86 ¤U¡AÁÙ¦³¨ä¥L¥i¥Îªº¦r«¬:
+      </para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>Xf100.tgz</filename></entry>
+	      <entry>100 dpi ªº¦r«¬¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xfscl.tgz</filename></entry>
+	      <entry>Speedo and Type1 ªº¦r«¬¡C</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xfnon.tgz</filename></entry>
+	      <entry>¤é¤å¡A¤¤¤å¡A¤Î¨ä¥L«D­^¤åªº¦r«¬¡C
+	      </entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xfcyr.tgz</filename></entry>
+	      <entry>Cyrillic fonts.</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>¤£¦P©ó¥H¤W»¡©úªº X ¦øªA¾¹¡A ¤U¦CªºÀÉ®×¤w§t¦b¥D­nªº¥Ø¿ý¤¤¡C
+      </para>
+
+      <informaltable>
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>ÀÉ®×</entry>
+	      <entry>»¡©ú</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>Xfsrv.tgz</filename></entry>
+	      <entry>The font server.¡]¦r«¬¦øªA¾¹¡^</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xnest.tgz</filename></entry>
+	      <entry>A nested server running as a client window on
+		another display.</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xprt.tgz</filename></entry>
+	      <entry>The print server.¡]¦C¦L¦øªA¾¹¡^</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>Xvfb.tgz</filename></entry>
+	      <entry>The Virtual Framebuffer X server, which renders
+		into memory or an mmapped file.</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </sect2>
+
+    <sect2>
+      <title>¤â°Ê¦w¸Ë XFree86 </title>
+
+      <para>¦pªG±z¤£¬O¨Ï¥Î sysinstall ¨Ó¦w¸Ë X ¡A±z»Ý­n¹ê¦æ¥H¤U¨BÆJ¡G
+      </para>
+
+      <procedure>
+	<step>
+	  <para>«Ø¥ß©Ò»Ýªº¥Ø¿ý¡A¨Ã±NÀÉ®×¸ÑÀ£ÁY¡C
+	  </para>
+	</step>
+
+	<step>
+	  <para>¿ï¾Ü¨Ã¦w¸Ë X ¦øªA¾¹¡C</para>
+	</step>
+
+	<step>
+	  <para>³]©w¯à³sµ² X ªºÀô¹Ò¡C</para>
+	</step>
+
+	<step>
+	  <para>§ä¤@­Ó¯à°õ¦æ X ªº²×ºÝ¾÷¡C</para>
+	</step>
+
+	<step>
+	  <para>³]©w­n°õ¦æ X ªºµwÅé¡C</para>
+	</step>
+      </procedure>
+
+      <para>³o¨Ç¨BÆJÅ¥°_¨Ó¦n¹³«Ü¦h¡A¦ý¦p¦³¨Ì·Ó¤èªk¨BÆJ¤]¤£·|«ÜÃø¡A¥H¤U¨BÆJ±N§i¶D±z¨C¤@­Ó¨BÆJ¡C
+      </para>
+
+      <sect3>
+	<title>±NÀÉ®×¸ÑÀ£ÁY</title>
+
+	<para>±z¥²¶·¦³ root ªºÅv­­¡A¦]¬°¦³¨ÇÀÉ®×¬O¥H set-user-id ªº¤è¦¡°õ¦æ
+        ¡]¥¦­Ì¦b°õ¦æ®É¾Ö¦³ root ªºÅv­­¡^¡C¦pªG±z¥Î¤@¯ëªº¨Ï¥ÎªÌ¥h¸ÑÀ£ÁY¡A¥L¥i¯à¦b°õ¦æ®É¤¤Â_¡C
+         ±z¥²¶·¥Î umask ªº­È 022 ¡]Åv­­ rwxr-xr-x ¡^¡A¦]¬° X »Ý­n¯S®íªºÅv­­¡C 
+        </para>
+
+	<screen>&prompt.user; <userinput>su</userinput>
+Password:
+&prompt.root; <userinput>umask 022</userinput></screen>
+
+	<para>¦pªG±z¦b <filename>/usr</filename> ªº¥Ø¿ý¤U¨S¦³¨¬°÷ªºªÅ¶¡¡A±z¥i¦b¥t¤@­ÓºÏºÐ¤À³Î°Ï
+         «Ø¥ß¤@­Ó¥Ø¿ý¡A¦b±N /usr ³s¨ìµ²©Ò«Ø¥ßªº¥Ø¿ý¡C
+         ¨Ò¦p¡G¦bÀÉ®×¨t²Î¤W¦³ <filename>/home</filename> ¦³¨¬°÷ªºªÅ¶¡±z¥i¥H ¡G
+
+        </para>
+
+	<screen>&prompt.root; <userinput>cd /home</userinput>
+&prompt.root; <userinput>mkdir X11R6</userinput>
+&prompt.root; <userinput>ln -s /home/X11R6 /usr/X11R6</userinput></screen>
+
+	<para>
+          µM«á¡A¨M©w»Ý­n¦w¸Ë¨º¨ÇÀÉ®×¡C³Ì¤p¦w¸Ë¥²¶·¿ï¾Ü <filename>Xbin.tgz</filename>¡A
+	  <filename>Xfnts.tgz</filename>¡A<filename>Xlib.tgz</filename>¡A©M <filename>Xcfg.tgz</filename> ¡C 
+          ¦pªG±z¤w³]©w¦n X ªºµwÅé¡A¥i¥H¬Ù²¤ <filename>Xcfg.tgz</filename> ¡C</para>
+
+	<para>
+        ¦pªG±z¬O¨Ï¥Î sh ¡A¹³³o¼Ë¸ÑÀ£ÁY¡G
+        </para>
+
+	<screen>&prompt.root; <userinput>mkdir -p /usr/X11R6</userinput>
+&prompt.root; <userinput>cd /usr/X11R6</userinput>
+&prompt.root; <userinput>for i in bin fnts lib cfg; do</userinput>
+&prompt.root; <userinput>  tar xzf X$i.tgz</userinput>
+&prompt.root; <userinput>done</userinput></screen>
+
+	<para>¦pªG±z¬O¨Ï¥Î csh ¡A¹³³o¼Ë¿é¤J¡G</para>
+
+	<screen>&prompt.root; <userinput>mkdir -p /usr/X11R6</userinput>
+&prompt.root; <userinput>cd /usr/X11R6</userinput>
+&prompt.root; <userinput>foreach i (bin fnts lib cfg)</userinput>
+<prompt>?</prompt> <userinput>  tar xzf X$i.tgz</userinput>
+<prompt>?</prompt> <userinput>end</userinput></screen>
+      </sect3>
+
+      <sect3>
+	<title>¦w¸Ë X ¦øªA¾¹</title>
+
+	<para>
+          ¬Û¹ï©ó±zªºÅã¥Ü¥d¡A¿ï¾Ü¾A¦XªºÀÉ®×¡C¦pªG¤W­±³¹¸`ªºªí®æªº¸ê®Æ¤´µM¤£¨¬¡A
+          ½Ð°Ñ¦Ò X ¦øªA¾¹ªº man pages ªº¸ê®Æ¡A<filename>/usr/X11R6/man/man1/XF86_*</filename>¡A´N·|
+          ¦C¥X¨C­Ó X ¦øªA¾¹©Ò¤ä´©ªº´¹¤ù¡C 
+          ¨Ò¦p¡G¦pªG±zªºÅã¥Ü¥d¬O¨Ï¥Î ET4000 ªº´¹¤ù¡A¨º±z´N¬O¥Î<<filename>XF86_SVGA</filename> ªº X ¦øªA¾¹¡C 
+          µM«á¥i¥H¿é¤J:</para>
+
+	<screen>&prompt.root; <userinput>cd /usr/X11R6</userinput>
+&prompt.root; <userinput>tar xzf XSVGA.tgz [¿é¤J¾A¦Xªº X ¦øªA¾¹¦WºÙ]</userinput></screen>
+      </sect3>
+
+      <sect3>
+	<title>³]©wÀô¹Ò</title>
+
+	<para>±µ¤U¨Ó¡A±z¥i¯à»Ý­n«Ø¥ß¤@­Ó³sµ²«ü¨ì
+	  <filename>/usr/X11/bin/X</filename> ³sµ²±N³s¨ì±z©Ò³]ªº
+          X ¦øªA¾¹¡A¦b³o­Ó¨Ò¤l¤¤¡A³sµ²«ü¨ì <filename>XF86_SVGA</filename> ¦øªA¾¹:</para>
+
+	<screen>&prompt.root; <userinput>cd /usr/X11R6/bin</userinput>
+&prompt.root; <userinput>rm X</userinput>
+&prompt.root; <userinput>ln -s XF86_SVGA X</userinput></screen>
+
+	<para>X ¥²¶·¦³³o­Ó³sµ²¤~¯à¥¿½Tªº¤u§@¡A¦ý¬O¤´µM¥i¦b°õ¦æ
+	  <filename>xf86config</filename> ¤¤°µ³]©w &ndash; ¦p¤U¡G</para>
+
+	<para>
+          ¤U¤@¨B¡A¦pªG¬O sh ÀË¬d
+	  <filename>/usr/X11R6/bin</filename> ¥Ø¿ý¸ô®|¤w¦s¦b <filename>/etc/profile</filename> ªº¹w³]¸ô®|¤¤¡Acsh 
+          «h¬O¦b <filename>/etc/csh.login</filename>, ¦pªG¨S¦³ªº¸Ü¡A´N¥[¤W¡C
+          ³Ì¦n¥Î¤å®Ñ½s¿è¾¹¡A¦ý¬O¦pªG±z·Q¨«±¶®|¡A±z¥i¥H¿é¤J¡G
+           
+        </para>
+
+	<screen>&prompt.root; <userinput>echo 'PATH=$PATH:/usr/X11R6/bin' &gt;&gt;/etc/profile</userinput></screen>
+
+	<para>©Î¡Gor:</para>
+	  
+	<screen>&prompt.root; <userinput>echo 'set path = ($path /usr/X11R6/bin)' &gt;&gt;/etc/csh.login</userinput></screen>
+
+	<para>©Î¬O¡A½T©w¨C­Ó X ªº¨Ï¥ÎªÌ³£¦³ <filename>/usr/X11R6/bin</filename> ¦b¥L­Ìªº¹w³]¸ô®|
+        <envar>PATH</envar> ÅÜ¼Æ¤§¤¤¡Cvariable.</para>
+
+	<para>±µ¤U¨Ó¡A¥Î ldconfig ±N¦@¨Éªº¨ç¦¡®w©ñ¤J
+	  <filename>ld.so</filename> ªº¼È¦s¤§¤¤¡G</para>
+
+	<screen>&prompt.root; <userinput>ldconfig -m /usr/X11R6/lib</userinput></screen>
+
+	<para>±z¥i¥H¤£¥Î <command>ldconfig</command> ¡A¦pªG±z¦b°õ¦æ
+          X ¤§«e¥´ºâ­«·s¶}¾÷ªº¸Ü¡C</para>
+
+	<para>±z¥i¥H¤£¥Î¸ÑÀ£ÁY¦r«¬ªºÀÉ®×¡A¦ý¬O¤£¸ÑÀ£ÁYªº¸Ü¡A±z¥²¶·¦b¬Û¦Pªº¥Ø¿ý¤U°õ¦æ
+	  <command>mkfontdir</command> ¡A§_«h±zªº X ¦øªA¾¹µLªk°õ¦æ¡A¨Ã§i¶D§A
+          <quote>could not open default font `fixed'</quote>¡C
+        </para>
+      </sect3>
+
+      <sect3>
+	<title>«ü©w X ªº»Ý²×ºÝ¾÷</title>
+
+	<para>½T©w±z¦³¦h¾lªº²×ºÝ¾÷¡C ­º¥ýÀË¬d±z¦³´X­Ó²×ºÝ¾÷¡G
+        </para>
+
+	<screen>&prompt.root; <userinput>dmesg | grep virtual</userinput>
+sc0: VGA color &lt;16 virtual consoles, flags=0x0&gt;</screen>
+
+	<para>ÀË¬d <filename>/etc/ttys</filename> ¥H½T©w¡A
+        ¦Ü¤Ö¦³¤@­Ó²×ºÝ¾÷ ¡]ttyvxx device¡^ ¨Ã¨S¦³±Ò°Ê¡C ¬Ý³o­Ó¦r 
+	  <literal>off</literal>:</para>
+
+	<screen>&prompt.root; <userinput>grep ttyv /etc/ttys</userinput>
+ttyv0  "/usr/libexec/getty Pc" cons25  on secure
+ttyv1  "/usr/libexec/getty Pc" cons25  on secure
+ttyv2  "/usr/libexec/getty Pc" cons25  on secure
+ttyv3  "/usr/libexec/getty Pc" cons25  off secure</screen>
+
+	<para>¦b³o­Ó¨Ò¤l¤¤¡A<filename>/dev/ttyv3</filename> ¬O¥i¥H¥Îªº¡A
+              ¦pªG±zªº¨t²Î®Ö¤ß¤ä´©¤Ö©ó 4 ­Ó²×ºÝ¾÷¡C±z¥i¥H­«½s®Ö¤ß¡A¥H¤ä´©§ó¦hªº²×ºÝ¾÷¡A
+              ¦p¤£¬O¡A±z¥i¥H¦b <filename>/etc/ttys</filename> ¤¤³]©w¤@­Ó²×ºÝ¾÷ getty ¤£±Ò°Ê¡A
+              ¥u­n±N on §ï¦¨ off §Y¥i¡C     
+	</para>
+      </sect3>
+
+      <sect3>
+	<title>³]©w X ªºµwÅé </title>
+
+	<para>¦b¦w¸Ë§¹ X ªº³nÅé«á¡A±z±N»Ý­n­Ó§O³]©w X ³]©wÀÉ <filename>XF86Config</filename> , 
+          »Ý­nÅý X ¦øªA¾¹ª¾¹D±zªºµwÅé¡A©M¨ä¥L°õ¦æ®Éªº³]©w¡C
+        </para>
+
+	<para>¬°¤F³]©w <filename>XF86Config</filename>¡A
+          ±z»Ý­n¦³¥H¤UªºµwÅé¸ê°T¡G
+        </para>
+
+	<itemizedlist>
+	  <listitem>
+	    <para> 
+              ±zªº·Æ¹«§Î¦¡¡A§Ç¦C°ðªº·Æ¹«ªº³t«×¡A©M±z©Ò¨Ï¥Îªº³sµ²¸Ë¸m¡C
+              ¤@¯ë¦Ó¨¥¹ï§Ç¦C°ð·Æ¹«À³¸Ó¬O <filename>/dev/ttyd0</filename>
+              ©Î¬O<filename>/dev/ttyd1</filename>¡A¹ï PS/2
+              ªº·Æ¹«¬O <filename>/dev/psm0</filename> ¡A ©Î
+	      <filename>/dev/mse0</filename> for a bus mouse.</para>
+	  </listitem>
+
+	  <listitem>
+	    <para>
+              µP¤lÅã¥Ü¥dªºµP¤l¡A¤ÎÅã¥Ü¥d¤Wªº°O¾ÐÅé¤j¤p¡C
+	      ¦pªG¬O¨S¦³¦W¦rªº¥d¡A¥i°Ñ¦Ò¥¦©Ò¥Îªº´¹¤ù¡C
+	    </para>
+	  </listitem>
+
+	  <listitem>
+	    <para>
+              Åã¥Ü¾¹°Ñ¼Æ¡F¦³««ª½¤Î¤ô¥­ªº±½´yÀW²v¡C
+            </para>
+	  </listitem>
+	</itemizedlist>
+      </sect3>
+
+      <sect3>
+	<title>§PÂ_µwÅé</title>
+
+	<para>
+          ±zÀ³¦p¦ó±oª¾±z¨Ï¥Î¦óºØªºµwÅé¶Ü¡H »s³y°ÓÀ³¸Ó·|§i¶D±z¡A¦ý¸g±`§Ú­Ì±oª¾ªº¬O«Ü¦³­­ªº¡F
+          <quote>Super VGA ªºÅã¥Ü¥d¡A±½´yÀW²v76 Hz ¡A¥i¹F 16,777,216 ¦â</quote>¡C
+          ³o§i¶D¤F±z³Ì°ª¥i¹Fªº¹³¯À (24 bits &ndash; - ÃC¦âªº¼Æ¥Ø¬O 2 (¹³¯À²`)
+          ¦ý¬O¥L¨Ã¨S§i¶D±z¨ä¥L¦³Ãö©ó³o¶ôÅã¥Ü¥dªº¸ê®Æ¡C
+        </para>
+
+	<para>±µ¤U¨Ó§Ú­Ì·|¬Ý¨ì±z¯u¥¿»Ý­nªº°Ñ¼Æ¬O¡A¤ô¥­ªº±½´yÀW²v¡A±½´yÀW²v½d³ò¡AÅã¥Ü
+              ¥dªº´¹¤ù¡A¤Î¥d¤W¦³¦h¤Öªº°O¾ÐÅé¡C
+
+        </para>
+
+	<para>
+          ±z¥i¯à¨S¦³³o¨Ç¸ê®Æ¡A¦ý¬O±z¥iÂÇ¥Ñ <command>SuperProbe</command> µ{¦¡±o¨ì¡C
+          ¥¦À³¸Ó¯à§i¶D±zÅã¥ÜA¥dªº´¹¤ù¡A¤Î¥d¤W¦³¦h¤Öªº°O¾ÐÅé¡C
+        </para>
+
+	<para>¦³¨Ç®É­Ô <command>SuperProbe</command> ·|Åý±zªº¨t²Î·í¾÷¡A½Ð½T©w±z­n°õ¦æ®
+              ®É¨S¶]¤°»ò­«­nªº¤u§@¡C°õ¦æ SuperProbe ¬Ý°_¨Ó¹³³o¼Ë¡G
+        </para>
+
+	<screen>&prompt.root; <userinput>SuperProbe</userinput>
+(warnings and acknowledgments omitted)
+First video: Super-VGA
+        Chipset: Tseng ET4000 (Port Probed)
+        Memory:  1024 Kbytes
+        RAMDAC:  Generic 8-bit pseudo-color DAC
+                 (with 6-bit wide lookup tables (or in 6-bit mode))</screen>
+
+	<para><command>SuperProbe</command> °õ¦æ®É¬O¹L©óÁ¿¨s¡A±z±`±o¨ì¤U­±ªº°T®§¡G
+	</para>
+
+	<screen>SuperProbe: Cannot be run while an X server is running
+SuperProbe: If an X server is not running, unset $DISPLAY and try again
+SuperProbe: Cannot open video</screen>
+
+	<para>´«¥y¸Ü»¡¡A§Y¨Ï¨S¦³ X ¦øªA¾¹¦b°õ¦æ¡A¦pªG±z¦³³]©wÀô¹ÒÅÜ¼Æ <envar>DISPLAY</envar>¡A
+	  <command>SuperProbe</command> ¨ÃµLªk°õ¦æ ¡C ­n¦p¦ó§R°£©O¡H
+          ¬OBourne-style shells ®É¡A±z¿é¤J¡G</para>
+
+	<screen>&prompt.root; <userinput>unset DISPLAY</userinput></screen>
+
+	<para>¦b C shell ®É¡A±z¿é¤J¡G</para>
+
+	<screen>&prompt.root; <userinput>unsetenv DISPLAY</userinput></screen>
+      </sect3>
+
+      <sect3>
+	<title>°õ¦æ <command>xf86config</command></title>
+
+	<para>
+          ³Ì®e©ö«Ø¥ß³]©wÀÉªº¤è¦¡¡A¬O°õ¦æ¤u¨ãµ{¦¡ <command>xf86config</command> ¡]ª`·N¬O¤p¼gªº¡^ ©Î¬O 
+          <command>XF86Setup</command>¡C ¨â­Ó³£·|¤Þ¾É±z¤@¨B¤@¨Bªº³]©w¡C
+	  <command>xf86config</command> ¬O¦b¤å¦r¼Ò¦¡¤U°õ¦æ¡A¦Ó <command>XF86Setup</command> 
+          ¬O¦b¹Ï§Î¼Ò¦¡¤U°õ¦æ¡C
+	  <command>XF86Setup</command> ¦b¤@¯ëªºµwÅé¤U¤ñ¸û®e©ö¦³°ÝÃD¡A©Ò¥H§Ú­Ó¤H¤@¯ë¸û³ßÅw¥Î
+	  <command>xf86config</command>.</para>
+
+	<para>±z¤]¥i¥H¨Ï¥Î sysinstall¡A¦ý¨Ã¨S¦³«Ü¤jªº¤£¦P¡F
+	  <application>sysinstall</application> ¥u¬O¬°±z¥h°õ¦æ <command>xf86config</command>¡A
+          ¤Î¤ñ¸û®e©öª½±µ¶}©l¡A¦b¦¹³¹¸`¡A§Ú­Ì·|¥Î¤@­Ó¨Ò¤l¨Ó»¡©ú¡A¦p¦ó¥Î <command>xf86config</command> ¨Ó³]©w¡C
+
+          §Ú­Ì¥¿¦b¦w¸Ë¤@¶ô«ÜÂÂ¡A°t¦³ 1 MB Åã¥Ü¥d°O¾ÐÅéªº Diamond SpeedStar Åã¥Ü¥d¡A¤@°¦
+	  Logitech MouseMan ªº·Æ¹«¡A¥H¤Î¤@­Ó ADI MicroScan 5AP ªºÅã¥Ü¾¹¡C
+          ·Æ¹«¬O³s±µ¹q¸£ªº²Ä¤@­Ó§Ç¦C°ð <filename>/dev/ttyd0</filename>¡C</para>
+
+	<para>°õ¦æ <command>xf86config</command>¡A¿é¤Jµ{¦¡ªº¦WºÙ¡C
+          ¦pªG <filename>/usr/X11R6/bin</filename> ¦³¦b±z <envar>PATH</envar> ªºÀô¹ÒÅÜ¼ÆùØ¡A±z¥u­n¥´
+	  <command>xf86config</command>¡C ¦pªG¨S¦³¡A±z»Ý­n¿é¤J§¹¾ãªº <command>xf86config</command> 
+          ¸ô®|¦WºÙ¡A¹³¡G
+	</para>
+
+	<screen>&prompt.root; <userinput>/usr/X11R6/bin/xf86config</userinput></screen>
+
+	<para>³oµ{¦¡·|°ò©ó±zªº¿ï¶µ«Ø¥ß°ò¥» <filename>XF86Config</filename> ³]©wÀÉ¡C
+        </para>
+
+	<para>The <filename>XF86Config</filename> µ{¦¡ÀÉ¡A³q±`¦bfile usually resides
+	  in <filename>/usr/X11R6/lib/X11</filename> ©Î¬Oor
+	  <filename>/etc</filename>.  XFree86 ·|´£¨Ñ¤@­Ó½d¨ÒÀÉ <filename>XF86Config</filename>¡F
+	  ¥¦³]¸m¤F¼Ð·Çªº VGA ¥d©MÅã¥Ü¾¹¡A¦³ 640x480 ªº¸ÑªR«×¡C·í¥L­n¼g¤JÀÉ®×®É¡A·|¸ß°Ý¸ô®|¦WºÙ¡C
+	</para>
+
+	<para>±z¥i¥H¥Î½d¨Òªº <filename>XF86Config</filename> ¬°°òÂ¦¥h­×§ï¡A©Î¬OÅýµ{¦¡²£¥Í
+	  °òÂ¦ªº <filename>XF86Config</filename> ÀÉ¡A¤Î¦X¾Aªº³]©w¡C
+          
+	  <filename>/usr/X11R6/lib/X11/doc/README.Config</filename> ÀÉ®×¦³¸Ô²Ó¦³Ãö³]©w¹Lµ{ªº»¡©ú¡C
+	</para>
+
+	<para>Ãö©ó¦øªA¾¹ªº¥[³t¡]¥]§t SVGA ¦øªA¾¹ªº¥[³tÅX°Êµ{¦¡¡^¡A¦¹µ{¦¡¨Ã¤£ª¾¹D³o¨Ç³
+              ¡AÃö©ó´¹¤ù¤ÎÅã¥Ü¥dªº³]©w¤ÎÁn©ú¡C¦b¬Y¨Ç³]©w¡A¦³¨Ç³]©w­È¬O¥²»ÝÁn©úªº¡A½Ð
+              °Ñ¾\¦øªA¾¹ªº man ¸ê®Æ¡A¤Î´¹¤ùªºÁn©ú¤å¥ó¡C
+	</para>
+
+	<para>¦bÄ~Äò³]©w®É¡A½Ð½T©w±zª¾¹D¬O¨º¤@ºØ´¹¤ù¤ÎÅã¥Ü¥dªº°O¾ÐÅé¤j¤p¡C
+
+	  <command>SuperProbe</command> µ{¦¡¥i¥HÀ°±z¡C¦pªG±zª¾¹D­n°õ¦æ¨º¤@ºØ X ¦øªA¾¹¡A¥L¤]¬O«Ü¦³À°§Uªº¡C
+          
+        </para>
+
+	<screen>Press enter to continue, or ctrl-c to abort. ENTER
+
+First specify a mouse protocol type. Choose one from the following list:
+
+ 1.  Microsoft compatible (2-button protocol)
+ 2.  Mouse Systems (3-button protocol)
+ 3.  Bus Mouse
+ 4.  PS/2 Mouse
+ 5.  Logitech Mouse (serial, old type, Logitech protocol)
+ 6.  Logitech MouseMan (Microsoft compatible)
+ 7.  MM Series
+ 8.  MM HitTablet
+ 9.  Microsoft IntelliMouse</screen>
+
+	<para>
+          ¦pªG±z¬O¨Ï¥ÎÂùÁäªº·Æ¹«¡A¤j¦h¿ï¾Ü protocol 1¡A¦pªG¬O¤TÁäªº·Æ¹«¥i¯à protocal 1 ¤Î protocol 2 ³£¤ä´©¡C
+          ±µ¤U¨Ó¿ï¶µ¡A¥D­n¦³¨âºØ¡A¦³¶}Ãö¥i¿ï¾Üªº·Æ¹«¹w³]¬O protocol 1 ªº·Æ¹«¡A¦b¶}¾÷®É´N³]©wªº¬°
+          protocol 2 ¡D ¦³¨Ç·Æ¹«¥i¥H³]©w¹ï§Ç¦C°ð¯S§Oªº°T¸¹¡A¥i¥H°Ñ¦Ò¡]ClearDTR/ClearRTS ªº¿ï¶µ¡^¡C</para>
+
+	<screen>Enter a protocol number: 6              Logitech MouseMan
+
+You have selected a Logitech MouseMan type mouse. You might want to enable
+ChordMiddle which could cause the third button to work.
+
+Please answer the following question with either 'y' or 'n'.
+Do you want to enable ChordMiddle? n</screen>
+
+	<para>
+          ¤j¦hªº X µ{¦¡³£¥i¨Ï¥Î²Ä¤TÁä¡A±zÀ³¸Ó·|·Q±Ò°Ê¡C¦pªG¬O genuine Logitech ªº·Æ¹«¡A
+          ±z¤£»Ý­n±Ò°Ê <literal>ChordMiddle</literal> ´N¥i¨Ï¥Î¡C¦pªG±zµo²{±Ò°Ê X «á¡A¨Ã¤£¯à¨Ï¥Î
+          ²Ä¤TÁä¡A±z¥i¥H½s¿è³]©wÀÉ¡A¥H±Ò°Ê <literal>ChordMiddle</literal> ³o¼Ë¬O¤ñ­«·s°õ¦æ
+           <command>XF86Setup</command> ³]©w®e©öªº¡C
+
+       </para>
+
+	<para>±µ¤U¨Óªº¹L³]©w¶µ¥Ø¡G</para>
+
+	<screen>If your mouse has only two buttons, it is recommended that you enable Emulate3Buttons.
+
+Please answer the following question with either 'y' or 'n'.
+Do you want to enable Emulate3Buttons? n
+
+Now give the full device name that the mouse is connected to, for example
+/dev/tty00. Just pressing enter will use the default, /dev/mouse.
+
+Mouse device: /dev/ttyd1</screen>
+
+	<para>
+          ³o¤@­Ó¶µ¥Ø¥²¶·¸û¤p¤ß¡A±z¥²¶·¥¿½Tªº«ü¥X­A©Ò³sµ²ªº¸Ë¸m¡C
+          <command>xf86config</command> ¨Ã«D±M¬° FreeBSD ³]­pªº¡A¹w³]½d¨Ò¬O¿ù»~ªº¡A
+          §Ç¦C°ð·Æ¹«¬O¥Ñ <filename>/dev/ttyd0</filename> ¨ì
+          <filename>/dev/ttyd3</filename> ¡APS/2 ªº·Æ¹«¬O <filename>/dev/psm0</filename> ¡A
+          bus mouse «h¬O <filename>/dev/mse0</filename>¡C
+        </para>
+
+	<para>±µ¤U¨Ó¡A§Ú­Ì·|¬Ý¨ì¡G</para>
+
+	<screen>Beginning with XFree86 3.1.2D, you can use the new X11R6.1
+XKEYBOARD extension to manage the keyboard layout. If you answer 'n' to the
+following question, the server will use the old method, and you have to
+adjust your keyboard layout with xmodmap.
+
+Please answer the following question with either 'y' or 'n'.
+Do you want to use XKB? y
+
+The following dialogue will allow you to select from a list of already
+preconfigured keymaps. If you don't find a suitable keymap in the list,
+the program will try to combine a keymap from additional information you
+are asked then. Such a keymap is by default untested and may require
+manual tuning. Please report success or required changes for such a
+keymap to XFREE86@XFREE86.ORG for addition to the list of preconfigured
+keymaps in the future.
+
+Press enter to continue, or ctrl-c to abort.
+
+List of preconfigured keymaps:
+
+  1  Standard 101-key, US encoding
+  2  Microsoft Natural, US encoding
+  3  KeyTronic FlexPro, US encoding
+  4  Standard 101-key, US encoding with ISO9995-3 extensions
+  5  Standard 101-key, German encoding
+  6  Standard 101-key, French encoding
+  7  Standard 101-key, Thai encoding
+  8  Standard 101-key, Swiss/German encoding
+  9  Standard 101-key, Swiss/French encoding
+ 10  None of the above
+
+Enter a number to choose the keymap.
+
+1                                       Choose the standard US keyboard</screen>
+
+	<para> ²{¦b§Ú­Ì­n³]©w¿Ã¹õ¡A¤ñ¸û­«­nªº°Ñ¼Æ¬O¿Ã¹õ««ª½ªº§ó·s²v¡A¤]´N¬O¿Ã¹õ§ó·sªº³t²v¡A
+          ©M³Ì­«­nªº¦P¨B¤ô¥­§ó·s²v¡A¤]´N¬O±½´y½uÅã¥Üªº³t«×¡C
+
+        </para>
+
+	<para> §A¿Ã¹õªº»¡©ú®Ñ¤WÀ³¸Ó¦³¥¿½Tªº¿Ã¹õ««ª½ªº§ó·s²v¡A¦P¨B¤ô¥­§ó·s²v¡C¦pªGÁÙ¬O¤£½T©w¡A¥i¥H¬d¾\
+               ¿Ã¹õªº¸ê®Æ®w <filename>/usr/X11R6/lib/X11/doc/Monitors</filename> ¡A
+               ¬Ý±zªº¿Ã¹õ«¬¸¹¦³¨S¦b¸Ì­±¡C
+        </para>
+
+	<screen>Press enter to continue, or ctrl-c to abort. ENTER
+
+You must indicate the horizontal sync range of your monitor. You can either
+select one of the predefined ranges below that correspond to industry-
+standard monitor types, or give a specific range.
+
+It is VERY IMPORTANT that you do not specify a monitor type with a horizontal
+sync range that is beyond the capabilities of your monitor. If in doubt,
+choose a conservative setting.
+
+    hsync in kHz; monitor type with characteristic modes
+ 1  31.5; Standard VGA, 640x480 @@ 60 Hz
+ 2  31.5 - 35.1; Super VGA, 800x600 @@ 56 Hz
+ 3  31.5, 35.5; 8514 Compatible, 1024x768 @@ 87 Hz interlaced (no 800x600)
+ 4  31.5, 35.15, 35.5; Super VGA, 1024x768 @@ 87 Hz interlaced, 800x600 @@ 56 Hz
+ 5  31.5 - 37.9; Extended Super VGA, 800x600 @@ 60 Hz, 640x480 @@ 72 Hz
+ 6  31.5 - 48.5; Non-Interlaced SVGA, 1024x768 @@ 60 Hz, 800x600 @@ 72 Hz
+ 7  31.5 - 57.0; High Frequency SVGA, 1024x768 @@ 70 Hz
+ 8  31.5 - 64.3; Monitor that can do 1280x1024 @@ 60 Hz
+ 9  31.5 - 79.0; Monitor that can do 1280x1024 @@ 74 Hz
+10  31.5 - 82.0; Monitor that can do 1280x1024 @@ 76 Hz
+11  Enter your own horizontal sync range
+
+Enter your choice (1-11):</screen>
+
+	<para>
+          ¤£©¯ªº¬O¡A§Ú­Ì½d¨Òªº¿Ã¹õ«¬¸¹¨S¦³¦b <filename>/usr/X11R6/lib/X11/doc/Monitors</filename> ùØ¡A
+          §Ú­ÌÁÙ¥i¥H¥Î¤â°Ê¿é¤J³o¨Çªº¸ê®Æ¡C¿Ã¹õ««ª½ªº§ó·s²v¡A¤ô¥­±½´yÀW²v¬O 30 to 64 kHz ¡A
+          ¦Ó¿Ã¹õ««ª½±½´yÀW²v 50 to 100 Hz ¡C¤ô¥­±½´yÀW²v´X¥G©M²Ä 8 ­Ó¿ï¶µ¬Û¦P¡C¦ý¬O¤ñ§Ú­Ìªº
+          ¿Ã¹õ¸ê®Æ°ª¤F 0.3 kHz ¡H ±z­n«_ÀI¶Ü¡H³o¼Ë°µ¤j¦h¬O¨S¦³°ÝÃDªº¡A¿Ã¹õÀ³¸Ó¤£·|¦]¬°³o¼Ë¤@ÂIªº
+          ®t§O´N¤£¯à¥Î¡A¦Ó¥B <filename>XF86Config</filename> ¥¼¥²¯à²£¥Í³o¼Ë¤¶©ó64.0 and 64.3 kHz ªºÀW²v¡A
+          ¦ý¬O§Ú­Ì¨Ã¤£»Ý­n«_³o¼ËªºÀI¡A¿é¤J¥¿½Tªº­È§Y¥i¡C
+          
+        </para>
+
+	<screen>Enter your choice (1-11): 11
+
+Please enter the horizontal sync range of your monitor, in the format used
+in the table of monitor types above. You can either specify one or more
+continuous ranges (e.g. 15-25, 30-50), or one or more fixed sync
+frequencies.
+
+Horizontal sync range: 30-64</screen>
+
+	<para>±µ¤U¨Ó¡A¬O¿ï¾Ü¹õ««ª½±½´yÀW²v¡G
+        </para>
+
+	<screen>You must indicate the vertical sync range of your monitor.
+You can either select one of the predefined ranges below that correspond
+to industry-standard monitor types, or give a specific range.  For
+interlaced modes, the number that counts is the high one (e.g., 87 Hz
+rather than 43 Hz).
+
+ 1  50-70
+ 2  50-90
+ 3  50-100
+ 4  40-150
+ 5  Enter your own vertical sync range
+
+Enter your choice: 3                         exactly the range of the monitor</screen>
+
+	<para> ¤U¤@­Ó¬O¿é¤J¤@­Ó¥i¨Ñ¿ëµøªºªº¦WºÙ¡C±z¥i¥H·Q§A­nªº¦WºÙ¡A°£«D±z³B²z«Ü¦hªºªºµwÅé¡A
+               ±z¥i¥HÅý <command>xf86config</command> ¬°±z¨M©w¦WºÙ¡G
+      
+        </para>
+
+	<screen>You must now enter a few identification/description strings,
+namely an identifier, a vendor name, and a model name. Just pressing enter
+will fill in default names.
+
+The strings are free-form, spaces are allowed.
+Enter an identifier for your monitor definition: ENTER
+Enter the vendor name of your monitor:  ENTER
+Enter the model name of your monitor:  ENTER</screen>
+
+	<para>¦A¨Ó´N¬O¿ï¾Ü¿Ã¹õÅã¥Ü¥d¡A¦b³o­Ó¨Ò¤l¤¤¡A§Ú­Ì¬O¥Î¥H ET4000 ¬°´¹¤ù¦­´Áªº
+              Diamond SpeedStar Plus Åã¥Ü¥d¡A¥H¤Î¥¼ª¾ªº Ramdac ¡C¨Ó¬Ý¬Ý¦p¦ó³B²z¡G
+              
+        </para>
+
+	<screen>Now we must configure video card specific settings.  At
+this point you can choose to make a selection out of a database of video
+card definitions.  Because there can be variation in Ramdacs and clock
+generators even between cards of the same model, it is not sensible to
+blindly copy the settings (e.g., a Device section).  For this reason,
+after you make a selection, you will still be asked about the components
+of the card, with the settings from the chosen database entry presented as
+a strong hint.
+
+The database entries include information about the chipset, what server to
+run, the Ramdac and ClockChip, and comments that will be included in the
+Device section. However, a lot of definitions only hint about what server
+to run (based on the chipset the card uses) and are untested.
+
+If you can't find your card in the database, there's nothing to worry about.
+You should only choose a database entry that is exactly the same model as
+your card; choosing one that looks similar is just a bad idea (e.g. a
+GemStone Snail 64 may be as different from a GemStone Snail 64+ in terms of
+hardware as can be).
+
+Do you want to look at the card database? y
+  0  2 the Max MAXColor S3 Trio64V+                    S3 Trio64V+
+  1  928Movie                                          S3 928
+  2  AGX (generic)                                     AGX-014/15/16
+  3  ALG-5434(E)                                       CL-GD5434
+  4  ASUS 3Dexplorer                                   RIVA128
+  5  ASUS PCI-AV264CT                                  ATI-Mach64
+  6  ASUS PCI-V264CT                                   ATI-Mach64
+  7  ASUS Video Magic PCI V864                         S3 864
+  8  ASUS Video Magic PCI VT64                         S3 Trio64
+  9  AT25                                              Alliance AT3D
+ 10  AT3D                                              Alliance AT3D
+ 11  ATI 3D Pro Turbo                                  ATI-Mach64
+ 12  ATI 3D Xpression                                  ATI-Mach64
+ 13  ATI 3D Xpression+ PC2TV                           ATI-Mach64
+ 14  ATI 8514 Ultra (no VGA)                           ATI-Mach8
+ 15  ATI All-in-Wonder                                 ATI-Mach64
+ 16  ATI Graphics Pro Turbo                            ATI-Mach64
+ 17  ATI Graphics Pro Turbo 1600                       ATI-Mach64
+
+Enter a number to choose the corresponding card definition.
+Press enter for the next page, q to continue configuration.
+ENTER</screen>
+
+	<para> ¼Æ¥H¦Ê­pªº¸ê®Æ¥H¦r¥À±Æ§Ç¡A²×©ó§Ú­Ì¬Ý¨ì¡G
+        </para>
+
+	<screen>108  DSV3325                                           S3 ViRGE
+109  DSV3326                                           S3 Trio64V+
+110  DataExpert DSV3325                                S3 ViRGE
+111  DataExpert DSV3365                                S3 Trio64V+
+112  Dell S3 805                                       S3 801/805
+113  Dell onboard ET4000                               ET4000
+114  Diamond Edge 3D                                   nv1
+115  Diamond Multimedia Stealth 3D 2000                S3 ViRGE
+116  Diamond Multimedia Stealth 3D 2000 PRO            S3 ViRGE/DX
+117  Diamond SpeedStar (Plus)                          ET4000
+118  Diamond SpeedStar 24                              ET4000
+119  Diamond SpeedStar 24X (not fully supported)       WD90C31
+120  Diamond SpeedStar 64                              CL-GD5434
+121  Diamond SpeedStar HiColor                         ET4000
+122  Diamond SpeedStar Pro (not SE)                    CL-GD5426/28
+123  Diamond SpeedStar Pro 1100                        CL-GD5420/2/4/6/8/9
+124  Diamond SpeedStar Pro SE (CL-GD5430/5434)         CL-GD5430/5434
+125  Diamond SpeedStar64 Graphics 2000/2200            CL-GD5434
+
+Enter a number to choose the corresponding card definition.
+Press enter for the next page, q to continue configuration.
+
+117
+
+Your selected card definition:
+
+Identifier: Diamond SpeedStar (Plus)
+Chipset:    ET4000
+Server:     XF86_SVGA
+
+Press enter to continue, or ctrl-c to abort.ENTER
+
+Now you must determine which server to run.  Refer to the man pages and
+other documentation.  The following servers are available (they may not
+all be installed on your system):
+
+ 1  The XF86_Mono server. This a monochrome server that should work on any
+    VGA-compatible card, in 640x480 (more on some SVGA chipsets).
+ 2  The XF86_VGA16 server. This is a 16-color VGA server that should work on
+    any VGA-compatible card.
+ 3  The XF86_SVGA server. This is a 256 color SVGA server that supports
+    a number of SVGA chipsets. On some chipsets it is accelerated or
+    supports higher color depths.
+ 4  The accelerated servers. These include XF86_S3, XF86_Mach32, XF86_Mach8,
+    XF86_8514, XF86_P9000, XF86_AGX, XF86_W32, XF86_Mach64, XF86_I128 and
+    XF86_S3V.
+
+These four server types correspond to the four different "Screen" sections in
+XF86Config (vga2, vga16, svga, accel).
+
+ 5  Choose the server from the card definition, XF86_SVGA.
+
+Which one of these screen types do you intend to run by default (1-5)?</screen>
+
+	<para> µ{¦¡¤w¸gÀ°§Ú­Ì¿ï¾Ü¤F XF86_SVGA ¡C §Ú­Ì»Ý­n§ï¶Ü¡H ³Ì¦n¦³«Ü¦nªº²z¥Ñ¤~°µ¡C
+               ¦b³o­Ó¨Ò¤lùØ¡A§Ú­Ì¤£»Ý­n§ï¡A«O¯dµ{¦¡¬°§Ú­Ìªº¿ï¾Ü§Y¥i¡G
+       </para>
+
+	<screen>Which one of these screen types do you intend to run by default (1-5)? 5
+
+The server to run is selected by changing the symbolic link 'X'. For example,
+the SVGA server.
+
+Please answer the following question with either 'y' or 'n'.
+Do you want me to set the symbolic link? y</screen>
+
+	<para> ©Ò¦³±Ò°Ê X ªºµ{¦¡ ¡]xinit, startx, and xdm¡^·|±Ò°Ê 
+               <filename>/usr/X11R6/bin/X</filename> µ{¦¡¡C
+               ³o·|¬O¤@­Ó³sµ²¡A³s¨ì±zªº X ¦øªA¾¹¡C ¨S¦³³o­Ó³sµ²¡A±z±NµLªk±Ò°Ê±zªº X ¡C
+        </para>
+
+	<screen>Now you must give information about your video card.  This
+will be used for the "Device" section of your video card in XF86Config.
+
+You must indicate how much video memory you have. It is probably a good
+idea to use the same approximate amount as that detected by the server you
+intend to use. If you encounter problems that are due to the used server
+not supporting the amount memory you have (e.g. ATI Mach64 is limited to
+1024K with the SVGA server), specify the maximum amount supported by the
+server.
+
+How much video memory do you have on your video card:
+
+ 1  256K
+ 2  512K
+ 3  1024K
+ 4  2048K
+ 5  4096K
+ 6  Other
+
+Enter your choice: 3
+
+You must now enter a few identification/description strings, namely an
+identifier, a vendor name, and a model name. Just pressing enter will fill
+in default names (possibly from a card definition).
+
+Your card definition is Diamond SpeedStar (Plus).
+
+The strings are free-form, spaces are allowed.
+Enter an identifier for your video card definition: ENTER
+You can simply press enter here if you have a generic card, or want to
+describe your card with one string.
+Enter the vendor name of your video card:  ENTER
+Enter the model (board) name of your video card:  ENTER
+
+Especially for accelerated servers, Ramdac, Dacspeed and ClockChip settings
+or special options may be required in the Device section.
+
+The RAMDAC setting only applies to the S3, AGX, W32 servers, and some
+drivers in the SVGA servers. Some RAMDAC's are auto-detected by the server.
+The detection of a RAMDAC is forced by using a Ramdac "identifier" line in
+the Device section. The identifiers are shown at the right of the following
+table of RAMDAC types:
+
+  1  AT&amp;T 20C490 (S3 and AGX servers, ARK driver)                att20c490
+  2  AT&amp;T 20C498/21C498/22C498 (S3, autodetected)                att20c498
+  3  AT&amp;T 20C409/20C499 (S3, autodetected)                       att20c409
+  4  AT&amp;T 20C505 (S3)                                            att20c505
+  5  BrookTree BT481 (AGX)                                       bt481
+  6  BrookTree BT482 (AGX)                                       bt482
+  7  BrookTree BT485/9485 (S3)                                   bt485
+  8  Sierra SC15025 (S3, AGX)                                    sc15025
+  9  S3 GenDAC (86C708) (autodetected)                           s3gendac
+ 10  S3 SDAC (86C716) (autodetected)                             s3_sdac
+ 11  STG-1700 (S3, autodetected)                                 stg1700
+ 12  STG-1703 (S3, autodetected)                                 stg1703
+
+
+Enter a number to choose the corresponding RAMDAC.
+Press enter for the next page, q to quit without selection of a RAMDAC.
+
+
+q                                  We don't need this
+
+
+A Clockchip line in the Device section forces the detection of a
+programmable clock device. With a clockchip enabled, any required
+clock can be programmed without requiring probing of clocks or a
+Clocks line. Most cards don't have a programmable clock chip.
+Choose from the following list:
+
+ 1  Chrontel 8391                                               ch8391
+ 2  ICD2061A and compatibles (ICS9161A, DCS2824)                icd2061a
+ 3  ICS2595                                                     ics2595
+ 4  ICS5342 (similar to SDAC, but not completely compatible)    ics5342
+ 5  ICS5341                                                     ics5341
+ 6  S3 GenDAC (86C708) and ICS5300 (autodetected)               s3gendac
+ 7  S3 SDAC (86C716)                                            s3_sdac
+ 8  STG 1703 (autodetected)                                     stg1703
+ 9  Sierra SC11412                                              sc11412
+10  TI 3025 (autodetected)                                      ti3025
+11  TI 3026 (autodetected)                                      ti3026
+12  IBM RGB 51x/52x (autodetected)                              ibm_rgb5xx
+
+Just press enter if you don't want a Clockchip setting.
+What Clockchip setting do you want (1-12)? ENTER
+
+For most configurations, a Clocks line is useful since it prevents the slow
+and nasty sounding clock probing at server start-up. Probed clocks are
+displayed at server startup, along with other server and hardware
+configuration info. You can save this information in a file by running
+imprecise; some clocks may be slightly too high (varies per run).
+
+At this point I can run X -probeonly, and try to extract the clock information
+from the output. It is recommended that you do this yourself and add a clocks
+line (note that the list of clocks may be split over multiple Clocks lines) to
+your Device section afterwards. Be aware that a clocks line is not
+appropriate for drivers that have a fixed set of clocks and don't probe by
+default (e.g. Cirrus). Also, for the P9000 server you must simply specify
+clocks line that matches the modes you want to use.  For the S3 server with
+a programmable clock chip you need a 'ClockChip' line and no Clocks line.
+
+You must be root to be able to run X -probeonly now.
+
+Do you want me to run 'X -probeonly' now?</screen>
+
+	<para>³o³Ì«á¬OÆZ­È±o·Qªº¡C±z¥i¥H¦b¬Y¨Ç®É­Ô°õ¦æ X  -probeonly ¡A
+              ¦ý¬O¡A³o»Ý­n¨ä¥Lªº¤u§@¡C §Ú­Ìµ¥¤@¤U·|¨Ó¹Á¸Õ©M¹ï±z´£¨Ñ«ØÄ³¡C
+
+        </para>
+
+	<screen>Do you want me to run 'X -probeonly' now? n
+
+For each depth, a list of modes (resolutions) is defined. The default
+resolution that the server will start-up with will be the first listed
+mode that can be supported by the monitor and card.
+Currently it is set to:
+
+"640x480" "800x600" "1024x768" for 8bpp
+"640x480" "800x600" for 16bpp
+"640x480" for 24bpp
+"640x400" for 32bpp
+
+Note that 16, 24 and 32bpp are only supported on a few configurations.
+Modes that cannot be supported due to monitor or clock constraints will
+be automatically skipped by the server.
+
+ 1  Change the modes for 8pp (256 colors)
+ 2  Change the modes for 16bpp (32K/64K colors)
+ 3  Change the modes for 24bpp (24-bit color, packed pixel)
+ 4  Change the modes for 32bpp (24-bit color)
+ 5  The modes are OK, continue.
+
+Enter your choice: 5     accept the defaults
+
+You can have a virtual screen (desktop), which is screen area that is larger
+than the physical screen and which is panned by moving the mouse to the edge
+of the screen. If you don't want virtual desktop at a certain resolution,
+you cannot have modes listed that are larger. Each color depth can have a
+differently-sized virtual screen
+
+Please answer the following question with either 'y' or 'n'.
+Do you want a virtual screen that is larger than the physical screen? n</screen>
+
+	<para> ­n¨M©w±z¬O§_­n¦³¤@­Ó¤ñ¹ê»Ú¿Ã¹õ¤jªºµê¾®µøµ¡¡A¬O¦³ÂI·Ð¤Hªº°ÝÃD¡A©Ò¥H§Ú«ØÄ³¦^µª n ´N¦n¤F¡C
+               °²¦p±zªº¿Ã¹õ³Ì°ª¸ÑªR«×¤]¤£°ªªº¸Ü¡A¤]³\±z·|Ä±±o¦³ÂI¥Î¡C
+
+        </para>
+
+	<para>²{¦b³]©wµ²§ô <application>sysinstall</application> ­n¼g¤J³]©wÀÉ¡G
+        </para>
+
+	<screen>I am going to write the XF86Config file now.  Make sure
+you don't accidently overwrite a previously configured one.
+
+Shall I write it to /etc/XF86Config? y
+
+File has been written. Take a look at it before running 'startx'. Note that
+the XF86Config file must be in one of the directories searched by the server
+(e.g. /usr/X11R6/lib/X11) in order to be used. Within the server press
+ctrl, alt and '+' simultaneously to cycle video resolutions. Pressing ctrl,
+alt and backspace simultaneously immediately exits the server (use if
+the monitor doesn't sync for a particular mode).
+
+For further configuration, refer to /usr/X11R6/lib/X11/doc/README.Config.</screen>
+
+	<para> §¹¦¨³]©wÀÉ«á¡A±z´N¥i¥H¶}©l X ¤F¡C
+ 
+       </para>
+      </sect3>
+    </sect2>
+  </sect1>
+
+  <sect1 id="x-fonts">
+    <title>¦b XFree86 ¤U¨Ï¥Îªº¦r«¬</title>
+
+    <sect2 id="truetype">
+    <title>TrueType ¦r«¬</title>
+
+    <para>¹w³]©M <application>XFree86</application> ¥]¸Ë¦b¤@°_ªº¦r«¬
+    ¹ïÀ³¥Îµ{¦¡¨Ã«D«Ü²z·Qªº¦r«¬¡A¤j¦r¬Ý°_¨Ó¤£±M·~¡A¤p¦r¦b Netscape ùØ¤]¬O«Ü¤£´¼ªº¡A©¯¹Bªº¬O
+    <application>XFree86</application> «Ü®e©ö´N¥i¥H¨Ï¥Î TrueType ªº¦r«¬¡C
+    </para>
+
+    <para><application>XFree86</application> 4.0 ¤º«Ø´N¦³¤ä´© TrueType ªº¦r«¬¡C
+          ¦³¨âºØ¤£¦Pªº¼Ò²Õ¥i¥H±Ò°Ê³o­Ó¥\¯à¡C ¦b³oªº½d¨Ò¤§¤¤§Ú­Ì¥Î©M¨ä¥¦¬[ºc¸û¬Û®eªº "freetype" ¼Ò²Õ¡C
+          ­n±Ò°Ê "freetype" ¼Ò²Õ¡A¥u­n±N¤U­±ªº¸ê®Æ¥[¨ì <filename>/etc/X11/XF86Config</filename> ÀÉ¤¤¡A§Y¥i¡C
+<screen>
+  Load  "freetype"
+</screen>
+    </para>
+
+    <para>¹ï <application>XFree86</application> 3.3.X ªºª©¥»¡A±z¥²¶·¥t¥~°õ¦æ TrueType ¦r«¬¦øªA¾¹¡C
+          <application>Xfstt</application> ¬O¤@¯ë¥Î¦r«¬¦øªA¾¹¡C­n¦b FreeBSD ¤W¦w¸Ë 
+          <application>Xfstt</application> ±z¥u»Ý­n¥Ñ ports ªº <filename>/usr/ports/x11-servers/Xfstt</filename>
+          ¦w¸Ë§Y¥i¡C
+    </para>
+
+    <para>±z²{¦b¥i¥H«Ø¥ß¤@­Ó TrueType ¦r«¬ªº¥Ø¿ý¡A¡]e.g. <filename>/usr/X11R6/lib/X11/fonts/TrueType</filename>¡^
+          µM«á«þ¨©©Ò¦³ªº TrueType ¦r«¬¨ì³o¤@­Ó¥Ø¿ý¡C½Ð°O±o¡A±z¤£¯à¥ÑÄ«ªG¹q¸£½Æ»s TrueType ¦r«¬¡A±z¥u¥i¥H
+          «þ¨© Unix/DOS/Windows ªº TrueType ¦r«¬µ¹ <application>XFree86</application> ¥Î¡C
+          Á¿©Ò¦³ªº TrueType ¦r«¬½Æ»s¨ì³o­Ó¥Ø¿ý«á¡A±z»Ý­n°õ¦æ <application>ttmkfdir</application> ¨Ó«Ø¥ß 
+          <filename>fonts.dir</filename> ³o­ÓÀÉ®×¡A¥HÅý³B²z X ¦r«¬ªºµ{¦¡¡Aª¾¹D¦w¸Ë¤F¨º¨Ç·sªº¦r«¬¡A
+          <application>ttmkfdir</application> «h¥i¥Ñ FreeBSD ªº ports 
+          <filename>/usr/ports/x11-fonts/ttmkfdir</filename> ¨Ó¦w¸Ë¡C
+        
+    </para>
+<screen>
+    &prompt.root; <userinput>cd /usr/X11R6/lib/X11/fonts/TrueType</userinput>
+    &prompt.root; <userinput>ttmkfdir > fonts.dir</userinput>
+</screen>
+
+    <para>²{¦b±z¼W¥[ TrueType ¦r«¬ªº¥Ø¿ý¨ì¦r«¬¥Ø¿ý¤¤¡A³ÌÂ²³æªº¤è¦¡¬O±N
+    ¤U­±´X¦æ¥[¨ì±zªº <filename>~/.xinitrc</filename> ÀÉ®×¤¤¡]Ä¶µù¡G¤]¥i±N¦r«¬ªº¥Ø¿ý¥[¨ì X ³]©wÀÉªº
+    FontPath ¤§¤¤¡^¡C
+    </para>
+<screen>
+    &prompt.user; <userinput>xset fp+ /usr/X11R6/lib/X11/fonts/TrueType</userinput>
+    &prompt.user; <userinput>xset fp rehash</userinput>
+</screen>
+
+    <para>³o¼Ë´N¥i¥H¤F¡A²{¦b Netscape¡AGimp¡AStarOffice¡A©M¨ä¥Lªº X À³¥Îµ{¦¡¡A³£ª¾¹D¤F±z·s¸Ëªº  TrueType ¦r«¬
+          ¤F¡A¦b°ª¸ÑªR«×¿Ã¹õ¤U¤Wºôªº¤p¦r¡A©M¦b StarOffice ¤¤ªº¤j¦r«¬¡A²{¦b¬Ý°_¨Ó¦n¤F¡C
+
+    </para>
+
+    <para>
+    ¤@ÂI­n¦V±z¥Ó©úªº¡G¥Ø«e XFree86 ¨Ã¤£¤ä´© anti-aliased ªº¦r«¬¡A³o¦b°ª¸ÑªR«×¿Ã¹õ¤WÀ³¸Ó¤£¬O¤°»ò°ÝÃD¡A
+    ¦ý¬O¥¦ªº¿é¥XÁÙ¬O¨S¦³¹³ MacOS ©Î¬O Microsoft Windows ¨º¼Ë¦n¡C
+
+    </para>
+    </sect2>
+
+    <sect2 id="antialias">
+    <sect2info>
+      <authorgroup>
+        <author>
+          <firstname>Joe Marcus</firstname>
+          <surname>Clarke</surname>
+          <contrib>Updated for XFree86 4.3 by </contrib>
+          <!-- May 2003 -->
+        </author>
+      </authorgroup>
+    </sect2info>
+    <title>Anti-Aliased Fonts</title>
+
+    <indexterm><primary>anti-aliased fonts</primary></indexterm>
+    <indexterm><primary>fonts</primary>
+      <secondary>anti-aliased</secondary></indexterm>
+
+    <para>Anti-aliasing has been available in
+      <application>XFree86</application> since 4.0.2.  However, font
+      configuration was cumbersome before the introduction of
+      <application>XFree86</application> 4.3.0.  Starting in version 4.3.0, 
+      all fonts in <filename>/usr/X11R6/lib/X11/fonts/</filename> and
+      <filename>~/.fonts/</filename> are automatically 
+      made available for anti-aliasing to Xft-aware applications.  Not
+      all applications are Xft-aware yet, but many have received Xft support.
+      Examples of Xft-aware applications include Qt 2.3 and higher (the 
+      toolkit for the <application>KDE</application> desktop), 
+      Gtk+ 2.0 and higher (the toolkit for the 
+      <application>GNOME</application> desktop), and 
+      <application>Mozilla</application> 1.2 and higher.
+    </para>
+
+    <para>In order to control which fonts are anti-aliased, or to
+      configure anti-aliasing properties, create (or edit, if it
+      already exists) the file
+      <filename>/usr/X11R6/etc/fonts/local.conf</filename>.  Several
+      advanced features of the Xft font system can be tuned using
+      this file; this section describes only some simple
+      possibilities.  For more details, please see
+      &man.fonts-conf.5;.</para>
+
+    <indexterm><primary>XML</primary></indexterm>
+
+    <para>This file must be in XML format.  Pay careful attention to
+      case, and make sure all tags are properly closed.  The file
+      begins with the usual XML header followed by a DOCTYPE
+      definition, and then the <literal>&lt;fontconfig&gt;</literal> tag:</para>
+
+    <programlisting>
+      &lt;?xml version="1.0"?&gt;
+      &lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+      &lt;fontconfig&gt;
+    </programlisting>
+
+    <para>As previously stated, all fonts in
+      <filename>/usr/X11R6/lib/X11/fonts/</filename> as well as
+      <filename>~/.fonts/</filename> are already made available to
+      Xft-aware applications.  If you wish to add another directory
+      outside of these two directory trees, add a line similar to the
+      following to
+      <filename>/usr/X11R6/etc/fonts/local.conf</filename>:</para>
+
+    <programlisting>&lt;dir&gt;/path/to/my/fonts&lt;/dir&gt;</programlisting>
+
+    <para>After adding new fonts, and especially new font directories,
+      you should run the following command to rebuild the font
+      caches:</para>
+
+    <screen>&prompt.root; <userinput>fc-cache -f</userinput></screen>
+
+    <para>Anti-aliasing makes borders slightly fuzzy, which makes very
+      small text more readable and removes <quote>staircases</quote> from
+      large text, but can cause eyestrain if applied to normal text.  To
+      exclude point sizes smaller than 14 point from anti-aliasing, include
+      these lines:</para>
+
+      <programlisting>        &lt;match target="font"&gt;
+            &lt;test name="size" compare="less"&gt;
+                &lt;double&gt;14&lt;/double&gt;
+            &lt;/test&gt;
+            &lt;edit name="antialias" mode="assign"&gt;
+                &lt;bool&gt;false&lt;/bool&gt;
+            &lt;/edit&gt;
+        &lt;/match&gt;</programlisting>
+
+    <indexterm><primary>fonts</primary>
+      <secondary>spacing</secondary></indexterm>
+
+    <para>Spacing for some monospaced fonts may also be inappropriate
+      with anti-aliasing.  This seems to be an issue with
+      <application>KDE</application>, in particular.  One possible fix for
+      this is to force the spacing for such fonts to be 100.  Add the
+      following lines:</para>
+
+     <programlisting>       &lt;match target="pattern" name="family"&gt;
+           &lt;test qual="any" name="family"&gt;
+               &lt;string&gt;fixed&lt;/string&gt;
+           &lt;/test&gt;
+           &lt;edit name="family" mode="assign"&gt;
+               &lt;string&gt;mono&lt;/string&gt;
+           &lt;/edit&gt;
+        &lt;/match&gt;
+        &lt;match target="pattern" name="family"&gt;
+            &lt;test qual="any" name="family"&gt;
+                &lt;string&gt;console&lt;/string&gt;
+            &lt;/test&gt;
+            &lt;edit name="family" mode="assign"&gt;
+                &lt;string&gt;mono&lt;/string&gt;
+            &lt;/edit&gt;
+        &lt;/match&gt;</programlisting>
+
+      <para>(this aliases the other common names for fixed fonts as
+        <literal>"mono"</literal>), and then add:</para>
+
+      <programlisting>         &lt;match target="pattern" name="family"&gt;
+             &lt;test qual="any" name="family"&gt;
+                 &lt;string&gt;mono&lt;/string&gt;
+             &lt;/test&gt;
+             &lt;edit name="spacing" mode="assign"&gt;
+                 &lt;int&gt;100&lt;/int&gt;
+             &lt;/edit&gt;
+         &lt;/match&gt;      </programlisting>
+
+      <para>Certain fonts, such as Helvetica, may have a problem when
+	anti-aliased.  Usually this manifests itself as a font that
+	seems cut in half vertically.  At worst, it may cause
+	applications such as <application>Mozilla</application> to
+	crash.  To avoid this, consider adding the following to
+	<filename>local.conf</filename>:</para>
+
+      <programlisting>         &lt;match target="pattern" name="family"&gt;
+             &lt;test qual="any" name="family"&gt;
+                 &lt;string&gt;Helvetica&lt;/string&gt;
+             &lt;/test&gt;
+             &lt;edit name="family" mode="assign"&gt;
+                 &lt;string&gt;sans-serif&lt;/string&gt;
+             &lt;/edit&gt;
+         &lt;/match&gt;        </programlisting>
+
+      <para>Once you have finished editing
+        <filename>local.conf</filename> make sure you end the file
+        with the <literal>&lt;/fontconfig&gt;</literal> tag.  Not doing this will cause
+        your changes to be ignored.</para>
+
+       <para>The default font set that comes with 
+         <application>XFree86</application> is not very
+         desirable when it comes to anti-aliasing.  A much better
+	 set of default fonts can be found in the 
+	 <filename role="package">x11-fonts/bitstream-vera</filename>
+	 port.  This port will install a
+	 <filename>/usr/X11R6/etc/fonts/local.conf</filename> file
+	 if one does not exist already.  If the file does exist,
+	 the port will create a <filename>/usr/X11R6/etc/fonts/local.conf-vera
+	 </filename> file.  Merge the contents of this file into
+	 <filename>/usr/X11R6/etc/fonts/local.conf</filename>, and the 
+	 Bitstream fonts will automatically replace the default 
+	 <application>XFree86</application> Serif, Sans Serif, and Monospaced 
+	 fonts.</para>
+
+       <para>Finally, users can add their own settings via their personal 
+        <filename>.fonts.conf</filename> files.  To do this, each user should 
+	simply create a <filename>~/.fonts.conf</filename>.  This file must 
+	also be in XML format.</para>
+
+       <indexterm><primary>LCD screen</primary></indexterm>
+       <indexterm><primary>Fonts</primary>
+         <secondary>LCD screen</secondary></indexterm>
+
+       <para>One last point: with an LCD screen, sub-pixel sampling may be
+        desired.  This basically treats the (horizontally separated)
+        red, green and blue components separately to improve the horizontal
+        resolution; the results can be dramatic.  To enable this, add the
+        line somewhere in the <filename>local.conf</filename> file:</para>
+
+       <programlisting>
+         &lt;match target="font"&gt;
+             &lt;test qual="all" name="rgba"&gt;
+                 &lt;const&gt;unknown&lt;/const&gt;
+             &lt;/test&gt;
+             &lt;edit name="rgba" mode="assign"&gt;
+                 &lt;const&gt;rgb&lt;/const&gt;
+             &lt;/edit&gt;
+         &lt;/match&gt;
+       </programlisting>
+
+       <note><para>Depending on the sort of display,
+	 <literal>rgb</literal> may need to be changed to <literal>bgr</literal>,
+	 <literal>vrgb</literal> or <literal>vbgr</literal>: experiment and
+	 see which works best.</para></note>
+
+       <indexterm><primary>Mozilla</primary></indexterm>
+       <indexterm><primary>web browsers</primary>
+         <secondary>Mozilla</secondary>
+         <see>Mozilla</see></indexterm>
+
+       <para>Anti-aliasing should be enabled the next time the X
+         server is started.  However, programs must know how to take
+         advantage of it.  At present, the Qt toolkit does,
+         so the entire <application>KDE</application> environment can
+         use anti-aliased fonts (see <xref
+         linkend="x11-wm-kde-antialias"> on
+         <application>KDE</application> for details).  Gtk+ and 
+         <application>GNOME</application> can also be made to use 
+         anti-aliasing via the <quote>Font</quote> capplet (see <xref
+         linkend="x11-wm-gnome-antialias"> for details).  By default,
+         <application>Mozilla</application> 1.2 and greater will 
+         automatically use anti-aliasing. To disable this, rebuild 
+         <application>Mozilla</application> with the
+         <makevar>-DWITHOUT_XFT</makevar> flag.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="x-xdm">
+    <sect1info>
+      <authorgroup>
+        <author>
+          <firstname>Seth</firstname>
+          <surname>Kingsley</surname>
+          <contrib>Contributed by </contrib>
+        </author>
+      </authorgroup>
+    </sect1info>
+    <title>The X Display Manager</title>
+    <sect2>
+      <title>Overview</title>
+
+      <indexterm><primary>X Display Manager</primary></indexterm>
+      <para>The X Display Manager (<application>XDM</application>) is
+        an optional part of the X Window System that is used for login
+        session management.  This is useful for several types of
+        situations, including minimal <quote>X Terminals</quote>,
+        desktops, and large network display
+        servers.  Since the X Window System is network and protocol
+        independent, there are a wide variety of possible configurations
+        for running X clients and servers on different machines
+        connected by a network.  <application>XDM</application> provides
+        a graphical interface for choosing which display server to
+        connect to, and entering authorization information such as a
+        login and password combination.</para>
+
+      <para>Think of <application>XDM</application> as
+        providing the same functionality to the user as the
+        &man.getty.8; utility (see <xref linkend="term-config"> for
+          details).  That is, it performs system logins to the display
+          being connected to and then runs a session manager on behalf of
+          the user (usually an X window
+          manager).  <application>XDM</application> then waits for this
+          program to exit, signaling that the user is done and should be
+          logged out of the display.  At this point,
+          <application>XDM</application> can display the login and display
+          chooser screens for the next user to login.</para>
+    </sect2>
+
+    <sect2>
+      <title>Using XDM</title>
+
+      <para>The <application>XDM</application> daemon program is
+        located in <filename>/usr/X11R6/bin/xdm</filename>.  This program
+        can be run at any time as <username>root</username> and it will
+        start managing the X display on the local machine.  If
+        <application>XDM</application> is to be run every
+        time the machine boots up, a convenient way to do this is by
+        adding an entry to <filename>/etc/ttys</filename>.  For more
+        information about the format and usage of this file, see <xref
+        linkend="term-etcttys">.  There is a line in the default
+        <filename>/etc/ttys</filename> file for running the
+        <application>XDM</application> daemon on a virtual terminal:</para>
+
+      <screen>ttyv8   "/usr/X11R6/bin/xdm -nodaemon"  xterm   off secure</screen>
+
+      <para>By default this entry is disabled; in order to enable it
+        change field 5 from <literal>off</literal> to
+        <literal>on</literal> and restart &man.init.8; using the
+        directions in <xref linkend="term-hup">.  The first field, the
+        name of the terminal this program will manage, is
+        <literal>ttyv8</literal>.  This means that
+        <application>XDM</application> will start running on the 9th
+        virtual terminal.</para>
+    </sect2>
+
+    <sect2>
+      <title>Configuring XDM</title>
+
+      <para>The <application>XDM</application> configuration directory
+        is located in <filename>/usr/X11R6/lib/X11/xdm</filename>.  In
+        this directory there are several files used to change the
+        behavior and appearance of
+        <application>XDM</application>.  Typically these files will
+        be found:</para>
+
+        <informaltable frame="none">
+          <tgroup cols="2">
+            <thead>
+              <row>
+                <entry>File</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry><filename>Xaccess</filename></entry>
+                <entry>Client authorization ruleset.</entry>
+              </row>
+
+              <row>
+                <entry><filename>Xresources</filename></entry>
+                <entry>Default X resource values.</entry>
+              </row>
+
+              <row>
+                <entry><filename>Xservers</filename></entry>
+                <entry>List of remote and local displays to manage.</entry>
+              </row>
+
+              <row>
+                <entry><filename>Xsession</filename></entry>
+                <entry>Default session script for logins.</entry>
+              </row>
+
+              <row>
+                <entry><filename>Xsetup_</filename>*</entry>
+                <entry>Script to launch applications before the login
+                  interface.</entry>
+              </row>
+
+              <row>
+                <entry><filename>xdm-config</filename></entry>
+                <entry>Global configuration for all displays running on
+                  this machine.</entry>
+              </row>
+
+              <row>
+                <entry><filename>xdm-errors</filename></entry>
+                <entry>Errors generated by the server program.</entry>
+              </row>
+
+              <row>
+                <entry><filename>xdm-pid</filename></entry>
+                <entry>The process ID of the currently running XDM.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+
+      <para>Also in this directory are a few scripts and programs used
+        to setup the desktop when <application>XDM</application> is
+        running.  The purpose of each of these files will be briefly
+        described.  The exact syntax and usage of all of these files is
+        described in &man.xdm.1;.</para>
+
+      <para>The default configuration is a simple rectangular login
+        window with the hostname of the machine displayed at the top in
+        a large font and <quote>Login:</quote> and
+        <quote>Password:</quote> prompts below.  This is a good starting
+        point for changing the look and feel of
+        <application>XDM</application> screens.</para>
+
+      <sect3>
+        <title>Xaccess</title>
+
+        <para>The protocol for connecting to
+          <application>XDM</application> controlled displays is called
+          the X Display Manager Connection Protocol (XDMCP).  This file
+          is a ruleset for controlling XDMCP connections from remote
+          machines.  By default, it allows any client to connect, but
+          that does not matter unless the <filename>xdm-config</filename>
+          is changed to listen for remote connections.</para>
+      </sect3>
+
+      <sect3>
+        <title>Xresources</title>
+        <para>This is an application-defaults file for the display
+          chooser and the login screens.  This is where the appearance
+          of the login program can be modified.  The format is identical
+          to the app-defaults file described in the
+          <application>XFree86</application> documentation.</para>
+      </sect3>
+
+      <sect3>
+        <title>Xservers</title>
+        <para>This is a list of the remote displays the chooser should
+          provide as choices.</para>
+      </sect3>
+
+      <sect3>
+        <title>Xsession</title>
+        <para>This is the default session script for
+          <application>XDM</application> to run after a user has logged
+          in.  Normally each user will have a customized session script
+          in <filename>~/.xsession</filename> that overrides this
+          script.</para>
+      </sect3>
+
+      <sect3>
+        <title>Xsetup_*</title>
+        <para>These will be run automatically before displaying the
+          chooser or login interfaces.  There is a script for each
+          display being used, named <filename>Xsetup_</filename> followed
+          by the local display number (for instance
+          <filename>Xsetup_0</filename>).  Typically these scripts will
+          run one or two programs in the background such as
+          <command>xconsole</command>.</para>
+      </sect3>
+
+      <sect3>
+        <title>xdm-config</title>
+        <para>This contains settings in the form of app-defaults
+          that are applicable to every display that this installation
+          manages.</para>
+      </sect3>
+
+      <sect3>
+        <title>xdm-errors</title>
+        <para>This contains the output of the X servers that
+          <application>XDM</application> is trying to run.  If a display
+          that <application>XDM</application> is trying to start hangs
+          for some reason, this is a good place to look for error
+          messages.  These messages are also written to the user's
+          <filename>~/.xsession-errors</filename> file on a per-session
+          basis.</para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>Running a Network Display Server</title>
+
+      <para>In order for other clients to connect to the display
+        server, edit the access control rules, and enable the connection
+        listener.  By default these are set to conservative values.
+        To make <application>XDM</application> listen for connections,
+        first comment out a line in the <filename>xdm-config</filename>
+        file:</para>
+
+      <screen>! SECURITY: do not listen for XDMCP or Chooser requests
+! Comment out this line if you want to manage X terminals with xdm
+DisplayManager.requestPort:     0</screen>
+
+      <para>and then restart <application>XDM</application>.  Remember that
+        comments in app-defaults files begin with a <quote>!</quote>
+        character, not the usual <quote>#</quote>.  More strict
+        access controls may be desired.  Look at the example
+        entries in <filename>Xaccess</filename>, and refer to the
+        &man.xdm.1; manual page.</para>
+    </sect2>
+
+     <sect2>
+        <title>Replacements for XDM</title>
+
+        <para>Several replacements for the default
+          <application>XDM</application> program exist.  One of them,
+          <application>KDM</application> (bundled with
+          <application>KDE</application>) is described later in this
+          chapter.  <application>KDM</application> offers many visual
+          improvements and cosmetic frills, as well as the
+          functionality to allow users to choose their window manager
+          of choice at login time.</para>
+     </sect2>
+  </sect1>
+
+  <sect1 id="x11-wm">
+    <sect1info>
+      <authorgroup>
+        <author>
+          <firstname>Valentino</firstname>
+          <surname>Vaschetto</surname>
+          <contrib>Contributed by </contrib>
+        </author>
+        <!-- June 2001 -->
+      </authorgroup>
+    </sect1info>
+
+    <title>Desktop Environments</title>
+
+    <para>This section describes the different desktop environments
+      available for X on FreeBSD.  A <quote>desktop environment</quote>
+      can mean anything ranging from a simple window manager to a
+      complete suite of desktop applications, such as
+      <application>KDE</application> or <application>GNOME</application>.
+    </para>
+
+    <sect2 id="x11-wm-gnome">
+      <title>GNOME</title>
+
+      <sect3 id="x11-wm-gnome-about">
+        <title>About GNOME</title>
+
+        <indexterm><primary>GNOME</primary></indexterm>
+        <para><application>GNOME</application> is a user-friendly
+          desktop environment that enables users to easily use and
+          configure their computers.  <application>GNOME</application>
+          includes a panel (for starting applications and displaying
+          status), a desktop (where data and applications can be
+          placed), a set of standard desktop tools and applications, and
+          a set of conventions that make it easy for applications to
+          cooperate and be consistent with each other.  Users of other
+          operating systems or environments should feel right at home
+          using the powerful graphics-driven environment that
+          <application>GNOME</application> provides.  More
+	  information regarding <application>GNOME</application> on
+	  FreeBSD can be found on the <ulink
+	  url="http://www.FreeBSD.org/gnome">FreeBSD GNOME
+	  Project</ulink>'s web site.</para>
+      </sect3>
+
+      <sect3 id="x11-wm-gnome-install">
+        <title>Installing GNOME</title>
+
+        <para>The easiest way to install
+          <application>GNOME</application> is through the
+          <quote>Desktop Configuration</quote> menu during the FreeBSD
+	  installation process as described in <xref
+	  linkend="default-desktop"> of Chapter&nbsp;2.  It can also
+          be easily installed from a package or the ports
+          collection:</para>
+
+        <para>To install the <application>GNOME</application> package
+          from the network, simply type:</para>
+
+        <screen>&prompt.root; <userinput>pkg_add -r gnome2</userinput></screen>
+
+        <para>To build <application>GNOME</application> from source, use
+          the ports tree:</para>
+
+        <screen>&prompt.root; <userinput>cd /usr/ports/x11/gnome2</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+        <para>Once <application>GNOME</application> is installed,
+          the X server must be told to start
+          <application>GNOME</application> instead of a default window
+          manager.  If a custom <filename>.xinitrc</filename> is already in
+          place, simply replace the line that starts the current window
+          manager with one that starts
+          <application>/usr/X11R6/bin/gnome-session</application> instead.
+          If nothing special has been done to configuration file,
+          then it is enough to simply type:</para>
+
+        <screen>&prompt.user; <userinput>echo "/usr/X11R6/bin/gnome-session" &gt; ~/.xinitrc</userinput></screen>
+
+        <para>Next, type <command>startx</command>, and the
+          <application>GNOME</application> desktop environment will be
+          started.</para>
+
+        <note><para>If a display manager, like
+          <application>XDM</application>, is being used, this will not work.
+          Instead, create an executable <filename>.xsession</filename>
+          file with the same command in it.  To do this, edit the file
+          and replace the existing window manager command with
+          <application>/usr/X11R6/bin/gnome-session</application>:
+          </para></note>
+
+        <screen>&prompt.user; <userinput>echo "#!/bin/sh" > ~/.xsession</userinput>
+&prompt.user; <userinput>echo "/usr/X11R6/bin/gnome-session" >> ~/.xsession</userinput>
+&prompt.user; <userinput>chmod +x ~/.xsession</userinput></screen>
+
+        <para>Another option is to configure the display manager to
+          allow choosing the window manager at login time; the section on
+          <link linkend="x11-wm-kde-details">KDE details</link>
+          explains how to do this for <application>kdm</application>, the
+          display manager of <application>KDE</application>.</para>
+      </sect3>
+
+      <sect3 id="x11-wm-gnome-antialias">
+        <title>Anti-aliased Fonts with GNOME</title>
+
+        <indexterm><primary>GNOME</primary>
+          <secondary>anti-aliased fonts</secondary></indexterm>
+	<para>Starting with version 4.0.2, <application>XFree86</application>
+	  supports anti-aliasing via its <quote>RENDER</quote> extension.
+	  Gtk+ 2.0 and greater (the toolkit used by
+	  <application>GNOME</application>) can make use of this
+	  functionality.  Configuring anti-aliasing is described in
+	  <xref linkend="antialias">.  So, with up-to-date software,
+	  anti-aliasing is possible within the
+	  <application>GNOME</application> desktop.  Just go to
+	  <guimenuitem>Applications</guimenuitem> -&gt;
+	  <guimenuitem>Desktop Preferences</guimenuitem> -&gt;
+	  <guimenuitem>Font</guimenuitem>, and select either
+	  <guibutton>Best shapes</guibutton>, 
+	  <guibutton>Best contrast</guibutton>, or
+	  <guibutton>Subpixel smoothing (LCDs)</guibutton>.  For a
+	  Gtk+ application that is not part of the 
+	  <application>GNOME</application> desktop, set the
+	  environment variable <varname>GDK_USE_XFT</varname> to
+	  <literal>1</literal> before launching the program.</para>
+      </sect3>
+    </sect2>
+
+    <sect2 id="x11-wm-kde">
+      <title>KDE</title>
+
+      <indexterm><primary>KDE</primary></indexterm>
+      <sect3 id="x11-wm-kde-about">
+        <title>About KDE</title>
+
+        <para><application>KDE</application> is an easy to use
+          contemporary desktop environment.  Some of the things that
+          <application>KDE</application> brings to the user are:</para>
+
+        <itemizedlist>
+          <listitem>
+	    <para>A beautiful contemporary desktop</para>
+	  </listitem>
+
+          <listitem>
+	    <para>A desktop exhibiting complete network transparency</para>
+	  </listitem>
+
+          <listitem>
+	    <para>An integrated help system allowing for convenient,
+	      consistent access to help on the use of the
+	      <application>KDE</application> desktop and its
+	      applications</para>
+	  </listitem>
+
+          <listitem>
+	    <para>Consistent look and feel of all
+              <application>KDE</application> applications</para>
+	  </listitem>
+
+          <listitem>
+	    <para>Standardized menu and toolbars, keybindings, color-schemes,
+	      etc.</para>
+	  </listitem>
+
+          <listitem>
+	    <para>Internationalization: <application>KDE</application>
+              is available in more than 40 languages</para>
+	  </listitem>
+
+          <listitem>
+	    <para>Centralized consisted dialog driven desktop
+	      configuration</para>
+	  </listitem>
+
+          <listitem>
+	    <para>A great number of useful
+              <application>KDE</application> applications</para>
+	  </listitem>
+        </itemizedlist>
+
+        <para><application>KDE</application> has an office application
+          suite based on <application>KDE</application>'s
+          <quote>KParts</quote> technology consisting
+          of a spread-sheet, a presentation application, an organizer, a
+          news client and more.  <application>KDE</application> also
+          comes with a web browser called
+          <application>Konqueror</application>, which represents
+          a solid competitor to other existing web browsers on Unix
+          systems.  More information on <application>KDE</application>
+          can be found on the <ulink url="http://www.kde.org/">KDE
+          website</ulink>.  For FreeBSD specific informations and
+	  resources on <application>KDE</application>, consult
+	  the <ulink url="http://freebsd.kde.org/">FreeBSD-KDE
+	  team</ulink>'s website.</para>
+      </sect3>
+
+      <sect3 id="x11-wm-kde-install">
+        <title>Installing KDE</title>
+
+        <para>Just as with <application>GNOME</application> or any
+          other desktop environment, the easiest way to install
+          <application>KDE</application> is through the <quote>Desktop
+          Configuration</quote> menu during the FreeBSD installation
+	  process as described in <xref linkend="default-desktop"> of Chapter
+	  2.  Once again, the software can be easily installed from a package
+	  or from the ports collection:</para>
+
+        <para>To install the <application>KDE</application> package
+          from the network, simply type:</para>
+
+        <screen>&prompt.root; <userinput>pkg_add -r kde</userinput></screen>
+
+	<para>&man.pkg.add.1; will automatically fetch the latest version
+	  of the application.</para>
+
+        <para>To build <application>KDE</application> from source,
+          use the ports tree:</para>
+
+        <screen>&prompt.root; <userinput>cd /usr/ports/x11/kde3</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+        <para>After <application>KDE</application> has been installed,
+          the X server must be told to launch this application
+          instead of the default window manager.  This is accomplished
+          by editing the <filename>.xinitrc</filename> file:</para>
+
+        <screen>&prompt.user; <userinput>echo "exec startkde" &gt; ~/.xinitrc</userinput></screen>
+
+	<para>Now, whenever the X Window System is invoked with
+	  <command>startx</command>,
+          <application>KDE</application> will be the desktop.</para>
+
+        <para>If a display manager such as
+          <application>xdm</application> is being used, the
+          configuration is slightly different.  Edit the
+          <filename>.xsession</filename> file instead.  Instructions
+          for <application>kdm</application> are described later in
+          this chapter.</para>
+      </sect3>
+    </sect2>
+
+    <sect2 id="x11-wm-kde-details">
+        <title>More Details on KDE</title>
+
+        <para>Now that <application>KDE</application> is installed on
+          the system, most things can be discovered through the
+          help pages, or just by pointing and clicking at various menus.
+          Windows or Mac users will feel quite at home.</para>
+
+        <para>The best reference for <application>KDE</application> is
+          the on-line documentation.  <application>KDE</application>
+          comes with its own web browser,
+          <application>Konqueror</application>, dozens of useful
+          applications, and extensive documentation.  The remainder of
+          this section discusses the technical items that are
+          difficult to learn by random exploration.</para>
+
+      <sect3 id="x11-wm-kde-kdm">
+        <title>The KDE Display Manager</title>
+
+        <indexterm><primary>KDE</primary>
+          <secondary>display manager</secondary></indexterm>
+        <para>An administrator of a multi-user system may wish to have
+          a graphical login screen to welcome users.
+          <link linkend="x-xdm"><filename>xdm</filename></link> can be
+          used, as described earlier.  However,
+          <application>KDE</application> includes an
+          alternative, <application>kdm</application>, which is designed
+          to look more attractive and include more login-time options.
+          In particular, users can easily choose (via a menu) which
+          desktop environment (<application>KDE</application>,
+          <application>GNOME</application>, or something else) to run
+          after logging on.</para>
+
+        <para>To begin with, run the <application>KDE</application>
+          control panel, <command>kcontrol</command>, as
+          <username>root</username>.  It is generally considered
+          unsafe to run the entire X environment as
+          <username>root</username>.  Instead, run the window manager
+          as a normal user, open a terminal window (such as
+          <filename>xterm</filename> or <application>KDE</application>'s
+          <filename>konsole</filename>), become <username>root</username>
+          with <userinput>su</userinput> (the user must be in the
+          <groupname>wheel</groupname>
+          group in <filename>/etc/group</filename> for this), and then
+          type <userinput>kcontrol</userinput>.</para>
+
+	<para>Click on the icon on the left marked
+	  <guibutton>System</guibutton>, then on <guibutton>Login
+	  manager</guibutton>.  On the right there are
+          various configurable options, which the
+          <application>KDE</application> manual will explain in greater
+          detail.  Click on <guibutton>sessions</guibutton> on the right.
+          Click <guibutton>New type</guibutton> to add various window
+          managers and desktop environments.  These are just labels,
+          so they can say <application>KDE</application> and
+          <application>GNOME</application> rather than
+          <application>startkde</application> or
+          <application>gnome-session</application>.
+          Include a label <literal>failsafe</literal>.</para>
+
+        <para>Play with the other menus as well, they are mainly
+          cosmetic and self-explanatory.  When you are done, click on
+          <guibutton>Apply</guibutton> at the bottom, and quit the
+          control center.</para>
+
+        <para>To make sure <application>kdm</application> understands
+          what the labels (<application>KDE</application>,
+          <application>GNOME</application> etc) mean, edit the files used
+          by <link linkend="x-xdm">xdm</link>.
+          <note><para>In <application>KDE 2.2</application> this has
+            changed: <application>kdm</application> now uses its own
+            configuration files.  Please see the <application>KDE
+            2.2</application> documentation for details.</para>
+          </note>
+          In a terminal window, as <username>root</username>,
+          edit the file
+          <filename>/usr/X11R6/lib/X11/xdm/Xsession</filename>.  There is
+          a section in the middle like this:</para>
+
+	<screen>case $# in
+1)
+        case $1 in
+        failsafe)
+                exec xterm -geometry 80x24-0-0
+                ;;
+        esac
+esac</screen>
+
+        <para>A few lines need to be added to this section.
+          Assuming the labels from used were <quote>KDE</quote> and
+          <quote>GNOME</quote>,
+          use the following:</para>
+
+	<screen>case $# in
+1)
+        case $1 in
+        kde)
+                exec /usr/local/bin/startkde
+                ;;
+        GNOME)
+                exec /usr/X11R6/bin/gnome-session
+                ;;
+        failsafe)
+                exec xterm -geometry 80x24-0-0
+                ;;
+        esac
+esac</screen>
+
+        <para>For the <application>KDE</application>
+          login-time desktop background to be honored,
+          the following line needs to be added to
+          <filename>/usr/X11R6/lib/X11/xdm/Xsetup_0</filename>:</para>
+
+        <screen>/usr/local/bin/kdmdesktop</screen>
+
+        <para>Now, make sure <application>kdm</application> is listed in
+          <filename>/etc/ttys</filename> to be started at the next bootup.
+          To do this, simply follow the instructions from the previous
+          section on <link linkend="x-xdm">xdm</link> and replace
+          references to the <command>/usr/X11R6/bin/xdm</command>
+          program with <command>/usr/local/bin/kdm</command>.</para>
+      </sect3>
+
+      <sect3 id="x11-wm-kde-antialias">
+        <title>Anti-aliased Fonts</title>
+
+        <indexterm><primary>KDE</primary>
+          <secondary>anti-aliased fonts</secondary></indexterm>
+        <para>Starting with version 4.0.2,
+          <application>XFree86</application> supports anti-aliasing via
+	  its <quote>RENDER</quote> extension, and starting with version 2.3,
+	  Qt (the toolkit used by <application>KDE</application>) supports
+	  this extension.  Configuring this is described in <xref
+          linkend="antialias"> on antialiasing X11 fonts.  So, with
+          up-to-date software, anti-aliasing is possible on a
+          <application>KDE</application> desktop.  Just go to the KDE
+	  menu, go to <guimenuitem>Preferences</guimenuitem> -&gt;
+	  <guimenuitem>Look and Feel</guimenuitem> -&gt;
+	  <guimenuitem>Fonts</guimenuitem>, and click on the check box
+          <guibutton>Use Anti-Aliasing for Fonts and Icons</guibutton>.
+          For a Qt application which is not part of
+	  <application>KDE</application>, the environment variable
+	  <varname>QT_XFT</varname> needs to be set to <literal>true</literal>
+	  before starting the program.</para>
+
+       </sect3>
+     </sect2>
+
+     <sect2 id="x11-wm-xfce">
+         <title>XFce</title>
+       <sect3 id="x11-wm-xfce-about">
+         <title>About XFce</title>
+
+        <para><application>XFce</application> is a desktop environment
+          based on the GTK
+          toolkit used by <application>GNOME</application>, but is much
+          more lightweight and meant for those who want a simple,
+          efficient desktop which is nevertheless easy to use and
+          configure.  Visually, it looks very much like
+          <application>CDE</application>, found on commercial Unix
+          systems.  Some of <application>XFce</application>'s features
+          are:</para>
+
+         <itemizedlist>
+           <listitem>
+	     <para>A simple, easy-to-handle desktop</para>
+           </listitem>
+
+           <listitem>
+	     <para>Fully configurable via mouse, with drag and
+               drop, etc </para>
+           </listitem>
+
+           <listitem>
+	     <para>Main panel similar to <application>CDE</application>, with
+	       menus, applets and app launchers</para>
+           </listitem>
+
+           <listitem>
+	     <para>Integrated window manager, file manager, sound manager,
+	       <application>GNOME</application> compliance module, and other
+	       things</para>
+           </listitem>
+
+           <listitem>
+	     <para>Themeable (since it uses GTK)</para>
+           </listitem>
+
+           <listitem>
+	     <para>Fast, light and efficient: ideal for older/slower machines
+	       or machines with memory limitations</para>
+           </listitem>
+         </itemizedlist>
+
+         <para>More information on <application>XFce</application>
+          can be found on the <ulink url="http://www.xfce.org/">XFce
+            website</ulink>.</para>
+       </sect3>
+
+       <sect3 id="x11-wm-xfce-install">
+         <title>Installing XFce</title>
+
+        <para>A binary package for <application>XFce</application>
+          exists (at the time of writing).  To install, simply type:</para>
+
+        <screen>&prompt.root; <userinput>pkg_add -r xfce</userinput></screen>
+
+        <para>Alternatively, to build from source, use the ports
+          collection:</para>
+
+        <screen>&prompt.root; <userinput>cd /usr/ports/x11-wm/xfce</userinput>
+&prompt.root; <userinput>make install clean</userinput></screen>
+
+        <para>Now, tell the X server to launch
+         <application>XFce</application> the next time X is started.
+         Simply type this:</para>
+
+        <screen>&prompt.user; <userinput>echo "/usr/X11R6/bin/startxfce" &gt; ~/.xinitrc</userinput></screen>
+
+        <para>The next time X is started,
+          <application>XFce</application> will be the desktop.
+          As before, if a display manager like
+          <filename>xdm</filename> is being used, create an
+          <filename>.xsession</filename>, as described in the
+          section on <link linkend="x11-wm-gnome">GNOME</link>, but
+          with the <filename>/usr/X11R6/bin/startxfce</filename>
+          command; or, configure the display manager to allow
+          choosing a desktop at login time, as explained in
+          the section on <link linkend="x11-wm-kde-kdm">kdm</link>.</para>
+      </sect3>
+    </sect2>
+  </sect1>
+
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

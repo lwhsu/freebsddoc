@@ -1,0 +1,940 @@
+<!--
+     The Chinese FreeBSD Documentation Project 
+     $FreeBSD: doc/zh_TW.Big5/books/zh-tut/chapters/devel.sgml,v 1.2 2006/01/31 01:31:05 vanilla Exp $
+     Original revision: 1.53
+-->
+
+<chapter id="devel">
+  <title>中文程式設計</title>
+    <para>
+      以下是一些軟體在中文支援方面，利用程式的判斷。</para>
+
+    <para>原則上如果是用 gtk 寫的軟體，裡面有呼叫到 gtk_set_locale()
+      這個函式的話應該都沒問題。</para>
+
+    <para>如果是其他的 X 軟體可能要找一下 source 裡面有沒有 
+      setlocale(LC_CTYPE, NULL); 及 XIM 相關函式呼叫情形。如果有遵照正統做法，
+      <application>xcin</application> 應該都可以跟它搭配良好。</para>
+
+    <para>Qt 沒碰過，所以不知道他怎麼運作。不過猜想 XIM 這段應該跟
+      gtk 大同小異。</para>
+
+    <para>用 xforms 寫的軟體應該會有問題。</para>
+
+    <para>用 X11R6.4 版以後的 Xt/Xaw 寫的軟體應該是沒問題，
+      記得在 .Xdefaults 裡頭加入 <option>*international:true</option>
+      、<option>*fontSet:-*-iso8859-1,-*-16-*-big5-0</option>等等。</para>
+
+    <para>用 fltk 寫的軟體似乎也沒支援 XIM。</para>
+
+  <sect1 id="freebsd-prog">
+    <title>在 FreeBSD 下寫程式應該注意的問題</title>
+      <para>在 FreeBSD 下寫程式，結果發現一個中文的問題，
+	例如字串中包含 "許" 這個字，因為許字的下半碼是 ASCII 中的 \ 符號，
+	結果就會造成錯誤，請問這種情形該如何解決？還有其他的碼會有這種問題？</para>
+
+      <para>在程式中該字前加一個 '\'，還有很多有這個問題呢，如下：</para>
+      <programlisting>
+5C  +0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F
+A0     ﹏ 兝 α 么 功 吒 吭 沔 坼 歿 俞 枯 苒 娉 珮
+B0  豹 崤 淚 許 廄 琵 跚 愧 稞 鈾 暝 蓋 墦 穀 閱 璞
+C0  餐 縷 擺 黠 孀 髏 躡 ツ �\ 尐 佢 汻 岤 狖 垥 柦
+D0  胐 娖 涂 罡 偅 惝 牾 莍 傜 揊 焮 茻 鄃 幋 滜 綅
+E0  赨 塿 槙 箤 踊 嫹 潿 蔌 醆 嬞 獦 螏 餤 燡 螰 駹
+F0  礒 鎪 瀙 酀 瀵 騱 酅 贕 鱋 鱭 </programlisting>
+
+      <para> '\' 的 ASCII code 是 \0x5c，從 [\0xa1-\0xf9][\0x5c] 
+        都會有這個問題。</para>
+
+      <programlisting>
+#!/usr/bin/perl
+#
+# create code table (Big5) [\0xa1-0xf9][\0x40-\0x7e\0xa1-\0xfe]
+#
+
+# 繁體中文 (Big5) 文字內碼表的產生
+open (OUT, "&gt; big55c.txt"); select OUT;
+
+# 文字內碼表的產生
+# 開頭的表示
+print "\n5C  ";
+print "+0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F\n";
+$c = 1; # 1行文字數(16文字)
+$head = "";
+$line = "";
+for ($c1 = 0xA0; $c1 i&lt;= 0xF9; $c1++) { # $c1 是第一個位元 [\0xa1-\0xf9]
+    $c2=0x5c;
+    # 開頭第一個字
+    if ("$head" eq "") {
+        $head = sprintf ("%02X ", $c1);
+    }
+
+    $line .= " "; # 文字間的空白
+    if ($c1 == 0xA0) {
+        $line .= "  ";
+    } else {
+        $line .= pack("CC", $c1, $c2);
+    }
+
+    if ($c == 16 || $c1 ==0xf9) { # 16文字表示一行
+        print "$head$line\n";
+        $head = "";
+        $line = "";
+        $c = 1;
+    } else {
+        $c++;
+    }
+}
+close(OUT);
+
+exit;</programlisting>
+  </sect1>
+
+  <sect1 id="linux-gtk">
+    <title>linux-gtk - gtk-1.2.6 的函式庫 rpm，有 Big5/GB 的支援</title>
+      <para>以下是比 x11-toolkits/linux-gtk 更好的 I18N 的優點。</para>
+
+      <programlisting>
+  Better word wrapping for CJK strings
+  Specify default font's encoding explicitly
+  Better XLFD handling
+  Selection resync fixes
+  Numerous gtkrc.$locale samples
+  Other minor fixes</programlisting>
+
+      <para>安裝 <filename role="package">chinese/linux-gtk</filename>。</para>
+      <para>唯一的缺點是這個套件是 CLE 用來給 i386 平台所使用的，
+      所以如果是 alpha 的使用者的話仍需使用 x11-toolkits/linux-gtk。</para>
+  </sect1>
+
+  <sect1 id="php-ImageTTFText">
+    <title>php 的 ImageTTFText() 經常抓錯字？</title>
+    <para>Contributed by &a.jerry;</para>
+    <para>Last Update: 2003年 4月29日 周二 19時43分15秒 CST</para>
+
+    <para>在安裝 PHP 後，必須選擇加裝 GD library support(<filename
+      role="package">graphics/php4-gd</filename> 或 <filename
+      role="package">graphics/php5-gd</filename> )及 
+      <filename role="package">print/freetype2</filename> 的套件，
+      才能進行下面的步驟。</para>
+
+    <para>目前常見的有三種做法，一種是 patch gdttf.c，
+      一種是使用 iconv support 來將編碼轉成 UCS-2 ，
+      還有一種就是直接使用 <filename role="package">chinese/hc</filename>
+      的資料庫。</para>
+
+    <para>這邊是第一種做法，patch gdttf.c 讓 PHP 不會抓錯字。</para>
+    <programlisting>
+--- gdttf.c.orig	Mon Oct 16 21:55:47 2000
++++ gdttf.c	Sun Dec 31 18:00:34 2000
+@@ -654,7 +654,7 @@
+ 	TT_BBox **bbox, 
+ 	char **next)
+ {
+-    int pc, ch, len;
++    int pc, ch, len, ch2;
+ 	int row, col;
+ 	int x2, y2;     /* char start pos in pixels */ 
+ 	int x3, y3;     /* current pixel pos */
+@@ -687,6 +687,8 @@
+ 		(*next)++;
+ 		if (ch &gt;= 161                /* first code of JIS-8 pair */
+ 			&& **next) {                /* don't advance past '\0' */
++			ch2 = (**next) & 255;
++			if(ch2 &gt;= 161) ch++; /* Big5 ttf patch */
+ 			ch = (ch * 256) + **next;
+ 			(*next)++;
+ 		}</programlisting>
+
+    <para>由於已經處理過 gdttf.c，在這邊就可以直接使用中文編碼的字。</para>
+    <programlisting>
+&lt;?php
+    Header ("Content-type: image/gif");
+    $im = imagecreate (400, 30);
+    $black = ImageColorAllocate ($im, 0, 0, 0);
+    $white = ImageColorAllocate ($im, 255, 255, 255);
+    ImageTTFText ($im, 20, 0, 10, 20, $white,
+      "/usr/local/lib/X11/fonts/TrueType/moe_kai.ttf", "這是中文測試 許功蓋 "); 
+    ImagePng ($im); 
+    ImageDestroy ($im);
+?&gt;</programlisting>
+
+    <para>第二種是使用 Unicode 讓中文正常的顯示，
+      以下就是 Big5 轉 Unicode 的做法，
+      在這邊提供一個小函式來自動判斷為英文還是中文，
+      英文的部分不需要轉碼，只有中文才需要。</para>
+
+    <programlisting>
+&lt;?php
+  /*  need iconv module */
+  function big52uni($text) {
+    $rtext="";
+    $max=strlen($text);
+    for($i=0;$i&lt;$max;$i++){
+      $h=ord($text[$i]);
+      if($h>=160 && $i&lt;$max-1){
+        $rtext.="&#".base_convert(bin2hex(iconv("big5","ucs-2",
+          substr($text,$i,2))),16,10).";";
+        $i++;
+      }else{
+        $rtext.=$text[$i];
+      }
+    }
+    return $rtext;
+  }
+?&gt;</programlisting>
+
+    <para>用法的範例如下，在 ImageTTFText 必須指定系統上的字型，
+      以下是安裝 <filename role="package">chinese/arphicttf</filename>
+      來使用文鼎 PL 上海宋，所以必須根據自己的安裝的字型作修改，
+      然後搭配上面的 big52uni 這個函式：</para>
+    <programlisting>
+&lt;?php
+Header("Content-type: image/gif");
+$im = imagecreate(400,30);
+$black = ImageColorAllocate($im, 0,0,0);
+$white = ImageColorAllocate($im, 255,255,255);
+ImageTTFText($im, 20, 0, 10, 20, $white, 
+  "/usr/local/share/fonts/TrueType/bsmi00lp.ttf", 
+  big52uni("Test中文測試"));
+ImageGif($im);
+ImageDestroy($im);
+?&gt;</programlisting>
+      <figure>
+        <title>php-imagettftext snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/php-imagettftext" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+    <para>
+      WWW: <ulink url="http://www.php.net/">
+      http://www.php.net/</ulink></para>
+  </sect1>
+
+  <sect1 id="php-upload">
+    <title>php 上傳中文檔名的檔案</title>
+      <para>by Wiseguy.bbs@bbs.nsysu.edu.tw</para>
+
+      <para>另開一個 &lt;input type="hidden" name="filename"&gt;
+	在 submit 前，把 file 裡的檔名取出來 (用 split('\\')，陣列最後一個。)
+	放到 filename 去，這樣就可知道原檔名是什麼，而不用 file 裡面處理的檔名。
+	這種作法可以使中文檔名、含空白、管道字元 | 、反斜線，通通可上傳。</para>
+
+      <programlisting>
+&lt;?php
+if($_FILES['userfile']['name']) {
+  echo $_POST['fname'];
+} else {
+?&gt;
+&lt;script language="JavaScript"&gt;
+function validate() {
+  var Ary = document.uploadf.userfile.value.split('\\');
+  document.uploadf.fname.value=Ary[Ary.length-1];
+  return true;
+}
+&lt;/script&gt;
+&lt;form enctype="multipart/form-data" action="index.php" method="post"
+ name="uploadf" onsubmit="return validate()"&gt;
+  Send this file: &lt;input name="userfile" type="file"&gt;
+  &lt;input type="hidden" name="fname"&gt;
+  &lt;input type="submit" value="Send File"&gt;
+&lt;/form&gt;
+&lt;?php } ?&gt;
+</programlisting>
+      <para>
+        WWW: <ulink url="http://www.php.net/manual/en/features.file-upload.php">
+	http://www.php.net/manual/en/features.file-upload.php</ulink></para>
+  </sect1>
+
+  <sect1 id="php-pdf">
+    <title>用 php 製作中文 PDF 檔</title>
+      <para>Contributed by Tim (tim@dnes.mlc.edu.tw)</para>
+      <para>Last Update: 2003年 4月20日 周日 15時59分41秒 CST</para>
+      <para>php 目前可以使用 PDFlib 來建立不內嵌字型的 PDF 檔，
+	
+        在 pdf_findfont 的部分要給對字型就可以了。</para>
+      <programlisting>
+$font = pdf_findfont($pdf, 'MSung-Light', 'ETen-B5-H', 0); </programlisting>
+      <para>以下是完整範例，記得要先在該目錄底下建立 hello.pdf 
+        並且將權限改成 666。</para>
+      <programlisting>
+&lt;?php
+  echo '&lt;meta http-equiv="Content-Type" content="text/html; charset=big5"&gt;';
+  //create file
+  $fp = fopen('hello.pdf', 'w');
+  if(!$fp)
+  {
+    echo "Error: could not create the PDF file";
+    exit;
+  }
+
+  // start the pdf document
+  $pdf = pdf_open($fp);
+  pdf_set_info($pdf, "Creator", "pdftest.php");
+  pdf_set_info($pdf, "Author", "Shen Chun-Hsing");
+  pdf_set_info($pdf, "Title", "Hello World (PHP)");
+
+  // US letter is 11" x 8.5" and there are approximately 72 points per inch
+  pdf_begin_page($pdf, 8.5*72, 11*72/2);
+  pdf_add_outline($pdf, 'Page 1');
+
+  // 取得字型
+  $Efont = pdf_findfont($pdf, 'Times-Roman', 'host', 0);
+  $Cfont = pdf_findfont($pdf, 'MSung-Light', 'ETen-B5-H', 0);
+
+  // write text
+  pdf_setfont($pdf, $Efont, 24);
+  pdf_set_text_pos($pdf, 50, 700/2);
+  pdf_show($pdf,'Hello world!');
+  pdf_continue_text($pdf,'(says PHP)');
+  pdf_setfont($pdf, $Cfont, 24);
+  pdf_continue_text($pdf,'細明體中文字測試');
+
+  // end the document
+  pdf_end_page($pdf);
+  pdf_close($pdf);
+  fclose($fp);
+
+  // display a link to download
+  echo "&lt;a href = 'hello.pdf' target='_blank'&gt;測試檔PDF&lt;/a&gt;";
+  echo "&lt;hr&gt;";
+  show_source( basename( getenv("SCRIPT_FILENAME") ) );
+?&gt;</programlisting>
+
+      <para>在 pdf_findfont 的部分選擇 ('MSung-Light', 'ETen-B5-H') 
+        這樣子的 CID-Keyed font 就可以使用明體了，
+        第一個欄位還可以換成 MHei-Medium 來使用楷體，
+	不過在目前的支援度下，所能看到的不管設定明體或是楷體，
+	都只會有明體而以，
+	這必須是 PDF 瀏覽器支援設定的字體有其相對應的字體才行，
+        而第二個欄位 CMap 基本上建議使用 ETen-B5-H 才能使用倚天外字。</para>
+      <para>可以用的英文字型如下：
+Courier Courier-Bold Courier-Oblique Courier-BoldOblique Helvetica 
+Helvetica-Bold Helvetica-Oblique Helvetica-BoldOblique Symbol 
+Times-Roman Times-Bold Times-Italic Times-BoldItalic ZapfDingbats。</para>
+      <para>可以用的中文 CMap 如下：
+B5pc-H B5pc-V HKscs-B5-H HKscs-B5-V ETen-B5-H ETen-B5-V ETenms-B5-H
+ETenms-B5-V CNS-EUC-H CNS-EUC-V UniCNS-UCS2-H UniCNS-UCS2-V。</para> 
+      <figure>
+        <title>php-pdf snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/php-pdf" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <para>而 pdf_add_bookmark 有人說有中文的問題，可是在筆者的測試之下，
+      Big5 編碼的 bookmark 在 Acroread 5 可以正常看到，或是利用
+      iconv 轉成 UTF-16 也是正常的，所以如果您看到的 bookmark 有中文問題，
+      可以利用 iconv("Big5", "UTF-16", "中文字") 來試試看。</para>
+      <para>WWW: <ulink url="http://www.PDFlib.com/">
+	http://www.PDFlib.com/</ulink></para>
+  </sect1>
+
+  <sect1 id="tcltk">
+    <title>Tcl/Tk - 廣為運用的一種高階電腦語言與 GUI 發展工具</title>
+      <para>
+        tcl 是一個高階的電腦語言，語法類似 shell script 與 C 語言之間。而
+        tk 是一個使用者界面發展工具，有 buttons、menus、listboxes、
+        scrollbars 等等。</para>
+      <para>
+        把這兩者結合起來，就形成了強有力的 GUI 發展套件。最新版本的 
+        tcl/tk 支援了多平台的開發程式庫。所以我們可以寫一個 tcl/tk
+        的程式（也稱為script），然後在 UNIX 下看起來就像是 Motif
+        的應用程式；在 Windows9x/NT 下看起來像是 Win32 的應用程式；而在
+        Macintosh 下看起來像 Mac 的應用程式。</para>
+      <para>
+        tcl/tk 的優點第一是 free（自由）。
+        第二是容易學習，您不須具備 object-oriented 或 threads 或 
+        Microsoft Fundation Classes 的基礎，也不須寫一大串的程式碼。
+        像是傳統的 Hello, World! 程式，在 tcl/tk 只要兩行就搞定，</para>
+      <programlisting>
+button .b -text "Hello, World!" -command exit
+pack .b</programlisting>
+      <para>
+        第三是有許多的 extensions（延伸套件）可以支援其他軟體程式庫，
+        例如 Oracle, Sybase, Informix, OpenGL 等多達 400 種。</para>
+      <para>安裝 <filename role="package">chinese/tcl83</filename> 與
+        <filename role="package">chinese/tk83</filename>。</para>
+      <para>
+        chinese/tcl83 和 chinese/tk83 主要是補上一個
+	<option>--enable-i18nImprove</option> 的選項，
+	修正 XIM 處理有問題的部份。</para>
+      <para>中文顯示都正常，中文輸入也是正常的。</para>
+      <programlisting>
+#!/usr/local/bin/wish8.3
+tk useinputmethods 1
+font create bsmilpfont -family "ar pl mingti2l big5" -size 16
+label .a -text "標籤" -font bsmilpfont
+pack .a
+button .b -text "按鈕" -command { puts stdout $cc; exit } -font bsmilpfont
+pack .b
+entry .c -textvariable cc -font bsmilpfont
+pack .c</programlisting>
+      <figure>
+        <title>tcltk snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/tcltk" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <para> WWW: <ulink url="http://www.scriptics.com/software/tcltk/8.3.html">
+        http://www.scriptics.com/software/tcltk/8.3.html</ulink></para>
+  </sect1>
+
+  <sect1 id="postgre">
+    <title>PostgreSQL 不能處理中文？</title>
+      <para>
+        <application>PostgreSQL</application> 中使用中文一向有小問題，
+        如 '許'、'社' 等等後面是 \ 的中文字都會出搥，
+        直到 6.5 版以後，才加入了 multibyte 的支援。</para>
+      <para><application>PostgreSQL</application> 的語言支援分 Client/Server 端
+	(frontend/backend)，無論 Client 端使用何種語言，
+	Server 端都會使用設定好的語言存入資料庫中。</para>
+
+      <para>這有什麼好處？例如：後端設定成繁體中文，前端設定成簡體中文，
+        然後，存入的繁體中文，顯示的是簡體中文，當然，它不會做中、英翻譯。</para>
+
+      <para>要正確使用中文，比較保險的作法則是 Server 端採 euc_tw 編碼，
+	Client 端使用 big5 編碼，例如：</para>
+
+      <screen>
+建立 Server 端為 euc_tw 編碼的 db
+<prompt>%</prompt> <userinput>createdb --encoding euc_tw test</userinput>
+
+使用 psql 這個 CLI 管理工具，就像 mysql 般。
+<prompt>%</prompt> <userinput>psql test</userinput>
+
+進入 psql
+Welcome to psql 8.1.5, the PostgreSQL interactive terminal.
+
+Type:  \copyright for distribution terms
+       \h for help with SQL commands
+       \? for help with psql commands
+       \g or terminate with semicolon to execute query
+       \q to quit
+<prompt>test=#</prompt>
+
+設定 Client 端(psgl)為 big5 編碼
+<prompt>test=#</prompt> <userinput>\encoding big5</userinput>
+
+建立 table
+<prompt>test=#</prompt> <userinput>CREATE TABLE test (usrname char(20));</userinput>
+CREATE TABLE
+
+開始測試輸入中文
+<prompt>test=#</prompt> <userinput>INSERT INTO test VALUES('許國榮');</userinput>
+INSERT 0 1
+
+您會看到正確的答案
+<prompt>test=#</prompt> <userinput>SELECT * FROM test;</userinput>
+         usrname
+-------------------------
+ 許國榮
+(1 行)
+
+
+結束，收工
+<prompt>test=#</prompt> <userinput>\q</userinput></screen>
+      <para>
+        也可以在 <application>PostgreSQL</application> 中下
+        <command>PGCLIENTENCODING=BIG5</command>
+        的指令，如果是使用 <application>PHP</application>
+        + <application>PostgreSQL</application> 則使用以下方式：</para>
+      <programlisting>
+ $conn = pg_connect("user=postgres dbname=stip");
+ pg_exec($conn, "set client_encoding to 'BIG5'");</programlisting>
+      <para>
+        WWW: <ulink url="http://www.postgresql.org/">
+        http://www.postgresql.org/</ulink></para>
+  </sect1>
+
+  <sect1 id="postgresql-jdbc">
+    <title>PostgreSQL + JDBC + Servlet + XMLC 中文完全解決方案</title>
+      <para>作者：smallufo，Email：smallufo@bigfoot.com</para>
+      <para>
+	自古以來 Servlet 連結 Database 在中文方面總是有許多問題，尤其是在
+	web 端，要考慮的因素更多了。有時候，form的文字遇到「許，功」等字，
+	要使用者自行輸入“\”這個跳說字元；有時候明明把「許，功」insert
+	進資料庫，但是取出來又會變成〈？〉；而中文的許多次常用字，
+	例如宏碁的「碁」，等怪怪的字元，更是讓 
+	programmer 頭髮白了一半。而 encoding 又是個最重要的關鍵，常見的 
+	encoding 有以下幾點：</para>
+      <programlisting>
+code  +0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F
+F9D0                     碁 銹 裏 墻 恒 粧 嫺 ╔ ╦ ╗
+F9E0  ╠ ╬ ╣ ╚ ╩ ╝ ╒ ╤ ╕ ╞ ╪ ╡ ╘ ╧ ╛ ╓
+F9F0  ╥ ╖ ╟ ╫ ╢ ╙ ╨ ╜ ║ ═ ╭ ╮ ╰ ╯ ▓  </programlisting> 
+      <itemizedlist>
+	<listitem><para>
+	  作業系統 Locale 的 encoding
+	</para></listitem>
+	<listitem><para>
+	  資料庫端的 encoding
+	</para></listitem>
+	<listitem><para>
+	  javac-encoding xxx
+	</para></listitem>
+	<listitem><para>
+	  ServletRequest.setContentType("texe/html; charset=xxx)
+	</para></listitem>
+	<listitem><para>
+	  web application deployment(web.xml) 所指定的 character-encoding="xxx"
+	</para></listitem>
+	<listitem><para>
+	  new String(String.getByte("xxx),"yyy)
+	</para></listitem>
+	<listitem><para>
+	  如果使用 xmlc，還有 xmlc 的 encoding 以及
+	  org.enhydra.xml.io.OutputOptions.setXmlEncoding("xxx")
+	</para></listitem>
+      </itemizedlist>
+      <para>
+	這幾種 encoding 萬馬奔騰，常使 programmer 轉的暈頭轉向，
+	不知目前身在何處，不知多少 programmer 在此浪費青春。</para>
+      <para>
+	中文解決方案以前在網路上有許多做法，但是通常都不太完整，
+	要不然就得大刀闊斧更動到 JDBC driver，或是重新 compile
+	整個資料庫系統。而為了系統的「完整性」，我並不考慮這些做法。
+	我的作法可以完整保留 postgreSQL 的完整性〈以 RPM 安裝，不用重新
+	compile〉，而且 JDBC driver 不用重新 compile。
+	以下的步驟後半部主要是針對 XMLC 而言，不過一般「純」的 servlet 
+	程式，應該很容易粹取出來。</para>
+      <para>以下是我的一些環境：</para>
+      <para>
+	RedHat Linux 7.0 (CLE 1.0)，其他的中文環境也應該沒問題。
+	如果您是英文版的，請安裝 Chinese locale patch 即可。
+	重點是，當您輸入 'set' 時，可以看到 'LANG=zh_TW' 這個環境變數。</para>
+      <para>Servlet Engine：Resin 2.0.2</para>
+      <para>posrgreSQL-7.1.3-1PGDG.i386.rpm，檔案大小 1164817 bytes，直接以
+	rpm -Uvh 安裝即可，不用重新 compile。JDBC driver 也是直接使用
+	postgresql-jdbc-7.1.3-1PGDG.i386.rpm 所安裝的 jdbc7.1-1.2.jar 即可。</para>
+      <para>資料庫請以 Unicode 編碼〈createdb -E Unicode〉，這點最為重要。</para>
+      <para>Web application Deployment(web.xml) 中的 &lt;web-app&gt; 不要加上
+	character-encoding="xxx" 這個 attribute</para>
+      <para>在 servlet 中，請設定 res.setcontentType("text/html; charset=CP950");</para>
+      <para>form 的參數，直接以 getParameter("xxx") 讀取，
+	再 insert 進資料庫，不用作任何轉碼。</para>
+      <para>要從資料庫中讀取資料，得利用：
+	new String(rs.getString("ColName").getBytes("8859_1"),"CP950") </para>
+      <para>要輸出整份文件〈implement org.enhydra.xml.xmlc.html.HTMLObject 的文件〉時，
+	不要用 out.println(doc.toDocument())，請改用如下的方法：</para>
+      <programlisting>
+org.enhydra.xml.io.OutputOptions options = new OutputOptions();
+options.setOmitEncoding(false);
+options.setXmlEncoding("Big5");
+DOMFormatter formatter = new DOMFormatter(options);
+if(iChingVotingsPage.getDelefate() != null) {
+  out.println(formatter.toString(iChingVotingsPage.getDelegate()));
+) else {
+  out.println(formatter.toString(iChingVoringPage));
+}</programlisting>
+      <para>Servlet 檔案要以 javac -encoding CP950 來編譯。</para>
+      <para>大功告成，如此解決方案，則可以完全正常處理所有罕見以及特殊字元，
+	不論是插入資料庫，從資料庫取出來在網頁上，都沒有問題。</para>
+  </sect1>
+
+  <sect1 id="perl">
+    <title>Perl 中文程式設計</title>
+      <para>如何排除 Perl 程式處理中文資料的障礙？</para>
+      <para>
+	在 CGI Perl 程式中，有許多符號字元是有特殊用途的，
+	而不幸的有某些這樣的字元卻與中文字的第二個位元組互相衝突，
+	以至於會有中文字顯示或比對不正確，甚至是產生錯誤結果的現象，
+	尤其是 | 及 \ 這兩個字元，所幸我們還有個 quotemeta 指令可以使用，
+	這個指令可以將指定的字串中每個字元的前面都再多加上一個 \
+	這個字元，使得字串內的特殊字元在處理時被視為單純的字碼，
+	請參考下列的範例：</para>
+      <para>
+	假設 $str 是一個要做搜尋比對的中文字串，而 $line
+	是逐行讀入的資料檔內容：</para>
+<programlisting>
+$restr = quotemeta $str;
+if ($line !~ m/$restr/i) { ......
+}</programlisting>
+      <para>
+	另外若不是以變數來處理的字串，通常我們會使用雙引號來標示及處理，
+        然而這也是會發生上述的障礙，但是當您直接對雙引號括住的字串使用
+        quotemeta 來處理時卻又會怪怪的，那怎麼辦呢？很間單！
+        將雙引號改為單引號就可以囉～因為單引號不會對其內的字元作特殊處理，
+        換句話講在單引號之內的文字資料將會原原本本的呈現出來，
+        不會去解譯變數也不會處理 escape 字元 ，例如原來的敘述是：</para>
+<programlisting>
+print "測試成功的$msg訊息！\n";</programlisting>
+      <para>應改為：</para> 
+<programlisting>
+print '測試成功的訊息！';</programlisting>
+      <para>
+        請特別注意 \n 換行符號及 $msg 變數也需拿掉，因為單引號並不處理
+        escape 字元及變數，如果不將 \n 符號及 $msg 變數拿掉，
+        那麼顯示出來的字樣將會是</para> 
+<screen>
+成功的$msg訊息！\n</screen>
+      <para>
+        ，如果您仍希望顯示成原來包含變數及換行的效果，
+        那就必須將單引號與雙引號資料併用，同時以 .
+        符號來連結成完整的輸出敘述：</para> 
+<programlisting>
+print '成功的'.$msg.'訊息！'."\n";</programlisting>
+      <para>
+        上述結論就是當印出 成功的 與 訊息！ 字樣是使用單引號，
+        而換行的 \n 則是用雙引號。</para>
+      <para>以下是一個將檔案中所有的中文字移除的程式範例：</para>
+      <programlisting>
+#!/usr/bin/perl -w
+# ./bg5rm.pl filename
+# and it's will generate a filename.bg5rm
+$ifname=$ARGV[0];
+open(IF,"$ifname");
+open(OF,"&gt;${ifname}.bg5rm");
+$big5 = "[\xA1-\xF9][\x40-\x7E\xA1-\xFE]";
+while(&lt;IF&gt;) {
+  s/$big5//g;
+  print OF $_;
+  print $_;
+}
+close(IF);
+close(OF);</programlisting>
+      <para>以下是一個將文章中的中英文 word split 進 list：</para>
+      <programlisting>
+my $big5 = q{
+    [\xA1-\xF9][\x40-\x7E\xA1-\xFE]
+};
+my $big5plus = q{
+    [\x81-\xFE][\x40-\x7E\x80-\xFE]
+};
+my @chars = /$big5|$ascii+/gox;
+my @charsplus = /$big5plus|$ascii+/gox;</programlisting>
+      <para>MPX 的 <ulink url="http://www.hkln.net/perl/technique/chinese.htm">
+	解決 Perl 處理中文字的問題</ulink></para>
+      <para>CJKV Information Processing 這本書有些不錯的 perl 程式
+	<ulink url="ftp://ftp.oreilly.com/pub/examples/nutshell/cjkv/perl/">
+	範例</ulink>，其中 *.pdf 是一些討論 perl 下處理 multibyte 的 
+	papers。</para>
+      <para>Erik Peterson 寫了一些有用的 <ulink
+	url="http://www.mandarintools.com/">Perl 程式</ulink>，
+	可處理中文轉換。</para>
+      <para>
+	WWW: <ulink url="http://www.perl.org/">
+	http://www.perl.org/</ulink></para>
+  </sect1>
+
+  <sect1 id="mysql">
+    <title>MySQL Localisation and International Usage</title>
+    <para>WWW: <ulink url="http://www.mysql.com/documentation/mysql/bychapter/index.html#Localisation">
+       MySQL Localisation and International Usage</ulink></para> 
+    <para>動態能從 my.cnf 調整的部份並沒有 big5.conf：</para>
+    <screen>
+&prompt.user; <userinput>ls /usr/local/share/mysql/charsets</userinput>
+Index        danish.conf   greek.conf      koi8_ukr.conf  usa7.conf
+README       dec8.conf     hebrew.conf     latin1.conf    win1250.conf
+cp1251.conf  dos.conf      hp8.conf        latin2.conf    win1251.conf
+cp1257.conf  estonia.conf  hungarian.conf  latin5.conf    win1251ukr.conf
+croat.conf   german1.conf  koi8_ru.conf    swe7.conf</screen>
+    <para>靜態要在 compile 階段完成的部份：</para>
+    <screen>
+&prompt.user; <userinput>ls mysql-3.23.55/strings/ctype*.c</userinput>
+mysql-3.23.55/strings/ctype-big5.c    mysql-3.23.55/strings/ctype-sjis.c
+mysql-3.23.55/strings/ctype-czech.c   mysql-3.23.55/strings/ctype-tis620.c
+mysql-3.23.55/strings/ctype-euc_kr.c  mysql-3.23.55/strings/ctype-ujis.c
+mysql-3.23.55/strings/ctype-gb2312.c  mysql-3.23.55/strings/ctype.c
+mysql-3.23.55/strings/ctype-gbk.c</screen>
+    <para>也就是說 multibyte support 必須要 compile 時就給他下好這個參數，
+      是否能直接設定 my.cnf 達到 --with-charset=big5 的效果還不確定。</para>
+    <para>檢驗方式，進入 mysql 後打：</para>
+    <screen>
+mysql&gt; <userinput>show variables like 'character_sets';</userinput>
+mysql&gt; <userinput>show variables like 'character_set';</userinput></screen>
+    <para>那 character set 影響那些呢？就我所知的有 ORDER BY 和 GROUP BY 
+      的順序，那特殊中文字 insert 進資料的問題還是在嗎？</para>
+    <note><para>另一常見的問題是，MySQL 無法輸入中文資料庫名稱、中文表格名稱、
+      中文欄位名稱？其實是可以的，只要用 <literal>`</literal>
+      將中文字包含在內就可以，像是 <command>CREATE DATABASE `哈囉`;</command>。</para></note>
+    <para>WWW: <ulink url="http://www.mysql.com/">
+    http://www.mysql.com/</ulink></para>
+  </sect1>
+
+  <sect1 id="ldap">
+    <title>在 LDAP 下使用中文</title>
+
+    <para>Contributed by duncanlo (duncan@twn.wox.org)</para>
+    <para>Last Update: 2003年 4月24日 周四 05時13分04秒 CST</para>
+
+    <para>如果是要將 .ldif 轉入，必須先將中文轉成 utf-8。</para>
+    <para>安裝 <filename role="package">converter/iconv</filename>，
+    假設要轉碼的檔案是 <filename>big5.ldif</filename>，轉出來的檔案是 <filename>utf-8.ldif</filename>。</para>
+    <screen>
+&prompt.user; <userinput>iconv -f big5 -t utf-8 big5.ldif > utf-8.ldif</userinput></screen>
+    <para>然後就可以用 <command>ldapadd</command> 來將 utf-8.ldif 轉入 ldap 了。</para>
+      <figure>
+        <title>ldap snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/ldap" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+    <para>WWW: <ulink url="http://www.iit.edu/~gawojar/ldap/">
+      Java LDAP Browser/Editor</ulink></para>
+  </sect1>
+
+  <sect1 id="ldap-search">
+    <title>如何處理 LDAP ldapsearch</title>
+
+    <para>Contributed by iFEELing(iFEELing@ptt.cc)、nung、chinsan</para>
+    <para>Last Update: Fri Oct 20 20:07:04 2006</para>
+
+    <para>以下先以 <filename role="package">perl</filename> 解法做一示範：</para>
+    <programlisting>
+#!/usr/bin/perl
+use CGI;
+use Net::LDAP;
+use Net::LDAP::LDIF;
+
+
+my $host   = "your.ldap.host";                    # Server host
+my $RDN    = "cn=daemon, ou=people, o=freebsd";   # RDN to read
+my $PWD    = "secret";                            # RDN's Password
+my $BASEDN = "ou=members, o=freebsd";             # DN Base
+
+my $q = CGI-&gt;new;
+my $foot="\n&lt;BR /&gt;&lt;A HREF=auth.pl&gt;Auth Page&lt;/A&gt;&lt;/CENTER&gt;";
+print $q-&gt;header(-charset =&gt; 'utf-8', -type =&gt; 'text/html');
+my $uid = $q-&gt;param('uid');
+
+if (defined($uid)) {
+  print "&lt;CENTER&gt;";
+  $ldap = Net::LDAP-&gt;new ($host) or die print "Fail: $@\n";
+  $result = $ldap-&gt;bind($RDN, password =&gt; $PWD);
+  $msg = $ldap-&gt;search( base =&gt; $BASEDN,
+                        scope =&gt; "sub",
+                        filter =&gt; "(cn=$uid)"
+                        #, attrs=&gt;["description"] );
+
+  if ( ! $msg-&gt;count() &gt; 0 ) {
+     print "無此資料" . $foot;
+  } else {
+    foreach $entry ( $msg-&gt;all_entries() ) {
+      $desc = $entry-&gt;get_value ( 'description' ) 
+              or die print "無此欄位" . $foot;
+      $name = $entry-&gt;get_value ( 'givenName' )
+              or die print "無此欄位" . $foot;
+      print $name . "-" . $desc . "\n" . $foot;
+    }
+  }
+
+  $ldap-&gt;unbind;
+
+} else {
+  my $method = "POST";
+  my $action = "auth.pl";
+
+  print "&lt;CENTER&gt;";
+  print $q-&gt;start_form($method, $action);
+  print "UID";
+  print $q-&gt;textfield(-name =&gt; 'uid');
+  print $q-&gt;submit;
+  print $q-&gt;endform;
+  print "&lt;/CENTER&gt;";
+}
+</programlisting>
+
+    <para>以下則以 <filename role="package">php</filename> 解法做一示範：</para>
+    <programlisting>
+&lt;?php
+$ldaphost = "your.ldap.host";
+$admin 	  = "daemon";
+$rdn      = "cn=daemon, ou=people, o=freebsd";
+$rdnpass  = "secrect";
+$basedn   = "ou=members, o=freebsd";
+
+$ds=ldap_connect($ldaphost);  // must be a valid LDAP server!
+
+?&gt;
+
+&lt;META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8"&gt;
+
+&lt;?php
+$cn 	= $_POST['cn'];
+$rootcn = strtolower($cn) ;
+
+if ($ds && $rootcn != $admin ) {
+  $r=ldap_bind($ds, $rdn, $rdnpass);
+  $sr=ldap_search($ds, $basedn, "cn=".$cn);
+  echo "&lt;CENTER&gt;";
+  echo "&lt;FONT SIZE=5 COLOR=red&gt;" . ldap_count_entries($ds, $sr) . 
+       "&lt;/FONT&gt; user(s) found&lt;BR /&gt;";
+  $count_r = ldap_count_entries($ds,$sr);
+
+  if ( $count_r &gt; 0 ) {
+    $entry = ldap_first_entry($ds,$sr);
+    for ( $en=0; $en&lt;$count_r ; $en++ ) {
+      $info = ldap_get_attributes($ds, $entry);
+      $rec = $en + 1;
+      echo "&lt;FONT SIZE=6 COLOR=NAVY&gt;" . $rec . " : " . $info["cn"][0] . 
+           "&lt;/FONT&gt;";
+      echo "&lt;TABLE BORDER=\"1\" CELLPADDING=\"1\" CELLSPACING=\"1\" 
+           STYLE=\"border-collapse: collapse; margin: 2em auto\"&gt;";
+      echo "&lt;TR BGCOLOR=#808080&gt;&lt;TD&gt;" . 
+           "&lt;B&gt;Attribute Name&lt;/TD&gt;" .
+	   "&lt;TD&gt;&lt;B&gt;Value&lt;/TD&gt;&lt;/TR&gt;";
+
+      for ($i=0; $i&lt; $info["count"]; $i++) {
+
+        $attr = $info[$i];
+
+        for ($j=0; $j&lt; $info[$attr]["count"]; $j++) {
+          echo "&lt;TR&gt;&lt;TD BGCOLOR=#C3D9FF&gt;" . 
+               $attr . "&lt;/TD&gt;&lt;TD BGCOLOR=#FFFCEA&gt;" . 
+               $info[$attr][$j] . "&lt;/TD&gt;&lt;/TR&gt;";
+          }
+        }
+        echo "&lt;/TABLE&gt;";
+        $entry = ldap_next_entry($ds,$entry) ;
+      }
+    }
+    ldap_close($ds);
+
+} else {
+
+  echo "&lt;H4&gt;Server has some problem .&lt;/H4&gt;";
+
+}
+
+echo "&lt;/CENTER&gt;";
+?&gt;
+</programlisting>
+  </sect1>
+
+  <sect1 id="ldap-search-base64">
+    <title>如何處理 LDAP ldapsearch 所遇到的 Base64 編碼</title>
+
+    <para>Contributed by salagadoola、plasmaball、cdsheen</para>
+    <para>Last Update: Tue Nov 28 16:08:19 CST 2006</para>
+
+    <para>由於有些環境會在 LDAP 中值後面多空白，所以依據 RFC 相關標準就會以 Base64 
+      作編碼處理，凡是屬性有 :: 後面接的是 Base64 encoding 的值，
+      而只有 : 的後面不必 Base64 decode，以下舉例：</para>
+
+    <programlisting>dn: cn=aaa,ou=Members,o=unit
+objectClass:: bWVtYmVyAA==
+guid:: e0IwMEYzODlCLUNDMEUtNDUwMC05RTcyLTZDRkI3QzNBMjc2N30A
+CMStatus:: MAA=
+                                                                                
+dn: cn=bbb,ou=Members,o=unit
+objectClass:: bWVtYmVyAA==
+guid:: e0IwMEYzODlCLUNDMEUtNDUwMC05RTcyLTZDRkI3QzNBMjc2N30A
+CMStatus:: MQ==
+</programlisting>
+
+    <para>凡是 base64 encoding 的部分，可以透過類似 
+      perl -MMIME::Base64 -e 'print decode_base64("bWVtYmVyAA==")' 來求出解：</para>
+
+    <programlisting>dn: cn=aaa,ou=Members,o=unit
+objectClass: member
+guid: {B00F389B-CC0E-4500-9E72-6CFB7C3A2767}
+CMStatus: 0
+                                                                                
+dn: cn=bbb,ou=Members,o=unit
+objectClass: member
+guid: {B00F389B-CC0E-4500-9E72-6CFB7C3A2767}
+CMStatus: 1</programlisting>
+
+    <para>假設上述 ldapsearch 結果存檔為 <filename>blah.txt</filename>，
+      以下先以 salagadoola 解法做一示範：</para>
+
+    <programlisting>cat blah.txt | perl -e 'use MIME::Base64; for(&lt;STDIN&gt;){ chomp; if(/^(\w+)::(.+)/){ $_ = "$1: ".decode_base64($2) } print "$_\n" }'
+</programlisting>
+
+
+    <para>以下則是 plasmaball 以更簡潔解法：</para>
+
+    <programlisting>cat blah.txt | perl -MMIME::Base64 -ne 's/::(\s+)(.*)$/":$1".decode_base64($2)/e;print+$_'
+</programlisting>
+
+
+    <para>以下則是 cdsheen 弄成不需額外裝 MIME::Base64 Perl module 的 filter，
+      可以把 ldapsearch 的結果 pipe 給它：</para>
+
+    <programlisting>#!/usr/bin/perl
+ 
+while(&lt;&gt;) {
+        chop;
+        next unless /^([\w\d]+::\s+)(.+)$/;
+        print $1 . decode_base64($2) . "\n";
+}
+ 
+sub decode_base64() {
+        local($_) = @_;
+ 
+        # decode base64 encoding
+ 
+        s/=\?=?//gi ;
+        tr#A-Za-z0-9+/##cd;
+        tr#A-Za-z0-9+/# -_#;
+        $len = pack("c", 32 + 0.75*length);
+        $_ = unpack("u", $len . $_ );
+ 
+        return($_);
+}</programlisting>
+  </sect1>
+
+
+  <sect1 id="perl-cgi">
+    <title>用 perl 寫 CGI 時的中文顯示問題？</title>
+    <para>Contributed by fjj.bbs@bbs.csie.ncku.edu.tw (Frank Millers)</para>
+    <para>Last Update: Sun Nov  2 17:45:35 2003</para>
+
+    <para>只要讓 HTML Header 設定為 Big5 即可：</para>
+    <programlisting>#!/usr/bin/perl
+use CGI;
+
+my $q = new CGI;
+
+$q->head(charset=big5);
+$q->start_html(lang=big5);</programlisting>
+  </sect1>
+
+  <sect1 id="svn-trac">
+    <title>用 Subversion 搭配 Trac 時的中文顯示問題？</title>
+    <para>Contributed by DarkKiller & wens & chinsan</para>
+    <para>Last Update: Mon Oct  9 11:49:14 CST 2006</para>
+
+    <para>在 trac 上面看 diff 中文都會變成亂碼，
+      所以要設定相關檔案的 property 編碼才行，作法如下：</para>
+
+    <screen>&prompt.user; <userinput>svn ps svn:mime-type "text/plain; charset=big5" 要改的檔案</userinput></screen>
+
+    <para>如果要針對一些檔案副檔名來指定 property，
+      或者預設每次新增檔案都會自動指定 property。最簡單的方式就是使用 
+      Subversion 本身提供的 auto-props 功能。可以在 
+      <filename>~/.subversion/config</filename> 內加上類似如下設定：</para>
+    <programlisting>
+enable-auto-props = yes
+Makefile = svn:mime-type=text/plain; charset=big5
+*.sgml = svn:mime-type=text/plain; charset=big5</programlisting>
+
+    <para>如此一來，就會開啟自動 property 指令功能，上例會預設 
+      <filename>Makefile</filename> 以及 <filename>*.sgml</filename> 使用 big5 編碼。</para>
+
+    <para>WWW: <ulink url="http://svnbook.red-bean.com/en/1.1/ch07s02.html#svn-ch-7-sect-2.4">
+	Version Control with Subversion 內的 Automatic Property Setting 介紹</ulink></para> 
+    <para>WWW: <ulink url="http://svnbook.red-bean.com/en/1.1/ch07.html#svn-ch-7-sect-1.3.2">
+	Version Control with Subversion 內的 Config 介紹</ulink></para> 
+  </sect1>
+
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../zh-tut.sgml" "part" "chapter")
+     End:
+-->

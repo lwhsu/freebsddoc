@@ -1,0 +1,643 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/backups/chapter.sgml,v 1.8 2002/02/27 12:15:38 statue Exp $
+
+     Translate into Chinese by tsaimh@csie.nctu.edu.tw
+                               sexbear@news.tmu.edu.tw
+
+     English Version: 1.9
+-->
+
+<chapter id="backups">
+  <title>備份</title>
+
+  <sect1>
+    <title>Synopsis</title>
+
+    <para>本章將告訴你關於備份資料的方法，和被使用來建立這些備份檔案的程式。
+    如果你想要對這部分貢獻一些東西，把他寄到&a.doc;。</para>
+  </sect1>
+
+  <sect1 id="backups-tapebackups">
+    <title>磁帶機(Tape)</title>
+    
+    <para>主要的磁帶機有 4mm、8mm、QIC、mini-cartridge 和 DLT。</para>
+    
+    <sect2 id="backups-tapebackups-4mm">
+      <title>4mm (DDS: Digital Data Storage)</title>
+
+      <para>在 Conner 買下 Archive (主要的 QIC 製造商)之後，4mm 磁帶機取代
+        了 QIC 而成為工作站備份資料的裝置。它比 8mm 小(3 x 2 x 0.5 inches，
+        76 x 51 x 12 mm ) ，但對於資料保存的可信度仍不及 8mm ，很安靜，
+        同時它的卡匣也比 8mm 來的便宜。它和 8mm 一樣，讀寫頭的壽命都不長，
+        因為它們同樣是用螺旋狀的方式來偵測的。</para>
+        
+      <para>資料傳輸的速度，約在 150 KB/s 到 500 KB/s 之間，可儲存的空間從
+        1.3 GB 到 2.0 GB ，硬體壓縮約可使空間加倍。磁帶機資料庫單元可以有
+        6 台磁帶機，120 個磁帶匣，以自動切換的方式使用同一個磁帶櫃，
+        磁帶機資料庫的容量可達 240 GB 。</para>
+
+      <para>DDS-3標準現在已支援磁帶機容量到12GB（或是壓縮後24GB）</para>
+
+      <para>4mm 和 8mm 同樣都是使用螺旋偵測的方式，所有螺旋偵測的優點及缺點，
+        都可在 4mm 和 8mm 磁帶機上看到。</para>
+
+      <para>磁帶在經過 2000 次的使用或 100 次的滿載後，就該退休了。</para>
+    </sect2>
+    
+    <sect2 id="backups-tapebackups-8mm">
+      <title>8mm (Exabyte)</title>
+      
+      <para>8mm 磁帶機是最常見的 SCSI 磁帶機，也是磁帶交換的最佳選擇，
+        幾乎每個站台都有一台 exabyte 2 GB 8mm 磁帶機。8mm 磁帶機可信度高，
+        方便，且安靜。卡匣小(4.8 x 3.3 x 0.6 inches，122 x 84 x 15 mm)
+        而不貴。8mm 磁帶機的下邊是一個短短的讀寫頭，
+        而讀寫頭的壽命取決於磁帶經過讀寫頭時，高速的相對運動。</para>
+
+      <para>資料傳輸的速度，約在 250 KB/s 到 500 KB/s 之間，可儲存的空間從
+        300 MB 到 7 GB ，硬體壓縮約可使空間加倍 。磁帶機資料庫單元可以有
+        6 台磁帶機，120 個磁帶匣，以自動切換的方式使用同一個磁帶櫃，磁帶機
+        資料庫的容量可達 840 GB 。</para>
+
+      <para>The Exabyte <quote>Mammoth</quote> model supports 12GB on one tape
+	(24GB with compression) and costs approximately twice as much as
+	conventional tape drives.</para>
+
+      <para>資料是使用螺旋偵測的方式記錄在磁帶上，讀寫頭和磁帶約夾 6 度，
+        磁帶以 270 度纏繞著軸，並抵住讀寫頭，軸適時地旋轉，
+        使得磁帶具有高密度，並可使磁軌緊密地分布，從一端到另一端。</para>
+    </sect2>
+    
+    <sect2 id="backups-tapebackups-qic">
+      <title>QIC</title>
+      
+      <para>QIC-150 是最常見的磁帶機。和 4 mm 及 8 mm 比較，QIC 
+        磁帶機相當昂貴，最高可能要 5 倍的價錢(每 GigaByte)。
+        假如你的需求是六台左右的磁帶機，那麼 QIC 將是正確的選擇。
+        QIC 是<emphasis>最</emphasis>常見的磁帶機，
+        每個站台都會有一台 QIC 磁帶機。
+        QIC 磁帶機具有數種不同的儲存密度。QIC 磁帶機並不"安靜"，
+        讀寫時的聲音都可清淅地聽到。QIC 磁帶機的規格：
+        6 x 4 x 0.7 inches，15.2 x 10.2 x 1.7 mm 。<link
+          linkend="backups-tapebackups-mini">Mini-cartridges</link>
+        用的同樣是 1/4" 寬的磁帶，將在後面討論到。
+        QIC 不具磁帶機資料庫及切換的功能。</para>
+
+      <para>資料傳輸的速度介於 150 KB/s 和 500 KB/s 之間，可儲存的空間從
+        40 MB 到 15 GB 。較新的 QIC 磁帶機具有硬體壓縮的功能。
+        QIC 的使用率愈來愈低，漸漸被 DAT 所取代。</para>
+
+      <para>資料以磁軌的方式記錄在磁帶上，
+        磁軌數及磁軌的寬度會根據容量而有所不同。
+        通常新的磁帶機具有向後相容(backward-compatibility) 的讀取功能
+        (通常也具備寫入的功能)。對於資料的安全性，QIC 具有不錯的評價。
+        </para>
+
+      <para>磁帶在經過 5000 次的使用後，就該退休了。</para>
+    </sect2>
+
+<![ %not.published; [
+
+    <sect2 id="backups-tapebackups-mini">
+      <title>* Mini-Cartridge</title>
+      
+      <para></para>
+    </sect2>
+    
+]]>
+    
+    <sect2 id="backups-tapebackups-dlt">
+      <title>DLT</title>
+
+      <para>在這個章節所列出的磁帶機中，DLT 具有最快的資料傳輸速率。
+        1/2" (12.5 mm)的磁帶包含在單軸的磁帶匣(4 x 4 x 1 inches，100 x 100
+        x 25 mm)中。磁帶匣的某一邊是一個旋轉匣道，透過匣道的開合，
+        可以讓磁帶捲動。磁帶匣內只有一個軸，
+        而本文件中所提到的其他磁帶匣都是有兩個軸的(9 track
+        磁帶機例外)。</para>
+
+      <para>資料傳輸的速度約 1.5 MB/s，是 4mm ，8mm 和 QIC 磁帶機的三倍，
+        可儲存的空間從 10 GB 到 20 GB，具有磁帶機資料庫。
+        磁帶機資料庫單元可以有 1 到 20 台磁帶機，5 到 900 個磁帶匣，
+        磁帶機資料庫的容量可達 50 GB 到 9 TB 。</para>
+
+      <para>With compression, DLT Type IV format supports up to 70GB
+	capacity.</para>
+
+      <para>資料儲存在平行於磁帶進行方向的磁軌上(同 QIC 磁帶)，
+        一次寫入兩個磁軌。讀寫頭的壽命相當長，每當磁帶停止前進，
+        磁帶與讀寫頭之間沒有相對運動。</para>
+    </sect2>
+
+    <sect2>
+      <title id="backups-tapebackups-ait">AIT</title>
+
+      <para>AIT是一個從Sony來的新的格式，每個磁帶機能儲存50GB（伴隨著壓縮）。
+      這種磁帶機包含記憶的晶片可以記住磁帶機內容的索引。這個索引可以很快速地被
+      磁帶機所讀取而決定檔案在磁帶機的位置，而不需向其他磁帶機花幾分鐘在尋找。
+      像SAMS:Alexandria 這樣的軟體可以操控40或是更多的 AIT tape libraries，直接
+      跟磁帶機記憶晶片溝通後，就在螢幕顯示內容，決定什麼檔案備份在哪個磁帶機，放
+      在正確的磁帶機，儲存他，然後從磁帶機復原這些檔案。</para>
+
+      <para>像這樣的libraries要花費$20,000，價格使他們有點遠離愛好者市場。</para>
+    </sect2>
+    <sect2>
+      <title>使用新的磁帶</title>
+      
+      <para>當你嘗試寫入一塊完全空白的磁帶時，
+        你會得到類似下面這樣的錯誤訊息：</para>
+      
+      <screen>sa0(ncr1:4:0): NOT READY asc:4,1
+sa0(ncr1:4:0):  Logical unit is in process of becoming ready</screen>
+      
+      <para>訊息指出這塊磁帶沒有 Identifier Block (block 編號 0)。
+        在 QIC-525 之後的所有 QIC 磁帶，都採用 QIC-525 標準，
+        必須寫入一個 Identifier Block。對於此種問題，
+        有以下兩種解決的辦法：</para>
+      
+      <para>用 <command>mt fsf 1</command> 可以使磁帶機對磁帶寫入
+        Identifier Block。</para>
+      
+      <para>使用面版上的按鈕退出磁帶。</para>
+      
+      <para>再插入一次，並 &man.dump.8; 資料到磁帶上。</para>
+      
+      <para>此時 &man.dump.8; 會傳回 <literal>DUMP: End of tape
+	  detected</literal> ，然後你會得到這樣的錯誤訊息： <literal>HARDWARE
+	  FAILURE info:280 asc:80,96</literal></para>
+      
+      <para>這時用 <command>mt rewind</command> 來倒轉磁帶</para>
+      
+      <para>磁帶操作的後續動作都完成了。</para>
+    </sect2>
+  </sect1>
+  
+  <sect1 id="backup-programs">
+    <title>備份程式</title>
+    
+    <para>三個主要的備份程式：
+	&man.dump.8;、
+	&man.tar.1;、
+      和
+	&man.cpio.1;。</para>
+    
+    <sect2>
+      <title>Dump 和 Restore</title>
+      
+      <para>&man.dump.8; 和 &man.restore.8; 是 UNIX 傳統的備份程式。它以
+        block 為單位來備份資料，而不是以檔案，link 或目錄來備份資料。
+        &man.dump.8; 備份的是 device，整個 filesystem，不能只備份一個
+        filesystem 的部份或是用到兩個以上 filesystem 的 directory tree，
+        若是遇到 soft link &man.ln.1; 或是 mounting point ，則只會記錄下
+        building block。&man.dump.8; 出現於 ATT UNIX 的 Version 6 (約 1975)
+        。預設的參數適用於 9-track 磁帶(6250 bpi)，所以如果要用高密度的磁帶
+        (最高可達 62.182 ftpi)，就不能用預設的參數，而要另外指定參數。
+        </para>
+      
+      <para>&man.rdump.8; 和 &man.rrestore.8; 透過網路，
+        在另一台電腦的磁帶機上備份資料。這兩個程式都是藉著 &man.rcmd.3; 和
+        &man.ruserok.3; 來存取遠端的磁帶機。因此，
+        執行備份的使用者必需要有遠端主機的<literal>rhosts</literal>
+        存取權。&man.rdump.8; 和 &man.rrestore.8; 的參數必需適用於遠端主機
+        (例如,當你從 FreeBSD 連到一台 Sun 工作站 <hostid>komodo</hostid> 
+        去使用磁帶機時，使用 <command>/sbin/rdump 0dsbfu 54000 13000 126
+        komodo:/dev/nrsa8 /dev/rda0a 2>&amp;1</command>) 。
+        要注意的是，你必需考量你的狀況，因為執行遠端命令會牽涉到"安全"
+        (security)的問題(意指資料的安全性)。</para>
+    </sect2>
+
+    <sect2>
+      <title>Tar</title>
+      
+      <para>&man.tar.1; 同樣是在 ATT Unix Version 6 (約 1975)時出現的。
+        &man.tar.1; 可以直接對 filesystem 做處理：
+        它直接將檔案和目錄寫到磁帶上， &man.tar.1; 不支援像 &man.cpio.1; 
+        那樣多的選項，但 &man.tar.1; 不需要用像 &man.cpio.1; 那樣奇怪的
+        command pipeline。</para>
+      
+      <para>許多版本的 &man.tar.1; 不支援透過網路備份，而 GNU 版的
+        &man.tar.1; (FreeBSD 用的就是 GNU 版的) 提供相同於 &man.rdump.8;
+        的參數來使用遠端的裝置。例如要 &man.tar.1; Sun 工作站
+        <hostid>komodo</hostid> 上一台 Exabyte 磁帶機，就使用：
+        <command>/usr/bin/tar cf komodo:/dev/nrsa8 . 2>&amp;1</command>。
+        對於不支援遠端裝置的 &man.tar.1; ，可以使用一個pipeline 和 
+        &man.rsh.1; 來傳送資料給遠端的磁帶機。</para>
+
+      <screen>&prompt.root; <userinput>tar cf - . | rsh <replaceable>hostname</replaceable> dd of=<replaceable>tape-device</replaceable> obs=20b</userinput></screen>
+
+      <para>If you're worried about the security of backing over a network
+	you should use the &man.ssh.1; command instead of &man.rsh.1;.</para>
+    </sect2>
+    
+    <sect2>
+      <title>Cpio</title>
+      
+      <para>&man.cpio.1; 是 Unix 最早用來做檔案交換的磁帶機程式。它具有做
+        byte-swapping 的選項，可以用數種不同的格式寫入，並且可以將資料 pipe
+        給其他程式。&man.cpio.1; 沒辦法自動搜尋 directory tree 
+        內的檔案列表，必須經由標準輸入
+        (<filename>stdin</filename>)來指定。</para>
+      
+      <para>&man.cpio.1; 不支援透過網路的備份方式。你可以使用 pipeline
+        和 &man.rsh.1; 來傳送資料給遠端的磁帶機。</para>
+    </sect2>
+    
+    <sect2>
+      <title>Pax</title>
+      
+      <para>&man.pax.1; 是 IEEE/POSIX 對於 &man.tar.1; 和 &man.cpio.1;
+        的回應。由於多年來各種不同版本的 &man.tar.1; 和 &man.cpio.1; 
+        間的不相容，為了防止這種情形，並使其標準化，POSIX 
+        出了這套新的工具程式。&man.pax.1; 嘗試可以讀寫各種 &man.cpio.1; 和
+        &man.tar.1; 的格式，並可以自己增加新的格式。它的命令較類似 
+        &man.cpio.1;。</para>
+      </sect2>
+
+    <sect2 id="backups-programs-amanda">
+      <title>Amanda</title>
+      
+      <para><ulink url="../ports/misc.html#amanda-2.4.0">Amanda</ulink>
+        (Advanced Maryland Network Disk Archiver) 並非單一的程式，
+        而是一個主從式 (client/server) 的備份系統。
+        一台 Amanda server 可以備份任意數量，執行 Amanda client ，
+        或是連上 Amanda server 的電腦上的資料於一台磁帶機上。
+        一個常見的問題是，將資料寫入磁帶機的時間，
+        超過取得資料的時間，而 Amanda 解決了這個問題。它使用一個
+        "holding disk" 來同時備份數個 filesystem。
+        Amanda 建立 "archive sets"：一組磁帶，用來備份在 Amanda
+        的組態檔中所列出的完整的 filesystem。</para>
+
+      <para>Amanda 組態檔提供完整的備份控制及 Amanda 產生的網路傳輸。
+        Amanda 可以使用上述任何一個備份程式來寫入磁帶。
+        Amanda 可能是以 port 或 package 被取得，並非系統預設就有的。</para>
+      </sect2>
+
+    <sect2>
+      <title>Do Nothing</title>
+      
+      <para><quote>Do nothing</quote> 不是一個程式，
+        而是最被廣泛使用的備份策略。不需要預算，不需要備份的計畫表，
+        全部都不用。如果你的資料發生了什麼問題，忽略它，並且忍受它！</para>
+
+      <para>假如你的時間和資料不值得你做這些事，那麼 <quote>Do 
+        nothing</quote> 將是你最好的備份程式。要注意的是，Unix 
+        是相當好用的工具，你可能在數個月內，就發現你已經收集了不少，
+        對你而言，相當具有價值的東西。</para>
+
+      <para><quote>Do nothing</quote> 對於像 <filename>/usr/obj</filename>
+        或其他可由你的電腦產生的檔案而言，是最好的方法。例如你從
+        <acronym>SGML</acronym> 檔所產生的 <acronym>HTML</acronym> 
+        檔，就不需要備份，而應該備份的是 <acronym>SGML</acronym> 檔。</para>
+    </sect2>
+    
+    <sect2>
+      <title>哪個備份程式最好？</title>
+      
+      <para>在 &man.dump.8; <emphasis>時期</emphasis> ，Elizabeth D. Zwicky
+        測試了所有以上所列出的備份程式。在各式各樣，怪異的 filesystem 中，
+        &man.dump.8; 是你明智的抉擇。Elizabeth 建立起各式各樣，奇怪，正常的
+        filesystem，並用各種備份程式，測試在各種 filesystem 
+        上備份及回存資料。這些怪異之處包括了：具有 hole 和一個 null block 
+        的檔案，檔名具有 funny character，無法讀寫的檔案及裝置，
+        在備份時改變檔案大小，在備份時建立或刪除的檔案。她將結果刊出在 LISA
+        V in Oct. 1991. <ulink 
+          url="http://reality.sgi.com/zwicky_neu/testdump.doc.html">
+        torture-testing Backup and Archive Programs</ulink>。</para>
+    </sect2>
+    
+    <sect2>
+      <title>遇到狀況的回存程序</title>
+      
+      <sect3>
+	<title>在災難之前</title>
+
+	<para>在遇到任何的災難之前，你只需要做以下四個步驟：</para>
+	    
+	<para>第一，印出你的每個磁碟機代號
+	  (<command>例如: disklabel da0 | lpr</command>)，檔案系統表
+	  (<command>/etc/fstab</command>) ，以及所有的開機訊息，並保留兩份。
+	  </para>
+
+	<para>第二，確定遇到狀況時，用來開機及修復的軟碟
+	  (<filename>boot.flp</filename>、<filename>fixit.flp</filename>)
+	  具有你所有的裝置代號(並且能夠使用)。最簡單的方法是用軟碟開機，
+	  然後檢查開機訊息，如果你的裝置都有被列出，並且可以正常使用，
+	  就可以跳到第三步了。</para>
+
+	<para>否則，你必須建立兩張傳統的可開機軟碟，並包含 &man.fdisk.8;、
+	  &man.disklabel.8;、&man.newfs.8;、&man.mount.8;、
+	  以及你所使用的備份程式。這些程式必需被靜態連結。如果你使用的是
+	  &man.dump.8;，那麼這張軟碟就必需包含 &man.restore.8;。</para>
+	  
+	<para>第三，定期將資料備份到磁帶。
+	  任何在你上次備份之後的改變都無法恢復。記得將磁帶防寫。</para>
+
+	<para>第四，測試你在第二步所建立的軟碟及備份的磁帶，將過程記錄下來，
+	  並和這張可開機的軟碟，磁帶放在一起。也許你在回存時會想要抓狂，
+	  而這份記錄將防止你破壞你的磁帶(怎麼說呢？因為你可能將
+	  <command>tar xvf /dev/rsa0</command> 打成
+	  <command>tar cvf /dev/rsa0</command> 
+	  而覆寫了你的備份磁帶)。</para>
+
+	<para>為了安全，你可以每次都做兩份備份磁帶及一張開機磁片，
+	  並將其中一份備份磁帶存放在遠方。遠方不是指同一棟辦公大樓的地下室
+	  (世貿中心的一些公司行號應該學到了一些教訓)，
+	  而是真的要讓你的磁帶離你的電腦遠遠的。</para>
+
+	<para>以下是一個建立開機磁碟的 shell script 範例：
+	</para>
+	  
+	<programlisting><![ CDATA [#!/bin/sh
+#
+# create a restore floppy
+#
+# format the floppy
+#
+PATH=/bin:/sbin:/usr/sbin:/usr/bin
+
+fdformat -q fd0
+if [ $? -ne 0 ]
+then
+	 echo "Bad floppy, please use a new one"
+	 exit 1
+fi
+
+# place boot blocks on the floppy
+#
+disklabel -w -B /dev/rfd0c fd1440
+
+#
+# newfs the one and only partition
+#
+newfs -t 2 -u 18 -l 1 -c 40 -i 5120 -m 5 -o space /dev/rfd0a
+
+#
+# mount the new floppy
+#
+mount /dev/fd0a /mnt
+
+#
+# create required directories 
+#
+mkdir /mnt/dev
+mkdir /mnt/bin
+mkdir /mnt/sbin
+mkdir /mnt/etc
+mkdir /mnt/root
+mkdir /mnt/mnt			# for the root partition
+mkdir /mnt/tmp
+mkdir /mnt/var
+
+#
+# populate the directories
+#
+if [ ! -x /sys/compile/MINI/kernel ] 
+then
+	 cat << EOM
+The MINI kernel does not exist, please create one.
+Here is an example config file:
+#
+# MINI -- A kernel to get FreeBSD on onto a disk.
+#
+machine		"i386"
+cpu		"I486_CPU"
+ident		MINI
+maxusers	5
+
+options		INET			# needed for _tcp _icmpstat _ipstat
+					 #            _udpstat _tcpstat _udb
+options		FFS			#Berkeley Fast File System
+options		FAT_CURSOR		#block cursor in syscons or pccons
+options		SCSI_DELAY=15		#Be pessimistic about Joe SCSI device
+options		NCONS=2		#1 virtual consoles
+options		USERCONFIG		#Allow user configuration with -c XXX
+
+config		kernel	root on da0 swap on da0 and da1 dumps on da0
+
+controller	isa0
+controller	pci0
+
+controller	fdc0	at isa? port "IO_FD1" bio irq 6 drq 2 vector fdintr
+disk		fd0	at fdc0 drive 0
+
+controller	ncr0
+
+controller	scbus0
+
+device		sc0	at isa? port "IO_KBD" tty irq 1 vector scintr
+device		npx0	at isa? port "IO_NPX" irq 13 vector npxintr
+
+device		da0
+device		da1
+device		da2
+
+device		sa0
+
+pseudo-device	loop		# required by INET
+pseudo-device	gzip		# Exec gzipped a.out's
+EOM
+	 exit 1
+fi
+
+cp -f /sys/compile/MINI/kernel /mnt
+
+gzip -c -best /sbin/init > /mnt/sbin/init
+gzip -c -best /sbin/fsck > /mnt/sbin/fsck
+gzip -c -best /sbin/mount > /mnt/sbin/mount
+gzip -c -best /sbin/halt > /mnt/sbin/halt
+gzip -c -best /sbin/restore > /mnt/sbin/restore
+
+gzip -c -best /bin/sh > /mnt/bin/sh
+gzip -c -best /bin/sync > /mnt/bin/sync
+
+cp /root/.profile /mnt/root
+
+cp -f /dev/MAKEDEV /mnt/dev
+chmod 755 /mnt/dev/MAKEDEV
+
+chmod 500 /mnt/sbin/init
+chmod 555 /mnt/sbin/fsck /mnt/sbin/mount /mnt/sbin/halt
+chmod 555 /mnt/bin/sh /mnt/bin/sync
+chmod 6555 /mnt/sbin/restore
+
+#
+# create the devices nodes 
+#
+cd /mnt/dev
+./MAKEDEV std
+./MAKEDEV da0
+./MAKEDEV da1
+./MAKEDEV da2
+./MAKEDEV sa0
+./MAKEDEV pty0
+cd /
+
+#
+# create minimum filesystem table
+#
+cat > /mnt/etc/fstab <<EOM
+/dev/fd0a	/	ufs	rw 1 1
+EOM
+
+#
+# create minimum passwd file
+#
+cat > /mnt/etc/passwd <<EOM
+root:*:0:0:Charlie &:/root:/bin/sh
+EOM
+
+cat > /mnt/etc/master.passwd <<EOM
+root::0:0::0:0:Charlie &:/root:/bin/sh
+EOM
+
+chmod 600 /mnt/etc/master.passwd
+chmod 644 /mnt/etc/passwd
+/usr/sbin/pwd_mkdb -d/mnt/etc /mnt/etc/master.passwd
+
+#
+# umount the floppy and inform the user
+#
+/sbin/umount /mnt
+echo "The floppy has been unmounted and is now ready."]]></programlisting>
+      </sect3>
+      
+      <sect3>
+	<title>災難之後</title>
+
+	<para>主要的問題在於：你的硬體還存活著嗎？
+	  由於你已經做好定期的備份工作，所以你不必擔心軟體的問題。</para>
+
+	<para>假如你的硬體已經損毀，首先，你必須先將已損毀的硬體更換掉。</para>
+
+	<para>如果你的硬體沒有問題，再檢查一下你的軟碟。
+	如果你用的是傳統的開機磁片，以 single-user (在出現 
+	<prompt>boot:</prompt> 後鍵入 <literal>-s</literal>)，
+	並跳過下面這段。</para>
+	  
+	<para>如果你使用的是具有 <filename>boot.flp</filename> 和
+	  <filename>fixit.flp</filename> 的開機磁片，把這段看完。首先，
+	  用這張磁片開機。當螢幕出現安裝選單時，選擇 <literal>Fixit--Repair
+	  mode with CDROM or floppy.</literal>。根據螢幕的提示，插入有
+	  <filename>fixit.flp</filename> 的磁片，
+	  <command>restore</command>，其他你需要用到的程式就會出現在
+	  <filename>/mnt2/stand</filename>。</para>
+
+	<para>分別修復每一個檔案系統。</para>
+
+	<para>試著 &man.mount.8; 你的第一個磁碟的 root partition
+	  (例如：<command>mount /dev/da0a /mnt</command>)。
+	  假如這個磁碟代號已經毀損，使用 &man.disklabel.8;
+	  來重新分割並重新分配磁碟代號(利用你之前所保留下來的資料)。
+	  使用 &man.newfs.8; 來建立檔案系統，並重新 mount 軟碟 read-write
+	  的 root partition(<command>mount -u -o rw /mnt</command>)。
+	  然後使用你的備份程式及備份磁帶來修復檔案系統 (例如：
+	  <command>restore vrf /dev/sa0</command>)。Unmount 這個檔案系統
+	  (例如：<command>umount /mnt</command>) 。
+	  對於每個毀損的檔案系統都重覆一次。</para>
+
+	<para>當你的系統正常開啟之後，將你的資料備份到新的磁帶。
+	  任何造成資料遺失的災難都可能再次發生。現在花一些時間，
+	  也許可以使你免於下次的難過。</para>
+      </sect3>
+
+<![ %not.published; [
+
+      <sect3>
+	<title>* 我還沒有為災難做準備，那現在呢？</title>
+
+	<para></para>
+      </sect3>
+]]>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="backups-floppybackups">
+    <title>用磁片備份呢？</title>
+
+    <sect2 id="floppies-using">
+      <title>我可以用磁片來備份我的資料？</title>
+      
+      <para>磁片真的不是一個適當的工具來做備份的工作，因為：</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>磁片是靠不住的，特別是在經過一段很長的時間</para>
+	</listitem>
+
+	<listitem>
+	  <para>做備份和復原的動作都很慢</para>
+	</listitem>
+
+	<listitem>
+	  <para>他們有一個相當受到限制的容量（從磁片放進去後，開始
+	  備份整個硬碟到大約需要一打的磁片，且需要一段很長的時間）</para>
+	</listitem>
+      </itemizedlist>
+
+      <para>然而，如果你沒有其他方法來備份資料的話，那麼用磁片備份還是比沒
+      有備份來的好</para>
+
+      <para>如果你真的必須使用磁片備份，那麼必須確定你使用的是具有高品質的
+      磁片。那些已經在辦公室用了好幾年的磁片是各壞的選擇。理想狀況是最好使
+      用來自有信譽的製造商的新磁片。</para>
+    </sect2>
+    
+    <sect2 id="floppies-creating">
+      <title>應該如何備份資料到磁片呢？</title>
+
+      <para>備份到磁片的最佳方法是使用&man.tar.1; 伴隨<option>-M</option>參數
+      （在多張磁片時），這樣可以允許備份可橫跨多個磁片。</para>
+
+      <para>要備份在現在的目錄和字目錄所有的檔案，使用這個(as root):</para>
+ 
+      <screen>&prompt.root; <userinput>tar Mcvf /dev/rfd0 *</userinput></screen>
+
+      <para>當第一張磁片滿了，&man.tar.1;將會提示你放入下一張磁片（因為 &man.tar.1;
+      是獨立的工具，它是參照磁片的容量大小。）</para>
+
+      <screen>為 /dev/rfd0 準備第二張磁片然後按下 return:</screen>
+
+      <para>重複做這動作（磁片的數目會跟著增加）直到全部的檔案被存檔。</para>
+    </sect2>
+
+    <sect2 id="floppies-compress">
+      <title>能壓縮備份檔嗎？</title>
+
+      <para>不幸地，&man.tar.1;不允許 -z 的
+      參數在多張磁片存檔時使用。當然你可以&man.gzip.1;
+      全部的檔案，&man.tar.1;被gzip後的檔案到磁片，然後
+      再次 &man.gunzip.1; 這個檔案。</para>
+    </sect2>
+
+    <sect2 id="floppies-restoring">
+      <title>如何復原備份檔案？</title>
+      
+      <para>要復原整個檔案，使用：</para>
+
+      <screen>&prompt.root; <userinput>tar Mxvf /dev/rfd0</userinput></screen>
+
+      <para>僅復原特別的檔案，你可以選擇從第一張磁片開始，然後使用：</para>
+
+      <screen>&prompt.root; <userinput>tar Mxvf /dev/rfd0 <replaceable>filename</replaceable></userinput></screen>
+
+      <para>&man.tar.1; 將提示你插入接下來的磁片直到它找到你需要的檔案。</para>
+
+      <para>或者，如果你知道檔案在哪張磁片裡，你僅需要插入那張磁片，然後使用如上
+      的指令。注意，如果在這張磁片的第一個檔案是延續前一張磁片的檔案,那麼即使你沒
+      有要求 &man.tar.1; 提醒你，它也會警告你：檔案不能被復原！</para>
+    </sect2>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->

@@ -1,0 +1,963 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/kernelconfig/chapter.sgml,v 1.4 2001/06/28 12:14:52 statue Exp $
+
+     Translate into Chinese by Biboman.bbs@BirdNest.infoX.Net
+				zonya@mis.im.tku.edu.tw
+
+     English Version : 1.44
+-->
+
+<chapter id="kernelconfig">
+  <title>FreeBSD 核心設定</title>
+
+  <sect1>
+    <title>章節大意</title>
+
+    <para><emphasis>Updated and restructured by &a.jim;, March 2000.
+      Originally contributed by &a.jehamby;, 6 October
+      1995.</emphasis></para>
+
+    <para>本章節告訴你定製一個核心所該知道的每一件事，若你想知道定製一個核心
+      有什麼好處，或是想知道如何設定、編譯以及安裝定製的核心，繼續看下去就對
+      了。</para>
+
+  </sect1>
+
+  <sect1>
+    <title>為什麼要定製一個核心？</title>
+
+    <para>建立一個適合你系統的定製核心是每一個 UNIX 管理員所需經歷的許多重要
+      步驟之一。這個過程雖然耗費不少時間，但能提供你的 FreeBSD 系統很多的好
+      處。跟必須支援其他常見週邊硬體的 <filename>GENERIC</filename> 核心不同
+      ，一個定製的核心只需支援<emphasis>你的</emphasis>硬體配備。這樣有很多
+      好處，像是：</para>
+
+
+    <itemizedlist>
+      <listitem>
+	<para>開機速度較快。定製的核心只偵測你系統上所裝置的硬體，所以開機時
+	  間會大幅減少。</para>
+      </listitem>
+
+      <listitem>
+	<para>使用較少的記憶體。一個定製核心往往比<literal>GENERIC</literal>
+	  核心使用較少的記憶體，這點很重要，因為核心程序必須一直存放在記憶體
+	  裡頭。對一些記憶體較少的系統，這點尤其重要。</para>
+      </listitem>
+
+      <listitem>
+	<para>額外的硬體裝置支援。你可以在你的定製核心裡頭加上一些不在
+	  <literal>GENERIC</literal>裡頭的硬體驅動程式，像是音效卡。</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="kernelconfig-building">
+    <title>建立並安裝一個定製的核心</title>
+
+    <para>首先，讓我們快速的瀏覽一下 kernel build directiry。所有我們提到的
+      目錄都在 <filename>/usr/src/sys</filename> 這個主目錄之下，你也可以透
+      過 <filename>/sys</filename> 這個 link 來存取。在這個目錄下，有不少的
+      子目錄，其中放置了核心各部分的程式碼，不過就本章節來說，最重要的兩個子
+      目錄是 <filename><replaceable>arch</replaceable>/conf</filename>─你將
+      在這個目錄下編輯你的核心設定檔，以及 <filename>compile</filename>─你
+      編譯核心的地方。<replaceable>arch</replaceable> 可以是
+      <filename>i386</filename>、<filename>alpha</filename>、或者是
+      <filename>pc98</filename>(日本 NEC 設計的 PC9801 系統，可算是 IBM PC
+      的一個分支)。每個特定架構(arch)的目錄底下只存放跟該系統架構有關的程式
+      碼；而其他目錄所存放的程式碼則是其他 FreeBSD可能會移植過去的平台可以共
+      用到的部分。注意一下這個目錄的邏輯結構，所有支援的硬體裝置驅動程式、檔
+      案系統、參數選項，都放在各自的目錄。</para>
+
+    <note>
+      <para>如果你的系統內 <emphasis>沒有</emphasis> <filename>/usr/src/sys
+	</filename> 這個目錄，那表示你沒有安裝好核心的原始程式碼，最簡單的安
+	裝方式，就是以 <username>root</username> 身分執行
+	<command>/stand/sysinstall</command>，選擇
+	<literal>Configure</literal>，選擇 <literal>Distributions</literal>
+	，選擇 <literal>src</literal>，最後選擇 <literal>sys</literal> 選項。
+      </para>
+    </note>
+
+    <para>接下來，切換到 <filename>i386/conf</filename> 這個目錄，並且將
+      <filename>GENERIC</filename> 複製一份，並給這個檔案一個易於辨認名稱，
+      這個名稱就是你的核心名稱。例如：</para>
+
+    <screen>&prompt.root; <userinput>cd /usr/src/sys/i386/conf</userinput>
+&prompt.root; <userinput>cp GENERIC MYKERNEL</userinput></screen>
+
+    <para>依照慣例，核心名稱最好全用大寫字母。此外，如果你要管理很多部硬體
+      配備不同的機器，在核心名稱後加上各個主機名稱是個不錯的做法。在接下來
+      的章節，我們會用 <filename>MYKERNEL</filename> 來當作範例。</para>
+
+    <note>
+      <para>在做接下來的動作，請確定你是以 root 身分執行，不然你將會看到
+        <errortype>permission denied</errortype> 這個錯誤訊息。</para>
+    </note>
+
+    <para>現在，用你最上手的編輯器編輯 <filename>MYKERNEL</filename>。
+      如果你才剛裝好你的系統，那麼系統裡面唯一可用的編輯器大概是
+      <command>vi</command> 了，vi 是個頗複雜的編輯器，在這裡我們不加以贅
+      述，你可以參考 <link linkend="bibliography">bibliography</link> 的介紹
+      。此外，FreeBSD 還提供了一個叫 <quote>ee</quote> 的簡單編輯器，如果你
+      是新手，ee 是個不錯的選擇。你可以隨心所欲的修改你的核心設定檔最上面的
+      註解，反映出你做過的設定或修改，以別於 <filename>GENERIC</filename>。
+    </para>
+
+    <para>如果你曾經在 SunOS 或是其他 BSD 作業系統下建立過核心，你對這個檔案
+      的不少內容會有種似曾相似的感覺。如果你才剛從其他作業系統─像是 DOS，轉
+      移過來，你可能會被 <filename>GENERIC</filename> 的內容給嚇到，所以請慢
+      慢並仔細地閱讀 <link linkend="kernelconfig-config">設定檔</link> 這章
+      節。</para>
+
+    <note>
+      <para>如果你曾經與 FreeBSD project 同步最新的原始碼 <link
+	linkend="cutting-edge">sync your source-tree</link>，記得先看看
+        <filename>/usr/src/UPDATING</filename> 這個檔的內容，再做任何更新動
+        的動作。這個檔案裡寫了所有關於升級 FreeBSD 的要點。
+        <filename>/usr/src/UPDATING</filename> 必定符合你的 FreeBSD 原始碼的
+        版本，也就是說裡頭的訊息會比本使用手冊來的正確。</para>
+    </note>
+
+    <para>如果你使用 FreeBSD 4.0 之前的版本，而且不想升級到 FreeBSD 4.0 或者
+      之後的版本，或者你正使用某個 RELEASE 版本的 FreeBSD，而且你的
+      <filename>/usr/src/</filename> 裡頭只有 <filename>sys/</filename> 這個
+      子目錄，那麼在你編輯完核心設定檔之後，輸入以下指令來編譯、安裝你的新核
+      心。</para>
+
+    <note>
+      <para>如果你想把你的舊版核心更新成新版的，你最好從你抓取核心原始程式碼
+	的地方順便抓取新版的 &man.config.8; ，相關的原始程式碼會被放置在
+	<filename>/usr/src/usr.sbin</filename>，所以在做接下來的動作前，你必
+	須先下載這些程式碼，編譯，然後安裝到你的系統裡頭。</para>
+    </note>
+
+    <screen>&prompt.root; <userinput>/usr/sbin/config MYKERNEL</userinput>
+&prompt.root; <userinput>cd ../../compile/MYKERNEL</userinput>
+&prompt.root; <userinput>make depend</userinput>
+&prompt.root; <userinput>make</userinput>
+&prompt.root; <userinput>make install</userinput></screen>
+
+    <para>如果你剛升級到新的 4.X 或更高的版本(如從 3.X 升級到 4.X，甚至從
+      舊 4-STABLE 升級到較新的 4-STABLE)，確定你看過 <link
+	linkend="cutting-edge">built the world</link>，並且執行以下指令：
+    </para>
+
+    <screen>&prompt.root; <userinput>cd /usr/src</userinput>
+&prompt.root; <userinput>make buildkernel KERNCONF=MYKERNEL</userinput>
+&prompt.root; <userinput>make installkernel KERNCONF=MYKERNEL</userinput></screen>
+
+    <note>
+      <para>如果你用的是 FreeBSD 4.2 與之前的版本，你必須把
+        <literal>KERCONF=</literal> 換成 <literal>KERNEL=</literal>。2001 年
+        二月二號之後抓取的 4.2-STABLE 則可以認出 KERNCONF= 這參數。</para>
+    </note>
+
+    <para>如果你<emphasis>沒有</emphasis>更新過你的原始碼(你沒執行過
+      <application>CVSup</application>、<application>CTM</application> 或
+      <application>anoncvs</application>)，那麼按照
+      <command>config</command>，<command>make depend</command>，
+      <command>make</command>，<command>make install</command> 的順序來編譯
+      並安裝新的核心。</para>
+
+    <warning>
+      <para>如果你在最近一次編譯核心後又更新了原始碼，那麼你
+        <emphasis>一定</emphasis>要用 <command>make buildkernel</command> 這
+        指令來編譯你的核心，不然系統會使用舊的程式來建立核心，而這可能導致邊
+        譯失敗。<emphasis>如果你更新了原始碼，切記不要用
+        <command>config</command>/<command>make</command> 的步驟來編譯核心！
+        </emphasis>
+      </para>
+    </warning>
+    
+    <para>新的核心將被複製到根目錄，叫做 <filename>kernel</filename>，而舊的
+      將被更名成 <filename>/kernel.old</filename>。現在關閉你的系統並重開機
+      以便系統能載入新的核心。如果你遇到任何困難，請參考本文件最後的 <link
+	linkend="kernelconfig-trouble">疑難排解</link> 指示。無論是否能開機
+      成功，你最好仔細的閱讀 <link linkend="kernelconfig-noboot">
+	無法開機</link> 這個小節。</para>
+
+    <note>
+      <para>如果你加裝了任何新硬體裝置(像是音效卡)，你可能要到 <filename>
+      /dev</filename> 目錄下增加一些<link 
+	linkend="kernelconfig-nodes">裝置節點</link>，這樣你才能夠使用這些
+      硬體裝置。</para>
+    </note>
+  </sect1>
+
+  <sect1 id="kernelconfig-config">
+    <title>核心設定檔</title>
+
+    <para>核心設定檔的格式是很簡單的，每一行包含了一個關鍵字(keyword) 與一個
+      或多個參數，而大多數的設定都只包含一個參數。<literal>#</literal> 號之
+      後的敘述都是註解，並會被程式忽略。接下來的每個小節，將依序介紹每個列在
+      <filename>GENERIC</filename> 的參數，雖然各相關主題(如網路)的關鍵字會
+      放在同一小節，但是這些關鍵字可能散落在 <filename>GENERIC</filename> 的
+      各處。<anchor id="kernelconfig-options"> 詳細的列出各個選項(option)，而
+      與 <filename>GENERIC</filename> 在同個目錄的 <filename>LINT</filename>
+      則列出更詳細的選項(options)與註解。如果你不確定某一行設定的目的或其必
+      要性，請先看看 <filename>LINT</filename>。</para>
+
+    <important>
+      <title>數字的引號限制</title>
+
+      <para>在 FreeBSD 3.X(含 3.X)之前的所有版本，其核心設定檔中若有任何屬於
+        文字形式的數字(如 i386)，必須用雙引號包起來，不然執行 &man.config.8;
+        時會出錯。</para>
+
+      <para>FreeBSD 4.X，也就是本手冊所針對的版本，移除了這個限制，如果你使
+        用 4.X 之前的版本，請查看你系統內的
+        <filename>/usr/src/sys/i386/conf/LINT</filename> 與
+        <filename>/usr/src/sys/i386/conf/GENERIC</filename> 兩個檔案，確定哪
+        些字串需要加上雙引號。</para>
+    </important>
+
+    <para>底下是一個 <filename>GENERIC</filename> 核心設定檔的範例，裡面加上
+      很多的註解好讓你能了解每個選項的意義。這個範例檔應該非常接近
+      <filename>/usr/src/sys/i386/conf/GENERIC</filename> 的內容。如果你想知
+      道所有可用核心參數，可以查看
+      <filename>/usr/src/sys/i386/conf/LINT</filename>。</para>
+
+    <programlisting>#
+# GENERIC -- Generic kernel configuration file for FreeBSD/i386
+#
+# For more information on this file, please read the handbook section on
+# Kernel Configuration Files:
+#
+#    http://www.freebsd.org/handbook/kernelconfig-config.html
+#
+# The handbook is also available locally in /usr/share/doc/handbook
+# if you've installed the doc distribution, otherwise always see the
+# FreeBSD World Wide Web server (http://www.FreeBSD.ORG/) for the
+# latest information.
+#
+# An exhaustive list of options and more detailed explanations of the
+# device lines is also present in the ./LINT configuration file. If you are
+# in doubt as to the purpose or necessity of a line, check first in LINT.
+#
+# &dollar;FreeBSD: src/sys/i386/conf/GENERIC,v 1.246 2000/03/09 16:32:55 jlemon Exp &dollar;</programlisting>
+
+    <para>底下的關鍵字是<emphasis>每個</emphasis>核心一定要有的：</para>
+
+    <programlisting>machine		i386</programlisting>
+
+    <para>硬體平台架構，在這裡要填上 <literal>i386</literal>、
+      <literal>alpha</literal> 或 <literal>pc98</literal> 其中一種。</para>
+
+    <programlisting>cpu          I386_CPU
+cpu          I486_CPU
+cpu          I586_CPU
+cpu          I686_CPU</programlisting>
+
+    <para>上面列出可用的 CPU 設定。你可以寫上好幾行(特別是在你不知道該用
+      <literal>I586_CPU</literal> 或 <literal>I686_CPU</literal> 時)。然而，
+      對於一個定製的核心，最好只指定你系統所使用的 CPU 類型，如果你不確定你
+      的 CPU 類型，你可以輸入 <command>dmesg</command> 查看開機訊息。</para>
+
+    <para>Alpha 硬體平台的 <literal>cpu_type</literal> 值跟上面不一樣，目前
+      已支援的 Alpha CPU 有以下幾種：</para>
+
+    <programlisting>cpu          EV4
+cpu          EV5</programlisting>
+
+    <para>如果你使用 Alpha CPU，你應該使用上面其中一種 CPU 類型。</para>
+
+    <programlisting>ident          GENERIC</programlisting>
+
+    <para>這是核心的識別字。你應該把它改成你想要的核心名稱，在本手冊中，我們
+      用 <literal>MYKERNEL</literal> 來當核心識別字。放在
+      <literal>ident</literal> 之後的字串，開機時會顯示在螢幕上，所以你可以
+      給每個核心不同的名稱好識別其用途(譬如建立一個實驗性質的核心)。</para>
+
+    <programlisting>maxusers          32</programlisting>
+
+    <para><literal>maxusers</literal> 這個選項設定 system tables 的大小。這
+      個數值與你期望可能同時來使用你系統的使用者數目大致相符。然而，在一般
+      情形下，你最少要設定 <literal>4</literal>，以上，特別是你要執行 X
+      Window 或是編譯軟體。原因是 <literal>maxusers</literal> 值限定了系統同
+      時可有多少個 processes，其算法是 <literal>20 + 16 * maxusers</literal>
+      。如果你設定 <literal>maxusers</literal> 值是 <literal>1</literal>，則
+      你的系統只能同時存在 36 個 processes，包括 18 個(或更多)系統開機即佔去
+      的 processes，如果你執行了 X Window，則又要吃掉 15 個以上。甚至讀取一
+      個 man page 也會開啟九個 processes 來過濾、解壓縮、然後顯示出來。把
+      <literal>maxusers</literal> 值設定到 64 可以讓你的系統同時處理 1044 個
+      程序(processes)，對大部分的使用者來說應該足夠了。當你執行程式時看到類
+      似 <errortype>proc table full</errortype> 的訊息，或者你的伺服器同時會
+      有很多人來存取、使用時(如 <hostid role="fqdn">ftp.FreeBSD.org</hostid>
+      )，你可以加大這個參數的值，並重新編譯核心。</para>
+
+    <note>
+      <para><literal>maxuser</literal> 這個參數 <emphasis>並不是</emphasis>
+        限制可以同時使用你系統的使用者人數。它只是考量系統中可能同時使用你系
+        統的使用者上限，以及每個使用者可能執行的程序個數，然後設定一些系統所
+        使用的表格的合理大小。有一個關鍵字的值則<emphasis>真的</emphasis> 限
+        制了可以同時<emphasis>遠端連線</emphasis> 的人數，這個關鍵字是 <link
+	linkend="kernelconfig-ptys">pseudo-device pty 16</link>。</para>
+    </note>
+
+    <para>接下來的選項有些是可由可無的，查看每個選項底下的註解以獲得更詳細的
+      資訊。</para>
+
+    <programlisting>#makeoptions     DEBUG=-g          #Build kernel with gdb(1) debug symbols
+options          MATH_EMULATE      #Support for x87 emulation</programlisting>
+
+    <para>如果你的電腦沒有浮點運算處理器(386 或 486SX)，這行設定可以讓你的核
+      心模擬出一個浮點運算處理器。如果你使用 486DX，或你用 386、486SX，但是
+      有加裝 387、487 晶片，或者你用更高階的 CPU(如 Pentium、Pentium II 等
+      等)，你可以註解這一行。</para>
+
+    <note>
+      <para>這個模擬的浮點運算處理器並<emphasis>不是</emphasis>很精確，如果
+        你沒有浮點運算器，且你需要較高的精度，你可以改用
+        <literal>GPL_MATH_EMULATE</literal> 參數，這將會使用 GNU 的浮點運算
+        模擬器。至於為什麼這個模擬器不是系統預設值，是因為 GUN 使用執照的關
+        係。</para>
+    </note>
+
+    <programlisting>options          INET          #InterNETworking</programlisting>
+
+    <para>網路支援。即使你不打算連上網路，還是要留下這個選項。很多程式需要回
+      溯介面(如連線到你自己的電腦)，所以這個選項基本上是一定要有的。</para>
+
+    <programlisting>options          INET6          #IPv6 communications protocols</programlisting>
+
+    <para>這個選項讓核心可以支援 IPv6 通訊協定。</para>
+
+    <programlisting>options          FFS          #Berkeley Fast Filesystem
+options          FFS_ROOT     #FFS usable as root device [keep this!]</programlisting>
+
+    <para>基本的硬碟檔案系統，如果你要從硬碟開機，就留著。</para>
+
+    <programlisting>options          MFS          #Memory Filesystem
+options          MD_ROOT      #MD is a potential root device</programlisting>
+
+    <para>Memory-mapped 檔案系統。使用 RAM disk，以供需要快速存取的資料或是
+      暫存資料用，如果你有很大的 swap 空間，使用這個選項可以善用你的 swap 空
+      間。把 <filename>/tmp</filename> 掛入到 MFS 分割區是一個相當好的想法，
+      因為不少程式都會在此暫存資料。要把 <filename>/tmp</filename> 掛到 MFS 
+      RAM disk，可以修改 <filename>/etc/fstab</filename>，加入底下的設定：
+    </para>
+
+    <informalexample>
+      <programlisting>/dev/ad1s2b	/tmp mfs rw 0 0</programlisting>
+    </informalexample>
+
+    <para>接著你可以重開機，或是執行 <command>mount /tmp</command>。</para>
+
+    <programlisting>options          NFS          #Network Filesystem
+options          NFS_ROOT     #NFS usable as root device, NFS required</programlisting>
+
+    <para>network 檔案系統(NFS)。除非你想透過 TCP/IP 網路掛上其他 UNIX 檔案
+      伺服器的分割區，不然你可以註解掉這一行。</para>
+
+    <programlisting>options          MSDOSFS      #MSDOS Filesystem</programlisting>
+
+    <para>MS-DOS 檔案系統。除非你要在開機時掛入一個 DOS 格式的硬碟，不然你可
+      以放心的把這行註解掉。如同前述，在你第一次掛入一個 DOS分割區時，核心將
+      會自動載入模組來支援它。此外，<application>mtools</application> 這個相
+      當不錯的軟體(可在 ports 裡面找到)，可以讓你存取 DOS 磁片，而不需要掛入
+      或卸載軟碟(也不需要 MSDOSFS 的支援)。</para>
+
+    <programlisting>options          CD9660       #ISO 9660 Filesystem
+options          CD9660_ROOT  #CD-ROM usable as root, CD9660 required</programlisting>
+
+    <para>CD-ROM 使用的 ISO 9660 檔案系統。如果你沒有光碟機，或是很少用光碟
+      機讀取資料，可以註解掉這一行(核心會在第一次掛入時動態載入模組以支援之)
+      。音樂 CD 則不會用到這個檔案系統。</para>
+
+    <programlisting>options          PROCFS       #Process filesystem</programlisting>
+
+    <para>process 檔案系統。這是一個掛在 <filename>/proc</filename> 底下的
+      <quote>假</quote>檔案系統，允許一些程式，像是 &man.ps.1; 來讀取資料，
+      提供你正在執行的 processes 的資訊。</para>
+
+    <programlisting>options          COMPAT_43    #Compatible with BSD 4.3 [KEEP THIS!]</programlisting>
+
+    <para>使系統相容 4.3BSD，不要拿掉這一行，不然部分程式將無法正常執行。
+    </para>
+
+    <programlisting>options          SCSI_DELAY=15000    #Delay (in ms) before probing SCSI</programlisting>
+
+    <para>這行設定告訴核心等待 15 秒鐘，以供 SCSI 控制器偵測你電腦上的 SCSI 
+      裝置。如果你只有 IDE 硬碟，你可以不要理會這個設定，要不然你可以降低這
+      個值，也許降到五秒，以增加開機的速度。如果你發現降低後，FreeBSD 無法正
+      確辨認你的 SCSI 裝置，那麼你該提高這個值，延長等待時間。</para>
+
+    <programlisting>options          UCONSOLE            #Allow users to grab the console</programlisting>
+
+    <para>允許使用者攫取 console，對 X Window 頗為有用。舉例來說，你可以輸入
+      <command>xterm -C</command> 來開啟一個 console xterm，這個視窗將顯現任
+      何 <command>write</command>、<command>talk</command> 等指令的訊息，以
+      及你送出去的訊息。當然，kernel 產生的訊息也會在這裡出現。</para>
+
+    <programlisting>options          USERCONFIG          #boot -c editor</programlisting>
+
+    <para>這個選項使你可以在開機時進入硬體組態編輯器。</para>
+
+    <programlisting>options          VISUAL_USERCONFIG   #visual boot -c editor</programlisting>
+
+    <para>這個選項使你可以在開機時進入視覺化的硬體組態編輯器。</para>
+
+    <programlisting>options          KTRACE              #ktrace(1) support</programlisting>
+
+    <para>打開核心的追蹤功能，在除錯時很有用。</para>
+
+    <programlisting>options          SYSVSHM             #SYSV-style shared memory</programlisting>
+
+    <para>提供 System V Shared memory(SHM) 的支援，最常用到 SHM 的應該是 X 
+      Window 的 XSHM 延伸，不少繪圖相關程式(像是影片撥放程式 XAnim 與 Linux 
+      DOOM 遊戲)會自動使用 SHM 以提供額外的速度。如果你要使用 X Window，你
+      最好加入這個選項。</para>
+
+    <programlisting>options          SYSVSEM             #SYSV-style semaphores</programlisting>
+
+    <para>支援 System V semaphores，比較不常用到，但是只在 kernel 中佔用幾百
+      位元組的空間。</para>
+
+    <programlisting>options          SYSVMSG             #SYSV-style message queues</programlisting>
+
+    <para>支援 System V messages，一樣的，只佔用 kernel 數百位元組的空間。
+    </para>
+
+    <note>
+      <para>>&man.ipcs.1; 指令可以顯示出任何使用到上述三個 System V 功能的 
+        processes。</para>
+    </note>
+
+    <programlisting>options 	P1003_1B		#Posix P1003_1B real-time extensions
+options 	_KPOSIX_PRIORITY_SCHEDULING</programlisting>
+
+    <para>1993年POSIX標準中新加入的即時系統擴充選項，ports裡面某些應用軟體(
+      像 Star office)會用到這些選項。</para>
+
+    <programlisting>options		ICMP_BANDLIM		#Rate limit bad replies</programlisting>
+
+    <para>這個選項用來啟動 ICMP 協定對於錯誤回應的頻寬限制，這個選項通常會用
+      在保護你的機器免於阻斷服務封包攻擊。</para>
+
+    <programlisting># To make an SMP kernel, the next two are needed
+#options        SMP                     # Symmetric MultiProcessor Kernel
+#options        APIC_IO                 # Symmetric (APIC) I/O</programlisting>
+
+    <para>如果你要使用 SMP，一定要加入上面兩行。</para>
+
+    <programlisting>device          isa</programlisting>
+
+    <para>所有 FreeBSD 所支援的 PC 都需要這行設定。如果你使用 IBM PS/2 (微通
+      道架構)電腦，則你無法在該機器上執行 FreeBSD。</para>
+
+    <programlisting>device          eisa</programlisting>
+
+    <para>如果你的主機板上有 EISA 匯流排，加入這個設定。使用這個選項可以自動
+      偵測並設定所以連接在 EISA 匯流排上的裝置。</para>
+
+    <programlisting>device          pci</programlisting>
+
+    <para>如果你的主機板有 PCI 匯流排，就加入這個選項。使用這個選項可以自動
+      偵測 PCI 卡並橋接 PCI 與 ISA 匯流排。</para>
+
+    <programlisting># Floppy drives
+device          fdc0        at isa? port IO_FD1 irq 6 drq 2
+device          fd0         at fdc0 drive 0
+device          fd1         at fdc0 drive 1</programlisting>
+
+    <para>軟式磁碟機控制器： <literal>fd0</literal> 是 <devicename>
+      A:</devicename> 磁碟機，<literal>fd1</literal> 是 <devicename>
+      B:</devicename> 磁碟雞。</para>
+
+    <programlisting>device          ata</programlisting>
+
+    <para>這個驅動程式支援所有的 ATA 與 ATAPI 裝置。你只需要寫一行
+      <literal>device ata</literal> 即可，核心會偵測新式機器上所有的 PCI
+      ATA/ATAPI 裝置。</para>
+
+    <programlisting>device          atadisk                 # ATA disk drives</programlisting>
+
+    <para>要使用 ATAPI 磁碟機，就要加入這個 <literal>device ata</literal> 與
+      這個選項。</para>
+
+    <programlisting><anchor id="kernelconfig-atapi">
+device          atapicd                 # ATAPI CDROM drives</programlisting>
+
+    <para>要使用 ATAPI 光碟機，就要加入這個 <literal>device ata</literal> 與
+      這個選項。</para>
+
+    <programlisting>device          atapifd                 # ATAPI floppy drives</programlisting>
+
+    <para>要使用 ATAPI 軟碟機，就要加入這個 <literal>device ata</literal> 與
+      這個選項。</para>
+
+    <programlisting>device          atapist                 # ATAPI tape drives</programlisting>
+
+    <para>要使用 ATAPI 磁帶機，就要加入這個 <literal>device ata</literal> 與
+      這個選項。</para>
+
+    <programlisting>options         ATA_STATIC_ID           #Static device numbering</programlisting>
+
+    <para>這個選項固定控制器的編號(如同舊的驅動程式)，不然裝置的編號會被動態
+      配置。</para>
+
+    <programlisting># ATA and ATAPI devices
+device          ata0        at isa? port IO_WD1 irq 14
+device          ata1        at isa? port IO_WD2 irq 15</programlisting>
+
+    <para>上面幾行是給舊式、非 PCI 的系統使用的。</para>
+
+    <programlisting># SCSI Controllers
+device          ahb        # EISA AHA1742 family
+device          ahc        # AHA2940 and onboard AIC7xxx devices
+device          amd        # AMD 53C974 (Teckram DC-390(T))
+device          dpt        # DPT Smartcache - See LINT for options!
+device          isp        # Qlogic family
+device          ncr        # NCR/Symbios Logic
+device          sym        # NCR/Symbios Logic (newer chipsets)
+
+device          adv0       at isa?
+device          adw
+device          bt0        at isa?
+device          aha0       at isa?
+device          aic0       at isa?</programlisting>
+
+    <para>SCSI 控制器。將你系統沒安裝的控制器註解掉。如果你的系統只有 IDE，
+      你可以將上面幾行全部移除。</para>
+
+    <programlisting># SCSI peripherals
+device          scbus      # SCSI bus (required)
+device          da         # Direct Access (disks)
+device          sa         # Sequential Access (tape etc)
+device          cd         # CD
+device          pass       # Passthrough device (direct SCSI
+access)</programlisting>
+
+    <para>SCSI 周邊，一樣的，把你沒有的移除，如果你只使用 IDE 裝置，你可以移
+     除全部的設定。</para>
+
+    <programlisting># RAID controllers
+device          ida        # Compaq Smart RAID
+device          amr        # AMI MegaRAID
+device          mlx        # Mylex DAC960 family</programlisting>
+
+    <para>已支援的 RAID 控制器。如果你沒任何 RAID 控制器，你可以移除全部的設
+      定。</para>
+
+    <programlisting># atkbdc0 controls both the keyboard and the PS/2 mouse
+device          atkbdc0    at isa? port IO_KBD</programlisting>
+
+    <para>鍵盤控制器(<literal>atkbdc</literal>)提供了 AT 鍵盤以及 PS/2 滑鼠
+      裝置的 I/O 服務。鍵盤驅動程式(<literal>atkbd</literal>)與 PS/2 滑鼠驅
+      動程式(<literal>psm</literal>)需要這個控制器。</para>
+
+    <programlisting>device          atkbd0     at atkbdc? irq 1</programlisting>
+
+    <para><literal>atkbd</literal> 驅動程式與 <literal>atkbdc</literal> 支援
+      了 AT 84 鍵鍵盤或者連接到 AT 鍵盤控制器的 AT 加強型鍵盤。</para>
+
+    <programlisting>device          psm0       at atkbdc? irq 12</programlisting>
+
+    <para>如果你的滑鼠連接到 PS/2 滑鼠連接埠，你需要這行設定。</para>
+
+    <programlisting>device          vga0        at isa?</programlisting>
+
+    <para>顯示卡驅動程式。</para>
+
+    <programlisting># splash screen/screen saver
+pseudo-device          splash</programlisting>
+
+    <para>此虛擬裝置讓使用者可以在開機時顯示點陣圖。螢幕保護程式也需要用到這
+      個虛擬裝置。</para>
+
+    <programlisting># syscons is the default console driver, resembling an SCO console
+device          sc0          at isa?</programlisting>
+
+    <para>><literal>sc0</literal> 是預設的 console 驅動程式，類似 SCO
+      console。絕大部分全螢幕程式都透過 <filename>termcap</filename> 這類終
+      端機資料函式庫來存取 console，因此不論你用這個驅動程式或是 VT220 相容
+      console 驅動程式 <literal>vt0</literal>，其間並無太大差別。如果使用
+      sc0，且你在登入系統後，執行全螢幕程式遇到問題，請將你的
+      <envar>TERM</envar> 設定成  <literal>scoansi</literal>。</para>
+
+    <programlisting># Enable this and PCVT_FREEBSD for pcvt vt220 compatible console driver
+#device          vt0     at isa?
+#options         XSERVER          # support for X server on a vt console
+#options         FAT_CURSOR       # start with block cursor
+# If you have a ThinkPAD, uncomment this along with the rest of the PCVT lines
+#options         PCVT_SCANSET=2   # IBM keyboards are non-std</programlisting>
+
+    <para>這是一個相容 VT220 的 console 驅動程式，並向下相容 VT100/102。在部
+      分與 <literal>sc0</literal> 相衝的筆記型電腦上，這個驅動程式運作良好。
+      當然，當你登入系統時，記得設定 <envar>TERM</envar> 參數為
+      <literal>vt100</literal> 或是 <literal>vt220</literal>。當連接到網路上
+      許多電腦時，這個驅動程式也常是很有用的，這是因為許多的電腦上的
+      <filename>termcap</filename> 或是 <filename>terminfo</filename> 並沒有
+      <devicename>sc0</devicename> 的資料 &mdash; 而 <literal>vt100</literal>
+      幾乎所有的平台上都有支援。</para>
+
+    <programlisting># Floating point support - do not disable.
+device          npx0     at nexus? port IO_NPX irq 13</programlisting>
+
+    <para><literal>npx0</literal> 是連接 FreeBSD 與浮點運算處理器的一個介面
+      ，不論你有硬體的浮點運算處理器還是使用軟體模擬，都需要這個設定。這個設
+      定並<emphasis>不是</emphasis>可有可無的。</para>
+
+    <programlisting># Power management support (see LINT for more options)
+device          apm0     at nexus? disable flags 0x20  # Advanced Power Management</programlisting>
+
+    <para>支援進階電源管理(APM)，對筆記型電腦尤其有用。</para>
+
+    <programlisting># PCCARD (PCMCIA) support
+device          card
+device          pcic0    at isa? irq 10 port 0x3e0 iomem 0xd0000
+device          pcic1    at isa? irq 11 port 0x3e2 iomem 0xd4000 disable</programlisting>
+
+    <para>PCMCIA 支援，如果你把 FreeBSD 裝在筆記型電腦上，你會需要這個裝置。
+    </para>
+
+    <programlisting># Serial (COM) ports
+device          sio0     at isa? port IO_COM1 flags 0x10 irq 4
+device          sio1     at isa? port IO_COM2 irq 3
+device          sio2     at isa? disable port IO_COM3 irq 5
+device          sio3     at isa? disable port IO_COM4 irq 9</programlisting>
+
+    <para>四個串列埠裝置，在 MS-DOS/Windows 裡面被稱作 COM1 ~ COM4。</para>
+
+    <note>
+      <para>如果你你有一張內接式 Modem 卡，而且 COM2 是打開的，那麼你必須把
+        Modem 卡的 IRQ 改成 2(技術上來說 IRQ2 = IRQ9)這樣 FreeBSD 才可以正常
+        使用你的 Modem 卡。如果你有一張多埠卡，請閱讀 &man.sio.4; 以獲得更多
+        資訊。有些顯示卡(特別是採用 S3 晶片的顯示卡)使用
+        <literal>0x*2e8</literal> 這個 IO 位址，加上許多廉價的序列卡無法完全
+        解析 16 位元的 IO 位址，於是造成衝突，使得這些使用 COM4 的卡幾乎無法
+        正常使用。</para>
+
+      <para>每個序列埠需要自己的 IRQ(除非你用可以支援分享 IRQ 的多埠卡)，所
+        以 COM3 跟 COM4 的 IRQ 預設是不能使用。</para>
+    </note>
+
+    <programlisting># Parallel port
+device          ppc0    at isa? irq 7</programlisting>
+
+    <para>這是 ISA 匯流排的並列埠介面。</para>
+
+    <programlisting>device          ppbus      # Parallel port bus (required)</programlisting>
+
+    <para>支援並列埠匯流排。</para>
+
+    <programlisting>device          lpt        # Printer</programlisting>
+
+    <para>支援並列埠印表機。</para>
+
+    <note>
+      <para>如果要使用並列埠印表機，就要同時加上上面三個裝置的設定。</para>
+    </note>
+
+    <programlisting>device          plip       # TCP/IP over parallel</programlisting>
+
+    <para>這是並列網路介面的驅動程式。</para>
+
+    <programlisting>device          ppi        # Parallel port interface device</programlisting>
+
+    <para>一般用途的 I/O(<quote>geek port</quote> + IEEE1284 I/O。</para>
+
+    <programlisting>#device         vpo        # Requires scbus and da</programlisting>
+
+    <para>Iomega Zip 磁碟機需這個裝置。它同時需要 <literal>scbus</literal>
+      <literal>da</literal> 支援。把並列埠設定成 EPP 1.9 模式下可以獲得最加
+      效能。</para>
+
+    <programlisting># PCI Ethernet NICs.
+device          de         # DEC/Intel DC21x4x (<quote>Tulip</quote>)
+device          fxp        # Intel EtherExpress PRO/100B (82557, 82558)
+device          tx         # SMC 9432TX (83c170 <quote>EPIC</quote>)
+device          vx         # 3Com 3c590, 3c595 (<quote>Vortex</quote>)
+device          wx         # Intel Gigabit Ethernet Card (<quote>Wiseman</quote>)</programlisting>
+
+    <para>一堆 PCI 網路卡的驅動程式。把你系統沒有的卡註解掉或是移除。</para>
+
+    <programlisting># PCI Ethernet NICs that use the common MII bus controller code.
+device          miibus     # MII bus support</programlisting>
+
+    <para>一些 10/100 乙太網路卡需要 MII 匯流排，這些卡不是使用跟 MII 相容的
+      transceivers 就是實作一個跟 MII 類似的 transceiver 控制介面。在核心設
+      定檔裡頭加上 <literal>device miibus</literal> 以提供通用 miibus API 與
+      所有使用通用 miibus 而不是使用自己驅動程式的 PHY。</para>
+
+    <programlisting>device          dc         # DEC/Intel 21143 and various workalikes
+device          rl         # RealTek 8129/8139
+device          sf         # Adaptec AIC-6915 (<quote>Starfire</quote>)
+device          sis        # Silicon Integrated Systems SiS 900/SiS 7016
+device          ste        # Sundance ST201 (D-Link DFE-550TX)
+device          tl         # Texas Instruments ThunderLAN
+device          vr         # VIA Rhine, Rhine II
+device          wb         # Winbond W89C840F
+device          xl         # 3Com 3c90x (<quote>Boomerang</quote>, <quote>Cyclone</quote>)</programlisting>
+
+    <para>用到 MII 匯流排控制器的'網路卡驅動程式。</para>
+
+    <programlisting># ISA Ethernet NICs.
+device          ed0    at isa? port 0x280 irq 10 iomem 0xd8000
+device          ex
+device          ep
+# WaveLAN/IEEE 802.11 wireless NICs. Note: the WaveLAN/IEEE really
+# exists only as a PCMCIA device, so there is no ISA attachment needed
+# and resources will always be dynamically assigned by the pccard code.
+device          wi
+# Aironet 4500/4800 802.11 wireless NICs. Note: the declaration below will
+# work for PCMCIA and PCI cards, as well as ISA cards set to ISA PnP
+# mode (the factory default). If you set the switches on your ISA
+# card for a manually chosen I/O address and IRQ, you must specify
+# those parameters here.
+device          an
+# The probe order of these is presently determined by i386/isa/isa_compat.c.
+device          ie0    at isa? port 0x300 irq 10 iomem 0xd0000
+device          fe0    at isa? port 0x300
+device          le0    at isa? port 0x300 irq 5 iomem 0xd0000
+device          lnc0   at isa? port 0x280 irq 10 drq 0
+device          cs0    at isa? port 0x300
+device          sn0    at isa? port 0x300 irq 10
+# requires PCCARD (PCMCIA) support to be activated
+#device         xe0    at isa?</programlisting>
+
+    <para>ISA 乙太網路卡。查看
+      <filename>/usr/src/sys/i386/conf/LINT</filename> 以了解哪個驅動程式支
+      援哪張卡。</para>
+
+    <programlisting># Pseudo devices - the number indicates how many units to allocated.
+pseudo-device   loop          # Network loopback</programlisting>
+
+    <para>這是一個通用的 TCP/IP 回溯介面。如果你 telnet 或 ftp 到
+      <hostid>localhost</hostid>(也等於 <hostid
+      role="ipaddr">127.0.0.1</hostid>)那個你實際上是透過這個虛擬裝置連回你
+      的電腦。這個裝置<emphasis>一定要有</emphasis>，切勿移除。</para>
+
+    <programlisting>pseudo-device   ether         # Ethernet support</programlisting>
+
+    <para>如果你有乙太網路卡，你就需要 <literal>ether</literal> 虛擬裝置，它
+      包含了通用的乙太網路通訊協定的程式碼。</para>
+
+    <programlisting>pseudo-device   sl      1     # Kernel SLIP</programlisting>
+
+    <para><literal>sl</literal> 支援 SLIP。目前 SLIP 已經被 PPP 取代了，因為
+      PPP 比較好設定，較適合 Modem 對 Modem 的連線，而且功能更強大。
+      <literal>sl</literal> 後面的 <replaceable>number</replaceable> 設定最
+      多能同時支援幾個 SLIP 連線。</para>
+
+    <programlisting>pseudo-device   ppp     1     # Kernel PPP</programlisting>
+
+    <para>支援 kernel PPP 撥接連線。另外有一個使用 <literal>tun</literal> 的
+      userland PPP，提供更高的彈性與更多的功能，像是有連線需求再撥號的功能。
+      <literal>ppp</literal> 後面的 <replaceable>number</replaceable> 設定最
+      多能同時支援幾個 PPP 連線。</para>
+
+    <programlisting>pseudo-device   tun           # Packet tunnel.</programlisting>
+
+    <para>userland PPP 會使用到這個虛擬裝置。<literal>tun</literal> 後面的
+      <replaceable>number</replaceable> 設定最多能同時支援幾個 PPP 連線。查
+      閱本使用手冊的 <link linkend="userppp">PPP</link> 部份以獲得更多資訊。
+    </para>
+
+    <programlisting><anchor id="kernelconfig-ptys">
+pseudo-device   pty           # Pseudo-ttys (telnet etc)</programlisting>
+
+    <para>這是虛擬 <quote>pseudo-terminal</quote> 或虛擬的登入埠。遠端連過來
+      的 telnet 與 rlogin 連線、<application>xterm</application> 與
+      <application>emacs</application> 等應用程式都會用到這個虛擬裝置。
+      <literal>pty</literal> 後面的 <replaceable>number</replaceable> 設定要
+      建立幾個 pty。如果你會同時用到的 <application>xterm</application> 視窗
+      或是遠端連線超過預設的 16 個，你可以增加這個值，但是不要超過 256 個。
+    </para>
+
+    <programlisting>pseudo-device   md            # Memory <quote>disks</quote></programlisting>
+
+    <para>memory disk 虛擬裝置。</para>
+
+    <programlisting>pseudo-device   gif     4     # IPv6 and IPv4 tunneling</programlisting>
+
+    <para>提供 IPv6 經 IPv4 的傳送通道、IPv4 經 IPv6 的傳送通道、IPv4 經
+      IPv4 的傳送通道以及 IPv6 經 IPv6 的傳送通道。</para>
+
+    <programlisting>pseudo-device   faith   1     # IPv6-to-IPv4 relaying (translation)</programlisting>
+
+    <para>這個虛擬裝置抓取送給它的封包，並轉給負責 IPv4/IPv6 轉換的背景服務
+      程式。</para>
+
+    <programlisting># The `bpf' pseudo-device enables the Berkeley Packet Filter.
+# Be aware of the administrative consequences of enabling this!
+pseudo-device   bpf           # Berkeley packet filter</programlisting>
+
+    <para>這是柏克萊的封包過濾器。這個虛擬裝置讓網路卡處在不區分封包的模式，
+      在此模式此裝置會抓取廣播式網路(如乙太網路)的每個封包。這些封包會被存在
+      硬碟，或是由 &man.tcpdump.1; 程式來分析。</para>
+
+    <programlisting># USB support
+#device         uhci          # UHCI PCI-&gt;USB interface
+#device         ohci          # OHCI PCI-&gt;USB interface
+#device         usb           # USB Bus (required)
+#device         ugen          # Generic
+#device         uhid          # <quote>Human Interface Devices</quote>
+#device         ukbd          # Keyboard
+#device         ulpt          # Printer
+#device         umass         # Disks/Mass storage - Requires scbus and da
+#device         ums           # Mouse
+# USB Ethernet, requires mii
+#device         aue           # ADMtek USB ethernet
+#device         cue           # CATC USB ethernet
+#device         kue           # Kawasaki LSI USB ethernet</programlisting>
+
+    <para>上面的設定支援各式各樣的 USB 裝置。</para>
+
+    <para>查看 <filename>/usr/src/sys/i386/conf/LINT</filename> 以獲得更多
+      FreeBSD 支援的 USB 裝置與其資訊。</para>
+  </sect1>
+
+  <sect1 id="kernelconfig-nodes">
+    <title>建立裝置節點</title>
+
+    <para>幾乎所有包含在核心的每個裝置，在 <filename>/dev</filename> 目錄下
+      都有一個對應的<quote>節點</quote>。這些節點看起來與一般檔案沒什麼兩樣
+      ，其實是程式在使用對應的裝置時，與核心溝通的進入點。
+      <filename>/dev/MAKEDEV</filename> 這支 shell script，會在你安裝作業系
+      統的時候，建立絕大部分系統需要的裝置節點，但是並不是建立
+      <emphasis>全部</emphasis>的節點，因此，當你在核心中加入對新裝置的支援
+      後，記得要到 /dev 目錄下查看是否有對應的節點，如果沒有就增加。以下是一
+      個簡單的範例：</para>
+
+    <para>假設你在核心中加入對 IDE CD-ROM 的支援，則要加入以下一行：</para>
+
+    <programlisting>device acd0</programlisting>
+
+    <para>這表示你必須到 <filename>/dev</filename> 目錄下，找尋是否有
+      <filename>acd0</filename> 開頭的 entries，通常後面會接一個字母，像是
+      <literal>c</literal>，或是 <literal>r</literal> 開頭，後面接上
+      <filename>acd0</filename>，表示這是一個 <quote>raw</quote> 裝置。如果
+      你找不到，切換到 <filename>/dev</filename> 目錄下，並輸入：</para>
+
+    <screen>&prompt.root; <userinput>sh MAKEDEV acd0</userinput></screen>
+
+    <para>當這個 script 執行完畢後，你可以發現 <filename>/dev</filename> 目
+      錄下出現 <filename>acd0c</filename> 與 <filename>racd0c</filename> 等
+      幾個 entries，表示程式執行正確。</para>
+
+    <para>以下是加入音效卡節點的範例：</para>
+
+    <screen>&prompt.root; <userinput>sh MAKEDEV snd0</userinput></screen>
+
+    <note>
+      <para>如果你的機器有提供給其他人使用，而你建立了一些像是音效卡之類的裝
+	置節點，最好修改 <filename>/etc/fbtab</filename>，加入這些特殊的節點
+	，以保護系統安全。請參閱 &man.fbtab.5; 以獲得更多資訊。</para>
+    </note>
+
+    <para>依循上述的簡單程序，建立任何不在 <filename>GENERIC</filename> 裡頭
+      的硬體裝置的節點。</para>
+
+    <note>
+      <para>所有的 SCSI 控制器都使用一樣的裝置節點，所以你無須重新建立節點。
+	另外，網路卡與 SLIP/PPP 虛擬裝置並沒有任何裝置節點，所以你不必擔心要
+	怎麼建立節點。</para>
+    </note>
+  </sect1>
+
+  <sect1 id="kernelconfig-trouble">
+    <title>疑難排解</title>
+
+    <para>在你建立自定的核心時你可能會遇到四種類型的錯誤，分別是：</para>
+
+    <variablelist>
+      <varlistentry>
+	<term><command>config</command> 執行失敗</term>
+
+	<listitem>
+	  <para>如果 <command>config</command> 指令執行時出現錯誤，通常是你
+            寫錯某個關鍵字或參數名稱。幸運的是，<command>config</command> 會
+            告訴你哪一行出錯，所以你能用 <command>vi</command> 快速解決這類
+            問題。例如你看到：</para>
+
+	  <screen>config: line 17: syntax error</screen>
+
+	  <para>你可以在 <command>vi</command> 的指令模式下輸入
+            <command>17G</command>，然後找出第十七行的問題。你可以參考
+            <filename>GENERIC</filename> 或是其他資料以確定你打對關鍵字。
+          </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><command>make</command> 執行失敗</term>
+
+	<listitem>
+	  <para>如果 <command>make</command> 執行失敗，通常是你的核心設定檔
+            有 <command>config</command> 無法發現的錯誤。一樣的，從頭到尾檢
+            視你的設定檔以找出錯誤，如果你找了很久還是沒辦法找出錯誤，把你的
+            核心設定檔還有你遇到的錯誤訊息一同寄給 &a.questions;，他們會盡快
+            幫你找出問題。</para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>新核心開機失敗<anchor
+	  id="kernelconfig-noboot"></term>
+
+	<listitem>
+	  <para>如果你的新核心無法正常開機，或是不能辨認出你的硬體裝置，別擔
+	    心！FreeBSD 有一套相當完善的回復機制可以解決這個問題。只要在開機
+	    命令列輸入你想啟用的核心名稱(例如 <filename>kernel.old
+	    </filename>)，而不是按 Enter(Return) 鍵跳過。在系統內保留一個以
+            知可以正常開機的核心，以備不時之需，是一個不錯的想法。</para>
+
+	  <para>在用正常的核心開機後，你可以檢查你的核心設定檔，並嘗試再次建
+	    立該核心。<filename>/var/log/messages</filename> 紀錄每次成功開
+	    機時，核心產生的訊息。此外，&man.dmesg.8; 則會列出當次開機的核心
+	    訊息</para>
+
+	  <note>
+	    <para>如果你在編譯核心時遇到問題，確定你在系統內有保留一個
+	      <filename>GENERIC</filename> 核心，或是其他你知道可正常開機，
+	      而且不會在你建立新核心時被覆蓋過去的核心。不要以為有
+              <filename>kernel.old</filename> 就夠了，因為每次建立新核心時，
+              <filename>kernel.old</filename> 會被前一次建立的 kernel 給覆寫
+              過去，而這個核心有可能是有問題的。另外，如果你用舊的、可用的核
+              心來開機，記得把目前的開機核心覆寫到
+              <filename>kernel</filename>，不然部分程式如 &man.ps.1; 將無法
+              正常執行。接下來的指令介紹如何解除核心的存取限制(以便把舊的核
+              心覆寫回去)：</para>
+
+	    <screen>&prompt.root; <userinput>chflags noschg /kernel</userinput></screen>
+		    
+	    <para>另外，如果你要<quote>鎖定</quote>核心或是其他檔案的存取限
+              制，使它們不會被修改或移除，則可輸入以下指令：</para>
+
+	    <screen>&prompt.root; <userinput>chflags schg /kernel</userinput></screen>
+	  </note>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>核心運作良好，但是 <command>ps</command> 指令卻無法執行？
+        </term>
+
+	<listitem>
+	  <para>如果你安裝不同版本的核心到系統上，例如在 3.X 版系統上裝了一
+            個 4.X 版的核心，那麼很多用來查看系統狀態的指令，如 &man.ps.1;
+            與 &man.vmstat.8;，可能會不能使用。你必須重新編譯
+            <filename>libkvm</filename> 函式庫與這些公用程式。切記不要隨意從
+            其他系統拷貝不同版本的核心來使用，不然你可能會遇到此類問題。
+          </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

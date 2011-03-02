@@ -1,0 +1,399 @@
+<!--
+     The Chinese FreeBSD Documentation Project
+      $FreeBSD: doc/zh_TW.Big5/books/zh-tut/chapters/java.sgml,v 1.0 2006/08/21 01:31:05 vanilla Exp $
+      Original revision: 1.0
+-->
+
+<chapter id="java">
+  <title>JAVA</title>
+  <sect1 id="java-programming">
+    <title>Java 中文程式設計</title>
+      <para>FreeBSD 下的 java distribution 分為 Native JDK For FreeBSD、
+	Sun JDK For Linux、IBM JDK For Linux、Blackdown JDK For Linux，
+	都可以在 <filename>/usr/ports/java</filename> 目錄下找到，
+	For Linux 的部分只要裝上 Linux 模擬器就可以執行，
+	而 Native JDK 原本必須自己從 source 編譯。
+	但是經過 FreeBSD 基金會的努力，終於在 2006/04/06 取得昇陽公司的授權，
+	可以從 FreeBSD
+	基金會的<ulink url="http://freebsdfoundation.org/downloads/java.shtml">網頁</ulink>上下載 JDK 及 JRE
+	(不過只有 5.5/i386, 6.1/i386, 6.1/amd64 平台的 binary 能下載)。
+	直接安裝 binary 只需要從 FreeBSD 基金會的 java 
+	下載網頁上下載您的平台版本，直接使用 pkg_add 安裝即可，如：
+	<command>pkg_add diablo-jdk-freebsd6.i386.1.5.0.07.00.tbz</command>
+
+
+	在 source 的編譯、安裝上都必須依照步驟先去網站上下載所需的檔案，
+	放置到 <filename>/usr/ports/distfiles</filename>。</para>
+      <para>以 <filename role="package">java/diablo-jdk15</filename> 安裝為例，
+        您必須到 <ulink url="http://www.FreeBSDFoundation.org/cgi-bin/download?download=diablo-caffe-freebsd6-i386-1.5.0_07-b00.tar.bz2"> FreeBSD 基金會的 java 下載網頁</ulink>上同意 EULA，
+	才能下載並編譯 jdk。</para>
+      <para>想知道您的 JDK 或 JRE 會用什麼樣的編碼方式來和作業系統溝通，
+	請執行下面的 Java 程式：</para>
+      <programlisting>
+public class ShowNativeEncoding {
+  public static void main(String[] args) {
+    String enc = System.getProperty("file.encoding");
+    System.out.println("NativeEncoding:" + enc);
+    System.out.println("成功");
+  }
+}</programlisting>
+      <screen>
+&prompt.user; <userinput>javac ShowNativeEncoding.java</userinput>
+&prompt.user; <userinput>java ShowNativeEncoding</userinput>
+NativeEncoding:Big5
+成功</screen>
+      <para>
+	如果出現以上的訊息，就表示中文正常，如果沒有的話，
+	請確定您的 LC_CTYPE 是 zh_TW.Big5，或是用
+	<command>javac -encoding CP950 ShowNativeEncoding.java</command>
+	來進行編譯，應該會出現如上的顯示才對。</para>
+      <note>
+	<para>Big5：這是繁體中文 de facto 標準。 </para>
+        <para>
+	  MS950 或 Cp950：ASCII + Big5，用於台灣和香港的繁體中文 MS
+Windows作業系統。</para></note>
+      <para>筆者的環境設定 <filename>~/.cshrc</filename></para>
+      <programlisting>
+# For JAVA jdk1.3.1
+setenv JAVA_HOME /usr/local/jdk1.3.1
+setenv CLASSPATH /usr/local/jdk1.3.1/lib/tools.jar:/usr/local/share/java/classes/:./
+setenv PATH /usr/local/jdk1.3.1/bin:$PATH</programlisting>
+      <para>如果要執行 applet 或是 swing的話，
+	請按照以下步驟設定才能正確的看到中文字，
+	<filename>font.properties.zh_TW</filename> 為 Forth 提供，
+	該設定檔專給 arphicttf 使用：</para>
+      <screen>
+&prompt.root; <userinput>cd /usr/local/jdk1.3.1/jre/lib/</userinput>
+&prompt.root; <userinput>fetch http://freebsd.sinica.edu.tw/~statue/conf/font.properties.zh_TW</userinput></screen>
+      <para>
+        經筆者測試在 mozilla-1.0 + jdk1.3.1p6_4 之後已經不需要設定就可以正確的看到中文，
+	如果沒辦法就手動作如下步驟：</para>
+      <screen>
+&prompt.root; <userinput>cd /usr/X11R6/lib/mozilla/plugins/</userinput>
+&prompt.root; <userinput>ln -s /usr/local/jdk1.3.1/jre/plugin/i386/ns600/libjavaplugin_oji.so libjavaplugin_oji.so</userinput></screen>
+      <figure>
+        <title>applet snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/applet" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>swing snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/swing" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <para>
+	參考：
+	<ulink url="http://www.oreilly.com.tw/sleepless/java_big5_1.htm">
+	Java繁體中文處理完全攻略（一）</ulink>、
+	<ulink url="http://www.oreilly.com.tw/sleepless/java_big5_2.htm">
+	Java 繁體中文處理完全攻略（二）</ulink>。</para>
+      <para>
+	WWW: <ulink url="http://java.sun.com/">
+	http://java.sun.com/</ulink></para>
+  </sect1>
+  
+  <sect1 id="java-desktop-use">
+   <title>快速使用 java 桌面應用程式</title>
+   <para> 本節為 psilotum 安裝 JDK/JRE 及 java 應用程式之 howto</para>
+
+   <para>1. 安裝 <filename role="packages">diablo-jdk15</filename>
+    及 <filename role="packages">diablo-jre15</filename>：
+    依照上節之敘述，至 FreeBSD 基金會網頁上下載並使用 pkg_add 安裝。</para>
+   
+   <para>2. 加入以下的環境變數(tcsh/csh)至 $HOME/.cshrc：
+    <programlisting>
+    setenv JDK_PKG_NAME diablo-jdk1.5.0
+    setenv JRE_PKG_NAME diablo-jre1.5.0
+    setenv JAVA_HOME /usr/local/${JDK_PKG_NAME}/
+    setenv JRE_HOME /usr/local/${JRE_PKG_NAME}/
+    setenv CLASSPATH /usr/local/${JDK_PKG_NAME}/lib/tools.jar:/usr/local/share/java/classes/:./
+    setenv PATH /usr/local/${JDK_PKG_NAME}/bin:$PATH
+    </programlisting>
+   </para>
+
+   <para>3. 設定字型
+     如果你發現中文字型都是方塊或是無法顯示的話，請以下面指令設定字型的 fallback：
+     <screen>
+     &prompt.root;<userinput>cd /usr/local/diablo-jdk1.5.0/jre/lib/fonts</userinput>
+     &prompt.root;<userinput>ln -s /usr/local/share/fonts/TrueType fallback</userinput>
+     </screen>
+   </para> 
+
+   <para>4. 設定瀏覽器的 java plugin
+     如果要在 <filename role="packages">www/firefox</filename> 或
+     <filename role="packages">www/seamonkey</filename> 之中使用 java applet，
+     如果無法正確顯示，請依照下列步驟設定：
+     <screen>
+     &prompt.root;<userinput>cd /usr/X11R6/lib/browser_plugins</userinput>
+     &prompt.root;<userinput>ln -s /usr/local/diablo-jre1.5.0/plugin/i386/ns7/libjavaplugin_oji.so libjavaplugin_oji.so</userinput>
+     </screen>
+
+   <para>5. 安裝 java 應用軟體
+     因為 java 的跨平台特性，因此有許多軟體也能在 FreeBSD 上執行，如很有名的心智圖軟體
+     <filename role="packages">deskutils/freemind</filename>、甘特圖軟體
+     <filename role="packages">deskutils/ganttproject</filename>及 p2p 軟體
+     <filename role="packages">net-p2p/azureus</filename>等。
+   </para>
+
+      <figure>
+        <title>freemind snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/freemind" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>java applet and seamonkey java console snapshot</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/java-applet-seamonkey" format="PNG">
+          </imageobject>
+        </mediaobject>
+      </figure>
+      
+
+</sect1>
+<sect1 id="jsp-servlet">
+    <title>JSP / Servlet 怎樣才能處理中文？</title>
+      <para>
+        鄭原真 &a.ycheng; Copyright 2000.</para>
+      <para>
+        本文版權 : GPL or BSD style，請保留作者姓名。</para>
+      <para>
+        本文假設您已經會使用 JSP 或是 Servlet 撰寫英文的 Web-Page。
+        如果您還不會，或是根本不知道 JSP 或是 Servlet 是幹什麼的，
+        那這篇文章不是寫給您看的。</para>
+      <para>
+        在 Java Servlet Spec v2.0 中，對於多國語言的支援，並不足。
+        您必須找到 Java Servlet Spec v2.2 的實作才行，筆者試過的
+        是 Apache Jakarta Tomcat 3.1 軟體(註一）。</para>
+      <para>
+        本文測試平台是 Debian Woody, Sun jdk1.2.2, Tomcat 3.1,
+        mm.mysql-2.0.2</para>
+      <para>Java Server 如何處理中文。</para>
+      <para>前言</para>
+      <para>
+        首先，如何正確的了解您一個 Big5 中文在 Java 中是正確的
+        中文 Unicode 呢？</para>
+      <para>
+        輸出一個 String("今").length() 吧 ! 由於 "今" 在 Big5 是由兩個
+        byte 組成，但對 java 來說，java 的字元是 unicode，也就是說，
+        無論是一個英文字或是一個中文字，其 length() 都是 1. 也就是說，
+        (new String("今")).length() ==&gt; 1。才是正確的。</para>
+      <para>Servlet 輸出中文的一個例子。</para>
+      <para>下面是一個典型的 Java Servlet。</para>
+      <programlisting>
+HelloWorldExample.java =&gt;
+----------- cut here -----------------
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class HelloWorldExample extends HttpServlet {
+
+    public void doGet(HttpServletRequest request,
+                      HttpServletResponse response)
+        throws IOException, ServletException
+    {
+        response.setLocale(new Locale(new String("zh"), new String("TW")));
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        out.println("&lt;html&gt;");
+        out.println("&lt;head&gt;");
+
+        String title = new String("hello 大家好");
+
+        out.println("&lt;title&gt;" + title + "&lt;/title&gt;");
+        out.println("&lt;/head&gt;");
+        out.println("&lt;body bgcolor=\"white\"&gt;");
+        out.println("&lt;body&gt;");
+
+        out.println("&lt;p&gt;");
+
+        out.println("&lt;h1&gt;" + title + "&lt;/h1&gt;");
+        out.println("&lt;/body&gt;");
+        out.println("&lt;/html&gt;");
+    }
+}
+----------- cut here -----------------</programlisting>
+      <para>可以正常輸出中文的關鍵是：</para>
+      <programlisting>
+        response.setLocale(new Locale(new String("zh"), new String("TW")));</programlisting>
+      <para>注意這一行應該要放在</para>
+      <programlisting>
+        PrintWriter out = response.getWriter();</programlisting>
+      <para>之前執行。另外編譯時注意</para>
+      <programlisting>
+        javac -encoding Big5 HelloWorldExample.java</programlisting>
+      <para>或是 (linux 上的 jdk1.2.2)</para>
+      <programlisting>
+        export LANG=zh_TW.Big5
+        export LC_CTYPE=zh_TW.Big5
+        javac HelloWorldExample.java</programlisting>
+      <para>
+        注意，這個例子在 jserv v1.1.2 並不能 work，因為該版本實做的
+        JavaSoft Java Servlet APIs 2.0, 而 setLocale 是到
+        Servlet APIs 2.2 才有。</para>
+      <para>Java Server Page 如何處理中文</para>
+      <para>在此簡略說明，先看下面的例子：</para>
+      <programlisting>
+test.jsp
+----------------------
+&lt;%@ page contentType="text/html; charset=big5" %&gt;
+&lt;html&gt;
+&lt;body bgcolor="white"&gt;
+    中文TEST.&lt;p&gt;
+    &lt;%= (new String("今天")).length() %&gt;
+    out.println("大家好");
+&lt;/body&gt;
+&lt;/html&gt;
+----------------------</programlisting>
+      <para>關鍵在第一行。有了這一行就行了。</para>
+      <para>而如果使用 POST 時，要使用中文就先看下面的例子</para>
+      <programlisting>
+test2.jsp
+----------------------
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Instropection&lt;/title&gt;
+&lt;/head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=big5"&gt;
+&lt;body&gt;
+&lt;body bgcolor="#FFFFFF" text="#000000"&gt;
+&lt;form name="form1" action="test3.jsp" method="post"  &gt;
+  &lt;p&gt; 姓名：
+    &lt;input type="text" name="name"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;編號：
+    &lt;input type="text" name="number"&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;input type="submit" value="傳送"&gt;
+    &lt;input type="reset" value="清除"&gt;
+  &lt;/p&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+----------------------
+
+test3.jsp
+----------------------
+&lt;%@ page language="java" contentType="text/html;charset=Big5" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Instropection&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;%
+    String name = new String(request.getParameter("name").getBytes("ISO-8859-1"), "Big5");
+    String number = request.getParameter("number");
+%&gt;
+姓名：&lt;%= name %&gt;
+&lt;br&gt;編號：&lt;%= number %&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+----------------------</programlisting>
+      <para>
+        關鍵在於 String(str.getBytes("ISO-8859-1"), "Big5")，
+        java.lang.String 的建構函式可以產生指定特定語系的 String，
+        透過這個範例，可以使 String 正確地轉換中文。</para>
+      <para>For Hacker：</para>
+      <para>
+        理論上這一行可以放在文件的任何地方，但由於 Java 時做上
+        開檔案後通常就必須指定 encoding，當 java jsp engine 發現 
+        charset 跟 default 不同時，通常必須重新開檔案。所以實做上
+        這一行放在越前面越好。不過話是這樣說，由於通常 jsp 會在 
+        run time 被 compile 成 java bytecode，也就是說只有在 
+        .jsp 更新時才需要 recompile。overhead 實在有限。</para>
+      <para>
+        註一：請到 http://jakarta.apache.org/ 下去 Download。</para>
+  </sect1>
+
+  <sect1 id="java-mysql">
+    <title>Java 連結到 MySql 如何使用中文？</title>
+      <para>鄭原真 &a.ycheng; Copyright 2000.</para>
+      <para>本文版權 : GPL or BSD style，請保留作者姓名。</para>
+      <para>
+        本文假設您已經會使用 JSP 或是 Servlet 撰寫英文的 Web-Page。
+        如果您還不會，或是根本不知道 JSP 或是 Servlet 是幹什麼的，
+        那這篇文章不是寫給您看的。</para>
+      <para>
+        在 Java Servlet Spec v2.0 中，對於多國語言的支援，並不足。
+        您必須找到 Java Servlet Spec v2.2 的實作才行，筆者試過的
+        是 Apache Jakarta Tomcat 3.1 軟體(註一）。</para>
+      <para>
+        本文測試平台是 Debian Woody, Sun jdk1.2.2, Tomcat 3.1,
+        mm.mysql-2.0.2</para>
+      <para>
+        Java 以 jdbc 連結到 databases server，MySql 有 Free 的
+        jdbc driver。以下不擬說明如何使用 jdbc，僅說明如何修改
+        您的 code 使可以用中文。</para>
+      <para>
+        mysql 儲存中文資料有兩種方法，第一種是使用 big5 內碼儲存，
+        其優點是節省硬碟/記憶體空間，相較於使用 UTF8 之下，若輸出
+        為 Big5，更省去一次的 Unicode (UTF8) 與 Big5 需要經過
+        Table lookup 的轉換。但使用 Big5 就會有 Big5 先天上的問題。
+        典型的問題是 Big5 字串在處理字的邊界的問題。Big5 先天上的
+        問題是這樣的，就以 "問題" 這個字串為例，問字的第二個 byte
+        跟題字的第一個 byte 所形成的字是 "暋" 字。所以當我們在作
+        文字搜尋找包含 "暋" 的字串，我們會連包含 "問題" 的字串也
+        一起找到。但 UTF8 內碼在設計上就避開了這個問題, 犧牲的是
+        必須用較多的 byte (octets) 表示。</para>
+      <para>
+        我只有試過 MySql 內的 Data 用 UTF8，Big5 沒試過。要注意的
+        是，在 UTF8 中，中文的長度是 3 個 bytes，由於 MySQL 固定
+        字串欄位送進過長的資料時，會發生過長處被截斷。但 MySql 不懂
+        UTF8，所以可能發生一個 UTF8 字元第二 or 三個 byte 被截掉
+        問題，在 ASCII 中問題不大，頂多出現一個 "I Love Yo"，"u" 不
+        見了。但在 java 把資料讀進來，把 UTF8 轉成 java 內部的表示
+        法時，就會發生有些 Byte 無法轉成功的問題，應該會造成
+        Exception。(註二)</para>
+      <para>
+        好，回來，在 jdbc 中，並沒有規範在 Database 中的字元的內碼，
+        而把這個問題留給各個 jdbc driver 處理。mysql jdbc driver
+        要在 database 中設為 utf8 的設定方式如下：</para>
+      <programlisting>
+        Properties pr;
+        Connection db;
+
+        pr = new Properties();
+        pr.put("characterEncoding", "UTF8");
+        pr.put("useUnicode", "TRUE");
+        Class.forName("org.gjt.mm.mysql.Driver").newInstance();
+        db = DriverManager.getConnection("jdbc:mysql:///test", pr);</programlisting>
+      <para>
+        其餘請自行參考一般 jdbc 程式寫作的資料。當然, compile 此 
+        Servlet 時需要在呼叫 javac 時加上 "-encoding Big5"。</para>
+      <para>
+        若要使用 Big5 的話, 上面 "UTF8" 改成 "Big5" 即可。但這樣作會
+        出現另一個問題, 就是中文第二個 byte 有 '\' 的問題。這個問題我
+        不知道有沒有方便的解法，不知道 compile mysql 時將 encoding 設
+        為 big5 可否解決這個問題。(註二)</para>
+      <para>
+        註二：這個我沒有測試過，誰要測了跟大家說結果的？</para>
+  </sect1>
+
+
+</chapter>
+
+<!--
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../zh-tut.sgml" "part" "chapter")
+     End:
+-->

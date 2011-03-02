@@ -1,0 +1,66 @@
+# $FreeBSD: doc/en_US.ISO8859-1/articles/Makefile,v 1.61 2009/09/01 18:01:01 danger Exp $
+
+SUBDIR =
+SUBDIR+= 5-roadmap
+SUBDIR+= bsdl-gpl
+SUBDIR+= building-products
+SUBDIR+= casestudy-argentina.com
+SUBDIR+= checkpoint
+SUBDIR+= committers-guide
+SUBDIR+= compiz-fusion
+SUBDIR+= console-server
+SUBDIR+= contributing
+SUBDIR+= contributing-ports
+SUBDIR+= contributors
+SUBDIR+= cups
+SUBDIR+= custom-gcc
+SUBDIR+= cvs-freebsd
+SUBDIR+= cvsup-advanced
+SUBDIR+= dialup-firewall
+SUBDIR+= diskless-x
+SUBDIR+= euro
+SUBDIR+= explaining-bsd
+SUBDIR+= fbsd-from-scratch
+SUBDIR+= filtering-bridges
+SUBDIR+= fonts
+SUBDIR+= formatting-media
+SUBDIR+= freebsd-questions
+SUBDIR+= geom-class
+SUBDIR+= gjournal-desktop
+SUBDIR+= hats
+SUBDIR+= hubs
+SUBDIR+= ipsec-must
+SUBDIR+= laptop
+SUBDIR+= ldap-auth
+SUBDIR+= linux-comparison
+SUBDIR+= linux-emulation
+SUBDIR+= linux-users
+SUBDIR+= mailing-list-faq
+SUBDIR+= mh
+SUBDIR+= multi-os
+SUBDIR+= nanobsd
+SUBDIR+= new-users
+SUBDIR+= p4-primer
+SUBDIR+= pam
+SUBDIR+= portbuild
+SUBDIR+= pr-guidelines
+SUBDIR+= problem-reports
+SUBDIR+= pxe
+SUBDIR+= rc-scripting
+SUBDIR+= relaydelay
+SUBDIR+= releng
+SUBDIR+= releng-packages
+SUBDIR+= remote-install
+SUBDIR+= serial-uart
+SUBDIR+= solid-state
+SUBDIR+= storage-devices
+SUBDIR+= version-guide
+SUBDIR+= vinum
+SUBDIR+= vm-design
+SUBDIR+= wp-toolbox
+SUBDIR+= zip-drive
+
+# ROOT_SYMLINKS+= new-users
+
+DOC_PREFIX?= ${.CURDIR}/../..
+.include "${DOC_PREFIX}/share/mk/doc.project.mk"

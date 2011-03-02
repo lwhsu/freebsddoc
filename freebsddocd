@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+
+/usr/local/bin/svn update
+/bin/cp -r trunk /usr/doc/zh_TW.big5
+find /usr/doc/zh_TW.big5/ -name ".svn" | xargs rm -rf
+/usr/bin/make -C /usr/doc/zh_TW.big5

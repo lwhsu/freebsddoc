@@ -1,0 +1,406 @@
+<!--
+     $FreeBSD: doc/zh/big5/handbook/preface/preface.sgml,v 1.2 2003/02/28 05:04:37 statue Exp $
+     Translate into Chinese by 王彥博 <alexw@hsnuer.net>
+     English Version: 1.16
+-->
+
+<preface id="book-preface">
+  <title>序言</title>
+  
+  <bridgehead id="preface-audience" renderas=sect1>致讀者</bridgehead>
+
+  <para>FreeBSD 的新使用者能夠在本書第一個部分找到領導使用者安裝 FreeBSD 
+  ，與大略的介紹 Unix 指令與規則。閱讀這個部分需要的比一點探索的渴望還多，
+  並且能夠駕馭新學到的指令。</para>
+
+  <para>當您閱讀 Handbook 到這裡，或是到更後面的章節，這些話題廣泛的涵蓋了
+  所有 FreeBSD 系統管理者所興趣的資訊。　有些章節可能會建議您作事前的閱讀，這些注意事項都在每個章節最前面的概要
+     。</para>
+
+  <para>如需其他資源列表，請參閱<xref linkend="bibliography">.</para>
+
+  <bridgehead id="preface-changes" renderas=sect1>本版本改變部分</bridgehead>
+
+    <para>本第二版是由 FreeBSD Documentation Project 成員們努力超過兩年的成果。
+    以下是本版主要的變動:</para>
+
+<!-- Talk a little about justification and other stylesheet changes? -->
+
+    <itemizedlist>
+      <listitem>
+	<para>增加一個完整的索引。</para>
+      </listitem>
+      <listitem>
+	<para>所有的 ASCII 圖表均改成圖檔的圖表。</para>
+      </listitem>
+      <listitem>
+	<para>每個章節均加入一個標準的概要，以便快速的總覽該章節的內容
+	與讀者所期望了解的。</para>
+      </listitem>
+      <listitem>
+	<para>內容均重新的組織成三個部分: <quote>開始使用</quote>, <quote>系統管理</quote>, and
+	<quote>附錄</quote>.</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="install"> (<quote>安裝 FreeBSD</quote>) 已經重新改，加入許多圖片，
+	讓新的使用者比看文字還更容易瞭解。</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="basics"> (<quote>Unix 上的基本資訊</quote>) 新增加了包含 processes, daemons,
+	和　signals　的新資訊。
+	</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="ports"> (<quote>安裝應用軟體</quote>) 
+	增加了關於二進位檔套件 (binary package) 管理的資訊。</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="x11"> (<quote>X 視窗系統</quote>) 經過全面改寫
+	，並重於在 XFree86 4.X 上使用現代的桌面科技像是 <application>KDE</application> 和 
+	<application>GNOME</application> 
+	。</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="boot"> (<quote>FreeBSD 的開機流程</quote>) 增加內容</para>
+      </listitem>
+      <listitem>
+        <para><xref linkend="disks"> (<quote>儲存 (Storage)</quote>) 以兩個章節　<quote>Disks</quote>
+        與 <quote>Backups</quote> 來編寫。我們認為這樣子會比單一章節來的容易瞭解。
+        還有一個關於RAID (包含硬體與軟體)的段落也新增上去了。</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="serialcomms"> (<quote>序列埠通訊</quote>) 完全重新組織與更新符合
+	 FreeBSD 4.X/5.X.</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="ppp-and-slip"> (<quote>PPP 和 SLIP</quote>) 有相當的更新。</para>
+      </listitem>
+      <listitem>
+	<para>許多新的段落增加在 <xref linkend="advanced-networking">
+	(<quote>進階網路使用</quote>).</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="mail"> (<quote>電子郵件</quote>) 新增了許多資訊包含了
+	  更多關於 <application>sendmail</application>的設定。</para>
+      </listitem>
+      <listitem>
+	<para><xref linkend="linuxemu"> (<quote>Linux 執行模式</quote>) 增增了許多，其中包含了安裝
+	  <application>Oracle</application> 與
+	  <application>SAP/R3</application>.</para>
+      </listitem>
+      <listitem>
+	<para>這些新的主題也涵蓋在這第二版裡面:</para>
+	<itemizedlist>
+	  <listitem>
+	    <para>設定與調校 (<xref linkend="config-tuning">)。</para>
+	  </listitem>
+	  <listitem>
+           <para>多媒體 (<xref linkend="multimedia">)</para>
+	  </listitem>
+	</itemizedlist>
+      </listitem>
+    </itemizedlist>
+
+  <bridgehead id="preface-overview" renderas=sect1>本書的組織架構</bridgehead>
+
+  <para>本書清楚的分為三大部分。第一部份， <emphasis>開始使用</emphasis>, 
+  涵蓋了安裝與 FreeBSD 的基本操作。可想而知讀者將會依照章節逐一的閱讀，
+  並且有可能地略過熟悉的主題。 第二部分， <emphasis>系統管理</emphasis>，
+  涵蓋了許多進階 FreeBSD 使用者有興趣的主題。每個段落的開始都有一個簡明的概要
+  說明本段落所涵蓋的範圍與讀者所期望知道的事情。  這表示允許讀者跳過一些段落找到讀者有興趣的章節。
+  　第三個部分內容包含了附錄與參考資料。</para>
+
+  <variablelist>
+    <varlistentry>
+      <term><emphasis><xref linkend="introduction">, 介紹</emphasis></term>
+      <listitem>
+	<para>介紹 FreeBSD 給新的使用者.  說明 FreeBSD 計劃的歷史，目標與開發模式。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="install">, 安裝 FreeBSD</emphasis></term>
+      <listitem>
+	<para>帶領著使用者進入安裝程序。一些進階的安裝主題，涵蓋了像是透過序列 console 的主題</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="basics">, Unix 上的基本資訊</emphasis></term>
+      <listitem>
+	<para>涵蓋了基本的指令與 FreeBSD 作業系統的功能。 如果你熟悉 Linux 或是其他類似 Unix 
+	您可能可以跳過這個章節。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="ports">, 安裝應用軟體</emphasis></term>
+      <listitem>
+	<para>涵蓋了以 FreeBSD 自創的 <quote>Ports Collection</quote> 和標準二進位套件
+	(standard
+	binary packages) 安裝協力廠商的軟體。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="x11">, X 視窗系統</emphasis></term>
+      <listitem>
+	<para>詳述 X 視窗系統與部分關於在 FreeBSD上的使用 <application>XFree86</application>
+	。 也詳述一般的桌面環境像是 <application>KDE</application> 與 <application>GNOME</application>。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="config-tuning">, 設定與調校</emphasis></term>
+      <listitem>
+	<para>詳述了系統管理者能夠調整 FreeBSD 達到最佳效能的參數。
+	  也詳述了許多使用 FreeBSD 中的設定檔，並且描述在哪裡可以找到這些檔案。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="boot">, 開機程序</emphasis></term>
+      <listitem>
+	<para>詳述了 FreeBSD 開機的程序並展示如何設定選項來控制這個程序。
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="users">, 使用者及基本帳號管理</emphasis></term>
+      <listitem>
+	<para>詳述了創造與操作使用者帳號。 也討論了使用者與其他帳號管理員的資源限制設定。
+	 </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="kernelconfig">, FreeBSD 核心設定</emphasis></term>
+      <listitem>
+	<para>解釋了為什麼網們要設定一個新的核心並提供了設定，建立，
+	與安裝一個自訂核心的簡介。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="security">, 安全</emphasis></term>
+      <listitem>
+	<para>詳述了許多能夠幫助你保持 FreeBSD 系統安全的工具，包含了
+	Kerberos ， IPsec ， OpenSSH ， 與網路防火牆。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="printing">, 列印</emphasis></term>
+      <listitem>
+	<para>詳述了在 FreeBSD 上管理印表機，包含了標題頁，印表機帳號，初始設定的資訊。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="disks">, 儲存 (Storage)</emphasis></term>
+      <listitem>
+	<para>詳述了如何在 FreeBSD 上管理儲存媒體與檔案系統。
+	這包含了實體磁碟機， RAID 陣列，光學與磁帶媒體，memory-backed　磁碟與
+	網路檔案系統。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="vinum-vinum">, Vinum</emphasis></term>
+      <listitem>
+	<para>詳述了如何使用 Vinum, 一個邏輯磁碟管理程式，提供了邏輯磁碟
+	和軟體 RAID-0, RAID-1 與 RAID-5。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="l10n">, 區域化</emphasis></term>
+      <listitem>
+	<para>詳述了如何在英文語系以外的語言使用 FreeBSD 。
+	涵蓋了了系統與應用程式層面的區域化。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="desktop">, 桌面應用程式</emphasis></term>
+      <listitem>
+        <para>列出了一般桌面的應用程式，像是網頁瀏覽器，與許多生產用套裝軟體，
+        並詳述如何將他們安裝在 FreeBSD 上。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="multimedia">, 多媒體</emphasis></term>
+      <listitem>
+      <para>展示了如何設定音效與視訊來支援你的系統。 與敘述一些聲音與視訊的應用程式。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="serialcomms">, 序列埠通訊</emphasis></term>
+      <listitem>
+	<para>解釋了如何在您的 FreeBSD 系統上連接終端機與數據機，包含了撥出與撥入連線。
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="ppp-and-slip">, PPP 與 SLIP</emphasis></term>
+      <listitem>
+	<para>詳述了如何在 FreeBSD 上使用 PPP, SLIP, 或是
+	 PPP over Ethernet 來連接到遠端系統。
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="advanced-networking">, 進階網路</emphasis></term>
+      <listitem>
+	<para>詳述了許多網路的主題，　包含了分享 Internet 給其他在您 LAN 的電腦，
+	使用網路檔案系統，透過 NIS 分享帳號，設定一個名稱伺服器(DNS)，和更多的相關內容。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="mail">, 電子郵件</emphasis></term>
+      <listitem>
+	<para>解釋了不同的 email 伺服器的組成與最熱門的 email 伺服器 <application>sendmail</application>
+	的簡單設定。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="cutting-edge">, The Cutting Edge</emphasis></term>
+      <listitem>
+	<para>解釋了 FreeBSD-STABLE ， FreeBSD-CURRENT 與 FreeBSD release 的不同。
+	詳述了哪些使用者能夠從發展的系統與大略的程序取得一些助益。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="linuxemu">, Linux 執行模式</emphasis></term>
+      <listitem>
+	<para>詳述了 FreeBSD 中的 Linux 相容性的內容。也提供了許多熱門的 Linux 應用程式
+	像是<application>Oracle</application>， <application>SAP/R3</application>和<application>Mathematica</application>
+	的安裝與簡介。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="mirrors">, 取得 FreeBSD </emphasis></term>
+      <listitem>
+	<para>列出不同的取得 FreeBSD　的來源媒體，從 CDROM 或 DVD 與 
+	能夠從 Internet 上下載與安裝 FreeBSD 。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="bibliography">, 參考文獻 </emphasis></term>
+      <listitem>
+	<para>這本書包含了許多不同的主題，可能讓你很渴望了解更多的內容。
+	這裡有一些本書參考文獻的列表。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="eresources">, Internet 上的資源</emphasis></term>
+      <listitem>
+	<para>詳述了許多給 FreeBSD 提出問題與技術討論的論壇。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis><xref linkend="pgpkeys">, PGP 鑰匙</emphasis></term>
+      <listitem>
+	<para>列出幾位 FreeBSD 開發者的 PGP 鑰匙。</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <bridgehead id="preface-conv" renderas=sect1>使用本書的技巧</bridgehead>
+
+    <para>提供一些簡單閱讀本書的技巧，一些本書所遵循的規則。</para>
+
+  <bridgehead id="preface-conv-typographic" renderas=sect2>文字表達</bridgehead>
+
+  <variablelist>
+    <varlistentry>
+      <term><emphasis>斜體字</emphasis></term>
+      <listitem>
+	<para>An <emphasis>斜體字</emphasis> 是用於檔名, 網路位置(URLs),
+	  強調的文字, 與第一次的技術性文字使用。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><varname>固定字寬之印表機字體.</varname></term>
+      <listitem>
+	  <para><varname>固定字寬之印表機字體</varname> 是用於錯誤訊息，
+	  指令，環境變數，通訊埠的名稱，主機名，使用者名，群組名，裝置名，
+	  變數，與片段的程式碼。</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><application>粗體字</application></term>
+      <listitem>
+	<para>A <application>租體字</application> 是用於應用程式，指令，與按鍵。</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+<!-- Var list -->
+  <bridgehead id="preface-conv-commands"
+  renderas=sect2>使用者輸入</bridgehead>
+
+  <para>鍵盤輸入以 <keycap>粗體字</keycap> 表示來區分一般文字。
+      按鍵的結合是同時按下按鍵我們以 `<literal>+</literal>' 來連接, 像是:</para>
+
+  <para>
+    <keycombo action="simul">
+      <keycap>Ctrl</keycap>
+      <keycap>Alt</keycap>
+      <keycap>Del</keycap>
+    </keycombo>
+  </para>
+
+  <para>逐一按鍵會以逗號,來表示 像是:</para>
+
+  <para>
+    <keycombo action="simul">
+      <keycap>Ctrl</keycap>
+      <keycap>X</keycap>
+    </keycombo>,
+    <keycombo action="simul">
+      <keycap>Ctrl</keycap>
+      <keycap>S</keycap>
+    </keycombo>
+  </para>
+
+  <para>表示使用者同時按下<keycap>Ctrl</keycap>與<keycap>X</keycap>
+  然後放開後再同時按<keycap>Ctrl</keycap> and <keycap>S</keycap>
+    。</para>
+
+<!-- How to type in key stokes, etc.. -->
+  <bridgehead id="preface-conv-examples"
+  renderas=sect2>範例</bridgehead>
+
+  <para>範例的開頭以<devicename>E:\&gt;</devicename>
+  是表示 MS-DOS 指令。 如果沒有特殊情況，這些指令應該是在現在的 Microsoft Windows 環境下的
+  <quote>命令提示字元</quote> 下執行。
+  </para>
+
+  <screen><prompt>E:\&gt;</prompt> <userinput>tools\fdimage floppies\kern.flp A:</userinput></screen>
+
+  <para>範例的開頭是以 &prompt.root; 再接指令的話，
+  　就是指在 FreeBSD 中以超級使用者下指令。你能夠以 <username>root</username>
+    簽入系統並下指令，或是簽入您般的帳號並使用 &man.su.1; 來取得超級使用者的權限。</para>
+
+  <screen>&prompt.root; <userinput>dd if=kern.flp of=/dev/fd0</userinput></screen>
+
+  <para>範例的開頭式以 &prompt.user; 再接指令的話，
+    那就應該表示一般的使用者下的指令。如果沒有特殊設定， C-shell 句法是
+    用來設定環境變數的，或是其他的 shell 指令。</para>
+
+  <screen>&prompt.user; <userinput>top</userinput></screen>
+
+  <bridgehead id="preface-acknowledgements"
+  renderas=sect1>A感謝</bridgehead>
+
+  <para>您正拿著的書是經過數百個分散在世界各地的人所努力而來的。 無論
+  他們是修正錯字或是撰寫整個章節，這些貢獻都是非常有用的。</para>
+
+  <para>也有許多公司以讓作者能夠有　full-time　的工作，支付出版，與等等，
+  來支持這個文件的發展。還有 BSDi (subsequently acquired by
+    <ulink url="http://www.windriver.com">Wind River Systems</ulink>)
+    提供 FreeBSD Documentation Project 成員們在改善本書與帶領出版第一版的書
+    在 March 2000 (ISBN 1-57176-241-8).  Wind River Systems 也付出了數個額外的作家
+    在列印出來後增加許多章節與文字。這工作讓我們能夠出版第二版在November 2001 (ISBN
+    1-57176-303-1).</para>
+
+</preface>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "book" "preface")
+     End:
+-->

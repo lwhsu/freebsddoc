@@ -1,0 +1,618 @@
+<!--
+     The FreeBSD Documentation Project
+     The FreeBSD Traditional Chinese Project
+
+     Original Revision: 1.25
+     $FreeBSD$
+-->
+
+<!-- Need more documentation on praudit, auditreduce, etc.  Plus more info
+on the triggers from the kernel(log rotation, out of space, etc).
+And the /dev/audit special file if we choose to support that.  Could use
+some coverage of integrating MAC with Event auditing and perhaps discussion
+on how some companies or organizations handle auditing and auditing
+requirements. -->
+
+<chapter id="audit">
+  <chapterinfo>
+    <authorgroup>
+      <author>
+	<firstname>Tom</firstname>
+	<surname>Rhodes</surname>
+	<contrib>原作 </contrib>
+      </author>
+      <author>
+	<firstname>Robert</firstname>
+	<surname>Watson</surname>
+      </author>
+    </authorgroup>
+  </chapterinfo>
+
+  <title>資安事件的稽核</title>
+
+  <sect1 id="audit-synopsis">
+    <title>概述</title>
+
+    <indexterm><primary>AUDIT</primary></indexterm>
+    <indexterm>
+      <primary>資安事件的稽核</primary>
+      <see>MAC</see>
+    </indexterm>
+
+    <para>FreeBSD 6.2-RELEASE 及之後版本中內含對於精細的資安事件稽核支援。
+      事件稽核能夠支援可靠的、精細且可設定的，對於各類與安全有關的系統事件，
+      包括登入、設定變更，以及檔案和網路存取等的 log 記錄。
+      這些 log 記錄對於運作中的系統上實施監控、入侵檢測和事後分析都十分重要。
+      &os; 實作了 Sun 所發布的 <acronym>BSM</acronym> API 和檔案格式，並且與 Sun 的 Solaris
+      和 Apple 的 Mac OS X 稽核實作相容。</para>
+
+    <para>本章重點是事件稽核的安裝、設定。 我們將介紹事件策略，並提供一個稽核的設定例子。</para>
+
+    <para>讀完這章，您將了解：</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>事件稽核是什麼，以及它如何運作。</para>
+      </listitem>
+
+      <listitem>
+	<para>如何在 &os; 上為使用者和程序作事件稽核的設定。</para>
+      </listitem>
+
+      <listitem>
+	<para>如何使用稽核記錄摘要和檢查工具來對稽核記錄進行檢查。</para>
+    </itemizedlist>
+
+    <para>在開始閱讀這章之前，您需要︰</para>
+
+    <itemizedlist>
+      <listitem>
+	<para>瞭解 &unix; 和 &os; 的基礎知識
+	 (<xref linkend="basics">)。</para>
+      </listitem>
+
+      <listitem>
+	<para>熟悉關於 kernel 設定和編譯的基本方法
+	 (<xref linkend="kernelconfig">)。</para>
+      </listitem>
+
+      <listitem>
+	<para>熟悉安全知識以及如何在 &os; 運用它們(<xref linkend="security">)。</para>
+      </listitem>
+    </itemizedlist>
+
+    <warning>
+      <para>在 &os; 6.2 上的稽核機制是實驗性質，
+	在正式環境中部署之前，應仔細評估部署實驗性軟體可能帶來的風險。  目前已知的限制有：
+	並非所有安全相關的系統事件都是可稽核的，在某些登入機制，例如：X11-based 
+	的 display manager 以及 third party daemon 的登入機制，
+	都無法正確設定稽核。</para>
+    </warning>
+
+    <warning>
+      <para>安全稽核機制會對系統活動產生非常細膩的記錄： 在負荷繁忙的系統中，
+	若對記帳(trail)資料設定不當，將會非常的龐大並在一周內迅速超過數 GB 的大小。
+	稽核設定所導致的磁碟空間需求的這些問題，乃是管理者必須考慮的地方。 例如：
+	可能需要替 <filename>/var/audit</filename> 目錄而單獨分配檔案系統，
+	以防止在稽核 log 所用的檔案系統被填滿時，而影響其它檔案系統的運作。</para>
+    </warning>
+
+  </sect1>
+
+  <sect1 id="audit-inline-glossary">
+    <title>本章的一些關鍵術語</title>
+
+    <para>在開始閱讀這章之前，我們需要解釋一下與稽核有關的關鍵術語：</para>
+
+    <itemizedlist>
+      <listitem>
+	<para><emphasis>事件(event)</emphasis>：
+	  可稽核的事件 –– 乃是指能夠稽核子系統記錄的任何事件。  
+	  舉例來說，與安全有關的事件包括：新增檔案、
+	  建立網路連線、使用者登入等等。  
+	  任何事件最終是否可查到為哪一個有驗証的帳號所為，就歸為 
+	  <quote>attributable</quote>，否則則將該事件歸為
+	  <quote>non-attributable</quote>。
+	  non-attributable 事件可以是發生在登入過程成功之前的任何事件，
+	  例如嘗試登入，卻因密碼不正確等。</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis>類(class)</emphasis>： 事件類是指相關事件的一個命名集合，
+	  通常在篩選表達式中使用。 常用的事件類包括 <quote>新增檔案(file
+	  creation)</quote>(fc)、<quote>執行(exec)</quote>(ex)、
+	  <quote>登入和登出(login_logout)</quote>(lo)。</para>
+      </listitem>
+
+      <listitem>
+	<para><emphasis>記錄(record)</emphasis>： 記錄是指描述一個資安事件的
+	  log 項。  記錄包括記錄事件類型、執行操作的主體(使用者)資訊、
+	  日期和事件資訊，以及與之相關的對象或參數資訊，
+	  最後是操作成功或失敗。</para>
+      </listitem>
+
+      <listitem>
+	<para><emphasis>賬目(trail)</emphasis>： 稽核賬目或 log 檔案，
+	  包含了一系列描述資安事件的稽核記錄。  在典型情況下，
+	  稽核賬目基本上是以事件發生的時間順序記錄的。  只有獲得授權的程序，
+	  才能夠向稽核賬目中提交記錄。</para>
+
+      <listitem>
+	<para><emphasis>篩選表達式(selection expression)</emphasis>：
+	  篩選表達式是包含一系列前綴和稽核事件類名字，
+	  用以符合事件的字串。</para>
+      </listitem>
+
+      <listitem>
+	<para><emphasis>預選(preselection)</emphasis>：
+	  系統透過這一過程來識別事件是否是管理員所感興趣的，
+	  從而避免為他們不感興趣的事件產生記錄。 預選設定使用一系列選擇表達式，
+	  用以識別事件類別、要稽核的使用者，以及適用於驗証過使用者身份，
+	  以及未驗証使用者身份的程序的全局設定。</para>
+      </listitem>
+
+      <listitem>
+	<para><emphasis>濃縮(reduction)</emphasis>：
+	  從現有的稽核記帳中篩選出用於保留、列印或分析的過程。  除此之外，
+	  它也表示從稽核記帳中刪去不需要的稽核記錄的過程。
+	  透過使用濃縮操作，管理員可以實作預留稽核資料的策略。  例如，
+	  詳細的稽核記帳資訊，可能會保留一個月之久，但在這之後，
+	  則對這些記帳資訊執行濃縮操作，只保留登入資訊用於存檔。</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="audit-install">
+    <title>安裝稽核支援</title>
+
+    <para>對於事件稽核的支援，已經隨標準的 <maketarget>installworld</maketarget>
+      過程完成。 管理員可以透過檢視
+      <filename role="directory">/etc/security</filename> 的內容來確認這一點。
+      您應能看到一些名字以 <emphasis>audit</emphasis> 開頭的檔案，
+      例如 <filename>audit_event</filename>。</para>
+
+    <para>從 &os; 6.2-RELEASE 開始，
+      對事件稽核的支援已經作為基本系統的一部分安裝。
+      但是，您還需要將下面這些設定加入到 kernel 設定檔中，
+      以便將事件稽核支援加入到 kernel ：</para>
+
+    <programlisting>options	AUDIT</programlisting>
+
+    <para>接下來，您應按照
+      <xref linkend="kernelconfig"> 中所介紹的步驟來完成 kernel 的編譯、安裝。</para>
+
+    <para>在編譯好並安裝了 kernel ，並重新啟動了系統之後，就可以在
+      &man.rc.conf.5; 中增加下列設定來啟用稽核服務了：</para>
+
+    <programlisting>auditd_enable="YES"</programlisting>
+
+    <para>此後，必須重新啟動系統，或透過下面的指令來手動執行稽核支援：</para>
+
+    <programlisting>/etc/rc.d/auditd start</programlisting>
+  </sect1>
+
+  <sect1 id="audit-config">
+    <title>對稽核進行設定</title>
+
+    <para>所有用於安全稽核的設定檔，都可以在
+      <filename role="directory">/etc/security</filename> 找到。
+      要啟動稽核服務之前，必須要有下面這些檔案：</para>
+
+    <itemizedlist>
+      <listitem>
+	<para><filename>audit_class</filename> - 對於稽核類的定義。</para>
+      </listitem>
+
+      <listitem>
+	<para><filename>audit_control</filename> - 控制稽核子系統的特性，
+	  例如預設稽核類、在稽核 log 所在的卷上保留的最小空間、
+	  稽核 log 的最大大小，等等。</para>
+      </listitem>
+
+      <listitem>
+	<para><filename>audit_event</filename> -
+	  文字化的系統稽核事件名稱和描述，以及每個事件屬於哪個類別。</para>
+      </listitem>
+
+      <listitem>
+	<para><filename>audit_user</filename> - 針對特定使用者的稽核需求，
+	  這些設定在登入時會與全局的預設值合併。</para>
+      </listitem>
+
+      <listitem>
+	<para><filename>audit_warn</filename> - 由 auditd 調用的一個可自訂的
+	  shell script ，用於在意外情況，如用於稽核 log 的空間過少，或稽核
+	  log 檔案被翻轉時，產生警告資訊。</para>
+      </listitem>
+    </itemizedlist>
+
+    <warning>
+      <para>在編輯和維護稽核設定檔時一定要小心，因為設定檔中的錯誤會導致記錄事件不正確。</para>
+    </warning>
+
+    <sect2>
+      <title>事件篩選表達式</title>
+
+      <para>在稽核設定檔中的許多地方會用到篩選表達式來確定哪些事件是需要稽核的。
+	表達式中需要指定要符合的事件類型，並使用前綴指定是否應接受或忽略符合的事件，
+	此外，還可以指定一個可選項指定符合成功或失敗的操作。
+	選擇表達式是按從左到右的順序計算的，而對於兩個表達式的情形，
+	則是透過將後一個追加到前一個之後來實作的。</para>
+
+      <para>下面列出了在 <filename>audit_class</filename> 中的預設事件類型：</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para><option>all</option> - <literal>all</literal> - 表示符合全部事件類。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>ad</option> - <literal>administrative</literal>
+	    - 所有在系統上所進行的管理性操作。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>ap</option> - <literal>application</literal> -
+	    應用程式定義的動作。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>cl</option> - <literal>file_close</literal> -
+	    稽核對 <function>close</function> 系統調用的操作。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>ex</option> - <literal>exec</literal> - 稽核程式的執行。
+	    對於指令參數和環境變量的稽核是透過在 &man.audit.control.5;
+	    中 <literal>policy</literal> 的 <literal>argv</literal> 和 <literal>envv</literal>
+	    參數來控制的。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>fa</option> - <literal>file_attr_acc</literal>
+	    - 稽核訪問對象屬性，例如
+	    &man.stat.1;、&man.pathconf.2; 以及類似事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>fc</option> - <literal>file_creation</literal>
+	    - 稽核新增了檔案的事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>fd</option> - <literal>file_deletion</literal>
+	    - 稽核所發生的檔案刪除事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>fm</option> - <literal>file_attr_mod</literal>
+	    - 稽核檔案屬性發生變化的事件，
+	    例如 &man.chown.8;、&man.chflags.1;、&man.flock.2;，
+	    等等。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>fr</option> - <literal>file_read</literal>
+	    - 稽核讀取資料、檔案以讀方式打開等事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>fw</option> - <literal>file_write</literal> -
+	    稽核寫入資料、檔案以寫方式打開等事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>io</option> - <literal>ioctl</literal> -
+	    稽核對 &man.ioctl.2; 系統調用的使用。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>ip</option> - <literal>ipc</literal> - 稽核各種形式的程序間通信(IPC)，
+	    包括 POSIX 管道和 System V <acronym>IPC</acronym> 操作。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>lo</option> - <literal>login_logout</literal> -
+	    稽核系統中發生的 &man.login.1; 和 &man.logout.1; 事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>na</option> - <literal>non_attrib</literal> -
+	    稽核無法歸類的事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>no</option> - <literal>no_class</literal> -
+	    表示不符合任何事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>nt</option> - <literal>network</literal> -
+	    與網路操作有關的事件，例如
+	    &man.connect.2; 和 &man.accept.2;。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>ot</option> - <literal>other</literal> -
+	    稽核各類雜項事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><option>pc</option> - <literal>process</literal> -
+	    稽核程序操作，例如 &man.exec.3; 和
+	    &man.exit.3;。</para>
+	</listitem>
+
+      </itemizedlist>
+
+      <para>這些稽核事件，可以透過修改
+	<filename>audit_class</filename> 和
+	<filename>audit_event</filename> 這兩個設定檔來進行自訂。</para>
+
+      <para>這個列表中，每個稽核類均包含一個表示符合成功/失敗操作的前綴，
+	以及這一項是否是增加或刪去對事件類或類型的符合。</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para>(none)稽核事件的成功和失敗實例。</para>
+	</listitem>
+
+	<listitem>
+	  <para><literal>+</literal> 稽核這一類的成功事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><literal>-</literal> 稽核這一類的失敗事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><literal>^</literal> 不稽核本類中的成功或失敗事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><literal>^+</literal> 不稽核本類中的成功事件。</para>
+	</listitem>
+
+	<listitem>
+	  <para><literal>^-</literal> 不稽核本類中的失敗事件。</para>
+	</listitem>
+
+      </itemizedlist>
+
+      <para>下面例子中的篩選字串表示篩選成功和失敗的登入/登出事件，
+	而對執行事件，則只稽核成功的：</para>
+
+      <programlisting>lo,+ex</programlisting>
+
+    </sect2>
+
+    <sect2>
+      <title>設定檔</title>
+
+      <para>多數情況下，在設定稽核系統時，
+	管理員只需修改兩個檔案： <filename>audit_control</filename>
+	和 <filename>audit_user</filename>。 前者控制系統級的稽核屬性和策略，
+	而後者則用於針對具體的使用者來微調。</para>
+
+      <sect3 id="audit-auditcontrol">
+        <title><filename>audit_control</filename> 檔案</title>
+
+	<para><filename>audit_control</filename> 檔案指定了一系列用於稽核子系統的預設設置。
+	  透過檢視這個檔案，我們可以看到下面的內容：</para>
+
+	<programlisting>dir:/var/audit
+flags:lo
+minfree:20
+naflags:lo
+policy:cnt
+filesz:0</programlisting>
+
+	<para>這裡的 <option>dir</option> 選項可以用來設置用於儲存稽核 log 的一或多個目錄。
+	  如果指定了多個目錄，則將在填滿一個之後換用下一個。 一般而言，
+	  稽核通常都會設定為儲存在一個專用的檔案系統之下，
+	  以避免稽核系統與其它子系統在檔案系統滿的時候所產生的衝突。
+	  </para>
+
+	<para><option>flags</option> 欄位用於為有主事件設定系統級的預選條件。
+	  在前面的例子中，所有使用者成功和失敗的登入和登出都會被稽核。</para>
+
+	<para><option>minfree</option> 參數用於定義儲存稽核 log
+	  的檔案系統上剩餘空間的最小百分比。  當超過這臨界值時，
+	  將產生一個警告。 前面的例子中，最小剩餘空間比例設置成了兩成。</para>
+
+	<para><option>naflags</option> 選項表示稽核類稽核無主事件，
+	  例如作為登入程序和系統服務的那些程序的事件。</para>
+
+	<para><option>policy</option> 選項用於指定一個以逗號分隔的策略標志表，
+	  以控制一系列稽核行為。 預設的 <literal>cnt</literal> 標志表示系統應在稽核失敗時繼續執行
+	 (強烈建議使用這個標志)。 另一個常用的標志是
+	  <literal>argv</literal>，它表示在稽核命令執行操作時，
+	  同時稽核傳給 &man.execve.2; 系統調用的指令參數。</para>
+
+	<para><option>filesz</option> 選項指定了稽核 log 在自動停止記錄和翻轉之前允許的最大大小。
+	  預設值 0 表示禁用自動 log 翻轉。 如果設定的值不是零，但小於最小值 512k，
+	  則這個設定會被忽略，並在 log 中記錄這一消息。</para>
+      </sect3>
+
+      <sect3 id="audit-audituser">
+	<title><filename>audit_user</filename> 檔</title>
+
+	<para><filename>audit_user</filename> 檔允許管理員為了特定使用者，
+	  而去指定進一步的稽核需求。  每行使用兩個欄位來設定使用者的稽核：
+	  第一個是 <literal>alwaysaudit</literal> 欄位，
+	  它指定了一組對該使用者總會進行稽核的事件；
+	  而第二個則是 <literal>neveraudit</literal> 欄位，
+	  它指定了一系列對該使用者不稽核的事件。</para>
+
+	<para>在下述 <filename>audit_user</filename> 示例檔案中，
+	  稽核了 root 使用者的 登入/登出 事件，以及成功的命令執行事件，
+	  此外，還稽核了 www 使用者的檔案新增和成功的命令執行事件。
+	  如果與前面的示範 <filename>audit_control</filename> 檔案配合使用，
+	  則 <literal>root</literal> 的 <literal>lo</literal> 項就是多餘的，
+	  而對 <literal>www</literal> 使用者而言，其登入/登出事件也會被稽核
+	  ：</para>
+
+	<programlisting>root:lo,+ex:no
+www:fc,+ex:no</programlisting>
+
+      </sect3>
+    </sect2>
+  </sect1>
+
+  <sect1 id="audit-administration">
+    <title>管理稽核子系統</title>
+
+    <sect2>
+      <title>檢視稽核 log </title>
+
+      <para>稽核記帳是以 BSM 二進制格式儲存的，因此必須使用工具來對其進行修改，
+	或將其轉換為純文字。 <command>praudit</command>
+	命令能夠將記帳檔案轉換為簡單的純文字格式； 而
+	<command>auditreduce</command> 命令則可以為分析、
+	存檔或列印目的來濃縮稽核 log 檔案。
+	<command>auditreduce</command> 支援一系列篩選參數，包括事件類型、
+	事件類、使用者、事件的日期和時間，以及檔案路徑或操作對象。</para>
+
+      <para>例如，<command>praudit</command>
+	工具會將指定的稽核記帳轉存為簡單純文字格式的稽核 log ：</para>
+
+      <screen>&prompt.root; <userinput>praudit /var/audit/AUDITFILE</userinput></screen>
+
+      <para>此處 <replaceable>AUDITFILE</replaceable> 是要轉存的稽核 log 檔案。</para>
+
+      <para>稽核記帳中包括一系列稽核記錄，這些記錄由一系列代號(token)組成，
+	而 <command>praudit</command> 能把它們順序顯示為一行。
+	每個代號都屬於某個特定的類型，例如
+	<literal>header</literal> 表示稽核記錄頭，而
+	<literal>path</literal> 則表示在一次名字尋找中的檔案路徑。 下面是一個
+	<literal>execve</literal> 事件的例子：</para>
+
+      <programlisting>header,133,10,execve(2),0,Mon Sep 25 15:58:03 2006, + 384 msec
+exec arg,finger,doug
+path,/usr/bin/finger
+attribute,555,root,wheel,90,24918,104944
+subject,robert,root,wheel,root,wheel,38439,38032,42086,128.232.9.100
+return,success,0
+trailer,133</programlisting>
+
+      <para>這個稽核記錄表示一次成功的 <literal>execve</literal>
+	調用，執行了 "finger doug"。 在參數代號中是由 shell 提交給 kernel
+	的指令。  path 代號包含了由 kernel 尋找得到的可執行檔案路徑。
+	屬性代號中包含了對可執行檔案的描述，
+	特別地，它包括了檔案的權限模式，用以確定應用程式是否是 setuid 的。
+	主體代號描述了主體程序，並順序記錄了稽核使用者 ID、生效使用者 ID 和組
+	ID、實際使用者 ID 和組 ID、程序 ID、會話 ID、端口 ID，以及登入地址。
+	注意稽核使用者 ID 和實際使用者 ID 是不同的：
+	使用者 <literal>robert</literal> 在執行這個命令之前已經切換為
+	<literal>root</literal> 帳戶，
+	但它會以最初進行身份驗証的使用者身份進行稽核。
+	最後，返回值代號表示執行成功，並終結這一記錄。</para>
+
+    </sect2>
+
+    <sect2>
+      <title>濃縮稽核記帳</title>
+
+      <para>由於稽核 log 可能會很大，管理員可能會希望選擇記錄的一個子集來使用，
+	例如與特定使用者相關的記錄：</para>
+
+      <screen>&prompt.root; <userinput>auditreduce -u trhodes /var/audit/AUDITFILE | praudit</userinput></screen>
+
+    <para>這將選擇儲存在 <replaceable>AUDITFILE</replaceable> 中的所有由
+      <username>trhodes</username> 產生的稽核 log。</para>
+    </sect2>
+
+    <sect2>
+      <title>委派稽核檢查權限</title>
+
+      <para>在 <literal>audit</literal> 組中的使用者，
+	擁有讀取 <filename>/var/audit</filename> 下的稽核記帳的權限；
+	預設情況下，這個組是空的，因此只有 root 使用者可以讀取稽核記帳。
+	如果希望給某個使用者指定稽核檢查權，則可以將其加入
+	<literal>audit</literal>。
+	由於檢視稽核 log 的內容可以提供關於使用者和程序行為的大量深度資訊，
+	在您委派這些權力時，請務必謹慎行事。</para>
+    </sect2>
+
+    <sect2>
+      <title>透過稽核管道來實施監控</title>
+
+      <para>稽核管道是位於設備檔案系統中的自動複製(cloning)的虛擬設備，
+	用於讓應用程式控制正在執行的稽核記錄流，
+	這主要是為了滿足入侵檢測和系統監控軟體作者的需要。
+	不過，對管理員而言，
+	稽核管道設備也提供了一種無須冒稽核記帳檔案屬主出現問題的麻煩，
+	或由於 log 翻轉而打斷事件流的麻煩，而實作實施監控的方便途徑。
+	要跟蹤實施事件流，使用下面的指令：</para>
+
+      <screen>&prompt.root; <userinput>praudit /dev/auditpipe</userinput></screen>
+
+      <para>預設情況下，稽核管道設備節點只有 root 使用者才能訪問。 如果希望
+	<literal>audit</literal> 組的成員能夠訪問它，應在 <filename>devfs.rules</filename>
+	中加入下述 <literal>devfs</literal> 規則：</para>
+
+      <programlisting>add path 'auditpipe*' mode 0440 group audit</programlisting>
+
+      <para>請參見 &man.devfs.rules.5; 以了解關於設定 devfs 檔案系統的進一步資訊。</para>
+
+      <warning>
+	<para>很容易設定出稽核事件反饋循環，也就是檢視事件的操作本身會產生更多的事件。
+	  例如，如果所有的網路 I/O 均被稽核，又在 SSH 會話中執行
+	  praudit，就會以很高的速率產生持續的稽核事件流，
+	  因為每顯示一個事件都會產生新的事件。 建議您在需要在稽核管道設備上執行
+	  praudit 時，選擇一個沒有進行精細
+	  I/O 稽核的會話來執行。</para>
+      </warning>
+    </sect2>
+
+    <sect2>
+      <title>稽核記帳檔案的輪轉</title>
+
+      <para>稽核計賬只由 kernel 寫入，且只能由
+	<command>auditd</command> 管理。 管理員不應嘗試使用 &man.newsyslog.conf.5;
+	或其它工具來完成稽核 log 的輪轉工作。 您可以使用 <command>audit</command>
+	管理工具來關閉稽核、重新設定稽核系統，並完成 log 輪轉。
+	下面的命令將讓稽核服務新增新的稽核 log，
+	並發信號給 kernel 要求其使用新的 log。 舊 log 將終止並被改名，
+	此時，管理員就可以操作它了。</para>
+
+      <screen>&prompt.root; <userinput>audit -n</userinput></screen>
+
+      <warning>
+	<para>如果 <command>auditd</command> 服務程式沒有在執行，
+	  則這個命令將失敗並給出錯誤提示。</para>
+      </warning>
+
+      <para>在 <filename>/etc/crontab</filename> 加入如下設置，
+	將使 &man.cron.8; 每十二小時將 log 輪轉一次。</para>
+
+      <programlisting>0     */12       *       *       *       root    /usr/sbin/audit -n</programlisting>
+
+      <para>這些修改會在您儲存 <filename>/etc/crontab</filename> 後生效。</para>
+
+      <para>對於稽核記帳檔案基於大小的自動翻轉，可以透過
+	&man.audit.control.5; 中的 <option>filesz</option> 選項來設定，
+	這個選項在這一章的設定檔一節中已經介紹過。</para>
+    </sect2>
+
+    <sect2>
+      <title>壓縮稽核記帳</title>
+
+      <para>由於稽核記帳檔案會變得很大，通常會希望在稽核服務關閉它時，
+	對其進行壓縮或歸檔。 <filename>audit_warn</filename>  script 可以用來在一系列與稽核有關的事件發生時，
+	執行一些使用者定義的操作，這也包括在稽核記帳翻轉時進行清理操作。 舉例而言，可以在
+	<filename>audit_warn</filename>  script 中加入下列內容來在稽核記帳關閉時壓縮它：</para>
+
+      <programlisting>#
+# Compress audit trail files on close.
+#
+if [ "$1" = closefile ]; then
+        gzip -9 $2
+fi</programlisting>
+
+      <para>其它存檔操作也包括將稽核記帳複製到一個中央的服務器，刪除舊的記帳檔案，
+	或濃縮稽核記帳並刪除不需要的記錄等。 這個 script 會在稽核記帳檔案正常關閉時執行一次，
+	因此在不正常關閉系統時，就不會執行它了。</para>
+    </sect2>
+  </sect1>
+</chapter>

@@ -1,0 +1,155 @@
+<!--
+     The FreeBSD Documentation Project
+
+     $FreeBSD: doc/zh/big5/handbook/kernelopts/chapter.sgml,v 1.3 2001/04/25 15:50:10 statue Exp $
+
+     Translate into Chinese by ycheng@sinica.edu.tw
+
+     English Version: 1.17
+-->
+
+<chapter id="kernelopts">
+  <title>增加一個新的 kernel 組態選項</title>
+  
+  <para><emphasis>Contributed by &a.joerg;</emphasis></para>
+  
+  <note>
+    <para>本章假設您已經熟悉在 <link
+        linkend="kernelconfig">kernel configuration</link>
+      的相關事物。</para>
+  </note>
+  
+  <sect1>
+    <title>什麼是 <emphasis>Kernel 選項</emphasis>？</title>
+    
+    <para>使用 kernel 選項 (options) 的方法在 <link
+      linkend="kernelconfig-options">kernel configuration</link>
+      部份已經說明。
+      本文也將說明 <quote>historic</quote> 以及
+      <quote>new-style</quote> 選項。
+      目標是希望能將 kernel 中的選項都轉換成新的格式，
+      才能在執行 &man.config.8; 以及 <command>make depend</command>之後，
+      自動地只編譯那些因修改過的選項或其他原因而造成異動的檔案。
+      而不會像以前每執行 &man.config.8; 就會把所有的檔案做不必要的刪除。
+      </para>
+
+    <para>基本上，kernel 選項只是 kernel 編譯過程需要的 C 前置定義
+      (preprocessor macro)。為了讓整個編譯過程合理，
+      在 kernel 程式碼 (或說是 <filename>.h</filename> 檔)
+      必須針對此項設計改寫，也就是說，預設的選項必須能被組態中的選項覆寫。
+      這項功能通常是這樣做：</para>
+
+	<programlisting>#ifndef THIS_OPTION
+#define THIS_OPTION (some_default_value)
+#endif /* THIS_OPTION */</programlisting>
+
+    <para>這樣的話，當管理者在它的組態檔中加入了另一個選項，
+      預設的選項就會被新的值所取代．也就因此，
+      新的值必須是一個有效的 C 程式碼中的敘述。</para>
+
+    <para>也可以有一些選項的設定方式是打開或關上某個功能。
+      下面的程式可以做到：</para>
+
+    <programlisting>#ifdef THAT_OPTION
+
+[your code here]
+
+#endif</programlisting>
+
+    <para>在組態檔中設定 <literal>THAT_OPTION</literal>
+      (有值或沒有值都可以) 會將程式中的某些功能打開。</para>
+
+    <para>熟悉 C 語言的人應該會發現每一個 <quote>config option</quote>
+      都會有其對應的 <literal>#ifdef</literal>。
+      我想應該不會有人在組態檔中加入</para>
+
+    <programlisting>options		notyet,notdef</programlisting>
+
+    <para>若是這樣的話，他們在改 kernel 程式時可能會常常有困擾。
+      <!-- smiley -->:-)</para>
+
+    <para>由此可見，對於 options 任意命名，
+      將使得要在 kernel 程式碼中找到相關得資訊變得困難。
+      這也是 <emphasis>新的</emphasis> option 法則的設計理念之一。
+      也就是每一個 option 就對應編譯目錄中的一個 <filename>.h</filename> 檔案。
+      這樣的話，Makefile 中的檔案相依的技術 (depend) 就可以派上用場。
+      <command>make</command> 也可以在 option 改變之後，
+      很容易的知道某個檔案需不需要重新編譯。</para>
+
+    <para>舊的選項機制仍然對於局部的設定或是短時間實驗性的設定有幫助：
+      加一個新的 <literal>#ifdef</literal>
+      到 kernel 程式碼中是比較容易, 這實已加了新的 kernel 選項了。
+      使用這樣的程式的人必需自己確認一切都是正確的
+      (或許要手動強迫系統從新編譯 kernel)。
+      在所有的選項都轉換到新的形態之後, &man.config.8;
+      在發現設定檔中有舊的設定時會提出警告，但仍會將該設定寫進
+      kernel 的 Makefile 裡。</para>
+  </sect1>
+  
+  <sect1>
+    <title>現在我應該怎麼做？</title>
+    
+    <para>首先，修改 <filename>sys/conf/options</filename> (或是
+      <filename>sys/<replaceable>&lt;arch&gt;</replaceable>/conf/options.<replaceable>&lt;arch&gt;</replaceable></filename>,
+      例如 <filename>sys/i386/conf/options.i386</filename>)，
+      並且選一個您認為您的新的組態最合適存放的
+      <filename>opt_<replaceable>foo</replaceable>.h</filename>。</para>
+
+    <para>如果已經有跟您所需要的選項功能相近的設定檔，就使用它吧！
+      例如一個更動跟 SCSI 驅動程式相關的選項，應該放在
+      <filename>opt_scsi.h</filename>檔案。
+      如果有一個選項是 <literal>FOO</literal>，
+      這通常表示對應的設定檔在 <filename>opt_foo.h</filename>。
+      This can be overridden on the
+      right-hand side of a rule by specifying another filename.</para>
+
+    <para>如果您想放選項的檔案
+      <filename>opt_<replaceable>foo</replaceable>.h</filename> 尚不存在，
+      那就建立一個新的吧！找一個比較有意義的名字，在
+      <filename>options[<replaceable>.&lt;arch&gt;</replaceable>]</filename>
+      檔案中寫下相對的註解。
+      &man.config.8; 下一次執行時會自動地找到這個改變。
+      大部份的選項都應該有對應的標頭檔 (header file)。</para>
+
+    <para>將太多的選項放在一個
+      <filename>opt_<replaceable>foo</replaceable>.h</filename>
+      檔案將會導致過多的 kernel
+      程式碼在其中一個選項被改變時就會被重新編譯。</para>
+
+    <para>最後，找到對應新的選項的 kernel 程式碼檔案。
+      除非您剛發明了新的選項，這個選項在其他的程式碼中都不還不存在，
+      您可以使用指令 <screen>
+&prompt.user; <userinput>find /usr/src/sys -type f | xargs fgrep NEW_OPTION</userinput>
+</screen> 
+      來找到他們。
+      修改這些檔案，在所有的 <literal>#include &lt;xxx.h&gt;</literal>
+      <emphasis>前面</emphasis>加入 <programlisting>
+        #include "opt_foo.h"</programlisting>，
+      由於預設的程式碼是
+      <programlisting> #ifndef NEW_OPTION #define NEW_OPTION (something)
+        #endif</programlisting>，您的設定可能會被預設值覆寫掉，
+      所以順序是很重要的。</para>
+
+    <para>增加一個選項把系統預設的標頭檔中的設定覆寫
+      (也就是說，那些設定在
+      <filename>/usr/include/sys/</filename> 目錄下的檔案中)
+      幾乎可以說就是個錯誤。
+      <filename>opt_<replaceable>foo</replaceable>.h</filename>
+      也不能在那些檔案中被引入(include)，因為這樣會更嚴重的破壞標頭檔。
+      but if it is not included, then places that include it may
+      get an inconsistent value for the option.
+      是的，已經有別的人是這樣做，但那並沒有使得一切變得更正確。</para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

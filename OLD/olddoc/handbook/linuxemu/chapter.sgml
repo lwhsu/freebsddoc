@@ -1,0 +1,1000 @@
+<!--
+     The FreeBSD Documentation Project
+     Translate into Chinese by ycheng@sinica.edu.tw
+     $Id: chapter.sgml,v 1.4 2003/01/29 06:47:55 statue Exp $
+     English Version: 1.25
+-->
+
+<chapter id="linuxemu">
+  <title>Linux 執行模式</title>
+
+  <para><emphasis>原文由 a.handy; 以及 &a.rich; 纂寫</emphasis></para>
+
+  <sect1>
+    <title>如何安裝 Linux 執行模式</title>
+
+    <para>FreeBSD 下的 Linux 可執行檔相容模式已經可以執行相當多的
+        a.out 格式或是
+	ELF 格式的 Linux 可執行檔。在 2.1-STABLE 分支的 Linux
+	執行模式可以執行
+	Linux 的 DOOM 和 Mathematica；在 &rel.current;-RELEASE 的版本
+	的功能更加完整，已經可以執行如
+	Oracle8, WordPerfect, StarOffice, Acrobat,
+	Quake, Abuse, IDL 和 netrek for Linux 
+	以及許許多多的 Linux 可執行檔。
+        </para>
+
+    <para>
+      但 Linux 模擬器並不支援那些專為 Linux 環境撰寫的程式。
+      其中一例是那些過度使用 Linux 的 <filename>/proc</filename>
+      目錄下檔案格式的程式。這是因為 FreeBSD 跟 Linux 在該目錄下
+      的檔案並非使用相同的格式；或是那些使用專屬於 i386 架構
+      的呼叫，如起始虛擬 86 的 CPU 模式等。</para>
+
+    <para>依照你的 FreeBSD 的版本，載入 Linux
+      執行模式的方法稍有不同。</para>
+
+    <sect2>
+      <title>在 3.0-RELEASE 以及之後的版本中安裝 Linux 執行模式</title>
+
+      <para>你並不需要在 kernel 設定檔中加入
+	<literal>options LINUX</literal> 或是
+	<literal>options COMPAT_LINUX</literal>。
+	Linux 執行模式是藉者 KLD 物件
+	(&ldquo;Kernel LoaDable object&rdquo;)
+	來達成，
+	(&ldquo;Loadable Kernel Module&ldquo;)，
+	你可以在你需要時載入而不需要重新開機。
+	你需要修改系統起始檔：</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>在 <filename>/etc/rc.conf</filename>，你需要加入：</para>
+
+          <programlisting>
+linux_enable=YES</programlisting>
+	</listitem>
+
+	<listitem>
+	  <para>這一行設定會使得在 <filename>/etc/rc.i386</filename>
+            中的下面這些程式碼起作用：</para>
+
+	  <programlisting>
+# Start the Linux binary compatibility if requested.
+if [ "X${linux_enable}" = X"YES" ]; then echo -n '
+        linux';               linux &gt; /dev/null 2&gt;&amp;1
+fi</programlisting>
+	</listitem>
+      </orderedlist>
+
+      <para>如果你要確定 KLD 是否正常載入，你可以使用命令 
+	<command>kldstat</command>：</para>
+
+      <screen>&prompt.user; kldstat
+Id Refs Address    Size     Name
+ 1    2 0xc0100000 16bdb8   kernel
+ 7    1 0xc24db000 d000     linux.ko</screen>
+
+      <para>如果你不想或是就是無法將載入 Linux KLD
+        載入，你就需要在 kernel 中靜態鏈結進 Linux 執行模式的程式。
+        你必須將：
+
+	<programlisting>
+options  LINUX</programlisting>
+
+	這一行加進你的 kernel 組態檔，然後依照
+        <link linkend="kernelconfig">kernel
+	  configuration</link>的說明編譯安裝新的 kernel。</para>
+    </sect2>
+
+    <sect2>
+      <title>在 2.2.2-RELEASE 及後來版本 2.2 系列中安裝 Linux 執行模式</title>
+
+      <para>不再需要設定 <literal>options LINUX</literal> 或是
+	<literal>options COMPAT LINUX</literal>。
+	Linux 執行模式是利用 LKM 來達成
+	(&ldquo;Loadable Kernel Module&ldquo;)，
+	你可以在你需要時載入而不需要重新開機。
+	你需要修改系統起始檔：</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>在設定檔 <filename>/etc/rc.conf</filename>，你需要下列的設定：
+	     </para>
+	  <programlisting>
+linux_enable=YES</programlisting>
+	</listitem>
+
+	<listitem>
+	  <para>上述設定會使得在開機執行的檔案
+	    <filename>/etc/rc.i386</filename>：</para>
+
+	  <programlisting>
+# Start the Linux binary emulation if requested.
+if [ "X${linux_enable}" = X"YES" ]; then echo -n '
+        linux';               linux &gt; /dev/null 2&gt;&amp;1
+fi</programlisting>
+	</listitem>
+      </orderedlist>
+
+      <para>如果你要確定 LKM 是否正常工作，你可以使用命令 i
+	<command>modstat</command>：</para>
+
+      <screen>&prompt.user; modstat
+Type     Id Off Loadaddr Size Info     Rev Module Name
+EXEC      0   4 f09e6000 001c f09ec010   1 linux_mod</screen>
+
+      <para>也曾有人回報在 2.2-RELEASE 或是之後的某些版本中，
+        這個命令並不能正常的執行。如果你就是不能將 Linux LKM
+        載入，你就需要在 kernel 中靜態鏈結進 Linux 模式的程式。
+        你必須將：
+
+	<programlisting>
+options  LINUX</programlisting>
+
+	這一行加進你的 kernel 組態檔，然後依照
+        <link linkend="kernelconfig">kernel
+	  configuration</link>的說明編譯安裝新的 kernel。</para>
+    </sect2>
+
+    <sect2>
+      <title>在 2.1-STABLE 安裝 Linux 執行模式</title>
+
+      <para>在 2.1-STABLE 中的 <filename>GENERIC</filename>
+	組態並沒有加入 Linux 執行模式的設定，你必許自己修該 kernel 組態。
+	有兩個方法：1. 將該模式靜態地編譯在 kernel 中。 2. 動態的載入
+	Linux 的 kernel 模組 (loadable kernel module, LKM)。</para>
+
+      <para>要起始 Linux 執行模式，將下面這一行設定加到你的 kernel 組態檔
+	(參閱 <filename>/sys/i386/conf/LINT</filename>)：</para>
+
+      <programlisting>
+options COMPAT_LINUX</programlisting>
+
+      <para>如果你希望執行需要共享記憶體 (shared memory)的軟體如
+	DOOM，你還需要加入：</para>
+
+      <programlisting>
+options SYSVSHM</programlisting>
+
+      <para>Linux 模模擬器需要 4.3BSD 相容的系統呼叫。
+	所以你的 kenel 設定檔中要包含：</para>
+
+      <programlisting>
+options "COMPAT_43"</programlisting>
+
+      <para>如果你偏好將執行模式靜態編譯進 kernel 而非使用 LKM，
+	請加入：</para>
+
+      <programlisting>
+options  LINUX</programlisting>
+
+      <para>接著依照<link linkend="kernelconfig">kernel configuration</link>
+	的說明執行 <command>config</command> 指令等來安裝新的 kernel。</para>
+
+      <para>如果你決定使用 LKM，你就需要將該 kernel 模組載入。
+	請注意 kernel 模組如果跟 kernel 版本不同，可能會造成系統當機。
+	建議當你安裝新版的 kernel 時，也同時從新安裝 kernel 模組。</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/src/lkm/linux</userinput>
+&prompt.root; <userinput>make all install</userinput></screen>
+
+      <para>裝好 kernel 和 LKM 後，以 root 執行 <command>linux</command> 來載入
+	Linux 執行模式的 kernel 模組：</para>
+
+      <screen>&prompt.root; <userinput>linux</userinput>
+Linux emulator installed
+Module loaded as ID 0</screen>
+
+      <para>執行命令 <command>modstat</command>
+	 可知到系統已載入了那些 kernel 模組。</para>
+
+      <screen>&prompt.user; modstat
+Type     Id Off Loadaddr Size Info     Rev
+Module Name EXEC      0   3 f0baf000 0018 f0bb4000   1 linux_emulator</screen>
+
+      <para>你可以讓系統在開機時自動載入 kernel 模組。
+	在 FreeBSD 2.2.1-RELEASE 以及 2.1-STABLE 版本中，
+	只須修改 <filename>/etc/sysconfig</filename> 中：
+
+	<programlisting>
+linux=YES</programlisting>
+
+	這一行，將 <literal>NO</literal> 改為 <literal>NO</literal>
+	即可。FreeBSD 2.1 RELEASE
+	以及更早的版本中，該檔案並不包含上面這一行，
+	你則必須修改 <filename>/etc/rc.local</filename>
+	並加入下面這一行：</para>
+
+      <programlisting>
+linux</programlisting>
+    </sect2>
+
+    <sect2>
+      <title>安裝 Linux 執行時期程式庫</title>
+
+      <sect3>
+        <title>以 linux_base port 安裝 Linux 執行時期程式庫</title>
+
+	<para>許多的 Linux 程式都使用共享程式庫，
+	  你必須安裝這些程式庫你才能執行 Linux 程式。
+	  你可以手動安裝這些程式庫，
+          你也可以很輕鬆的使用包裝好的 linux_base port 即可；</para>
+
+	<screen>&prompt.root; <userinput>cd /usr/ports/emulators/linux_base</userinput>
+&prompt.root; <userinput>make all install</userinput></screen>
+
+	<para>這樣你就有一個可以使用的 linux 相容模式。
+          傳說 (以及許多通信論壇中的看法 <!-- smiley -->:-) 認為
+	  Linux 執行模式可以很順利的執行使用 ZMAGIC 程式庫
+          的 Linux 程式；而使用 QMAGIC 程式庫的 (如 Slackware V2.0)
+          就常常會有問題。也會有些程式會抱怨系統程式庫的次版本不適用，
+          不過這通常不是問題。</para>
+      </sect3>
+
+      <sect3>
+        <title>手動安裝程式庫</title>
+
+	<para>如果你並沒有安裝 &ldquo;ports&rdquo;
+	  , 也就是在 /usr/port 下的那些檔案，
+	  你可以手動安裝程式庫。
+	  你需要程式所需要用的 Linux 程式庫以及執行時期的連結器。
+	  你也必須建立一個給 linux 用的根目錄
+	  <filename>/compat/linux</filename>
+	  來安裝 FreeBSD 系統下的 Linux 模擬器的程式庫。
+	  在 FreeBSD 下執行的 Linux 程式將會先到該目錄去找程式庫。
+	  例如一個 Linux 程式需要，
+	  FreeBSD 會先試著去找
+	  <filename>/compat/linux/lib/libc.so</filename>
+	  ，如果找不到的話再去找 /lib/libc.so。
+          程式庫應該安裝在
+          <filename>/compat/linux/lib</filename>
+          目錄下而非 Linux 中的<command>ld.so</command>所
+          回報的目錄。</para>
+
+        <para>FreeBSD-2.2-RELEASE 和以後的版本的工作方式又稍稍不同，
+	  在包括程式庫，以及其它所有檔案都是從假的 Linux 根目錄
+	  <filename>/compat/linux</filename>找起。</para>
+
+	<para>一般來說，在你安裝最初幾個 Linux
+	 程式時你會遇到找不到共用的程式庫的問題。
+	 到後來等你安裝了夠多的程式庫，你就不用再擔心這個問題了。</para>
+      </sect3>
+
+      <sect3>
+        <title>如何手動安裝程式庫</title>
+
+	<para>安裝了 <filename>linux_base</filename> port
+	  還找不到程式庫怎麼辦？
+	  我怎麼知道要安裝哪個檔案，
+	  去那找這些檔案呢？有兩個方法
+	  (當然都需要 FreeBSD 上的 root 的權限來安裝這些程式庫)</para>
+
+	<para>如果你手邊有 Linux 系統，你可以在 Linux 上查看該程式需要的
+	  程式庫，然後將之安裝到 FreeBSD 上去。以 Linux 上的 DOOM 為例，
+          先將 DOOM 安裝在 Linux 系統上，然後執行
+          <command>ldd linuxxdoom</command>
+	  來查看該程式需要的程式庫：</para>
+
+	<screen>&prompt.user; <userinput>ldd linuxxdoom</userinput>
+libXt.so.3 (DLL Jump 3.1) =&gt; /usr/X11/lib/libXt.so.3.1.0
+libX11.so.3 (DLL Jump 3.1) =&gt; /usr/X11/lib/libX11.so.3.1.0
+libc.so.4 (DLL Jump 4.5pl26) =&gt; /lib/libc.so.4.6.29</screen>
+
+	<para>你需要上面最後一欄的所有檔案，並安裝在
+          <filename>/compat/linux </filename> 下，還要將
+          第一欄的 symbolic link 建起來並指向相對的檔案。
+          也就是說，當你完成之後，在你的 FreeBSD 下會有：</para>
+
+	<screen>/compat/linux/usr/X11/lib/libXt.so.3.1.0
+/compat/linux/usr/X11/lib/libXt.so.3 -&gt; libXt.so.3.1.0
+/compat/linux/usr/X11/lib/libX11.so.3.1.0
+/compat/linux/usr/X11/lib/libX11.so.3 -&gt; libX11.so.3.1.0
+/compat/linux/lib/libc.so.4.6.29 /compat/linux/lib/libc.so.4 -&gt; libc.so.4.6.29</screen>
+
+	<note>
+	  <para>如果你已經了安裝了
+            <command>ldd</command>
+            所查到主要版本相同的程式庫
+            (檔名中數字中的第一個)，你就不用再安裝將第二欄中的檔案，
+            你系統上那一個應該可以用。
+            不果我們通常建議你安裝次版本比較新的程式庫，再你把 symbolic link
+            指到新版的程式庫之後，你就可以把就版的檔案刪除。
+            例如你系統上有：</para>
+
+	  <screen>/compat/linux/lib/libc.so.4.6.27
+/compat/linux/lib/libc.so.4 -&gt; libc.so.4.6.27</screen>
+
+	  <para>你發現有一個程式在
+	    <command>ldd</command>
+            的輸出中指出它需要更新版本的程式庫：</para>
+
+	  <screen>libc.so.4 (DLL Jump 4.5pl26) -&gt; libc.so.4.6.29</screen>
+
+	  <para>如果你裝的程式庫只比所需要的版本在最後一組數字上舊一兩個版本，
+            通常你就不需要安裝新版，因為舊版通常還能用。
+            當然，你還是可以更新 <filename>libc.so</filename>。
+            更新之後系統變成：</para>
+
+	  <screen>/compat/linux/lib/libc.so.4.6.29
+/compat/linux/lib/libc.so.4 -&gt; libc.so.4.6.29</screen>
+	</note>
+
+	<note>
+	  <para>請注意 <emphasis>只有</emphasis> Linux 才需要 symblolic link
+          機制。FreeBSD
+          執行時期的程式庫連結器會自動尋找主要版本編號相同的檔案，
+          完全不需要你費心。</para>
+	</note>
+      </sect3>
+
+      <sect3>
+	<title>設定 <filename>ld.so</filename> &mdash;
+          在 FreeBSD 2.2-RELEASE 以及之後的版本</title>
+
+	<para>這一部份只對 FreeBSD 2.2-RELEASE 及以後的版本來說有效。
+          使用 2.1-STABLE 的請略過此部份。</para>
+
+	<para>最後，如果你使用 FreeBSD 2.2-RELEASE，
+          你必須確定你已安裝好 Linux 執行時期程式庫連結器以及其組態檔。
+          你需要將這些檔案從 Linux 系統安裝到 FreeBSD 的對應處
+          (<filename>/compat/linux</filename> 目錄下)</para>
+
+	<screen>/compat/linux/lib/ld.so
+/compat/linux/etc/ld.so.config</screen>
+
+	<para>如果你手邊沒有 Linux 系統，你應該要到 ftp 站去找到這些檔案。
+          下面有你可以找到這些檔案的資訊。從這裡開始，
+          我們會假設你知道如何去找到這些檔案。</para>
+
+	<para>抓回下面這些檔案
+          (請從同一個 ftp 站抓下來以免遇到版本不一致的問題)。
+          並將之安裝在
+	  <filename>/compat/linux</filename> (也就是說，
+	  <filename>/foo/bar</filename> 就安裝在
+	  <filename>/compat/linux/foo/bar</filename>):</para>
+
+	<screen>/sbin/ldconfig
+/usr/bin/ldd
+/lib/libc.so.x.y.z
+/lib/ld.so</screen>
+
+	<para><command>ldconfig</command> 和 <command>ldd</command>
+          並不需要安裝在 <filename>/compat/linux</filename>下；
+          你可以將他們安裝在系統的其他地方。
+          不過要確定不要讓他們跟 FreeBSD
+          對應的檔案混在一起。通常我們建議將這兩個檔案安裝在
+	   <filename>/usr/local/bin</filename> 下的
+	  <command>ldconfig-linux</command> 以及
+	  <command>ldd-linux</command>。</para>
+
+	<para>建立一個檔案
+	  <filename>/compat/linux/etc/ld.so.conf</filename>，包含了
+          Linux 執行時期程式庫連結器搜尋程式庫的目錄。
+          這個檔案是個純文字檔，每一行包含一個目錄。
+	  <filename>/lib</filename> 和 <filename>/usr/lib</filename>
+          是標準的，通常你需要再加入：</para>
+
+	<programlisting>
+/usr/X11/lib
+/usr/local/lib</programlisting>
+
+	<para>當 Linux 程式開啟一個檔案如
+	  <filename>/lib/libc.so</filename> ，Linux 支援 ABI
+	  將該檔名對應到
+	  <filename>/compat/linux/lib/libc.so</filename>。
+          所有的 Linux 程式應該要裝在
+          <filename>/compat/linux</filename> (也就是指
+	  <filename>/compat/linux/lib/libc.so</filename>,
+	  <filename>/compat/linux/usr/X11/lib/libX11.so</filename>, 等等。)
+          這樣 Linux ABI 才能正確的找到。</para>
+
+	<para>使用 FreeBSD 2.2-RELEASE 需要執行 Linux 程式 
+	  <command>ldconfig</command></para>
+
+	<screen>&prompt.root <userinput>cd /compat/linux/lib</userinput>
+&prompt.root; <userinput>/compat/linux/sbin/ldconfig</userinput></screen>
+
+	<para><command>ldconfig</command> 是靜態連結的程式，
+          並不需要任何動態程式庫。它會產生
+	  <filename>/compat/linux/etc/ld.so.cache</filename>
+          這個檔案，包含了所有共享程式庫的檔名。
+          當你安裝了新的共享程式庫之後，你需要重新執行這個程式。</para>
+
+	<para>在 2.1-STABLE 請勿安裝
+	  <filename>/compat/linux/etc/ld.so.cache</filename> 或是執行
+	  <command>ldconfig</command>；在 2.1-STALE 中系統呼叫的寫法稍有不同，
+          <command>ldconfig</command> 並不需要也不會被使用到。</para>
+
+	<para>你現在的設定應該可以執行只需要 libc 共享程式庫的程式。
+          你可以試著執行 Linux 的 <command>ldd</command> 在它自己身上。
+          假設將它安裝為 <command>ldd-linux</command> 其輸出約略如下：
+	  </para>
+
+	<screen>&prompt.root; <userinput>ldd-linux `which ldd-linux`</userinput>
+libc.so.4 (DLL Jump 4.5pl26) =&gt; /lib/libc.so.4.6.29</screen>
+
+	<para>如果是這樣的的話，你就可以開始安裝新的 Linux 程式了。
+          當你安裝新的 Linux  程式，你應該檢查它是否需要新的程式庫，
+          如果是的話，
+          你就把它裝在 <filename>/compat/linux</filename> 下。
+          然後執行 Linux 的 <command>ldd</command> 在新的程式，
+          看看輸出為何。<command>ldd</command>
+          (請看 &man.ldd.1; 的 man page) 將以
+          [主名稱 => 全名稱] 的格式印出程式需要的程式庫名稱。
+	  <literal><replaceable>majorname</replaceable>
+	    (<replaceable>jumpversion</replaceable>) =&gt;
+	    <replaceable>fullname</replaceable></literal>.</para>
+
+	<para>如果它印出 <literal>not found</literal> (找不到) 而不是
+          <replaceable>fullname</replaceable>，
+          那意味者你需要再安裝新的程式庫。
+          所需要的程式庫在主名稱中會顯示出來，
+          通常以
+	  <literal>lib<replaceable>XXXX</replaceable>.so.<replaceable>N</replaceable></literal>
+          的格式顯示。你將需要去 Linux ftp 站找到檔名為 
+	  <filename>lib<replaceable>XXXX</replaceable>.so.N.mm</filename>，
+	  然後將之安裝在你的系統。
+	  <replaceable>XXXX</replaceable> (名稱) and
+	  <replaceable>N</replaceable> (主要版本編號) 應該要一樣；
+	  次版本名稱 <replaceable>mm</replaceable> 就不是那麼重要，
+          當然我們通常建議你找比較新的版本。</para>
+      </sect3>
+    </sect2>
+
+    <sect2>
+      <title>安裝 Linux ELF 程式</title>
+
+      <para>ELF 格式的程式需要額外的&rdquo;標示&rdquo;。
+        如果你要執行一個沒有標示的 ELF 程式，你將會得到如下的訊息：
+        </para>
+
+      <screen>&prompt.user; <userinput>./my-linux-elf-binary</userinput>
+ELF binary type not known
+Abort</screen>
+
+      <para>為了讓 FreeBSD 系統分辨是否是一個 ELF 的程式，請用工具SD ELF
+	&man.brandelf.1;</para>
+
+      <screen>&prompt.user; <userinput>brandelf -t Linux my-linux-elf-binary</userinput></screen>
+
+      <para>GNU 的工用程式在未來會自動處理這個問題，
+        你以後遇到這個問題的機會會越來越少。</para>
+    </sect2>
+
+    <sect2>
+      <title>設定 DNS 解析器</title>
+
+      <para>如果 DNS 不能正常工作或是你得到下列訊息：
+
+	<screen>resolv+: "bind" is an invalid keyword resolv+:
+"hosts" is an invalid keyword</screen>
+
+        你就需要設定
+	<filename>/compat/linux/etc/host.conf</filename> 這個檔案，
+        此檔案包含：
+
+	<programlisting>
+order hosts, bind
+multi on</programlisting>
+
+	order 這一行設定是
+	<filename>/etc/hosts</filename> 先被搜尋或是 DNS 先被搜尋。
+	如果
+	<filename>/compat/linux/etc/host.conf</filename> 並沒有安裝，
+        Linux 程式會讀到 FreeBSD 的
+	<filename>/etc/host.conf</filename>，且由於 FreeBSD 和 Linux 在這
+	個檔案的設定語法不同，而抱怨語法不合。
+	如果你在 <filename>/etc/resolv.conf</filename>
+        中沒有設定 DNS 的話，就移去
+	<literal>bind</literal>。</para>
+
+      <para>最後, 如果你使用的是 2.1-STABLE，你須要設定環境變數
+	<envar>RESOLV_HOST_CONF</envar> ，
+	這樣 Linux 模擬器才能知道去那裡找到 DNS。
+	如果你使用 FreeBSD 2.2-RELEASE 或是後來的板本，
+	你可以不用做此設定。
+	如果你使用 <filename>/bin/csh</filename> 請輸入：</para>
+
+      <screen>&prompt.user; <userinput>setenv RESOLV_HOST_CONF /compat/linux/etc/host.conf</userinput></screen>
+
+      <para>如果你使用 <filename>/bin/sh</filename> ，請輸入：</para>
+
+      <screen>&prompt.user; <userinput>RESOLV_HOST_CONF=/compat/linux/etc/host.conf; export RESOLV_HOST_CONF</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>找到所需要的程式庫</title>
+
+      <note>
+	<para>注意，下面的資訊在本文寫作時是正確的，
+	  但一些如 ftp 
+	  站的名稱或是檔案放置的目錄或是發行版本名稱等，
+	  在你閱讀本文時可能已經改變了。</para>
+      </note>
+
+      <para>有許多團體發行他們自己的 Linux 版本。每個發行版本都有名字如
+	&ldquo;Slackware&rdquo; 或是 &ldquo;Yggdrasil&rdquo;。
+	你可以在各大 FTP 站找到他們。
+	有些檔案沒有被包裝，你可以一個個將他們下載。
+	但大部份都以各自的方式包裝，
+	通常是將整個檔案同目錄 TAR 起來，再以 gzip 壓縮。
+	這些發行版本主要的站在：</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>sunsite.unc.edu:/pub/Linux/distributions</para>
+	</listitem>
+
+	<listitem>
+	  <para>tsx-11.mit.edu:/pub/linux/distributions</para>
+	</listitem>
+      </orderedlist>
+
+      <para>一些在歐洲的 mirror 站：</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>ftp.luth.se:/pub/linux/distributions</para>
+	</listitem>
+
+	<listitem>
+	  <para>ftp.demon.co.uk:/pub/unix/linux</para>
+	</listitem>
+
+	<listitem>
+	  <para>src.doc.ic.ac.uk:/packages/linux/distributions</para>
+	</listitem>
+      </orderedlist>
+
+      <para>為簡單起見，我們在此只談 Slackware 這個版本。
+	這個發行版本包函了許多子目錄，
+	其下有單獨的檔案包裝。這些些檔案包裝通常是讓自動安裝程式讀的，
+	不過你也可以 &ldquo; 手動 &rdquo; 取得其中的檔案。
+	首先，你先要看看各目錄的內容。你可以察看各目錄下的
+	檔案 <filename>contents</filename>，
+	其內容是敘述各個檔案包裝內容的文件檔。
+	最快的方法是，把位於各子目錄中的敘述文件檔都取回，
+	然後用 <command>grep</command> 程式找到你要的檔案。
+	這裡有一個或許是你須要的檔案的例子：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead>
+	    <row>
+	      <entry>Library</entry>
+	      <entry>Package</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry><filename>ld.so</filename></entry>
+	      <entry>ldso</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>ldconfig</filename></entry>
+	      <entry>ldso</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>ldd</filename></entry>
+	      <entry>ldso</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>libc.so.4</filename></entry>
+	      <entry>shlibs</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>libX11.so.6.0</filename></entry>
+	      <entry>xf_lib</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>libXt.so.6.0</filename></entry>
+	      <entry>xf_lib</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>libX11.so.3</filename></entry>
+	      <entry>oldlibs</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>libXt.so.3</filename></entry>
+	      <entry>oldlibs</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>在個例子中，你需共需要檔案包裝 ldso, shlibs, xf_lib
+	和 oldlibs。在這些資料中，請找到一行寫有
+	<literal>PACKAGE LOCATION</literal>，它會告訴你在那片
+	&ldquo;磁片&rdquo; 你可以找到該程式包裝，在我們舉的例子中，
+	它告訴我們你可以在哪個目錄下找到它。
+	在這個例子中，我們找到：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <thead
+	    <row>
+	      <entry>Package</entry>
+	      <entry>Location</entry>
+	    </row>
+	  </thead>
+
+	  <tbody>
+	    <row>
+	      <entry>ldso</entry>
+	      <entry>diska2</entry>
+	    </row>
+
+	    <row>
+	      <entry>shlibs</entry>
+	      <entry>diska2</entry>
+	    </row>
+
+	    <row>
+	      <entry>oldlibs</entry>
+	      <entry>diskx6</entry>
+	    </row>
+
+	    <row>
+	      <entry>xf_lib</entry>
+	      <entry>diskx9</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>在 Locations 這一欄中的
+	&ldquo;disk<replaceable>XX</replaceable>&rdquo; 也就是相對於
+	<filename>slakware/<replaceable>XX</replaceable></filename>
+	這個目錄。
+	另外有些可以在 <filename>contrib</filename> 這個子目錄中找到。
+	在這個例子中，我們將抓回下列檔案
+	(相對於 Slackwzre 這個發行版本的根目錄來說)：</para>
+
+      <itemizedlist>
+	<listitem>
+	  <para><filename>slakware/a2/ldso.tgz</filename></para>
+	</listitem>
+
+	<listitem>
+	  <para><filename>slakware/a2/shlibs.tgz</filename></para>
+	</listitem>
+
+	<listitem>
+	  <para><filename>slakware/x6/oldlibs.tgz</filename></para>
+	</listitem>
+
+	<listitem>
+	  <para><filename>slakware/x9/xf_lib.tgz</filename></para>
+	</listitem>
+      </itemizedlist>
+
+      <para>將這些檔案在你的
+	<filename>/compat/linux</filename> 這個目錄下解開，
+	(當然你可以不用安裝某些你並不需要的檔案) 這樣就大公告成了。</para>
+
+      <para><emphasis>請參考：</emphasis>
+	<filename>ftp://ftp.FreeBSD.org:pub/FreeBSD/2.0.5-RELEASE/xperimnt/linux-emu/README</filename> and <filename>/usr/src/sys/i386/ibcs2/README.iBCS2</filename></para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="mathematica">
+    <title>如何在 FreeBSD 下安裝 Mathematica</title>
+
+    <para><emphasis>原文由 &a.rich 以及 a.chuck;纂寫</emphasis></para>
+
+    <para>這份文件將說明如何在 FreeBSD 2.1 下安裝 Linux 版的 Mathematica 2.2.
+      </para>
+
+    <para>Mathematica 並沒有出版 FreeBSD 版本。
+      你必須先安裝 Linux 模擬器，才能在 FreeBSD 上跑 Mathematica。</para>
+
+    <para>對那些已經有教育版的 Mathematica for DOS, 在本文寫作 (1996年三月)
+      時，你須要花費 &#36;45.00 來升級到 Linux 版本。
+      你可以直接以 credit card 跟 Wolfram 訂購 (217) 398-6500 </para>
+
+    <sect2>
+      <title>解開 Mathematica 包裝</title>
+
+      <para>Mathematica 的程式是由 Wolfram 以 CDROM 的方式發行。
+	CDROM 上面約有十幾個 tar 格式的檔案，每一個都是包含它所
+	支援的平台所需要的執行檔。給 Linux 用的檔名是
+	<filename>LINUX.TAR</filename>。
+	下面的指令可以將這個檔案解開到
+	<filename>/usr/local/Mathematica</filename>
+	這個目錄下
+	(當然你也可以在別的目錄將它解開)：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/local</userinput>
+&prompt.root; <userinput>mkdir Mathematica</userinput>
+&prompt.root; <userinput>cd Mathematica</userinput>
+&prompt.root; <userinput>tar -xvf /cdrom/LINUX.TAR</userinput></screen>
+    </sect2>
+
+    <sect2>
+      <title>取得你得 Mathematica 的密碼</title>
+
+      <para>在你安裝 Mathematica 之前你須要先取得一個對應到你的 
+	&ldquo;機器編號 (machine ID)&rdquo; 的密碼。</para>
+
+      <para>假設你已經安裝好了 Linux 執行時需要的程式庫，且已將
+	Mathematica 解開在硬碟裡，你可以在它的目錄下執行
+	<command>mathinfo</command> 來取得你的
+	&ldquo; 機器編號 (machine ID) &rdquo; 。</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/local/Mathematica/Install</userinput>
+&prompt.root; <userinput>mathinfo</userinput>
+LINUX: 'ioctl' fd=5, typ=0x89(), num=0x27 not implemented
+richc.isdn.bcm.tmc.edu   9845-03452-90255</screen>
+
+      <para>在此例中，<hostid>richc</hostid> 這台機器的編號是
+	<literal>9845-03452-90255</literal>。
+	你可以忽略 ioctl 那一行訊息，這是因為模擬器並沒有模擬這個功能。
+	但這並不會影響到 Mathematica 的執行，雖然你在
+	Mathematica 執行的時候會看到它好幾次，你仍可不去理會它。</para>
+
+      <para>當你用電話，傳真或是 email 向 Wolfram 註冊，你就告訴他們你的
+	&ldquo; 機器編號 &rdquo; ，他們會給你一組包含一組數字的密碼。
+	你需要將這組數字連同機器名稱以及產品編號 (license number)一起
+	寫進你的 <filename>mathpass</filename> 檔案中。</para>
+
+      <para>你可以這樣做：</para>
+
+      <screen>&prompt.root; <userinput>cd /usr/local/Mathematica/Install</userinput>
+&prompt.root; <userinput>math.install</userinput></screen>
+
+      <para>它會要你輸入你的產品編號和 Wolfram 給你的密碼。
+	如果你不小心沒有輸入正確，使得 <command>math.install</command>
+	執行失敗，沒關係；
+	你可以手動修改該目錄下的 <filename>mathpass</filename> 這個檔案即可。
+	</para>
+
+      <para>在改好了 passwd 這個檔案後，<command>math.install</command>
+	會問你是否要裝預設的組態，或是你要用你自己的。
+	如果你跟我們一樣不相信自動安裝的程式，
+	你或許想要自己輸入要安裝的目錄。注意，雖然 <command>math.install</command>
+	程式會要你指定要安裝的目錄，
+	但它並不會自動幫你建立該目錄。
+	所以你應該要開另一個視窗在你真正開始安裝之前建立該目錄。
+	如果你不先把目錄開好，該程式會失敗。
+	請從新執行 <command>math.install</command> 。
+	所需開的目錄大致如下：</para>
+
+      <informaltable frame="none">
+	<tgroup cols="2">
+	  <tbody>
+	    <row>
+	      <entry><filename>/usr/local/Mathematica/bin</filename></entry>
+	      <entry>for binaries</entry>
+	    </row>
+
+	    <row>
+	      <entry><filename>/usr/local/Mathematica/man/man1</filename></entry>
+	      <entry>for man pages</entry>
+	    </row>
+
+	    <row>
+	      <entry>/usr/local/Mathematica/lib/X11</entry>
+	      <entry>for the <filename>XKeysymb</filename> file</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+
+      <para>建議指定 <filename>/tmp/math.record</filename> 為系統紀錄檔，
+	這樣 mathematica 會將執行的紀錄記在此檔案。
+	在此之後，<command>math.install</command>
+	會將所有的檔案解開並安裝在適當的地方。</para>
+
+      <para>Mathematica 有一個 Notebook 做為 X-window 下的前端程式。
+	你必須另外安裝它。要安裝此前端程式，你要先進入目錄
+	<filename>/usr/local/Mathematica/FrontEnd</filename>
+	然後執行 <command>/xfe.install</command> 這個 script。
+	它會問你要把程式放在那裡，此處你就不用再建立空的目錄，
+	因為它將會使用前面 <command>math.install</command>
+	所使用的目錄來安裝程式。
+	當此程式結束時，在
+	<filename>/usr/local/Mathematica/bin</filename>
+	下應該有一個可執行的 script 名為
+	<filename>mathematica</filename>。</para>
+
+      <para>最後，你需要更改每個 Mathematica 所安裝的 shell scripts。
+	在 <filename>/usr/local/Mathematica/bin</filename>
+	下的 shell script 的最前面，加入：</para>
+
+      <screen>&prompt.user; <userinput>XKEYSYMDB=/usr/local/Mathematica/lib/X11/XKeysymDB; export XKEYSYMDB</userinput></screen>
+
+      <para>此行設定會讓 Mathematica 去找到它自己的
+	<filename>XKeysymDB</filename>。少了這行設定，
+	你會在執行時看到好幾頁關於找不到鍵盤對照表的錯誤訊息。</para>
+
+      <para>在 2.1-STABLE 版本中，你也需要加入下面這一行：</para>
+
+      <screen>&prompt.user; <userinput>RESOLV_HOST_CONF=/compat/linux/etc/host.conf; export RESOLV_HOST_CONF</userinput></screen>
+
+      <para>這會讓 Mathematica 去讀 Linux 版的 <filename>host.conf</filename>。
+	FreeBSD 這個檔案的格式跟Linux 的不同，
+	所以如果你不做這項設定，你會得到關於 <filename>/etc/host.conf</filename>
+	的錯誤訊息。</para>
+
+      <para>你或許也想修改你自己的
+	<filename>/etc/manpath.config</filename> 來指定新的 man page 目錄。
+	同時你也許想要修該 <filename>~/.cshrc</filename> 來將
+	<filename>/usr/local/Mathematica/bin</filename>
+	加入你的 path。</para>
+
+      <para>這就是全部的說明。做了這些你應該可以輸入
+	<command>mathematica</command> 然後正確處理你的數學問題了。
+	Mathematica 已經包含有 Motif 的使用者介面，而且是靜態連結，
+	所以你自己並不需要 Motif 程式庫。祝你好運！</para>
+    </sect2>
+
+    <sect2>
+      <title>已知錯誤</title>
+
+      <para>當你使用 Notebook 前端程式來讀取 notebook 檔案時，你可能會
+	收到一個約略如下的錯誤訊息，而該程式不再有回應：</para>
+
+      <screen><errorname>File .../Untitled-1.mb appears to be broken for OMPR.257.0</errorname></screen>
+
+      <para>我們還沒找到問題所在。不過這個問題只影響 Notebook X Window
+	的前端程式，
+	而非 mathematica 主程式。所以當你輸入 <command>math</command> 來使用命令列前端時，
+	你並不會受到影響。</para>
+    </sect2>
+
+    <sect2>
+      <title>誌謝</title>
+
+      <para>非常感謝 &a.sos; 和 &a.peter; ，是他們兩位使得 Linux
+	執行模式有今天的表現。
+	同時也謝謝 Michael Smith，是他趨使前面這兩位忙得幾乎像狗一樣，
+	而能讓 FreeBSD 執行 Linux
+	程式比 Linux 有更好的表現！<!-- smiley -->:-)</para>
+    </sect2>
+  </sect1>
+
+  <sect1>
+    <title>這個 Linux 執行模式是如何運作的 ?</title>
+
+    <para>這個部份的說明大部分都是依據由
+      Terry Lambert <email>tlambert@primenet.com</email>
+      寫到 <email>chat@FreeBSD.org</email> 通信論壇的信件內容
+      (Message ID:
+      <literal>&lt;199906020108.SAA07001@usr09.primenet.com&gt;</literal>)。</para>
+
+    <para>FreeBSD 中有一個概念叫做 &ldquo;程式執行類別載入器&rdquo;(execution class
+      loader)。這個概念在 &man.execve.2; 系統呼叫中被實作。
+      </para>
+    
+    <para>也就是說，在 FreeBSD 中有許多的程式載入器，
+      而非單一個載入器再加上處理 <literal>#!</literal> 這一類可執行的 shell scripts
+      的程式的載入器。</para>
+                       
+    <para>從歷史上來說，UNIX 
+      平台上唯一的程式載入器所需要處理是檢查程式檔的魔術數字
+      (magic number, 通常是檔案最前面的 4 或 8 個 byte 的資料)
+      來決定該檔案是否屬於該作業系統；如果是的話，便執行程式執行載入器。
+      </para>
+                       
+    <para>如果該程式檔並非屬於該作業系統，&man.execve.2;則會傳回表示失敗傳回值，
+      然後 shell 程式會試著將它當作一個 shell 命令來執行。</para>
+                       
+    <para>這個假設並不去理會到底 &ldquo;現在正在執行的 shell 是那一個&rdquo;。
+      </para>
+    
+    <para>稍後，有人對於 &man.sh.1; 做了些修改來檢察檔案的最前面兩個字元，
+      如果那兩個字元是 <literal>:\n</literal>的話，那麼就將該檔案視為
+      &man.csh.1; 的程式 (我們相信 SCO 應該是最早作這個修改的) 。
+      </para>
+                       
+    <para>而現在 FreeBSD 的處理方式是檢查一連串的程式載入器，
+      包括一個認得 <literal>#!</literal>
+      可以正確地找到該行敘述中其餘字元指定的直譯器來執行該
+      script 的程式載入器，
+      若未指定該 script 所使用的直譯器則使用 <filename>/bin/sh</filename>
+      作為其直譯器。</para>
+                       
+    <para>對於 Linux ABI 而言，FreeBSD 從魔術數字中判斷該檔案是一個
+      ELF 格式的可執行檔 (FreeBSD, Solaris, Linux
+      或是任何其他的作業系統在目前都有 ELF 格式的可執行檔)。</para>
+                       
+    <para>接下來 ELF 程式載入器便檢視在該 ELF 格式檔案中的一個叫做
+      <emphasis>brand</emphasis> 的註解部分的資料 (不過在 SVR4 或是
+      Solaris 的 ELF 可執行檔中並沒有該部份資料)。</para>
+                       
+    <para>如果要讓 Linux 可執行檔正常的工作，就必須將該以指令 &man.brandelf.1;
+      將該檔案
+      <emphasis>branded</emphasis> 成為 <literal>Linux</literal> 格式：</para>
+                       
+    <screen>&prompt.root; <userinput>brandelf -t Linux file</userinput></screen>
+                       
+    <para>當你這樣作以後，ELF 程式載入器就可以讀到該檔案中
+      指出該檔案是 ELF <literal>Linux</literal> 格式的 brand 。</para>
+                       
+    <para>當 ELF 程式載入器讀到 <literal>Linux</literal> brand 後，
+      程式載入器就會將 <literal>proc</literal> 資料結構中的一些指標參數修改。
+      所有系統呼叫都是透過這個指標參數來呼叫使用的 (對於一個傳統的 UNIX 系統，
+      這個參數通常名為 <literal>sysent[]</literal> 結構陣列，包含了系統呼叫)。
+      進一步來說，該程式就被標記成以特別的方式處理系統中斷，
+      以及其他若干由 Linux 核心模組處理的 (次要的) 修正。</para>
+      
+    <para>Linux 系統呼叫參數中的若干參數中包含有一個
+      <literal>sysent[]</literal> 結構指向核心模組的進入點。
+      </para>
+
+    <para>當一個 Linux 程式呼叫一個系統呼叫，系統處理程式便由
+      <literal>proc</literal>
+      參數查到 Linux 的 (而非 FreeBSD 的) 系統呼叫進入點。</para>
+                       
+    <para>進一步來說， Linux 模式也動態地處理
+      <emphasis>根目錄重置 (reroot)</emphasis> 查詢；
+      就好像在檔案系統 mount 時一個對應的
+      <literal>union</literal> 參數 ( <emphasis>並非</emphasis>
+      unionfs!) 所處理的。首先會先嘗試的在所指定的目錄前加上
+      <filename>/compat/linux/</filename>，也就是變成
+      <filename>/compat/linux/<replaceable>original-path</replaceable></filename>
+      ，<emphasis>只有</emphasis> 在該處讀取失敗時才會到
+      <filename>/<replaceable>original-path</replaceable></filename>
+      目錄去找尋對應的檔案。
+      這使得需要其他的可執行檔的程式得以成功的執行
+      (例如一個會用到其他 Linux 可執行檔的 Linux 程式)。
+      這也表示 Linux 程式也可以呼叫執行 FreeBSD 的程式，
+      如果沒有對應的 Linux 可執行檔存在的話，
+      所以說你可以放一個 &man.uname.1; 命令在
+      <filename>/compat/linux</filename> 目錄下來讓 Linux
+      程式分辨不出到底該程式是不是在 Linux 下執行。
+      </para>
+                       
+    <para>這樣的處理方式，就好像在 FreeBSD 核心程式中有一個 Linux 核心程式，
+      不同的底層函數處理所有核心提供的服務對於 FreeBSD 以及 Linux
+      的系統呼叫進入點是相同的，
+      如：檔案系統，虛擬記憶體，signal 發送，System V 程式間通訊 (IPC)，
+      等等的操作；唯一不同的是 FreeBSD 程式取得 FreeBSD
+      <emphasis>專用 (gule) </emphasis> 函式，而 Linux 程式取得 Linux
+      <emphasis>專用</emphasis> 函式 (許多舊的作業系統之包含他自己的
+      <emphasis>專用</emphasis> 函式：這些函式是存放在系統核心的
+      靜態全域性的 <literal>sysent[]</literal> 資料陣列中，
+      而非在程式執行系統呼叫時，才動態的從 <literal>proc</literal>
+      的參數中找到對應函式的位址)。</para>
+                       
+    <para>那一個是原生的 FreeBSD ABI ?  這並不重要。
+      基本上來說唯一的差異處在於
+      (就目前來說；當然未來的版本可能會改變)
+      FreeBSD <emphasis>專用</emphasis> 函式在核心程式中視是靜態的
+      連結，而 Linux 專用函式則可以靜態的連結或是經由 FreeBSD
+      核心模組的方式來取得。</para>
+                       
+    <para>是的，不過這就是真正的模擬嗎 ? 不，這是一個 ABI
+      的實作，而非模擬。事實上並沒有任何的模擬器在其中。
+      </para>
+    
+    <para>那為甚麼有時把它稱之為 &ldquo;Linux 模擬器呢&rdquo;? 要使得販售
+      FreeBSD 更為困難嗎 !  <!-- smiley -->8-)。說真的，
+      這是因為這是因為在當初使用這個方式實作時，
+      還沒有更好的名稱來指稱這個過程；說 FreeBSD 執行 Linux
+      程式並非完全正確的說法，因為你必須編譯相對應得程式碼或是載入 FreeBSD
+      核心模組才行，所以必須有一個詞來敘述到底載入了甚麼&mdash;
+      所以便稱之為 &ldquo;Linux 模擬器&rdquo;。</para>
+  </sect1>
+</chapter>
+
+<!-- 
+     Local Variables:
+     mode: sgml
+     sgml-declaration: "../chapter.decl"
+     sgml-indent-data: t
+     sgml-omittag: nil
+     sgml-always-quote-attributes: t
+     sgml-parent-document: ("../book.sgml" "part" "chapter")
+     End:
+-->
+

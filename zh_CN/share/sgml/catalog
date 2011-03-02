@@ -1,0 +1,36 @@
+  -- ...................................................................... --
+  -- FreeBSD SGML Public Identifiers ...................................... --
+
+  -- Original Revision: 1.5 --
+  -- $FreeBSD: doc/zh_CN.GB2312/share/sgml/catalog,v 1.3 2006/07/20 10:50:16 delphij Exp $
+  --
+
+PUBLIC "-//FreeBSD//DOCUMENT DocBook Stylesheet//EN"
+	"freebsd.dsl"
+-- Override en_US --
+PUBLIC "-//FreeBSD//ENTITIES DocBook Mailing List Entities//EN"
+	"mailing-lists.ent"
+
+PUBLIC "-//FreeBSD//ENTITIES DocBook Language Specific Entities//EN"
+	"l10n.ent"
+-- Addition to en_US, opened in l10n.ent. --
+PUBLIC "-//FreeBSD//ENTITIES DocBook Author Entities//ZH"
+	"authors.ent"
+-- Chinese-specific, opened in l10n.ent. --
+PUBLIC "-//FreeBSD//ENTITIES DocBook Author In Author Tag Entities//ZH"
+	"authors-in-author-tag.ent"
+-- Override en_US --
+PUBLIC "-//FreeBSD//ENTITIES DocBook Team Entities//EN"
+	"teams.ent"
+-- Override common --
+PUBLIC "-//FreeBSD//ENTITIES DocBook Trademark Entities//EN"
+	"trademarks.ent"
+-- Override en_US --
+PUBLIC 	"-//FreeBSD//ENTITIES DocBook BookInfo Entities//EN"
+	"bookinfo.ent"
+--
+NOTE: Any entity can be evaluated only ONCE.
+      During the course of Jade running, ONLY FIRST evaluation to an entity
+      takes effect, later evaluation to the same entity will be ignored.
+      It also depends on the order of parameters "-c ..../catalog".
+--
