@@ -3,8 +3,8 @@ About freebsddoc:
 ``freebsddoc'' forcus on the Traditional Chinese translation of FreeBSD
 Document Project(doc, www).
 
-For the latest translation, please checkout via git from:
-git clone git://github.com/chinsan/freebsddoc.git
+For the latest translation, please checkout via svn from:
+svn checkout http://freebsddoc.googlecode.com/svn/trunk/ freebsddoc-read-only
 
 en_US.ISO8859-1/
 |-- Makefile
