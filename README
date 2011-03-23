@@ -6,6 +6,13 @@ Document Project(doc, www).
 For the latest translation, please checkout via svn from:
 svn checkout http://freebsddoc.googlecode.com/svn/trunk/ freebsddoc-read-only
 
+Some useful tools:
+- checkupdate.py (el_GR.ISO8859-7/share/tools/checkupdate/checkupdate.py)
+  USAGE:
+  cd /usr/doc ; find el_GR.ISO8859-7 | python el_GR.ISO8859-7/share/tools/checkupdate/checkupdate.py
+
+--
+
 en_US.ISO8859-1/
 |-- Makefile
 |-- articles
